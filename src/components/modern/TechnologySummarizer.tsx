@@ -1,0 +1,379 @@
+import React, { useState } from 'react';
+import type {
+  TechnologyArticle,
+  TechnologyCategory,
+  SummarySection,
+  TechnologySummary,
+} from './modern-types';
+import { technologyArticles, sdnFeatures, vxlanFeatures } from './modern-data';
+
+const TechnologySummarizer: React.FC = () => {
+  const [selectedArticle, setSelectedArticle] = useState<TechnologyArticle | null>(null);
+  const [summaries, setSummaries] = useState<{ [key: string]: string }>({});
+  const [evaluationResult, setEvaluationResult] = useState<TechnologySummary | null>(null);
+  const [showArticle, setShowArticle] = useState(false);
+
+  const categoryInfo: Record<TechnologyCategory, { name: string; features: string[] }> = {
+    'sdn-sdwan': {
+      name: 'SDN/SD-WAN Features',
+      features: [
+        'Application-aware routing',
+        'Zero-touch provisioning',
+        'Transport agnostic',
+        'Central policy management',
+      ],
+    },
+    vxlan: {
+      name: 'VXLAN Concepts',
+      features: ['Data Center Interconnect (DCI)', 'Layer 2 over Layer 3 encapsulation'],
+    },
+    'zero-trust': {
+      name: 'Zero Trust Architecture',
+      features: [
+        'Policy-based authentication',
+        'Authorization requirements',
+        'Least privilege access',
+      ],
+    },
+    'sase-sse': {
+      name: 'SASE/SSE Components',
+      features: ['Secure Access Service Edge', 'Security Service Edge functions'],
+    },
+    iac: {
+      name: 'Infrastructure as Code',
+      features: [
+        'Automation with playbooks/templates',
+        'Configuration drift checking',
+        'Version control and branching',
+        'Central repository management',
+      ],
+    },
+    ipv6: {
+      name: 'IPv6 Implementation',
+      features: [
+        'Address exhaustion mitigation',
+        'Tunneling methods (6to4, Teredo)',
+        'Dual stack configuration',
+        'NAT64 translation',
+      ],
+    },
+  };
+
+  const handleArticleSelect = (article: TechnologyArticle) => {
+    setSelectedArticle(article);
+    setSummaries({});
+    setEvaluationResult(null);
+    setShowArticle(false);
+  };
+
+  const handleSummaryChange = (category: string, text: string) => {
+    setSummaries((prev) => ({ ...prev, [category]: text }));
+  };
+
+  const evaluateSummary = () => {
+    if (!selectedArticle) {return;}
+
+    const category = selectedArticle.category;
+    const summaryText = summaries[category] || '';
+    const wordCount = summaryText.trim().split(/\s+/).length;
+    const features = categoryInfo[category].features;
+
+    // Check for feature mentions
+    const featuresFound = features.filter((feature) =>
+      summaryText.toLowerCase().includes(feature.toLowerCase().split(' (')[0])
+    );
+
+    // Calculate scores
+    const completenessScore = Math.min(100, (featuresFound.length / features.length) * 100);
+    const wordCountScore = wordCount <= 200 ? 100 : Math.max(0, 100 - (wordCount - 200) * 0.5);
+    const accuracyScore = calculateAccuracy(summaryText, selectedArticle.content);
+    const overallScore = (completenessScore + wordCountScore + accuracyScore) / 3;
+
+    // Generate feedback
+    const feedback: string[] = [];
+    if (completenessScore < 100) {
+      const missing = features.filter((f) => !featuresFound.includes(f));
+      feedback.push(`Missing coverage of: ${missing.join(', ')}`);
+    }
+    if (wordCount > 200) {
+      feedback.push(`Summary exceeds 200-word limit (${wordCount} words)`);
+    }
+    if (accuracyScore < 70) {
+      feedback.push('Summary contains inaccurate or misleading information');
+    }
+    if (overallScore >= 90) {
+      feedback.push('Excellent summary! Comprehensive and concise.');
+    } else if (overallScore >= 70) {
+      feedback.push('Good summary, but could be improved.');
+    }
+
+    const section: SummarySection = {
+      category: categoryInfo[category].name,
+      features: featuresFound,
+      completed: true,
+      wordCount,
+      accuracy: accuracyScore,
+    };
+
+    const result: TechnologySummary = {
+      articleId: selectedArticle.id,
+      sections: [section],
+      totalWordCount: wordCount,
+      completenessScore,
+      accuracyScore,
+      overallScore,
+      feedback,
+    };
+
+    setEvaluationResult(result);
+  };
+
+  const calculateAccuracy = (summary: string, article: string): number => {
+    const summaryLower = summary.toLowerCase();
+    const articleLower = article.toLowerCase();
+
+    // Check for key technical terms
+    const keyTerms = [
+      'network',
+      'routing',
+      'security',
+      'policy',
+      'configuration',
+      'traffic',
+      'control',
+      'protocol',
+      'automation',
+    ];
+
+    let accuracyScore = 80; // Base score
+
+    // Penalize for common mistakes
+    const mistakes = [
+      { pattern: /ipv4.*ipv6/i, penalty: 10, description: 'IPv4/IPv6 confusion' },
+      { pattern: /layer\s*3.*layer\s*2/i, penalty: 5, description: 'OSI layer confusion' },
+      { pattern: /encryption.*authentication/i, penalty: 5, description: 'Security term misuse' },
+    ];
+
+    mistakes.forEach((mistake) => {
+      if (mistake.pattern.test(summaryLower)) {
+        accuracyScore -= mistake.penalty;
+      }
+    });
+
+    // Bonus for including specific technical details from article
+    if (summaryLower.includes('overlay') && articleLower.includes('overlay')) {
+      accuracyScore += 5;
+    }
+    if (summaryLower.includes('encapsulation') && articleLower.includes('encapsulation')) {
+      accuracyScore += 5;
+    }
+
+    return Math.max(0, Math.min(100, accuracyScore));
+  };
+
+  const getScoreColor = (score: number): string => {
+    if (score >= 90) {return 'text-green-600';}
+    if (score >= 70) {return 'text-yellow-600';}
+    return 'text-red-600';
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          Component 19: Modern Network Technology Summarizer
+        </h2>
+        <p className="text-gray-600">
+          Read technical articles (1000-2000 words) and create structured summaries covering key
+          technology features. Summaries are auto-scored based on completeness and accuracy.
+        </p>
+      </div>
+
+      {/* Article Selection */}
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-3">Select an Article to Summarize</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {technologyArticles.map((article) => (
+            <button
+              key={article.id}
+              onClick={() => handleArticleSelect(article)}
+              className={`p-4 rounded-lg border-2 text-left transition-all ${
+                selectedArticle?.id === article.id
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300 hover:border-blue-300'
+              }`}
+            >
+              <div className="font-semibold text-gray-800 mb-1">{article.title}</div>
+              <div className="text-sm text-gray-600 mb-2">
+                {article.wordCount} words • {article.difficulty}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {article.keyTopics.map((topic, idx) => (
+                  <span
+                    key={idx}
+                    className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Article Reading and Summarization */}
+      {selectedArticle && (
+        <div className="space-y-6">
+          {/* Article Content */}
+          <div className="border-2 border-gray-300 rounded-lg">
+            <button
+              onClick={() => setShowArticle(!showArticle)}
+              className="w-full p-4 flex justify-between items-center bg-gray-50 hover:bg-gray-100 rounded-t-lg"
+            >
+              <h3 className="text-xl font-semibold">
+                {selectedArticle.title}
+                <span className="text-sm text-gray-600 ml-3">
+                  ({selectedArticle.wordCount} words)
+                </span>
+              </h3>
+              <span className="text-2xl">{showArticle ? '−' : '+'}</span>
+            </button>
+            {showArticle && (
+              <div className="p-6 max-h-96 overflow-y-auto border-t-2 border-gray-200">
+                <div className="prose max-w-none whitespace-pre-line">
+                  {selectedArticle.content}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Summary Input */}
+          <div className="border-2 border-blue-300 rounded-lg p-6 bg-blue-50">
+            <h3 className="text-xl font-semibold mb-3">
+              Write Your Summary: {categoryInfo[selectedArticle.category].name}
+            </h3>
+            <div className="mb-4">
+              <p className="text-sm text-gray-700 mb-2">Required features to cover:</p>
+              <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+                {categoryInfo[selectedArticle.category].features.map((feature, idx) => (
+                  <li key={idx}>{feature}</li>
+                ))}
+              </ul>
+            </div>
+            <textarea
+              value={summaries[selectedArticle.category] || ''}
+              onChange={(e) => handleSummaryChange(selectedArticle.category, e.target.value)}
+              placeholder="Write your summary here (max 200 words)..."
+              className="w-full h-48 p-3 border-2 border-gray-300 rounded-lg resize-none focus:border-blue-500 focus:outline-none"
+            />
+            <div className="flex justify-between items-center mt-2">
+              <span className="text-sm text-gray-600">
+                Word count:{' '}
+                {summaries[selectedArticle.category]?.trim().split(/\s+/).length || 0} / 200
+              </span>
+              <button
+                onClick={evaluateSummary}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Evaluate Summary
+              </button>
+            </div>
+          </div>
+
+          {/* Evaluation Results */}
+          {evaluationResult && (
+            <div className="border-2 border-green-300 rounded-lg p-6 bg-green-50">
+              <h3 className="text-xl font-semibold mb-4">Evaluation Results</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-white p-4 rounded-lg">
+                  <div className="text-sm text-gray-600 mb-1">Completeness</div>
+                  <div className={`text-2xl font-bold ${getScoreColor(evaluationResult.completenessScore)}`}>
+                    {evaluationResult.completenessScore.toFixed(0)}%
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg">
+                  <div className="text-sm text-gray-600 mb-1">Accuracy</div>
+                  <div className={`text-2xl font-bold ${getScoreColor(evaluationResult.accuracyScore)}`}>
+                    {evaluationResult.accuracyScore.toFixed(0)}%
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg">
+                  <div className="text-sm text-gray-600 mb-1">Word Count</div>
+                  <div className={`text-2xl font-bold ${evaluationResult.totalWordCount <= 200 ? 'text-green-600' : 'text-red-600'}`}>
+                    {evaluationResult.totalWordCount}
+                  </div>
+                </div>
+                <div className="bg-white p-4 rounded-lg">
+                  <div className="text-sm text-gray-600 mb-1">Overall Score</div>
+                  <div className={`text-2xl font-bold ${getScoreColor(evaluationResult.overallScore)}`}>
+                    {evaluationResult.overallScore.toFixed(0)}%
+                  </div>
+                </div>
+              </div>
+
+              {/* Features Coverage */}
+              <div className="mb-4">
+                <h4 className="font-semibold mb-2">Features Covered:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {categoryInfo[selectedArticle.category].features.map((feature) => {
+                    const covered = evaluationResult.sections[0].features.includes(feature);
+                    return (
+                      <span
+                        key={feature}
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          covered
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {covered ? '✓' : '✗'} {feature}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Feedback */}
+              <div>
+                <h4 className="font-semibold mb-2">Feedback:</h4>
+                <ul className="space-y-1">
+                  {evaluationResult.feedback.map((item, idx) => (
+                    <li key={idx} className="flex items-start">
+                      <span className="mr-2">•</span>
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Instructions */}
+      {!selectedArticle && (
+        <div className="mt-6 p-6 bg-blue-50 rounded-lg border-2 border-blue-200">
+          <h3 className="text-lg font-semibold mb-3">How to Use This Tool:</h3>
+          <ol className="list-decimal list-inside space-y-2 text-gray-700">
+            <li>Select an article from the available options above</li>
+            <li>Read the article carefully (expand to view full content)</li>
+            <li>Write a summary covering all required features for that technology</li>
+            <li>Keep your summary under 200 words for maximum effectiveness</li>
+            <li>Click "Evaluate Summary" to see your scores and feedback</li>
+            <li>Review feedback and revise your summary to improve your score</li>
+          </ol>
+          <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400">
+            <p className="text-sm text-gray-700">
+              <strong>Scoring:</strong> Your summary is evaluated on completeness (coverage of
+              required features), accuracy (technical correctness), and conciseness (word count
+              within limit). Aim for 90%+ overall score!
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TechnologySummarizer;

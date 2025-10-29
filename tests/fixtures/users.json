@@ -1,0 +1,87 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "email": "john.doe@example.com",
+      "name": "John Doe",
+      "role": "student",
+      "progress": {
+        "modulesCompleted": [1, 2, 3],
+        "quizzesCompleted": [
+          {
+            "quizId": "quiz-1",
+            "score": 85,
+            "completedAt": "2025-10-20T10:30:00Z"
+          },
+          {
+            "quizId": "quiz-2",
+            "score": 92,
+            "completedAt": "2025-10-21T14:15:00Z"
+          }
+        ],
+        "labsCompleted": [
+          {
+            "labId": "lab-1",
+            "score": 78,
+            "completedAt": "2025-10-22T09:45:00Z"
+          }
+        ],
+        "studyStreak": 7,
+        "totalTimeSpent": 18000
+      }
+    },
+    {
+      "id": "user-2",
+      "email": "jane.smith@example.com",
+      "name": "Jane Smith",
+      "role": "student",
+      "progress": {
+        "modulesCompleted": [1, 2, 3, 4, 5],
+        "quizzesCompleted": [
+          {
+            "quizId": "quiz-1",
+            "score": 95,
+            "completedAt": "2025-10-18T11:00:00Z"
+          },
+          {
+            "quizId": "quiz-2",
+            "score": 88,
+            "completedAt": "2025-10-19T16:30:00Z"
+          },
+          {
+            "quizId": "quiz-3",
+            "score": 91,
+            "completedAt": "2025-10-20T10:15:00Z"
+          }
+        ],
+        "labsCompleted": [
+          {
+            "labId": "lab-1",
+            "score": 95,
+            "completedAt": "2025-10-21T13:20:00Z"
+          },
+          {
+            "labId": "lab-2",
+            "score": 89,
+            "completedAt": "2025-10-23T15:00:00Z"
+          }
+        ],
+        "studyStreak": 14,
+        "totalTimeSpent": 32400
+      }
+    },
+    {
+      "id": "user-3",
+      "email": "admin@example.com",
+      "name": "Admin User",
+      "role": "admin",
+      "progress": {
+        "modulesCompleted": [],
+        "quizzesCompleted": [],
+        "labsCompleted": [],
+        "studyStreak": 0,
+        "totalTimeSpent": 0
+      }
+    }
+  ]
+}

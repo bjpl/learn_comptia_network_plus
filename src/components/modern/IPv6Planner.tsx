@@ -1,0 +1,729 @@
+import React, { useState } from 'react';
+import type {
+  IPv6MigrationScenario,
+  MigrationMethod,
+  MigrationPlan,
+  MigrationPhase,
+  SuccessMetric} from './modern-types';
+import {
+  MigrationTask,
+  TunnelingConfig,
+  NAT64Config,
+  Risk
+} from './modern-types';
+import { migrationScenarios } from './modern-data';
+
+const IPv6Planner: React.FC = () => {
+  const [selectedScenario, setSelectedScenario] = useState<IPv6MigrationScenario | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<MigrationMethod>('dual-stack');
+  const [migrationPlan, setMigrationPlan] = useState<MigrationPlan | null>(null);
+  const [activePhase, setActivePhase] = useState<number>(0);
+
+  const methodInfo = {
+    'dual-stack': {
+      name: 'Dual Stack',
+      description: 'Run IPv4 and IPv6 simultaneously on all network devices',
+      pros: [
+        'Maximum compatibility with legacy systems',
+        'Gradual transition without disruption',
+        'Native IPv6 performance where supported',
+      ],
+      cons: [
+        'Doubled address management overhead',
+        'Requires IPv6 support on all devices',
+        'Indefinite IPv4 maintenance costs',
+      ],
+      complexity: 'medium',
+    },
+    tunneling: {
+      name: 'Tunneling (6to4, Teredo, ISATAP)',
+      description: 'Encapsulate IPv6 traffic within IPv4 packets',
+      pros: [
+        'Works across IPv4-only infrastructure',
+        'Enables IPv6 without infrastructure upgrade',
+        'Multiple tunnel types for different scenarios',
+      ],
+      cons: [
+        'Performance overhead from encapsulation',
+        'MTU issues and fragmentation',
+        'Complex troubleshooting',
+      ],
+      complexity: 'high',
+    },
+    nat64: {
+      name: 'NAT64 Translation',
+      description: 'Translate between IPv6-only and IPv4-only networks',
+      pros: [
+        'Enable IPv6-only internal networks',
+        'Simplified address management',
+        'Reduced IPv4 dependency',
+      ],
+      cons: [
+        'Application compatibility issues',
+        'IPsec incompatibility',
+        'Central gateway bottleneck',
+      ],
+      complexity: 'high',
+    },
+    hybrid: {
+      name: 'Hybrid Approach',
+      description: 'Combine multiple migration methods strategically',
+      pros: [
+        'Optimized for specific use cases',
+        'Flexibility for complex environments',
+        'Balanced trade-offs',
+      ],
+      cons: [
+        'Increased complexity',
+        'Higher management overhead',
+        'Requires careful planning',
+      ],
+      complexity: 'critical',
+    },
+  };
+
+  const generateMigrationPlan = () => {
+    if (!selectedScenario) {return;}
+
+    const phases: MigrationPhase[] = [];
+    const now = new Date();
+
+    // Phase 1: Assessment and Planning
+    phases.push({
+      id: 'phase-1',
+      name: 'Assessment and Planning',
+      method: selectedMethod,
+      duration: 30,
+      cost: 25000,
+      dependencies: [],
+      tasks: [
+        {
+          id: 'task-1-1',
+          description: 'Inventory all network devices and assess IPv6 capability',
+          method: selectedMethod,
+          duration: 7,
+          resources: ['Network team', 'Asset management system'],
+          validation: ['Complete device inventory', 'IPv6 capability matrix'],
+          completed: false,
+        },
+        {
+          id: 'task-1-2',
+          description: 'Assess application IPv6 readiness',
+          method: selectedMethod,
+          duration: 14,
+          resources: ['Application team', 'Testing environment'],
+          validation: ['Application compatibility report', 'Upgrade requirements list'],
+          completed: false,
+        },
+        {
+          id: 'task-1-3',
+          description: 'Develop migration strategy and timeline',
+          method: selectedMethod,
+          duration: 7,
+          resources: ['Project manager', 'Architecture team'],
+          validation: ['Approved migration plan', 'Budget allocation'],
+          completed: false,
+        },
+        {
+          id: 'task-1-4',
+          description: 'Staff training on IPv6 concepts and operations',
+          method: selectedMethod,
+          duration: 14,
+          resources: ['Training provider', 'Technical staff'],
+          validation: ['Training completion certificates', 'Knowledge assessment'],
+          completed: false,
+        },
+      ],
+      risks: [
+        {
+          description: 'Incomplete inventory leads to missed devices',
+          probability: 'medium',
+          impact: 'high',
+          mitigation: 'Use automated discovery tools and manual verification',
+        },
+        {
+          description: 'Underestimated application compatibility issues',
+          probability: 'high',
+          impact: 'high',
+          mitigation: 'Thorough testing in non-production environment',
+        },
+      ],
+    });
+
+    // Phase 2: Infrastructure Preparation
+    if (selectedMethod === 'dual-stack' || selectedMethod === 'hybrid') {
+      phases.push({
+        id: 'phase-2',
+        name: 'Infrastructure Preparation (Dual Stack)',
+        method: 'dual-stack',
+        duration: 60,
+        cost: 150000,
+        dependencies: ['phase-1'],
+        tasks: [
+          {
+            id: 'task-2-1',
+            description: 'Upgrade/replace non-IPv6-capable network devices',
+            method: 'dual-stack',
+            duration: 30,
+            resources: ['Hardware budget', 'Installation team'],
+            validation: ['All critical devices IPv6-capable', 'Configuration backups'],
+            completed: false,
+          },
+          {
+            id: 'task-2-2',
+            description: 'Configure IPv6 addressing scheme and subnets',
+            method: 'dual-stack',
+            duration: 14,
+            resources: ['Network architects', 'IP address management system'],
+            validation: ['IPv6 addressing plan document', 'IPAM configuration'],
+            completed: false,
+          },
+          {
+            id: 'task-2-3',
+            description: 'Enable IPv6 on core routing infrastructure',
+            method: 'dual-stack',
+            duration: 7,
+            resources: ['Network engineers', 'Change control approval'],
+            validation: ['IPv6 routing operational', 'Connectivity tests passed'],
+            completed: false,
+          },
+          {
+            id: 'task-2-4',
+            description: 'Update DNS for dual-stack (A and AAAA records)',
+            method: 'dual-stack',
+            duration: 7,
+            resources: ['DNS team', 'DNS management tools'],
+            validation: ['AAAA records published', 'DNS resolution tests'],
+            completed: false,
+          },
+        ],
+        risks: [
+          {
+            description: 'Hardware procurement delays',
+            probability: 'medium',
+            impact: 'high',
+            mitigation: 'Order long-lead items early, identify alternatives',
+          },
+          {
+            description: 'Configuration errors cause outages',
+            probability: 'medium',
+            impact: 'critical',
+            mitigation: 'Test in lab, implement during maintenance windows',
+          },
+        ],
+      });
+    }
+
+    // Phase 3: Pilot Deployment
+    phases.push({
+      id: 'phase-3',
+      name: 'Pilot Deployment',
+      method: selectedMethod,
+      duration: 45,
+      cost: 50000,
+      dependencies: phases.length > 1 ? ['phase-2'] : ['phase-1'],
+      tasks: [
+        {
+          id: 'task-3-1',
+          description: 'Select pilot group (single location or department)',
+          method: selectedMethod,
+          duration: 3,
+          resources: ['Project team', 'Business stakeholders'],
+          validation: ['Pilot scope defined', 'Success criteria established'],
+          completed: false,
+        },
+        {
+          id: 'task-3-2',
+          description: `Deploy ${methodInfo[selectedMethod].name} to pilot group`,
+          method: selectedMethod,
+          duration: 21,
+          resources: ['Implementation team', 'Support staff'],
+          validation: [
+            'IPv6 connectivity operational',
+            'All applications functional',
+            'Performance metrics baseline',
+          ],
+          completed: false,
+        },
+        {
+          id: 'task-3-3',
+          description: 'Monitor and troubleshoot pilot deployment',
+          method: selectedMethod,
+          duration: 14,
+          resources: ['NOC team', 'Monitoring tools'],
+          validation: ['Issue log', 'Performance data', 'User feedback'],
+          completed: false,
+        },
+        {
+          id: 'task-3-4',
+          description: 'Evaluate pilot results and adjust plan',
+          method: selectedMethod,
+          duration: 7,
+          resources: ['Project team', 'Stakeholders'],
+          validation: ['Pilot evaluation report', 'Updated migration plan'],
+          completed: false,
+        },
+      ],
+      risks: [
+        {
+          description: 'Pilot group experiences service disruption',
+          probability: 'medium',
+          impact: 'high',
+          mitigation: 'Comprehensive testing, rapid rollback capability',
+        },
+        {
+          description: 'Undiscovered application compatibility issues',
+          probability: 'high',
+          impact: 'medium',
+          mitigation: 'Careful monitoring, quick issue resolution',
+        },
+      ],
+    });
+
+    // Phase 4: Full Deployment
+    const fullDeploymentDuration = selectedScenario.complexity === 'high' ? 180 : selectedScenario.complexity === 'medium' ? 120 : 90;
+    phases.push({
+      id: 'phase-4',
+      name: 'Full Network Deployment',
+      method: selectedMethod,
+      duration: fullDeploymentDuration,
+      cost: 200000,
+      dependencies: ['phase-3'],
+      tasks: [
+        {
+          id: 'task-4-1',
+          description: 'Deploy to remaining locations in phases',
+          method: selectedMethod,
+          duration: fullDeploymentDuration - 30,
+          resources: ['Implementation team', 'Site coordinators'],
+          validation: ['All sites migrated', 'Connectivity verified'],
+          completed: false,
+        },
+        {
+          id: 'task-4-2',
+          description: 'Update security policies and firewall rules for IPv6',
+          method: selectedMethod,
+          duration: 14,
+          resources: ['Security team', 'Firewall administrators'],
+          validation: ['IPv6 security policies deployed', 'Security audit passed'],
+          completed: false,
+        },
+        {
+          id: 'task-4-3',
+          description: 'Monitor traffic patterns and performance',
+          method: selectedMethod,
+          duration: 30,
+          resources: ['Network operations', 'Analytics tools'],
+          validation: ['Traffic analysis reports', 'Performance benchmarks'],
+          completed: false,
+        },
+      ],
+      risks: [
+        {
+          description: 'Scale introduces unforeseen issues',
+          probability: 'medium',
+          impact: 'high',
+          mitigation: 'Gradual rollout with monitoring between phases',
+        },
+        {
+          description: 'Resource constraints slow deployment',
+          probability: 'high',
+          impact: 'medium',
+          mitigation: 'Prioritize critical locations, adjust timeline as needed',
+        },
+      ],
+    });
+
+    // Calculate timeline
+    const totalDays = phases.reduce((sum, phase) => sum + phase.duration, 0);
+    const startDate = new Date(now);
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + totalDays);
+
+    // Calculate budget
+    const hardwareCost = selectedMethod === 'dual-stack' ? 200000 : selectedMethod === 'tunneling' ? 50000 : 100000;
+    const softwareCost = 75000;
+    const trainingCost = 50000;
+    const consultingCost = 100000;
+
+    // Success metrics
+    const successMetrics: SuccessMetric[] = [
+      {
+        name: 'IPv6 Traffic Percentage',
+        target: 80,
+        unit: '%',
+        measurement: 'Network monitoring',
+        priority: 'high',
+      },
+      {
+        name: 'Application Availability',
+        target: 99.9,
+        unit: '%',
+        measurement: 'Application monitoring',
+        priority: 'high',
+      },
+      {
+        name: 'IPv4 Address Utilization Reduction',
+        target: 50,
+        unit: '%',
+        measurement: 'IPAM reports',
+        priority: 'medium',
+      },
+      {
+        name: 'Network Latency',
+        target: 0,
+        unit: 'ms increase',
+        measurement: 'Performance monitoring',
+        priority: 'high',
+      },
+      {
+        name: 'Security Incidents',
+        target: 0,
+        unit: 'incidents',
+        measurement: 'Security monitoring',
+        priority: 'high',
+      },
+    ];
+
+    // Consolidated risks
+    const allRisks = phases.flatMap((phase) => phase.risks);
+
+    const plan: MigrationPlan = {
+      scenarioId: selectedScenario.id,
+      method: selectedMethod,
+      phases,
+      timeline: {
+        start: startDate,
+        end: endDate,
+        totalDays,
+      },
+      budget: {
+        hardware: hardwareCost,
+        software: softwareCost,
+        training: trainingCost,
+        consulting: consultingCost,
+        total: hardwareCost + softwareCost + trainingCost + consultingCost,
+      },
+      successMetrics,
+      riskAssessment: allRisks,
+    };
+
+    setMigrationPlan(plan);
+    setActivePhase(0);
+  };
+
+  const getRiskColor = (probability: string, impact: string): string => {
+    const score = (probability === 'high' ? 3 : probability === 'medium' ? 2 : 1) +
+                  (impact === 'critical' ? 4 : impact === 'high' ? 3 : impact === 'medium' ? 2 : 1);
+    if (score >= 6) {return 'bg-red-100 border-red-500';}
+    if (score >= 4) {return 'bg-yellow-100 border-yellow-500';}
+    return 'bg-green-100 border-green-500';
+  };
+
+  const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          Component 20: IPv6 Migration Planner
+        </h2>
+        <p className="text-gray-600">
+          Plan comprehensive IPv6 migration strategies using dual stack, tunneling, or NAT64 methods.
+          Generate detailed migration plans with timelines, costs, and risk assessments.
+        </p>
+      </div>
+
+      {/* Scenario Selection */}
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-3">Select Migration Scenario</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {migrationScenarios.map((scenario) => (
+            <button
+              key={scenario.id}
+              onClick={() => setSelectedScenario(scenario)}
+              className={`p-4 rounded-lg border-2 text-left transition-all ${
+                selectedScenario?.id === scenario.id
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300 hover:border-blue-300'
+              }`}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div className="font-semibold text-gray-800">{scenario.name}</div>
+                <span
+                  className={`px-2 py-1 text-xs rounded-full ${
+                    scenario.complexity === 'critical'
+                      ? 'bg-red-100 text-red-700'
+                      : scenario.complexity === 'high'
+                      ? 'bg-orange-100 text-orange-700'
+                      : scenario.complexity === 'medium'
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : 'bg-green-100 text-green-700'
+                  }`}
+                >
+                  {scenario.complexity}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">{scenario.description}</p>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div>
+                  <span className="text-gray-500">Devices:</span>{' '}
+                  <span className="font-semibold">{scenario.currentState.devices}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Subnets:</span>{' '}
+                  <span className="font-semibold">{scenario.currentState.subnets}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500">IPv6 Ready:</span>{' '}
+                  <span className="font-semibold">
+                    {scenario.currentState.infrastructure.routers.ipv6Capable}/
+                    {scenario.currentState.infrastructure.routers.total} routers
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500">Constraints:</span>{' '}
+                  <span className="font-semibold">{scenario.constraints.length}</span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Migration Method Selection */}
+      {selectedScenario && (
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold mb-3">Select Migration Method</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {(Object.keys(methodInfo) as MigrationMethod[]).map((method) => (
+              <button
+                key={method}
+                onClick={() => setSelectedMethod(method)}
+                className={`p-4 rounded-lg border-2 text-left transition-all ${
+                  selectedMethod === method
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-gray-300 hover:border-green-300'
+                }`}
+              >
+                <div className="font-semibold text-gray-800 mb-2">{methodInfo[method].name}</div>
+                <p className="text-sm text-gray-600 mb-3">{methodInfo[method].description}</p>
+                <div className="space-y-1 text-xs">
+                  <div className="font-semibold text-green-700">Pros:</div>
+                  {methodInfo[method].pros.slice(0, 2).map((pro, idx) => (
+                    <div key={idx} className="text-gray-600">• {pro}</div>
+                  ))}
+                  <div className="font-semibold text-red-700 mt-2">Cons:</div>
+                  {methodInfo[method].cons.slice(0, 2).map((con, idx) => (
+                    <div key={idx} className="text-gray-600">• {con}</div>
+                  ))}
+                </div>
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 text-center">
+            <button
+              onClick={generateMigrationPlan}
+              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            >
+              Generate Migration Plan
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Migration Plan Display */}
+      {migrationPlan && (
+        <div className="space-y-6">
+          {/* Plan Overview */}
+          <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg border-2 border-blue-300">
+            <h3 className="text-2xl font-bold mb-4">Migration Plan Overview</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-white p-4 rounded-lg">
+                <div className="text-sm text-gray-600 mb-1">Duration</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  {migrationPlan.timeline.totalDays} days
+                </div>
+                <div className="text-xs text-gray-500">
+                  {(migrationPlan.timeline.totalDays / 30).toFixed(1)} months
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded-lg">
+                <div className="text-sm text-gray-600 mb-1">Total Budget</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {formatCurrency(migrationPlan.budget.total)}
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded-lg">
+                <div className="text-sm text-gray-600 mb-1">Phases</div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {migrationPlan.phases.length}
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded-lg">
+                <div className="text-sm text-gray-600 mb-1">Risks</div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {migrationPlan.riskAssessment.length}
+                </div>
+              </div>
+            </div>
+
+            {/* Budget Breakdown */}
+            <div className="mt-4 bg-white p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Budget Breakdown</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div>
+                  <span className="text-gray-600">Hardware:</span>{' '}
+                  <span className="font-semibold">{formatCurrency(migrationPlan.budget.hardware)}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Software:</span>{' '}
+                  <span className="font-semibold">{formatCurrency(migrationPlan.budget.software)}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Training:</span>{' '}
+                  <span className="font-semibold">{formatCurrency(migrationPlan.budget.training)}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Consulting:</span>{' '}
+                  <span className="font-semibold">{formatCurrency(migrationPlan.budget.consulting)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Phase Navigation */}
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {migrationPlan.phases.map((phase, idx) => (
+              <button
+                key={phase.id}
+                onClick={() => setActivePhase(idx)}
+                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
+                  activePhase === idx
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Phase {idx + 1}: {phase.name}
+              </button>
+            ))}
+          </div>
+
+          {/* Active Phase Details */}
+          {migrationPlan.phases[activePhase] && (
+            <div className="border-2 border-gray-300 rounded-lg p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-2xl font-bold">
+                    Phase {activePhase + 1}: {migrationPlan.phases[activePhase].name}
+                  </h3>
+                  <p className="text-gray-600">Method: {methodInfo[migrationPlan.phases[activePhase].method].name}</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {migrationPlan.phases[activePhase].duration} days
+                  </div>
+                  <div className="text-lg text-green-600">
+                    {formatCurrency(migrationPlan.phases[activePhase].cost)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Tasks */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3">Tasks ({migrationPlan.phases[activePhase].tasks.length})</h4>
+                <div className="space-y-3">
+                  {migrationPlan.phases[activePhase].tasks.map((task) => (
+                    <div key={task.id} className="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="font-semibold">{task.description}</div>
+                        <span className="text-sm text-gray-600">{task.duration} days</span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <span className="text-gray-600">Resources:</span>{' '}
+                          <span className="text-gray-800">{task.resources.join(', ')}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-600">Validation:</span>{' '}
+                          <span className="text-gray-800">{task.validation.length} checks</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Risks */}
+              <div>
+                <h4 className="font-semibold mb-3">Phase Risks ({migrationPlan.phases[activePhase].risks.length})</h4>
+                <div className="space-y-3">
+                  {migrationPlan.phases[activePhase].risks.map((risk, idx) => (
+                    <div key={idx} className={`p-4 rounded-lg border-2 ${getRiskColor(risk.probability, risk.impact)}`}>
+                      <div className="font-semibold mb-1">{risk.description}</div>
+                      <div className="text-sm mb-2">
+                        <span className="text-gray-700">Probability:</span>{' '}
+                        <span className="font-semibold">{risk.probability}</span>
+                        {' | '}
+                        <span className="text-gray-700">Impact:</span>{' '}
+                        <span className="font-semibold">{risk.impact}</span>
+                      </div>
+                      <div className="text-sm">
+                        <span className="text-gray-700">Mitigation:</span> {risk.mitigation}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Success Metrics */}
+          <div className="bg-green-50 p-6 rounded-lg border-2 border-green-300">
+            <h3 className="text-xl font-bold mb-4">Success Metrics</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {migrationPlan.successMetrics.map((metric, idx) => (
+                <div key={idx} className="bg-white p-4 rounded-lg">
+                  <div className="font-semibold text-gray-800 mb-1">{metric.name}</div>
+                  <div className="text-2xl font-bold text-green-600 mb-1">
+                    {metric.target}{metric.unit}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Measured via: {metric.measurement}
+                  </div>
+                  <div className="mt-2">
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      metric.priority === 'high' ? 'bg-red-100 text-red-700' :
+                      metric.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-blue-100 text-blue-700'
+                    }`}>
+                      {metric.priority} priority
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Instructions */}
+      {!selectedScenario && (
+        <div className="mt-6 p-6 bg-blue-50 rounded-lg border-2 border-blue-200">
+          <h3 className="text-lg font-semibold mb-3">How to Use This Planner:</h3>
+          <ol className="list-decimal list-inside space-y-2 text-gray-700">
+            <li>Select a migration scenario that matches your environment</li>
+            <li>Choose the most appropriate migration method (dual stack, tunneling, or NAT64)</li>
+            <li>Click "Generate Migration Plan" to create a detailed implementation plan</li>
+            <li>Review each phase, including tasks, timeline, costs, and risks</li>
+            <li>Use the success metrics to measure migration progress and success</li>
+          </ol>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default IPv6Planner;

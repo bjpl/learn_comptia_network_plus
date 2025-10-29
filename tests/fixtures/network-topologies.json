@@ -1,0 +1,146 @@
+{
+  "topologies": [
+    {
+      "id": "topology-1",
+      "name": "Basic Home Network",
+      "description": "Simple home network with router, switch, and devices",
+      "devices": [
+        {
+          "id": "device-1",
+          "type": "router",
+          "name": "Home Router",
+          "position": { "x": 400, "y": 100 },
+          "properties": {
+            "ipAddress": "192.168.1.1",
+            "subnetMask": "255.255.255.0"
+          }
+        },
+        {
+          "id": "device-2",
+          "type": "switch",
+          "name": "Switch",
+          "position": { "x": 400, "y": 300 },
+          "properties": {
+            "ports": 8
+          }
+        },
+        {
+          "id": "device-3",
+          "type": "computer",
+          "name": "PC 1",
+          "position": { "x": 200, "y": 500 },
+          "properties": {
+            "ipAddress": "192.168.1.100",
+            "macAddress": "00:1A:2B:3C:4D:5E"
+          }
+        },
+        {
+          "id": "device-4",
+          "type": "computer",
+          "name": "PC 2",
+          "position": { "x": 600, "y": 500 },
+          "properties": {
+            "ipAddress": "192.168.1.101",
+            "macAddress": "00:1A:2B:3C:4D:5F"
+          }
+        }
+      ],
+      "connections": [
+        {
+          "id": "conn-1",
+          "from": "device-1",
+          "to": "device-2",
+          "cableType": "straight-through",
+          "speed": "1000Mbps"
+        },
+        {
+          "id": "conn-2",
+          "from": "device-2",
+          "to": "device-3",
+          "cableType": "straight-through",
+          "speed": "1000Mbps"
+        },
+        {
+          "id": "conn-3",
+          "from": "device-2",
+          "to": "device-4",
+          "cableType": "straight-through",
+          "speed": "1000Mbps"
+        }
+      ],
+      "correctAnswer": true,
+      "explanation": "This is a valid home network topology with proper cabling."
+    },
+    {
+      "id": "topology-2",
+      "name": "Corporate Network",
+      "description": "Multi-layer corporate network with core, distribution, and access layers",
+      "devices": [
+        {
+          "id": "device-1",
+          "type": "router",
+          "name": "Edge Router",
+          "position": { "x": 400, "y": 50 },
+          "properties": {
+            "ipAddress": "203.0.113.1"
+          }
+        },
+        {
+          "id": "device-2",
+          "type": "switch",
+          "name": "Core Switch",
+          "position": { "x": 400, "y": 200 },
+          "properties": {
+            "type": "layer3",
+            "ports": 48
+          }
+        },
+        {
+          "id": "device-3",
+          "type": "switch",
+          "name": "Distribution Switch 1",
+          "position": { "x": 200, "y": 350 },
+          "properties": {
+            "type": "layer2",
+            "ports": 24
+          }
+        },
+        {
+          "id": "device-4",
+          "type": "switch",
+          "name": "Distribution Switch 2",
+          "position": { "x": 600, "y": 350 },
+          "properties": {
+            "type": "layer2",
+            "ports": 24
+          }
+        }
+      ],
+      "connections": [
+        {
+          "id": "conn-1",
+          "from": "device-1",
+          "to": "device-2",
+          "cableType": "fiber",
+          "speed": "10Gbps"
+        },
+        {
+          "id": "conn-2",
+          "from": "device-2",
+          "to": "device-3",
+          "cableType": "fiber",
+          "speed": "10Gbps"
+        },
+        {
+          "id": "conn-3",
+          "from": "device-2",
+          "to": "device-4",
+          "cableType": "fiber",
+          "speed": "10Gbps"
+        }
+      ],
+      "correctAnswer": true,
+      "explanation": "This is a proper hierarchical network design."
+    }
+  ]
+}

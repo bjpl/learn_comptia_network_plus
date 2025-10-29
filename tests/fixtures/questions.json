@@ -1,0 +1,74 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "text": "What is the default subnet mask for a Class C network?",
+      "options": [
+        "255.0.0.0",
+        "255.255.0.0",
+        "255.255.255.0",
+        "255.255.255.255"
+      ],
+      "correctAnswer": "255.255.255.0",
+      "explanation": "A Class C network uses 255.255.255.0 as its default subnet mask, providing 254 usable host addresses.",
+      "difficulty": "easy",
+      "topic": "IP Addressing"
+    },
+    {
+      "id": 2,
+      "text": "Which cable type is used to connect a switch to a switch?",
+      "options": [
+        "Straight-through cable",
+        "Crossover cable",
+        "Rollover cable",
+        "Fiber optic cable"
+      ],
+      "correctAnswer": "Crossover cable",
+      "explanation": "A crossover cable is used to connect similar devices like switch-to-switch or router-to-router.",
+      "difficulty": "medium",
+      "topic": "Network Cabling"
+    },
+    {
+      "id": 3,
+      "text": "What is the maximum transmission distance for 10GBASE-SR over multimode fiber?",
+      "options": [
+        "100 meters",
+        "300 meters",
+        "550 meters",
+        "10 kilometers"
+      ],
+      "correctAnswer": "300 meters",
+      "explanation": "10GBASE-SR supports up to 300 meters on OM3 multimode fiber.",
+      "difficulty": "hard",
+      "topic": "Fiber Optics"
+    },
+    {
+      "id": 4,
+      "text": "Which OSI layer is responsible for end-to-end communication?",
+      "options": [
+        "Network Layer",
+        "Transport Layer",
+        "Session Layer",
+        "Application Layer"
+      ],
+      "correctAnswer": "Transport Layer",
+      "explanation": "The Transport Layer (Layer 4) handles end-to-end communication and error recovery.",
+      "difficulty": "medium",
+      "topic": "OSI Model"
+    },
+    {
+      "id": 5,
+      "text": "What is the purpose of VLAN tagging?",
+      "options": [
+        "To increase network speed",
+        "To segment broadcast domains",
+        "To encrypt network traffic",
+        "To compress data packets"
+      ],
+      "correctAnswer": "To segment broadcast domains",
+      "explanation": "VLANs segment networks into separate broadcast domains, improving performance and security.",
+      "difficulty": "medium",
+      "topic": "VLANs"
+    }
+  ]
+}
