@@ -1,3 +1,10 @@
+#!/bin/bash
+# Comprehensive TypeScript error fixes
+
+echo "Fixing TypeScript strict mode errors..."
+
+# Fix Badge component - add missing variants
+cat > src/components/ui/badge.tsx << 'EOF'
 import * as React from 'react';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -26,3 +33,11 @@ export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
   }
 );
 Badge.displayName = 'Badge';
+EOF
+
+echo "✓ Fixed Badge component variants"
+
+# Run typecheck to see remaining errors
+npm run typecheck
+
+echo "Script completed. Check output above for remaining errors."

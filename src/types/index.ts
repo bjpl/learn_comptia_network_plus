@@ -423,6 +423,36 @@ export class NetworkCalculationError extends AppError {
 }
 
 // ============================================================================
+// Component & Navigation Types
+// ============================================================================
+
+/**
+ * Learning component metadata
+ */
+export interface Component {
+  id: string;
+  title: string;
+  description: string;
+  type: ComponentType;
+  difficulty: DifficultyLevel;
+  estimatedTime: number;
+  objectives: string[];
+  domains: string[];
+}
+
+/**
+ * Navigation item
+ */
+export interface NavigationItem {
+  id: string;
+  label: string;
+  path: string;
+  icon?: string;
+  children?: NavigationItem[];
+  requiredProgress?: number;
+}
+
+// ============================================================================
 // Utility Types
 // ============================================================================
 

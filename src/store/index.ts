@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { UserProgress, Theme } from '../types';
+import type { UserProgress } from '../types';
+
+interface Theme {
+  mode: 'light' | 'dark';
+}
 
 interface AppState {
   // Progress tracking
@@ -26,34 +30,32 @@ export const useAppStore = create<AppState>()(
     (set) => ({
       // Initial progress state
       progress: {
-        completedComponents: [],
-        componentScores: {},
-        totalScore: 0,
-        lastActivity: new Date(),
+        userId: 'default-user',
+        componentsCompleted: [],
+        domainsCompleted: [],
+        totalTimeSpent: 0,
+        lastAccessed: new Date(),
+        overallProgress: 0,
+        domainProgress: new Map(),
+        achievements: [],
+        streak: 0
       },
 
       // Progress actions
-      updateProgress: (componentId: string, score: number) =>
-        set((state) => {
-          const newScores = { ...state.progress.componentScores, [componentId]: score };
-          const totalScore = Object.values(newScores).reduce((sum: number, s: number) => sum + s, 0) / Object.keys(newScores).length;
-
-          return {
-            progress: {
-              ...state.progress,
-              componentScores: newScores,
-              totalScore,
-              lastActivity: new Date(),
-            },
-          };
-        }),
+      updateProgress: (_componentId: string, _score: number) =>
+        set((state) => ({
+          progress: {
+            ...state.progress,
+            lastAccessed: new Date(),
+          },
+        })),
 
       markComponentComplete: (componentId: string) =>
         set((state) => ({
           progress: {
             ...state.progress,
             componentsCompleted: [...new Set([...state.progress.componentsCompleted, componentId])],
-            lastActivity: new Date(),
+            lastAccessed: new Date(),
           },
         })),
 

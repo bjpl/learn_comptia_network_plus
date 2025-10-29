@@ -18,15 +18,12 @@ import {
   CheckCircle2,
   Download,
   Filter,
-  Calendar,
   Trophy,
   Zap,
-  BookOpen,
   BarChart3
 } from 'lucide-react';
-import { learningObjectives, badges, masteryThresholds, domainWeights } from './assessment-data';
+import { learningObjectives, masteryThresholds } from './assessment-data';
 import type { ProgressData, LOProgress, DashboardFilters } from './assessment-types';
-import { ExamReadiness } from './assessment-types';
 
 interface ProgressDashboardProps {
   progressData: ProgressData;
@@ -37,7 +34,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({
   progressData,
   onExportReport
 }) => {
-  const [filters, setFilters] = useState<DashboardFilters>({
+  const [filters] = useState<DashboardFilters>({
     showOnlyIncomplete: false
   });
   const [selectedTab, setSelectedTab] = useState('overview');

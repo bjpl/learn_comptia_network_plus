@@ -8,14 +8,15 @@ const Dashboard: React.FC = () => {
   const getCategoryProgress = useProgressStore((state) => state.getCategoryProgress);
 
   const categories = [
-    { id: 'osi', name: 'OSI Model', icon: '📚', color: 'blue', path: '/osi/introduction' },
-    { id: 'cloud', name: 'Cloud Computing', icon: '☁️', color: 'purple', path: '/cloud/introduction' },
-    { id: 'protocols', name: 'Protocols', icon: '🔌', color: 'green', path: '/protocols/introduction' },
-    { id: 'media', name: 'Physical Media', icon: '🔗', color: 'yellow', path: '/media/introduction' },
-    { id: 'topologies', name: 'Topologies', icon: '🕸️', color: 'pink', path: '/topologies/introduction' },
-    { id: 'ipv4', name: 'IPv4 & Subnetting', icon: '🌐', color: 'indigo', path: '/ipv4/introduction' },
-    { id: 'modern', name: 'Modern Topics', icon: '🚀', color: 'red', path: '/modern/introduction' },
-    { id: 'assessment', name: 'Assessment', icon: '📝', color: 'gray', path: '/assessment/introduction' },
+    { id: 'osi', name: 'OSI Model', icon: '📚', color: 'blue', path: '/osi/layer-builder' },
+    { id: 'appliances', name: 'Network Appliances', icon: '🖥️', color: 'cyan', path: '/appliances/comparison' },
+    { id: 'cloud', name: 'Cloud Computing', icon: '☁️', color: 'purple', path: '/cloud/summary-builder' },
+    { id: 'protocols', name: 'Protocols', icon: '🔌', color: 'green', path: '/protocols/trainer' },
+    { id: 'media', name: 'Physical Media', icon: '🔗', color: 'yellow', path: '/media/selection-matrix' },
+    { id: 'topologies', name: 'Topologies', icon: '🕸️', color: 'pink', path: '/topologies/analyzer' },
+    { id: 'ipv4', name: 'IPv4 & Subnetting', icon: '🌐', color: 'indigo', path: '/ipv4/subnet-designer' },
+    { id: 'modern', name: 'Modern Topics', icon: '🚀', color: 'red', path: '/modern/technology' },
+    { id: 'assessment', name: 'Assessment', icon: '📝', color: 'gray', path: '/assessment/dashboard' },
   ];
 
   return (
@@ -121,7 +122,7 @@ const Dashboard: React.FC = () => {
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
-            to="/assessment/practice"
+            to="/assessment/simulator"
             className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
           >
             <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
@@ -133,34 +134,34 @@ const Dashboard: React.FC = () => {
               />
             </svg>
             <div>
-              <p className="font-medium text-gray-900 dark:text-white">Practice Exam</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Test your knowledge</p>
+              <p className="font-medium text-gray-900 dark:text-white">Scenario Simulator</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Practice real scenarios</p>
             </div>
           </Link>
 
           <Link
-            to="/assessment/flashcards"
+            to="/assessment/dashboard"
             className="flex items-center gap-3 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
           >
             <svg className="w-8 h-8 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+              <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
             </svg>
             <div>
-              <p className="font-medium text-gray-900 dark:text-white">Flashcards</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Review key concepts</p>
+              <p className="font-medium text-gray-900 dark:text-white">Progress Dashboard</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Track your progress</p>
             </div>
           </Link>
 
           <Link
-            to="/assessment/results"
+            to="/osi/layer-builder"
             className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
           >
             <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+              <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
             </svg>
             <div>
-              <p className="font-medium text-gray-900 dark:text-white">Results</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">View your performance</p>
+              <p className="font-medium text-gray-900 dark:text-white">Start Learning</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Begin with OSI Model</p>
             </div>
           </Link>
         </div>

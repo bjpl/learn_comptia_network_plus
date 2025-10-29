@@ -489,7 +489,7 @@ export const CloudSummaryBuilder: React.FC = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .cloud-summary-builder {
           padding: 20px;
           max-width: 1400px;

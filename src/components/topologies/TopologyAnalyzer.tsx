@@ -501,7 +501,7 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .topology-analyzer {
           padding: 2rem;
           max-width: 1400px;

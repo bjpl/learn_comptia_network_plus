@@ -9,7 +9,7 @@ interface DecisionTreeProps {
 const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
   const [currentNodeId, setCurrentNodeId] = useState<string>('start');
   const [history, setHistory] = useState<string[]>(['start']);
-  const [showRecommendation, setShowRecommendation] = useState(false);
+  const [_showRecommendation, setShowRecommendation] = useState(false);
 
   const currentNode = decisionTreeData.get(currentNodeId);
 

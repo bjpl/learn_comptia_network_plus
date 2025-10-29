@@ -4,7 +4,7 @@
  * and comprehensive assessment features for CompTIA Network+ learning
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -12,7 +12,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import {
-  CheckCircle2,
   Circle,
   AlertCircle,
   Clock,
@@ -22,9 +21,6 @@ import {
   ChevronLeft,
   FileText,
   Award,
-  Timer,
-  Zap,
-  TrendingUp
 } from 'lucide-react';
 import { integratedScenarios } from './assessment-data';
 import type {
@@ -37,31 +33,21 @@ import type {
 interface ScenarioSimulatorProps {
   scenarioId?: string;
   timeLimit?: number; // Optional time limit in seconds
-  enableTimedMode?: boolean;
-  difficultyMultiplier?: boolean; // Apply difficulty-based scoring
   onComplete?: (attempt: ScenarioAttempt) => void;
-  onProgress?: (progress: number) => void;
 }
 
 export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
   scenarioId,
   timeLimit,
-  enableTimedMode = false,
-  difficultyMultiplier = true,
-  onComplete,
-  onProgress
+  onComplete
 }) => {
   const [selectedScenario, setSelectedScenario] = useState<IntegratedScenario | null>(null);
   const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
   const [answers, setAnswers] = useState<UserAnswer[]>([]);
   const [showHints, setShowHints] = useState(false);
-  const [hintsUsed, setHintsUsed] = useState(0);
   const [startTime] = useState(new Date());
   const [currentAnswers, setCurrentAnswers] = useState<Record<string, string>>({});
   const [scored, setScored] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState<number | null>(timeLimit || null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [currentStreak, setCurrentStreak] = useState(0);
 
   useEffect(() => {
     if (scenarioId) {
@@ -342,7 +328,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
             {/* Assessment Points */}
             <div className="space-y-6">
-              {currentPhase.assessmentPoints.map((ap, idx) => {
+              {currentPhase.assessmentPoints.map((ap) => {
                 const existingAnswer = answers.find(
                   a => a.phaseId === currentPhase.id && a.assessmentPointId === ap.loId
                 );

@@ -536,7 +536,7 @@ export const CloudArchitectureDesigner: React.FC = () => {
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .cloud-architecture-designer {
           display: flex;
           flex-direction: column;

@@ -1,25 +1,39 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Link } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
 import { useAppStore } from '../../stores/appStore';
+// import { breadcrumbMap } from '../../router'; // Temporarily disabled
 
 export const Layout: React.FC = () => {
   const sidebarOpen = useAppStore((state) => state.sidebarOpen);
   const location = useLocation();
 
-  // Generate breadcrumbs from path
+  // Generate breadcrumbs using breadcrumbMap
   const getBreadcrumbs = () => {
-    const paths = location.pathname.split('/').filter(Boolean);
-    const breadcrumbs = [{ label: 'Home', path: '/' }];
+    const breadcrumbs: Array<{ label: string; path: string }> = [];
+    let path = location.pathname;
 
-    let currentPath = '';
-    paths.forEach((segment) => {
-      currentPath += `/${segment}`;
-      const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ');
-      breadcrumbs.push({ label, path: currentPath });
-    });
+    // Always start with home
+    breadcrumbs.unshift({ label: 'Home', path: '/' });
+
+    // Build breadcrumb chain by following parent relationships
+    const visited = new Set<string>();
+    while (path && path !== '/' && !visited.has(path)) {
+      visited.add(path);
+      const breadcrumbData = breadcrumbMap[path];
+      if (breadcrumbData) {
+        breadcrumbs.push({ label: breadcrumbData.title, path });
+        path = breadcrumbData.parent || '';
+      } else {
+        // Fallback for unmapped routes
+        const segment = path.split('/').pop() || '';
+        const label = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ');
+        breadcrumbs.push({ label, path });
+        break;
+      }
+    }
 
     return breadcrumbs;
   };
@@ -77,12 +91,12 @@ export const Layout: React.FC = () => {
                         {crumb.label}
                       </span>
                     ) : (
-                      <a
-                        href={crumb.path}
+                      <Link
+                        to={crumb.path}
                         className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
                         {crumb.label}
-                      </a>
+                      </Link>
                     )}
                   </li>
                 ))}

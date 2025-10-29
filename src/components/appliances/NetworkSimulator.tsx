@@ -5,9 +5,7 @@ import type {
   SimulationState,
   TrafficFlow,
   SimulationAlert} from './appliances-types';
-import {
-  NetworkPosition
-} from './appliances-types';
+
 import { deviceTemplates } from './appliances-data';
 
 interface NetworkSimulatorProps {
@@ -47,7 +45,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
         x: 100 + (devices.length * 50) % 500,
         y: 100 + Math.floor(devices.length / 10) * 100,
       },
-      specs: deviceTemplates[type]?.defaultSpecs || {
+      specs: deviceTemplates[type as keyof typeof deviceTemplates]?.defaultSpecs || {
         throughput: '1 Gbps',
         maxConnections: 1000,
         powerConsumption: '50W',
@@ -147,9 +145,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
   // Remove device
   const removeDevice = (deviceId: string) => {
     // Remove connections
-    const deviceConnections = connections.filter(
-      (conn) => conn.sourceId === deviceId || conn.targetId === deviceId
-    );
+    // Remove connections associated with device
 
     const remainingConnections = connections.filter(
       (conn) => conn.sourceId !== deviceId && conn.targetId !== deviceId
@@ -284,7 +280,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
     sourceId: string,
     targetId: string,
     conns: NetworkConnection[],
-    devs: SimulatedDevice[]
+    _devs: SimulatedDevice[]
   ): string[] => {
     const queue: Array<{ deviceId: string; path: string[] }> = [{ deviceId: sourceId, path: [] }];
     const visited = new Set<string>([sourceId]);

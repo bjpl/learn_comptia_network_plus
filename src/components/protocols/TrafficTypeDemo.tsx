@@ -367,7 +367,7 @@ export const TrafficTypeDemo: React.FC = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .traffic-type-demo {
           max-width: 1200px;
           margin: 0 auto;

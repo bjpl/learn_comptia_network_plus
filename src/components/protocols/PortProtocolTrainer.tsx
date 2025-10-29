@@ -302,7 +302,7 @@ export const PortProtocolTrainer: React.FC = () => {
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .port-protocol-trainer {
           max-width: 900px;
           margin: 0 auto;

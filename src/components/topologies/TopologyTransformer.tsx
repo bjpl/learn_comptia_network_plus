@@ -336,7 +336,7 @@ export const TopologyTransformer: React.FC<TopologyTransformerProps> = ({ classN
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .topology-transformer {
           padding: 2rem;
           max-width: 1400px;

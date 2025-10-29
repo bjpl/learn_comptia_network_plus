@@ -451,7 +451,7 @@ export const PortScanner: React.FC = () => {
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .port-scanner {
           max-width: 1000px;
           margin: 0 auto;
