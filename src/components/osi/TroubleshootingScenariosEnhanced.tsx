@@ -64,28 +64,6 @@ export const TroubleshootingScenariosEnhanced: React.FC<TroubleshootingScenarios
 
   const modeConfig = isExamMode ? EXAM_MODE : STUDY_MODE;
 
-  // Timer for exam mode
-  useEffect(() => {
-    if (isExamMode && modeConfig.timeLimit) {
-      setTimeRemaining(modeConfig.timeLimit);
-      const timer = setInterval(() => {
-        setTimeRemaining((prev) => {
-          if (prev === null || prev <= 0) {
-            clearInterval(timer);
-            // Auto-submit on timeout
-            if (prev === 0) {
-              handleTimeUp();
-            }
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      return () => clearInterval(timer);
-    }
-    return undefined;
-  }, [isExamMode, currentScenarioIndex, modeConfig.timeLimit, handleTimeUp]);
-
   // Track session time
   useEffect(() => {
     const timer = setInterval(() => {
@@ -197,21 +175,6 @@ export const TroubleshootingScenariosEnhanced: React.FC<TroubleshootingScenarios
     modeConfig.timeLimit,
   ]);
 
-  const handleTimeUp = useCallback(() => {
-    // Auto-submit with current answers
-    if (currentResponse.selectedLayer && currentResponse.explanation && currentResponse.solution) {
-      submitResponse();
-    } else {
-      alert('Time up! Moving to next scenario.');
-      goToScenario(currentScenarioIndex + 1);
-    }
-  }, [currentResponse, submitResponse, goToScenario, currentScenarioIndex]);
-
-  const useHint = useCallback(() => {
-    setUsedHints((prev) => new Set(prev).add(currentScenario.id));
-    setShowHints(true);
-  }, [currentScenario.id]);
-
   const goToScenario = useCallback(
     (index: number) => {
       if (index >= 0 && index < filteredScenarios.length) {
@@ -230,6 +193,43 @@ export const TroubleshootingScenariosEnhanced: React.FC<TroubleshootingScenarios
     },
     [filteredScenarios, responses, isExamMode, modeConfig.timeLimit]
   );
+
+  const handleTimeUp = useCallback(() => {
+    // Auto-submit with current answers
+    if (currentResponse.selectedLayer && currentResponse.explanation && currentResponse.solution) {
+      submitResponse();
+    } else {
+      alert('Time up! Moving to next scenario.');
+      goToScenario(currentScenarioIndex + 1);
+    }
+  }, [currentResponse, submitResponse, goToScenario, currentScenarioIndex]);
+
+  // Timer for exam mode
+  useEffect(() => {
+    if (isExamMode && modeConfig.timeLimit) {
+      setTimeRemaining(modeConfig.timeLimit);
+      const timer = setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev === null || prev <= 0) {
+            clearInterval(timer);
+            // Auto-submit on timeout
+            if (prev === 0) {
+              handleTimeUp();
+            }
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+    return undefined;
+  }, [isExamMode, currentScenarioIndex, modeConfig.timeLimit, handleTimeUp]);
+
+  const useHint = useCallback(() => {
+    setUsedHints((prev) => new Set(prev).add(currentScenario.id));
+    setShowHints(true);
+  }, [currentScenario.id]);
 
   const handleMethodologyComplete = (steps: MethodologyStep[]) => {
     // Extract insights from methodology wizard

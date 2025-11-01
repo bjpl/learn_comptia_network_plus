@@ -185,7 +185,7 @@ export const CloudSummaryBuilder: React.FC = () => {
   >('builder');
   const [selectedTermCategory, setSelectedTermCategory] =
     useState<keyof typeof CLOUD_TERMS>('Deployment Models');
-  const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
+  const [_selectedQuestion, _setSelectedQuestion] = useState<string | null>(null);
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
   const [costProfile, setCostProfile] = useState<
     'Small website' | 'Medium app' | 'Enterprise system'

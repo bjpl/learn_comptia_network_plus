@@ -33,11 +33,13 @@ interface ConnectorQuestion {
   options: ConnectorType[];
 }
 
-interface _WiringChallenge {
-  standard: 'T568A' | 'T568B';
-  currentOrder: Pin[];
-  correctOrder: Pin[];
-}
+// interface _WiringChallenge - Reserved for future use
+// Reserved for future wiring challenge feature
+// interface WiringChallenge {
+//   standard: 'T568A' | 'T568B';
+//   currentOrder: Pin[];
+//   correctOrder: Pin[];
+// }
 
 interface TerminationStep {
   id: number;
