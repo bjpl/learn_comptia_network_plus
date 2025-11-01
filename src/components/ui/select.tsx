@@ -12,7 +12,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         className={`flex h-10 w-full rounded-md border ${
           error ? 'border-red-500' : 'border-gray-300'
-        } bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 ${
+        } bg-white px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 ${
           className || ''
         }`}
         {...props}
@@ -50,22 +50,17 @@ export const FormControl = React.forwardRef<HTMLDivElement, FormControlProps>(
 );
 FormControl.displayName = 'FormControl';
 
-export const InputLabel = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
-  ({ className, ...props }, ref) => (
-    <label
-      ref={ref}
-      className={`text-sm font-medium text-gray-700 ${className || ''}`}
-      {...props}
-    />
-  )
-);
+export const InputLabel = React.forwardRef<
+  HTMLLabelElement,
+  React.LabelHTMLAttributes<HTMLLabelElement>
+>(({ className, ...props }, ref) => (
+  <label ref={ref} className={`text-sm font-medium text-gray-700 ${className || ''}`} {...props} />
+));
 InputLabel.displayName = 'InputLabel';
 
-export interface MenuItemProps extends React.OptionHTMLAttributes<HTMLOptionElement> {}
+export type MenuItemProps = React.OptionHTMLAttributes<HTMLOptionElement>;
 
 export const MenuItem = React.forwardRef<HTMLOptionElement, MenuItemProps>(
-  ({ className, ...props }, ref) => (
-    <option ref={ref} className={className} {...props} />
-  )
+  ({ className, ...props }, ref) => <option ref={ref} className={className} {...props} />
 );
 MenuItem.displayName = 'MenuItem';

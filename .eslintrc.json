@@ -21,12 +21,7 @@
       "jsx": true
     }
   },
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "react-hooks",
-    "jsx-a11y"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "jsx-a11y"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
@@ -66,5 +61,14 @@
       "version": "detect"
     }
   },
-  "ignorePatterns": ["dist", "build", "node_modules", ".claude-flow", "*.config.js", "*.config.ts"]
+  "ignorePatterns": [
+    "dist",
+    "build",
+    "node_modules",
+    ".claude-flow",
+    "*.config.js",
+    "*.config.ts",
+    "backend",
+    "tests"
+  ]
 }

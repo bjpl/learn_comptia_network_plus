@@ -1,20 +1,12 @@
 import { useState, useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid } from '@react-three/drei';
-import * as THREE from 'three';
+import type * as THREE from 'three';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  RotateCw,
-  ZoomIn,
-  ZoomOut,
-  Eye,
-  Grid as GridIcon,
-  Split,
-  Info
-} from 'lucide-react';
+import { RotateCw, ZoomIn, ZoomOut, Eye, Grid as GridIcon, Split, Info } from 'lucide-react';
 import { CONNECTORS, T568A_LAYOUT, T568B_LAYOUT } from './media-data';
 import { CONNECTOR_GEOMETRIES } from './connector-models';
 import type { ConnectorType, ViewMode } from './media-types';
@@ -35,7 +27,9 @@ function Connector3D({ connectorId, rotation }: Connector3DProps) {
     }
   });
 
-  if (!geometry) {return null;}
+  if (!geometry) {
+    return null;
+  }
 
   const connectorGroup = geometry.createGeometry();
 
@@ -56,19 +50,19 @@ export default function ConnectorLab() {
   // Removed unused showPinLayout state
   const [wiringStandard, setWiringStandard] = useState<'T568A' | 'T568B'>('T568B');
 
-  const connector = CONNECTORS.find(c => c.id === selectedConnector);
-  const comparisonConn = CONNECTORS.find(c => c.id === comparisonConnector);
+  const connector = CONNECTORS.find((c) => c.id === selectedConnector);
+  const comparisonConn = CONNECTORS.find((c) => c.id === comparisonConnector);
 
   const handleRotate = () => {
-    setRotation(prev => prev + Math.PI / 4);
+    setRotation((prev) => prev + Math.PI / 4);
   };
 
   const handleZoomIn = () => {
-    setZoom(prev => Math.min(prev + 0.2, 4));
+    setZoom((prev) => Math.min(prev + 0.2, 4));
   };
 
   const handleZoomOut = () => {
-    setZoom(prev => Math.max(prev - 0.2, 0.5));
+    setZoom((prev) => Math.max(prev - 0.2, 0.5));
   };
 
   const handleReset = () => {
@@ -76,9 +70,9 @@ export default function ConnectorLab() {
     setZoom(1);
   };
 
-  const fiberConnectors = CONNECTORS.filter(c => c.type === 'fiber');
-  const copperConnectors = CONNECTORS.filter(c => c.type === 'copper');
-  const coaxialConnectors = CONNECTORS.filter(c => c.type === 'coaxial');
+  const fiberConnectors = CONNECTORS.filter((c) => c.type === 'fiber');
+  const copperConnectors = CONNECTORS.filter((c) => c.type === 'copper');
+  const coaxialConnectors = CONNECTORS.filter((c) => c.type === 'coaxial');
 
   const pinLayout = wiringStandard === 'T568A' ? T568A_LAYOUT : T568B_LAYOUT;
 
@@ -95,7 +89,7 @@ export default function ConnectorLab() {
       </Card>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* 3D Viewer */}
         <div className="lg:col-span-2">
           <Card>
@@ -110,7 +104,7 @@ export default function ConnectorLab() {
                     size="sm"
                     onClick={() => setViewMode('normal')}
                   >
-                    <Eye className="h-4 w-4 mr-1" />
+                    <Eye className="mr-1 h-4 w-4" />
                     Normal
                   </Button>
                   <Button
@@ -121,7 +115,7 @@ export default function ConnectorLab() {
                       setXrayMode(true);
                     }}
                   >
-                    <GridIcon className="h-4 w-4 mr-1" />
+                    <GridIcon className="mr-1 h-4 w-4" />
                     X-Ray
                   </Button>
                   <Button
@@ -129,14 +123,14 @@ export default function ConnectorLab() {
                     size="sm"
                     onClick={() => setViewMode('comparison')}
                   >
-                    <Split className="h-4 w-4 mr-1" />
+                    <Split className="mr-1 h-4 w-4" />
                     Compare
                   </Button>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="bg-gray-100 rounded-lg" style={{ height: '500px' }}>
+              <div className="rounded-lg bg-gray-100" style={{ height: '500px' }}>
                 <Canvas>
                   <PerspectiveCamera makeDefault position={[0, 0, 10]} />
                   <OrbitControls enableZoom enablePan enableRotate />
@@ -188,27 +182,25 @@ export default function ConnectorLab() {
               </div>
 
               {/* Controls */}
-              <div className="flex items-center justify-between mt-4">
+              <div className="mt-4 flex items-center justify-between">
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={handleRotate}>
-                    <RotateCw className="h-4 w-4 mr-1" />
+                    <RotateCw className="mr-1 h-4 w-4" />
                     Rotate
                   </Button>
                   <Button variant="outline" size="sm" onClick={handleZoomIn}>
-                    <ZoomIn className="h-4 w-4 mr-1" />
+                    <ZoomIn className="mr-1 h-4 w-4" />
                     Zoom In
                   </Button>
                   <Button variant="outline" size="sm" onClick={handleZoomOut}>
-                    <ZoomOut className="h-4 w-4 mr-1" />
+                    <ZoomOut className="mr-1 h-4 w-4" />
                     Zoom Out
                   </Button>
                   <Button variant="outline" size="sm" onClick={handleReset}>
                     Reset View
                   </Button>
                 </div>
-                <div className="text-sm text-gray-500">
-                  Zoom: {Math.round(zoom * 100)}%
-                </div>
+                <div className="text-sm text-gray-500">Zoom: {Math.round(zoom * 100)}%</div>
               </div>
             </CardContent>
           </Card>
@@ -242,11 +234,11 @@ export default function ConnectorLab() {
               <CardContent>
                 <div className="space-y-4">
                   {/* Visual pin representation */}
-                  <div className="flex justify-center gap-1 p-6 bg-gray-50 rounded-lg">
+                  <div className="flex justify-center gap-1 rounded-lg bg-gray-50 p-6">
                     {pinLayout.pins.map((pin) => (
                       <div key={pin.number} className="flex flex-col items-center gap-2">
                         <div
-                          className="w-8 h-16 rounded"
+                          className="h-16 w-8 rounded"
                           style={{
                             backgroundColor: pin.color.includes('white')
                               ? `#${pin.color.split('-')[1]}33`
@@ -254,7 +246,7 @@ export default function ConnectorLab() {
                             border: '2px solid #333',
                           }}
                         />
-                        <div className="text-xs font-mono">{pin.number}</div>
+                        <div className="font-mono text-xs">{pin.number}</div>
                       </div>
                     ))}
                   </div>
@@ -263,16 +255,16 @@ export default function ConnectorLab() {
                   <div className="grid grid-cols-8 gap-2">
                     {pinLayout.pins.map((pin) => (
                       <div key={pin.number} className="text-center">
-                        <div className="text-xs font-bold mb-1">Pin {pin.number}</div>
+                        <div className="mb-1 text-xs font-bold">Pin {pin.number}</div>
                         <div className="text-xs text-gray-600">{pin.color}</div>
-                        <div className="text-xs font-medium mt-1">{pin.function}</div>
+                        <div className="mt-1 text-xs font-medium">{pin.function}</div>
                       </div>
                     ))}
                   </div>
 
                   {connector.id === 'RJ45' && (
-                    <div className="p-3 bg-blue-50 rounded-lg">
-                      <div className="text-sm font-medium mb-2">Wiring Standard Info:</div>
+                    <div className="rounded-lg bg-blue-50 p-3">
+                      <div className="mb-2 text-sm font-medium">Wiring Standard Info:</div>
                       <p className="text-sm text-gray-700">
                         {wiringStandard === 'T568A'
                           ? 'T568A: Used in government installations and some commercial settings. Green pairs on pins 1-2.'
@@ -301,7 +293,7 @@ export default function ConnectorLab() {
                   <TabsTrigger value="coaxial">Coax</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="all" className="space-y-2 mt-4">
+                <TabsContent value="all" className="mt-4 space-y-2">
                   {CONNECTORS.map((conn) => (
                     <Button
                       key={conn.id}
@@ -315,7 +307,7 @@ export default function ConnectorLab() {
                   ))}
                 </TabsContent>
 
-                <TabsContent value="fiber" className="space-y-2 mt-4">
+                <TabsContent value="fiber" className="mt-4 space-y-2">
                   {fiberConnectors.map((conn) => (
                     <Button
                       key={conn.id}
@@ -328,7 +320,7 @@ export default function ConnectorLab() {
                   ))}
                 </TabsContent>
 
-                <TabsContent value="copper" className="space-y-2 mt-4">
+                <TabsContent value="copper" className="mt-4 space-y-2">
                   {copperConnectors.map((conn) => (
                     <Button
                       key={conn.id}
@@ -341,7 +333,7 @@ export default function ConnectorLab() {
                   ))}
                 </TabsContent>
 
-                <TabsContent value="coaxial" className="space-y-2 mt-4">
+                <TabsContent value="coaxial" className="mt-4 space-y-2">
                   {coaxialConnectors.map((conn) => (
                     <Button
                       key={conn.id}
@@ -356,14 +348,14 @@ export default function ConnectorLab() {
               </Tabs>
 
               {viewMode === 'comparison' && (
-                <div className="mt-4 pt-4 border-t">
-                  <div className="text-sm font-medium mb-2">Compare With:</div>
+                <div className="mt-4 border-t pt-4">
+                  <div className="mb-2 text-sm font-medium">Compare With:</div>
                   <select
                     value={comparisonConnector}
                     onChange={(e) => setComparisonConnector(e.target.value as ConnectorType)}
-                    className="w-full p-2 border rounded"
+                    className="w-full rounded border p-2"
                   >
-                    {CONNECTORS.filter(c => c.id !== selectedConnector).map((conn) => (
+                    {CONNECTORS.filter((c) => c.id !== selectedConnector).map((conn) => (
                       <option key={conn.id} value={conn.id}>
                         {conn.name}
                       </option>
@@ -390,7 +382,7 @@ export default function ConnectorLab() {
                 </div>
 
                 <div>
-                  <div className="text-sm font-medium mb-1">Description</div>
+                  <div className="mb-1 text-sm font-medium">Description</div>
                   <p className="text-sm text-gray-700">{connector.description}</p>
                 </div>
 
@@ -402,16 +394,18 @@ export default function ConnectorLab() {
                 )}
 
                 <div>
-                  <div className="text-sm font-medium mb-1">Typical Uses</div>
-                  <ul className="list-disc list-inside space-y-1">
+                  <div className="mb-1 text-sm font-medium">Typical Uses</div>
+                  <ul className="list-inside list-disc space-y-1">
                     {connector.typicalUse.map((use, idx) => (
-                      <li key={idx} className="text-sm text-gray-700">{use}</li>
+                      <li key={idx} className="text-sm text-gray-700">
+                        {use}
+                      </li>
                     ))}
                   </ul>
                 </div>
 
                 <div>
-                  <div className="text-sm font-medium mb-1">Key Features</div>
+                  <div className="mb-1 text-sm font-medium">Key Features</div>
                   <div className="flex flex-wrap gap-1">
                     {connector.keyFeatures.map((feature, idx) => (
                       <Badge key={idx} variant="outline" className="text-xs">

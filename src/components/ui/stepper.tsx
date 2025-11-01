@@ -38,7 +38,9 @@ export interface StepProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Step = React.forwardRef<HTMLDivElement, StepProps>(
   ({ className, children, index = 0, ...props }, ref) => {
     const context = React.useContext(StepperContext);
-    if (!context) {throw new Error('Step must be used within Stepper');}
+    if (!context) {
+      throw new Error('Step must be used within Stepper');
+    }
 
     const isActive = context.activeStep === index;
     const isCompleted = context.activeStep > index;
@@ -73,7 +75,7 @@ export const StepLabel = React.forwardRef<HTMLDivElement, StepLabelProps>(
         <div
           className={`flex h-8 w-8 items-center justify-center rounded-full border-2 ${
             isCompleted
-              ? 'bg-blue-600 border-blue-600 text-white'
+              ? 'border-blue-600 bg-blue-600 text-white'
               : isActive
                 ? 'border-blue-600 text-blue-600'
                 : 'border-gray-300 text-gray-400'
@@ -93,12 +95,12 @@ export const StepLabel = React.forwardRef<HTMLDivElement, StepLabelProps>(
 );
 StepLabel.displayName = 'StepLabel';
 
-export interface StepContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type StepContentProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const StepContent = React.forwardRef<HTMLDivElement, StepContentProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div ref={ref} className={`mt-2 ml-10 pb-4 ${className || ''}`} {...props}>
+      <div ref={ref} className={`ml-10 mt-2 pb-4 ${className || ''}`} {...props}>
         {children}
       </div>
     );

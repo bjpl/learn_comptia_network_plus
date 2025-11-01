@@ -10,8 +10,28 @@ import DOMPurify from 'dompurify';
  */
 const ALLOWED_TAGS_BASIC = ['b', 'i', 'em', 'strong', 'u', 'br', 'p'];
 const ALLOWED_TAGS_RICH = [
-  'b', 'i', 'em', 'strong', 'u', 'br', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-  'ul', 'ol', 'li', 'code', 'pre', 'blockquote', 'a', 'span', 'div'
+  'b',
+  'i',
+  'em',
+  'strong',
+  'u',
+  'br',
+  'p',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'ul',
+  'ol',
+  'li',
+  'code',
+  'pre',
+  'blockquote',
+  'a',
+  'span',
+  'div',
 ];
 const ALLOWED_ATTR_BASIC: string[] = [];
 const ALLOWED_ATTR_RICH = ['href', 'title', 'target', 'rel', 'class'];
@@ -47,7 +67,8 @@ export const sanitizeHtmlRich = (dirty: string): string => {
     ALLOWED_ATTR: ALLOWED_ATTR_RICH,
     KEEP_CONTENT: true,
     RETURN_TRUSTED_TYPE: false,
-    ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+    ALLOWED_URI_REGEXP:
+      /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
     ADD_ATTR: ['target'],
   });
 };
@@ -77,11 +98,14 @@ export const sanitizeInput = (input: string, maxLength: number = 1000): string =
     return '';
   }
 
-  return input
-    .trim()
-    .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove control characters
-    .slice(0, maxLength);
+  return (
+    input
+      .trim()
+      .replace(/[<>]/g, '') // Remove angle brackets
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove control characters
+      .slice(0, maxLength)
+  );
 };
 
 /**
@@ -212,12 +236,15 @@ export const sanitizeSearchQuery = (query: string): string => {
     return '';
   }
 
-  return query
-    .trim()
-    .replace(/[<>]/g, '')
-    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-    .replace(/\s+/g, ' ') // Normalize whitespace
-    .slice(0, 200); // Reasonable search query length
+  return (
+    query
+      .trim()
+      .replace(/[<>]/g, '')
+      // eslint-disable-next-line no-control-regex
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .slice(0, 200)
+  ); // Reasonable search query length
 };
 
 /**
@@ -250,9 +277,7 @@ export const sanitizeObject = <T extends Record<string, any>>(
     if (typeof value === 'string') {
       sanitized[key] = sanitizer(value);
     } else if (Array.isArray(value)) {
-      sanitized[key] = value.map(item =>
-        typeof item === 'string' ? sanitizer(item) : item
-      );
+      sanitized[key] = value.map((item) => (typeof item === 'string' ? sanitizer(item) : item));
     } else if (value !== null && typeof value === 'object') {
       sanitized[key] = sanitizeObject(value, sanitizer);
     } else {
