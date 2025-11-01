@@ -43,41 +43,54 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-      <div className="flex items-center justify-between h-16 px-4 lg:px-6">
+    <header className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div className="flex h-16 items-center justify-between px-4 lg:px-6">
         {/* Left side - Menu toggle and logo */}
         <div className="flex items-center gap-4">
           <button
             onClick={toggleSidebar}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors lg:hidden"
+            className="rounded-lg p-2 transition-colors hover:bg-gray-100 lg:hidden dark:hover:bg-gray-700"
             aria-label="Toggle sidebar"
           >
             <svg
-              className="w-6 h-6 text-gray-600 dark:text-gray-300"
+              className="h-6 w-6 text-gray-600 dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
               {sidebarOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               )}
             </svg>
           </button>
 
           <Link to="/" className="flex items-center gap-2" aria-label="CompTIA Network+ Home">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center" aria-hidden="true">
-              <span className="text-white font-bold text-sm">N+</span>
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600"
+              aria-hidden="true"
+            >
+              <span className="text-sm font-bold text-white">N+</span>
             </div>
-            <span className="hidden sm:block font-bold text-xl text-gray-900 dark:text-white">
+            <span className="hidden text-xl font-bold text-gray-900 sm:block dark:text-white">
               CompTIA Network+
             </span>
           </Link>
         </div>
 
         {/* Center - Search */}
-        <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+        <div className="mx-8 hidden max-w-2xl flex-1 md:flex">
           <div className="relative w-full">
             <input
               type="search"
@@ -85,13 +98,15 @@ export const Header: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search topics, concepts..."
-              className="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-600 dark:placeholder-gray-400"
+              className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 pl-10 text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-blue-400"
               aria-label="Search topics and concepts"
               aria-describedby="search-hint"
             />
-            <span id="search-hint" className="sr-only">Search through learning topics, networking concepts, and protocols</span>
+            <span id="search-hint" className="sr-only">
+              Search through learning topics, networking concepts, and protocols
+            </span>
             <svg
-              className="absolute left-3 top-2.5 w-5 h-5 text-gray-400"
+              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -109,8 +124,17 @@ export const Header: React.FC = () => {
         {/* Right side - Progress, theme toggle, user menu */}
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Progress indicator */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg" role="status" aria-label={`Overall progress: ${overallProgress.percentage.toFixed(0)}% complete`}>
-            <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+          <div
+            className="hidden items-center gap-2 rounded-lg bg-gray-100 px-3 py-1.5 sm:flex dark:bg-gray-700"
+            role="status"
+            aria-label={`Overall progress: ${overallProgress.percentage.toFixed(0)}% complete`}
+          >
+            <svg
+              className="h-4 w-4 text-blue-600 dark:text-blue-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
               <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
               <path
                 fillRule="evenodd"
@@ -129,15 +153,15 @@ export const Header: React.FC = () => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="min-w-[44px] min-h-[44px] p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
             {theme === 'light' ? (
-              <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="h-5 w-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
               </svg>
             ) : (
-              <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
@@ -152,51 +176,54 @@ export const Header: React.FC = () => {
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="flex items-center gap-2 rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
                 aria-label="User menu"
                 aria-expanded={userMenuOpen}
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">
-                    {getUserInitials(user)}
-                  </span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500">
+                  <span className="text-sm font-medium text-white">{getUserInitials(user)}</span>
                 </div>
-                <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="hidden text-sm font-medium text-gray-700 sm:block dark:text-gray-300">
                   {getUserDisplayName(user)}
                 </span>
                 <svg
-                  className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform ${
+                  className={`h-4 w-4 text-gray-600 transition-transform dark:text-gray-400 ${
                     userMenuOpen ? 'rotate-180' : ''
                   }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
               {/* Dropdown menu */}
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
-                  <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                <div className="absolute right-0 z-50 mt-2 w-56 rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                  <div className="border-b border-gray-200 px-4 py-3 dark:border-gray-700">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                       {getUserDisplayName(user)}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    <p className="truncate text-xs text-gray-500 dark:text-gray-400">
                       {user.email}
                     </p>
-                    <span className="inline-block mt-1 px-2 py-0.5 text-xs rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                    <span className="mt-1 inline-block rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                       {user.role}
                     </span>
                   </div>
 
                   <Link
                     to="/profile"
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                     onClick={() => setUserMenuOpen(false)}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -209,10 +236,10 @@ export const Header: React.FC = () => {
 
                   <Link
                     to="/assessment/dashboard"
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                     onClick={() => setUserMenuOpen(false)}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -223,13 +250,13 @@ export const Header: React.FC = () => {
                     My Progress
                   </Link>
 
-                  <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+                  <div className="my-2 border-t border-gray-200 dark:border-gray-700"></div>
 
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-700 dark:text-red-400 dark:hover:bg-gray-700 dark:hover:text-red-300"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -246,13 +273,13 @@ export const Header: React.FC = () => {
             <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:text-white"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
               >
                 Sign Up
               </Link>

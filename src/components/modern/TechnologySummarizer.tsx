@@ -216,10 +216,10 @@ const TechnologySummarizer: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6">
-        <h2 className="mb-2 text-3xl font-bold text-gray-800">
+        <h2 className="mb-2 text-3xl font-bold text-gray-800 dark:text-gray-100">
           Component 18: Modern Network Technology Summarizer
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Master modern networking technologies including SDN, NFV, SD-WAN, IoT, and 5G through
           comprehensive article summaries. Covers CompTIA Network+ LO 1.8 and beyond. Read technical
           articles (1000-2000 words) and create structured summaries covering key technology
@@ -229,7 +229,9 @@ const TechnologySummarizer: React.FC = () => {
 
       {/* Article Selection */}
       <div className="mb-6">
-        <h3 className="mb-3 text-xl font-semibold">Select an Article to Summarize</h3>
+        <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
+          Select an Article to Summarize
+        </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {technologyArticles.map((article) => (
             <button
@@ -241,8 +243,10 @@ const TechnologySummarizer: React.FC = () => {
                   : 'border-gray-300 hover:border-blue-300'
               }`}
             >
-              <div className="mb-1 font-semibold text-gray-800">{article.title}</div>
-              <div className="mb-2 text-sm text-gray-600">
+              <div className="mb-1 font-semibold text-gray-800 dark:text-gray-100">
+                {article.title}
+              </div>
+              <div className="mb-2 text-sm text-gray-600 dark:text-gray-400">
                 {article.wordCount} words • {article.difficulty}
               </div>
               <div className="flex flex-wrap gap-1">
@@ -264,19 +268,19 @@ const TechnologySummarizer: React.FC = () => {
           <div className="rounded-lg border-2 border-gray-300">
             <button
               onClick={() => setShowArticle(!showArticle)}
-              className="flex w-full items-center justify-between rounded-t-lg bg-gray-50 p-4 hover:bg-gray-100"
+              className="flex w-full items-center justify-between rounded-t-lg bg-gray-50 p-4 hover:bg-gray-100 dark:bg-gray-800"
             >
-              <h3 className="text-xl font-semibold">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {selectedArticle.title}
-                <span className="ml-3 text-sm text-gray-600">
+                <span className="ml-3 text-sm text-gray-600 dark:text-gray-400">
                   ({selectedArticle.wordCount} words)
                 </span>
               </h3>
               <span className="text-2xl">{showArticle ? '−' : '+'}</span>
             </button>
             {showArticle && (
-              <div className="max-h-96 overflow-y-auto border-t-2 border-gray-200 p-6">
-                <div className="prose max-w-none whitespace-pre-line">
+              <div className="max-h-96 overflow-y-auto border-t-2 border-gray-200 p-6 text-gray-900 dark:border-gray-700 dark:text-gray-100">
+                <div className="prose dark:prose-invert max-w-none whitespace-pre-line">
                   {selectedArticle.content}
                 </div>
               </div>
@@ -285,15 +289,17 @@ const TechnologySummarizer: React.FC = () => {
 
           {/* Summary Input */}
           <div className="rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
-            <h3 className="mb-3 text-xl font-semibold">
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
               Write Your Summary:{' '}
               {categoryInfo[selectedArticle.category]?.name ||
                 modernTechInfo[selectedArticle.id]?.name ||
                 'Technology Summary'}
             </h3>
             <div className="mb-4">
-              <p className="mb-2 text-sm text-gray-700">Required features to cover:</p>
-              <ul className="list-inside list-disc space-y-1 text-sm text-gray-600">
+              <p className="mb-2 text-sm text-gray-700 dark:text-gray-300">
+                Required features to cover:
+              </p>
+              <ul className="list-inside list-disc space-y-1 text-sm text-gray-600 dark:text-gray-400">
                 {(
                   categoryInfo[selectedArticle.category]?.features ||
                   modernTechInfo[selectedArticle.id]?.features ||
@@ -310,7 +316,7 @@ const TechnologySummarizer: React.FC = () => {
               className="h-48 w-full resize-none rounded-lg border-2 border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
             />
             <div className="mt-2 flex items-center justify-between">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 Word count: {summaries[selectedArticle.id]?.trim().split(/\s+/).length || 0} / 200
               </span>
               <button
@@ -325,34 +331,36 @@ const TechnologySummarizer: React.FC = () => {
           {/* Evaluation Results */}
           {evaluationResult && (
             <div className="rounded-lg border-2 border-green-300 bg-green-50 p-6">
-              <h3 className="mb-4 text-xl font-semibold">Evaluation Results</h3>
+              <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                Evaluation Results
+              </h3>
               <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-                <div className="rounded-lg bg-white p-4">
-                  <div className="mb-1 text-sm text-gray-600">Completeness</div>
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-700">
+                  <div className="mb-1 text-sm text-gray-600 dark:text-gray-400">Completeness</div>
                   <div
                     className={`text-2xl font-bold ${getScoreColor(evaluationResult.completenessScore)}`}
                   >
                     {evaluationResult.completenessScore.toFixed(0)}%
                   </div>
                 </div>
-                <div className="rounded-lg bg-white p-4">
-                  <div className="mb-1 text-sm text-gray-600">Accuracy</div>
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-700">
+                  <div className="mb-1 text-sm text-gray-600 dark:text-gray-400">Accuracy</div>
                   <div
                     className={`text-2xl font-bold ${getScoreColor(evaluationResult.accuracyScore)}`}
                   >
                     {evaluationResult.accuracyScore.toFixed(0)}%
                   </div>
                 </div>
-                <div className="rounded-lg bg-white p-4">
-                  <div className="mb-1 text-sm text-gray-600">Word Count</div>
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-700">
+                  <div className="mb-1 text-sm text-gray-600 dark:text-gray-400">Word Count</div>
                   <div
                     className={`text-2xl font-bold ${evaluationResult.totalWordCount <= 200 ? 'text-green-600' : 'text-red-600'}`}
                   >
                     {evaluationResult.totalWordCount}
                   </div>
                 </div>
-                <div className="rounded-lg bg-white p-4">
-                  <div className="mb-1 text-sm text-gray-600">Overall Score</div>
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-700">
+                  <div className="mb-1 text-sm text-gray-600 dark:text-gray-400">Overall Score</div>
                   <div
                     className={`text-2xl font-bold ${getScoreColor(evaluationResult.overallScore)}`}
                   >
@@ -363,7 +371,9 @@ const TechnologySummarizer: React.FC = () => {
 
               {/* Features Coverage */}
               <div className="mb-4">
-                <h4 className="mb-2 font-semibold">Features Covered:</h4>
+                <h4 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                  Features Covered:
+                </h4>
                 <div className="flex flex-wrap gap-2">
                   {(
                     categoryInfo[selectedArticle.category]?.features ||
@@ -387,12 +397,12 @@ const TechnologySummarizer: React.FC = () => {
 
               {/* Feedback */}
               <div>
-                <h4 className="mb-2 font-semibold">Feedback:</h4>
+                <h4 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Feedback:</h4>
                 <ul className="space-y-1">
                   {evaluationResult.feedback.map((item, idx) => (
                     <li key={idx} className="flex items-start">
                       <span className="mr-2">•</span>
-                      <span className="text-gray-700">{item}</span>
+                      <span className="text-gray-700 dark:text-gray-300">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -405,8 +415,10 @@ const TechnologySummarizer: React.FC = () => {
       {/* Instructions */}
       {!selectedArticle && (
         <div className="mt-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
-          <h3 className="mb-3 text-lg font-semibold">How to Use This Tool:</h3>
-          <ol className="list-inside list-decimal space-y-2 text-gray-700">
+          <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            How to Use This Tool:
+          </h3>
+          <ol className="list-inside list-decimal space-y-2 text-gray-700 dark:text-gray-300">
             <li>Select an article from the available options above</li>
             <li>Read the article carefully (expand to view full content)</li>
             <li>Write a summary covering all required features for that technology</li>
@@ -415,7 +427,7 @@ const TechnologySummarizer: React.FC = () => {
             <li>Review feedback and revise your summary to improve your score</li>
           </ol>
           <div className="mt-4 border-l-4 border-yellow-400 bg-yellow-50 p-4">
-            <p className="text-sm text-gray-700">
+            <p className="text-sm text-gray-700 dark:text-gray-300">
               <strong>Scoring:</strong> Your summary is evaluated on completeness (coverage of
               required features), accuracy (technical correctness), and conciseness (word count
               within limit). Aim for 90%+ overall score!

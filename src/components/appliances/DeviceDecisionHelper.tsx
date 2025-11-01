@@ -190,39 +190,52 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
 
   if (showResults) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 text-xl font-bold text-green-600">Recommendations</h3>
+      <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+        <h3 className="mb-4 text-xl font-bold text-green-600 dark:text-green-400">
+          Recommendations
+        </h3>
 
         {recommendations.length === 0 ? (
-          <div className="rounded-lg bg-yellow-50 p-4">
-            <p className="text-yellow-900">
+          <div className="rounded-lg bg-yellow-50 p-4 dark:bg-yellow-900">
+            <p className="text-yellow-900 dark:text-yellow-200">
               No exact matches found. Try adjusting your criteria or browse all devices.
             </p>
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-gray-700">
+            <p className="text-gray-700 dark:text-gray-300">
               Based on your requirements, we recommend the following devices:
             </p>
 
             {recommendations.map((device) => (
-              <div key={device.id} className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+              <div
+                key={device.id}
+                className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700"
+              >
                 <div className="mb-2 flex items-start justify-between">
                   <div>
-                    <h4 className="text-lg font-semibold text-gray-900">{device.name}</h4>
-                    <p className="text-sm text-gray-600">{device.manufacturer}</p>
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      {device.name}
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {device.manufacturer}
+                    </p>
                   </div>
                   <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-800">
                     Layer {device.primaryOsiLayer}
                   </span>
                 </div>
 
-                <p className="mb-3 text-sm text-gray-700">{device.osiLayerDescription}</p>
+                <p className="mb-3 text-sm text-gray-700 dark:text-gray-300">
+                  {device.osiLayerDescription}
+                </p>
 
                 {device.whenToUse && device.whenToUse.length > 0 && (
                   <div className="mb-3">
-                    <strong className="text-sm text-gray-700">When to use:</strong>
-                    <ul className="mt-1 list-inside list-disc text-sm text-gray-600">
+                    <strong className="text-sm text-gray-700 dark:text-gray-300">
+                      When to use:
+                    </strong>
+                    <ul className="mt-1 list-inside list-disc text-sm text-gray-600 dark:text-gray-400">
                       {device.whenToUse.slice(0, 3).map((use, idx) => (
                         <li key={idx}>{use}</li>
                       ))}
@@ -251,7 +264,7 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
         <div className="mt-6 flex gap-3">
           <button
             onClick={handleBack}
-            className="rounded-lg bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300"
+            className="rounded-lg bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
             Back
           </button>
@@ -267,10 +280,12 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
       <div className="mb-6">
-        <h3 className="mb-2 text-xl font-bold text-gray-900">Which Device Should I Use?</h3>
-        <p className="text-sm text-gray-600">
+        <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">
+          Which Device Should I Use?
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Answer a few questions to get personalized device recommendations.
         </p>
       </div>
@@ -278,7 +293,7 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
       {/* Progress indicator */}
       <div className="mb-6">
         <div className="flex items-center gap-2">
-          <div className="text-sm text-gray-600">Progress:</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Progress:</div>
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
@@ -290,17 +305,19 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
 
       {/* Current question */}
       <div className="mb-6">
-        <h4 className="mb-4 text-lg font-semibold text-gray-900">{currentQuestion.question}</h4>
+        <h4 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+          {currentQuestion.question}
+        </h4>
 
         <div className="space-y-3">
           {currentQuestion.options.map((option) => (
             <button
               key={option.value}
               onClick={() => handleAnswer(option)}
-              className="w-full rounded-lg border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-blue-500 hover:bg-blue-50"
+              className="w-full rounded-lg border-2 border-gray-200 bg-white p-4 text-left transition-all hover:border-blue-500 hover:bg-blue-50 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-blue-500 dark:hover:bg-gray-600"
             >
               <div className="flex items-center justify-between">
-                <span className="font-medium text-gray-900">{option.label}</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">{option.label}</span>
                 <svg
                   className="h-5 w-5 text-gray-400"
                   fill="none"
@@ -325,14 +342,14 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
         {history.length > 0 && (
           <button
             onClick={handleBack}
-            className="rounded-lg bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300"
+            className="rounded-lg bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
             Back
           </button>
         )}
         <button
           onClick={handleReset}
-          className="rounded-lg border border-gray-300 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           Start Over
         </button>

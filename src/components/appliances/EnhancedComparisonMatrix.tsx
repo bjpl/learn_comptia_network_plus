@@ -97,11 +97,11 @@ const EnhancedComparisonMatrix: React.FC = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
-        <div className="mb-6 rounded-lg bg-white p-6 shadow-lg">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+        <div className="mb-6 rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
             Network Appliance Comparison Matrix
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             CompTIA Network+ N10-008 - Interactive device comparison tool with 25+ networking
             appliances
           </p>
@@ -122,7 +122,7 @@ const EnhancedComparisonMatrix: React.FC = () => {
         </div>
 
         {/* View mode tabs */}
-        <div className="mb-6 rounded-lg bg-white p-4 shadow-lg">
+        <div className="mb-6 rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800">
           <div className="flex flex-wrap gap-2">
             {[
               { id: 'comparison' as const, label: 'Device Comparison', icon: '📊' },
@@ -136,7 +136,7 @@ const EnhancedComparisonMatrix: React.FC = () => {
                 className={`flex-1 rounded-lg px-4 py-3 font-semibold transition-all ${
                   viewMode === mode.id
                     ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                 }`}
               >
                 <span className="mr-2">{mode.icon}</span>
@@ -153,14 +153,16 @@ const EnhancedComparisonMatrix: React.FC = () => {
             <div className="lg:col-span-1">
               <div className="space-y-4">
                 {/* Search */}
-                <div className="rounded-lg bg-white p-4 shadow-lg">
-                  <h3 className="mb-3 font-semibold text-gray-900">Search Devices</h3>
+                <div className="rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800">
+                  <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">
+                    Search Devices
+                  </h3>
                   <input
                     type="text"
                     placeholder="Search by name, type, or function..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
                   />
                 </div>
 
@@ -172,19 +174,21 @@ const EnhancedComparisonMatrix: React.FC = () => {
                 />
 
                 {/* Stats */}
-                <div className="rounded-lg bg-white p-4 shadow-lg">
-                  <h3 className="mb-3 font-semibold text-gray-900">Statistics</h3>
+                <div className="rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800">
+                  <h3 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">
+                    Statistics
+                  </h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Total Devices:</span>
+                      <span className="text-gray-600 dark:text-gray-400">Total Devices:</span>
                       <span className="font-semibold">{enhancedNetworkDevices.length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Filtered:</span>
+                      <span className="text-gray-600 dark:text-gray-400">Filtered:</span>
                       <span className="font-semibold">{filteredDevices.length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Comparing:</span>
+                      <span className="text-gray-600 dark:text-gray-400">Comparing:</span>
                       <span className="font-semibold">{selectedDeviceIds.length} / 5</span>
                     </div>
                   </div>
@@ -198,8 +202,8 @@ const EnhancedComparisonMatrix: React.FC = () => {
             {viewMode === 'comparison' && (
               <div className="space-y-6">
                 {/* Device selector */}
-                <div className="rounded-lg bg-white p-6 shadow-lg">
-                  <h3 className="mb-4 text-lg font-semibold">
+                <div className="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+                  <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Available Devices ({filteredDevices.length})
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -220,7 +224,7 @@ const EnhancedComparisonMatrix: React.FC = () => {
                       ))}
                   </div>
                   {selectedDeviceIds.length >= 5 && (
-                    <div className="mt-3 rounded bg-yellow-50 p-2 text-sm text-yellow-800">
+                    <div className="mt-3 rounded bg-yellow-50 p-2 text-sm text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
                       Maximum 5 devices can be compared at once. Remove a device to add another.
                     </div>
                   )}
@@ -228,19 +232,25 @@ const EnhancedComparisonMatrix: React.FC = () => {
 
                 {/* Comparison table */}
                 {selectedDevices.length > 0 && (
-                  <div className="rounded-lg bg-white p-6 shadow-lg">
-                    <h3 className="mb-4 text-lg font-semibold">Device Comparison</h3>
+                  <div className="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+                    <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Device Comparison
+                    </h3>
                     <div className="overflow-x-auto">
                       <table className="min-w-full border-collapse">
                         <thead>
-                          <tr className="bg-gray-100">
-                            <th className="border p-3 text-left font-semibold">Feature</th>
+                          <tr className="bg-gray-100 dark:bg-gray-700">
+                            <th className="border p-3 text-left font-semibold text-gray-900 dark:text-gray-100">
+                              Feature
+                            </th>
                             {selectedDevices.map((device) => (
                               <th key={device.id} className="min-w-[200px] border p-3">
                                 <div className="flex items-start justify-between">
                                   <div className="text-left">
-                                    <div className="font-bold">{device.name}</div>
-                                    <div className="text-xs text-gray-500">
+                                    <div className="font-bold text-gray-900 dark:text-gray-100">
+                                      {device.name}
+                                    </div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400">
                                       {device.manufacturer}
                                     </div>
                                     <span className="mt-1 inline-block rounded bg-blue-100 px-2 py-1 text-xs text-blue-800">
@@ -261,16 +271,18 @@ const EnhancedComparisonMatrix: React.FC = () => {
                         </thead>
                         <tbody>
                           {/* OSI Layer */}
-                          <tr className="bg-gray-50">
+                          <tr className="bg-gray-50 dark:bg-gray-700">
                             <td
                               colSpan={selectedDevices.length + 1}
-                              className="border p-2 font-semibold"
+                              className="border p-2 font-semibold text-gray-900 dark:text-gray-100"
                             >
                               OSI Layer Operation
                             </td>
                           </tr>
                           <tr>
-                            <td className="border p-3 font-medium">Primary Layer</td>
+                            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
+                              Primary Layer
+                            </td>
                             {selectedDevices.map((device) => (
                               <td key={device.id} className="border p-3">
                                 Layer {device.primaryOsiLayer}
@@ -278,7 +290,9 @@ const EnhancedComparisonMatrix: React.FC = () => {
                             ))}
                           </tr>
                           <tr>
-                            <td className="border p-3 font-medium">Description</td>
+                            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
+                              Description
+                            </td>
                             {selectedDevices.map((device) => (
                               <td key={device.id} className="border p-3 text-sm">
                                 {device.osiLayerDescription}
@@ -287,16 +301,18 @@ const EnhancedComparisonMatrix: React.FC = () => {
                           </tr>
 
                           {/* Domains */}
-                          <tr className="bg-gray-50">
+                          <tr className="bg-gray-50 dark:bg-gray-700">
                             <td
                               colSpan={selectedDevices.length + 1}
-                              className="border p-2 font-semibold"
+                              className="border p-2 font-semibold text-gray-900 dark:text-gray-100"
                             >
                               Collision & Broadcast Domains
                             </td>
                           </tr>
                           <tr>
-                            <td className="border p-3 font-medium">Collision Domains</td>
+                            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
+                              Collision Domains
+                            </td>
                             {selectedDevices.map((device) => (
                               <td key={device.id} className="border p-3">
                                 <span className="capitalize">{device.collisionDomains}</span>
@@ -304,7 +320,9 @@ const EnhancedComparisonMatrix: React.FC = () => {
                             ))}
                           </tr>
                           <tr>
-                            <td className="border p-3 font-medium">Broadcast Domains</td>
+                            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
+                              Broadcast Domains
+                            </td>
                             {selectedDevices.map((device) => (
                               <td key={device.id} className="border p-3">
                                 <span className="capitalize">{device.broadcastDomains}</span>
@@ -313,16 +331,18 @@ const EnhancedComparisonMatrix: React.FC = () => {
                           </tr>
 
                           {/* Specs */}
-                          <tr className="bg-gray-50">
+                          <tr className="bg-gray-50 dark:bg-gray-700">
                             <td
                               colSpan={selectedDevices.length + 1}
-                              className="border p-2 font-semibold"
+                              className="border p-2 font-semibold text-gray-900 dark:text-gray-100"
                             >
                               Performance Specifications
                             </td>
                           </tr>
                           <tr>
-                            <td className="border p-3 font-medium">Throughput</td>
+                            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
+                              Throughput
+                            </td>
                             {selectedDevices.map((device) => (
                               <td key={device.id} className="border p-3">
                                 {device.specs.throughput}
@@ -330,7 +350,9 @@ const EnhancedComparisonMatrix: React.FC = () => {
                             ))}
                           </tr>
                           <tr>
-                            <td className="border p-3 font-medium">Ports</td>
+                            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
+                              Ports
+                            </td>
                             {selectedDevices.map((device) => (
                               <td key={device.id} className="border p-3">
                                 {device.specs.portCount || 'N/A'}
@@ -339,16 +361,18 @@ const EnhancedComparisonMatrix: React.FC = () => {
                           </tr>
 
                           {/* Pricing */}
-                          <tr className="bg-gray-50">
+                          <tr className="bg-gray-50 dark:bg-gray-700">
                             <td
                               colSpan={selectedDevices.length + 1}
-                              className="border p-2 font-semibold"
+                              className="border p-2 font-semibold text-gray-900 dark:text-gray-100"
                             >
                               Pricing
                             </td>
                           </tr>
                           <tr>
-                            <td className="border p-3 font-medium">Initial Cost</td>
+                            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
+                              Initial Cost
+                            </td>
                             {selectedDevices.map((device) => (
                               <td key={device.id} className="border p-3 font-semibold">
                                 ${device.pricing.initialCost.toLocaleString()}
@@ -357,16 +381,18 @@ const EnhancedComparisonMatrix: React.FC = () => {
                           </tr>
 
                           {/* When to Use */}
-                          <tr className="bg-gray-50">
+                          <tr className="bg-gray-50 dark:bg-gray-700">
                             <td
                               colSpan={selectedDevices.length + 1}
-                              className="border p-2 font-semibold"
+                              className="border p-2 font-semibold text-gray-900 dark:text-gray-100"
                             >
                               Use Cases
                             </td>
                           </tr>
                           <tr>
-                            <td className="border p-3 font-medium">When to Use</td>
+                            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
+                              When to Use
+                            </td>
                             {selectedDevices.map((device) => (
                               <td key={device.id} className="border p-3">
                                 {device.whenToUse && device.whenToUse.length > 0 ? (
@@ -376,7 +402,9 @@ const EnhancedComparisonMatrix: React.FC = () => {
                                     ))}
                                   </ul>
                                 ) : (
-                                  <span className="text-sm text-gray-400">N/A</span>
+                                  <span className="text-sm text-gray-400 dark:text-gray-500">
+                                    N/A
+                                  </span>
                                 )}
                               </td>
                             ))}
@@ -389,12 +417,14 @@ const EnhancedComparisonMatrix: React.FC = () => {
 
                 {/* Device details modal */}
                 {selectedDevice && (
-                  <div className="rounded-lg bg-white p-6 shadow-lg">
+                  <div className="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
                     <div className="mb-4 flex items-start justify-between">
-                      <h3 className="text-xl font-bold">{selectedDevice.name}</h3>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                        {selectedDevice.name}
+                      </h3>
                       <button
                         onClick={() => setSelectedDevice(null)}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                       >
                         ✕
                       </button>
@@ -403,9 +433,11 @@ const EnhancedComparisonMatrix: React.FC = () => {
                     <DomainVisualizer device={selectedDevice} />
 
                     {selectedDevice.examFocus && selectedDevice.examFocus.length > 0 && (
-                      <div className="mt-6 rounded-lg bg-blue-50 p-4">
-                        <h4 className="mb-2 font-semibold text-blue-900">Exam Focus Points</h4>
-                        <ul className="list-inside list-disc space-y-1 text-sm text-blue-800">
+                      <div className="mt-6 rounded-lg bg-blue-50 p-4 dark:bg-blue-900">
+                        <h4 className="mb-2 font-semibold text-blue-900 dark:text-blue-100">
+                          Exam Focus Points
+                        </h4>
+                        <ul className="list-inside list-disc space-y-1 text-sm text-blue-800 dark:text-blue-200">
                           {selectedDevice.examFocus.map((point, idx) => (
                             <li key={idx}>{point}</li>
                           ))}
@@ -418,26 +450,46 @@ const EnhancedComparisonMatrix: React.FC = () => {
             )}
 
             {viewMode === 'feature-matrix' && (
-              <div className="rounded-lg bg-white p-6 shadow-lg">
-                <h3 className="mb-4 text-xl font-bold">Feature Matrix View</h3>
+              <div className="rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+                <h3 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">
+                  Feature Matrix View
+                </h3>
                 <div className="overflow-x-auto">
                   <table className="min-w-full border-collapse text-sm">
                     <thead>
-                      <tr className="bg-gray-100">
-                        <th className="border p-2 text-left">Device</th>
-                        <th className="border p-2">Layer</th>
-                        <th className="border p-2">Type</th>
-                        <th className="border p-2">L3 Routing</th>
-                        <th className="border p-2">VLANs</th>
-                        <th className="border p-2">VPN</th>
-                        <th className="border p-2">DPI</th>
-                        <th className="border p-2">Initial Cost</th>
+                      <tr className="bg-gray-100 dark:bg-gray-700">
+                        <th className="border p-2 text-left font-semibold text-gray-900 dark:text-gray-100">
+                          Device
+                        </th>
+                        <th className="border p-2 font-semibold text-gray-900 dark:text-gray-100">
+                          Layer
+                        </th>
+                        <th className="border p-2 font-semibold text-gray-900 dark:text-gray-100">
+                          Type
+                        </th>
+                        <th className="border p-2 font-semibold text-gray-900 dark:text-gray-100">
+                          L3 Routing
+                        </th>
+                        <th className="border p-2 font-semibold text-gray-900 dark:text-gray-100">
+                          VLANs
+                        </th>
+                        <th className="border p-2 font-semibold text-gray-900 dark:text-gray-100">
+                          VPN
+                        </th>
+                        <th className="border p-2 font-semibold text-gray-900 dark:text-gray-100">
+                          DPI
+                        </th>
+                        <th className="border p-2 font-semibold text-gray-900 dark:text-gray-100">
+                          Initial Cost
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredDevices.map((device) => (
-                        <tr key={device.id} className="hover:bg-gray-50">
-                          <td className="border p-2 font-medium">{device.name}</td>
+                        <tr key={device.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <td className="border p-2 font-medium text-gray-900 dark:text-gray-100">
+                            {device.name}
+                          </td>
                           <td className="border p-2 text-center">{device.primaryOsiLayer}</td>
                           <td className="border p-2 text-center capitalize">
                             {device.type.replace(/-/g, ' ')}

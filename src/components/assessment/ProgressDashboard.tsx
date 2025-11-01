@@ -162,7 +162,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Exam Readiness</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Exam Readiness</p>
                 <p
                   className={`text-3xl font-bold ${getReadinessColor(progressData.examReadiness.overallScore)}`}
                 >
@@ -173,7 +173,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
                 className={`h-8 w-8 ${getReadinessColor(progressData.examReadiness.overallScore)}`}
               />
             </div>
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
               {progressData.examReadiness.readyForExam ? '✓ Ready for exam' : 'Keep practicing'}
             </p>
           </CardContent>
@@ -183,14 +183,16 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Study Time</p>
-                <p className="text-3xl font-bold">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Study Time</p>
+                <p className="text-3xl font-bold dark:text-gray-100">
                   {Math.round(progressData.totalTimeSpent / 60)}h
                 </p>
               </div>
-              <Clock className="h-8 w-8 text-blue-600" />
+              <Clock className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
-            <p className="mt-2 text-xs text-gray-500">{progressData.studyStreak} day streak</p>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              {progressData.studyStreak} day streak
+            </p>
           </CardContent>
         </Card>
 
@@ -198,14 +200,16 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Badges Earned</p>
-                <p className="text-3xl font-bold">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Badges Earned</p>
+                <p className="text-3xl font-bold dark:text-gray-100">
                   {earnedBadges.length}/{progressData.badges.length}
                 </p>
               </div>
-              <Award className="h-8 w-8 text-yellow-600" />
+              <Award className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
             </div>
-            <p className="mt-2 text-xs text-gray-500">{availableBadges.length} more available</p>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              {availableBadges.length} more available
+            </p>
           </CardContent>
         </Card>
 
@@ -213,14 +217,14 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Scenarios Completed</p>
-                <p className="text-3xl font-bold">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Scenarios Completed</p>
+                <p className="text-3xl font-bold dark:text-gray-100">
                   {progressData.scenarioAttempts.filter((a) => a.status === 'completed').length}
                 </p>
               </div>
-              <CheckCircle2 className="h-8 w-8 text-green-600" />
+              <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
-            <p className="mt-2 text-xs text-gray-500">Integrated assessments</p>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">Integrated assessments</p>
           </CardContent>
         </Card>
       </div>
@@ -246,14 +250,16 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
               {domainProgress.map(({ domain, score }) => (
                 <div key={domain}>
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-medium capitalize">
+                    <span className="text-sm font-medium capitalize dark:text-gray-300">
                       {domain.replace('-', ' ')}
                     </span>
                     <div className="flex items-center gap-2">
                       <Badge className={getMasteryColor(getMasteryLevel(score))}>
                         {getMasteryLevel(score)}
                       </Badge>
-                      <span className="text-sm text-gray-600">{Math.round(score)}%</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        {Math.round(score)}%
+                      </span>
                     </div>
                   </div>
                   <Progress value={score} className="h-2" />
@@ -269,13 +275,13 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
             <CardContent className="space-y-4">
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                  <h4 className="mb-3 flex items-center gap-2 font-semibold dark:text-gray-100">
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
                     Strengths
                   </h4>
                   <ul className="space-y-2">
                     {analysis.strengths.map((strength, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
+                      <li key={i} className="flex items-start gap-2 text-sm dark:text-gray-300">
                         <span className="text-green-600">✓</span>
                         <span>{strength}</span>
                       </li>
@@ -284,13 +290,13 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
                 </div>
 
                 <div>
-                  <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                  <h4 className="mb-3 flex items-center gap-2 font-semibold dark:text-gray-100">
                     <AlertCircle className="h-4 w-4 text-orange-600" />
                     Areas to Improve
                   </h4>
                   <ul className="space-y-2">
                     {analysis.weaknesses.map((weakness, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
+                      <li key={i} className="flex items-start gap-2 text-sm dark:text-gray-300">
                         <span className="text-orange-600">!</span>
                         <span>{weakness}</span>
                       </li>
@@ -299,11 +305,11 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
                 </div>
               </div>
 
-              <div className="mt-4 border-t pt-4">
+              <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold">Recommended Study Time</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-semibold dark:text-gray-100">Recommended Study Time</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {progressData.examReadiness.recommendedStudyTime} hours additional practice
                     </p>
                   </div>
@@ -341,7 +347,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
             </CardHeader>
             <CardContent>
               <div className="mb-6">
-                <h4 className="mb-4 flex items-center gap-2 font-semibold">
+                <h4 className="mb-4 flex items-center gap-2 font-semibold dark:text-gray-100">
                   <Trophy className="h-5 w-5 text-yellow-500" />
                   Earned Badges ({earnedBadges.length})
                 </h4>
@@ -349,14 +355,16 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
                   {earnedBadges.map((badge) => (
                     <Card
                       key={badge.id}
-                      className="bg-gradient-to-br from-yellow-50 to-orange-50 text-center"
+                      className="bg-gradient-to-br from-yellow-50 to-orange-50 text-center dark:from-yellow-950 dark:to-orange-950"
                     >
                       <CardContent className="pt-6">
                         <div className="mb-2 text-4xl">{badge.icon}</div>
-                        <h5 className="mb-1 font-semibold">{badge.name}</h5>
-                        <p className="mb-2 text-xs text-gray-600">{badge.description}</p>
+                        <h5 className="mb-1 font-semibold dark:text-gray-100">{badge.name}</h5>
+                        <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+                          {badge.description}
+                        </p>
                         {badge.earnedDate && (
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
                             {new Date(badge.earnedDate).toLocaleDateString()}
                           </p>
                         )}
@@ -367,7 +375,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
               </div>
 
               <div>
-                <h4 className="mb-4 flex items-center gap-2 font-semibold">
+                <h4 className="mb-4 flex items-center gap-2 font-semibold dark:text-gray-100">
                   <Zap className="h-5 w-5 text-gray-400" />
                   Available Badges ({availableBadges.length})
                 </h4>
@@ -375,14 +383,18 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
                   {availableBadges.map((badge) => (
                     <Card
                       key={badge.id}
-                      className="text-center opacity-60 transition-opacity hover:opacity-100"
+                      className="text-center opacity-60 transition-opacity hover:opacity-100 dark:opacity-40 dark:hover:opacity-100"
                     >
                       <CardContent className="pt-6">
                         <div className="mb-2 text-4xl grayscale">{badge.icon}</div>
-                        <h5 className="mb-1 font-semibold">{badge.name}</h5>
-                        <p className="mb-2 text-xs text-gray-600">{badge.description}</p>
+                        <h5 className="mb-1 font-semibold dark:text-gray-200">{badge.name}</h5>
+                        <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+                          {badge.description}
+                        </p>
                         <div className="mt-3">
-                          <p className="mb-1 text-xs text-gray-500">{badge.requirement}</p>
+                          <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">
+                            {badge.requirement}
+                          </p>
                           {badge.progress !== undefined && (
                             <Progress value={badge.progress} className="h-1" />
                           )}
@@ -408,19 +420,26 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
                   <Card key={week.weekNumber}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg">Week {week.weekNumber}</CardTitle>
-                        <Badge variant="outline">
+                        <CardTitle className="text-lg dark:text-gray-100">
+                          Week {week.weekNumber}
+                        </CardTitle>
+                        <Badge
+                          variant="outline"
+                          className="dark:border-gray-600 dark:text-gray-300"
+                        >
                           {week.activities.reduce((sum, a) => sum + a.estimatedTime, 0)} min
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600">Focus: {week.focus.join(', ')}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Focus: {week.focus.join(', ')}
+                      </p>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
                         {week.activities.map((activity, i) => (
                           <div
                             key={i}
-                            className="flex items-center justify-between rounded-lg border p-3"
+                            className="flex items-center justify-between rounded-lg border p-3 dark:border-gray-700"
                           >
                             <div className="flex items-center gap-3">
                               <Badge
@@ -429,11 +448,15 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
                                 {activity.priority}
                               </Badge>
                               <div>
-                                <p className="text-sm font-medium">LO {activity.loCode}</p>
-                                <p className="text-xs text-gray-600">{activity.component}</p>
+                                <p className="text-sm font-medium dark:text-gray-100">
+                                  LO {activity.loCode}
+                                </p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                  {activity.component}
+                                </p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                               <Clock className="h-4 w-4" />
                               {activity.estimatedTime} min
                             </div>
@@ -441,12 +464,12 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
                         ))}
                       </div>
 
-                      <div className="mt-4 border-t pt-4">
-                        <p className="mb-2 text-sm font-semibold">Goals:</p>
-                        <ul className="space-y-1 text-sm">
+                      <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
+                        <p className="mb-2 text-sm font-semibold dark:text-gray-100">Goals:</p>
+                        <ul className="space-y-1 text-sm dark:text-gray-300">
                           {week.goals.map((goal, i) => (
                             <li key={i} className="flex items-start gap-2">
-                              <Target className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" />
+                              <Target className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600 dark:text-blue-400" />
                               <span>{goal}</span>
                             </li>
                           ))}

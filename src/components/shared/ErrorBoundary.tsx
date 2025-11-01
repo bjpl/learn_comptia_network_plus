@@ -38,11 +38,11 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-          <div className="max-w-2xl w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-            <div className="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 dark:bg-red-900/20 rounded-full mb-4">
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 dark:bg-gray-900">
+          <div className="w-full max-w-2xl rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
               <svg
-                className="w-8 h-8 text-red-600 dark:text-red-400"
+                className="h-8 w-8 text-red-600 dark:text-red-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -56,36 +56,37 @@ export class ErrorBoundary extends Component<Props, State> {
               </svg>
             </div>
 
-            <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-2">
+            <h1 className="mb-2 text-center text-2xl font-bold text-gray-900 dark:text-white">
               Oops! Something went wrong
             </h1>
 
-            <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
-              We encountered an unexpected error. Please try refreshing the page or contact support if the problem persists.
+            <p className="mb-6 text-center text-gray-700 dark:text-gray-300">
+              We encountered an unexpected error. Please try refreshing the page or contact support
+              if the problem persists.
             </p>
 
             {this.state.error && (
-              <details className="mb-6 bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-                <summary className="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <details className="mb-6 rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
+                <summary className="mb-2 cursor-pointer text-sm font-medium text-gray-900 hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-100">
                   Error Details
                 </summary>
-                <pre className="text-xs text-red-600 dark:text-red-400 overflow-auto">
+                <pre className="overflow-auto text-xs text-red-700 dark:text-red-300">
                   {this.state.error.toString()}
                   {this.state.errorInfo?.componentStack}
                 </pre>
               </details>
             )}
 
-            <div className="flex gap-4 justify-center">
+            <div className="flex justify-center gap-4">
               <button
                 onClick={this.handleReset}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                className="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700"
               >
                 Try Again
               </button>
               <button
-                onClick={() => window.location.href = '/'}
-                className="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-medium transition-colors"
+                onClick={() => (window.location.href = '/')}
+                className="rounded-lg bg-gray-200 px-6 py-3 font-medium text-gray-900 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
               >
                 Go Home
               </button>

@@ -32,11 +32,11 @@ export const MainLayout: React.FC = () => {
             {/* Breadcrumbs */}
             {breadcrumbs.length > 0 && (
               <nav className="mb-6" aria-label="Breadcrumb">
-                <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                <ol className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                   <li>
                     <a
                       href="/"
-                      className="hover:text-gray-700 dark:hover:text-gray-300"
+                      className="text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       Home
                     </a>
@@ -44,7 +44,7 @@ export const MainLayout: React.FC = () => {
                   {breadcrumbs.map((crumb, index) => (
                     <li key={crumb.path} className="flex items-center">
                       <svg
-                        className="w-4 h-4 mx-2"
+                        className="mx-2 h-4 w-4 text-gray-400 dark:text-gray-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -57,13 +57,13 @@ export const MainLayout: React.FC = () => {
                         />
                       </svg>
                       {index === breadcrumbs.length - 1 ? (
-                        <span className="font-medium text-gray-900 dark:text-gray-100">
+                        <span className="font-medium text-gray-900 dark:text-white">
                           {crumb.label}
                         </span>
                       ) : (
                         <a
                           href={crumb.path}
-                          className="hover:text-gray-700 dark:hover:text-gray-300"
+                          className="text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
                         >
                           {crumb.label}
                         </a>
@@ -75,7 +75,7 @@ export const MainLayout: React.FC = () => {
             )}
 
             {/* Page Content */}
-            <div className="max-w-7xl mx-auto">
+            <div className="mx-auto max-w-7xl">
               <Outlet />
             </div>
           </main>

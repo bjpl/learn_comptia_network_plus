@@ -132,25 +132,31 @@ const ExamQuestions: React.FC<ExamQuestionsProps> = ({ questions, onDeviceClick 
 
   if (filteredQuestions.length === 0) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <p className="text-gray-600">No questions available for this difficulty level.</p>
+      <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-gray-600 dark:text-gray-400">
+          No questions available for this difficulty level.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
       {/* Header */}
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h3 className="mb-2 text-xl font-bold text-gray-900">Exam Practice Questions</h3>
-          <p className="text-sm text-gray-600">CompTIA Network+ N10-008 - Device Identification</p>
+          <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">
+            Exam Practice Questions
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            CompTIA Network+ N10-008 - Device Identification
+          </p>
         </div>
         <div className="text-right">
           <div className="text-2xl font-bold text-blue-600">
             {score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0}%
           </div>
-          <div className="text-xs text-gray-600">
+          <div className="text-xs text-gray-600 dark:text-gray-400">
             {score.correct} / {score.total} correct
           </div>
         </div>
@@ -170,7 +176,7 @@ const ExamQuestions: React.FC<ExamQuestionsProps> = ({ questions, onDeviceClick 
             className={`rounded-lg px-3 py-1 text-sm font-semibold ${
               difficultyFilter === difficulty
                 ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
             }`}
           >
             {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
@@ -180,7 +186,7 @@ const ExamQuestions: React.FC<ExamQuestionsProps> = ({ questions, onDeviceClick 
 
       {/* Progress */}
       <div className="mb-6">
-        <div className="mb-2 flex items-center justify-between text-sm text-gray-600">
+        <div className="mb-2 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
           <span>
             Question {currentQuestionIndex + 1} of {filteredQuestions.length}
           </span>
@@ -202,7 +208,9 @@ const ExamQuestions: React.FC<ExamQuestionsProps> = ({ questions, onDeviceClick 
 
       {/* Question */}
       <div className="mb-6">
-        <h4 className="mb-4 text-lg font-semibold text-gray-900">{currentQuestion.question}</h4>
+        <h4 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+          {currentQuestion.question}
+        </h4>
 
         <div className="space-y-3">
           {currentQuestion.options.map((option) => (
@@ -210,7 +218,7 @@ const ExamQuestions: React.FC<ExamQuestionsProps> = ({ questions, onDeviceClick 
               key={option.id}
               onClick={() => handleAnswerSelect(option.id)}
               disabled={showExplanation}
-              className={getOptionClassName(option)}
+              className={getOptionClassName(option) + ' dark:text-gray-100'}
             >
               <div className="flex items-center justify-between">
                 <span className="font-medium">{option.text}</span>
@@ -224,25 +232,31 @@ const ExamQuestions: React.FC<ExamQuestionsProps> = ({ questions, onDeviceClick 
       {/* Explanation */}
       {showExplanation && (
         <div className="mb-6 space-y-4">
-          <div className="rounded-lg border-l-4 border-blue-500 bg-blue-50 p-4">
-            <h5 className="mb-2 font-semibold text-blue-900">Explanation</h5>
-            <p className="text-sm text-blue-800">{currentQuestion.explanation}</p>
+          <div className="rounded-lg border-l-4 border-blue-500 bg-blue-50 p-4 dark:bg-blue-900">
+            <h5 className="mb-2 font-semibold text-blue-900 dark:text-blue-100">Explanation</h5>
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              {currentQuestion.explanation}
+            </p>
           </div>
 
-          <div className="rounded-lg bg-yellow-50 p-4">
-            <h5 className="mb-2 font-semibold text-yellow-900">Exam Tip</h5>
-            <p className="text-sm text-yellow-800">{currentQuestion.examTip}</p>
+          <div className="rounded-lg bg-yellow-50 p-4 dark:bg-yellow-900">
+            <h5 className="mb-2 font-semibold text-yellow-900 dark:text-yellow-100">Exam Tip</h5>
+            <p className="text-sm text-yellow-800 dark:text-yellow-200">
+              {currentQuestion.examTip}
+            </p>
           </div>
 
           {currentQuestion.relatedDevices.length > 0 && onDeviceClick && (
-            <div className="rounded-lg bg-gray-50 p-4">
-              <h5 className="mb-2 font-semibold text-gray-900">Related Devices</h5>
+            <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+              <h5 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Related Devices
+              </h5>
               <div className="flex flex-wrap gap-2">
                 {currentQuestion.relatedDevices.map((deviceId) => (
                   <button
                     key={deviceId}
                     onClick={() => onDeviceClick(deviceId)}
-                    className="rounded bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300"
+                    className="rounded bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
                   >
                     View {deviceId}
                   </button>
@@ -259,7 +273,7 @@ const ExamQuestions: React.FC<ExamQuestionsProps> = ({ questions, onDeviceClick 
           <button
             onClick={handlePrevious}
             disabled={currentQuestionIndex === 0}
-            className="rounded-lg bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg bg-gray-200 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
             Previous
           </button>
@@ -275,7 +289,7 @@ const ExamQuestions: React.FC<ExamQuestionsProps> = ({ questions, onDeviceClick 
 
         <button
           onClick={handleReset}
-          className="rounded-lg border border-gray-300 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           Reset Quiz
         </button>

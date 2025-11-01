@@ -193,10 +193,10 @@ ${template.tasks
   return (
     <div className="mx-auto max-w-7xl rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6">
-        <h2 className="mb-2 text-3xl font-bold text-gray-800">
+        <h2 className="mb-2 text-3xl font-bold text-gray-800 dark:text-gray-100">
           Component 20: Infrastructure as Code (IaC) Builder
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Master network automation with IaC tools: learn Terraform, Ansible, and Puppet. Manage
           configuration drift, build CI/CD pipelines, and implement version control for
           infrastructure.
@@ -213,7 +213,7 @@ ${template.tasks
               className={`whitespace-nowrap px-6 py-3 font-semibold transition-all ${
                 activeTab === tab
                   ? 'border-b-4 border-blue-600 text-blue-600'
-                  : 'text-gray-600 hover:text-blue-500'
+                  : 'text-gray-600 hover:text-blue-500 dark:text-gray-400'
               }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -226,8 +226,10 @@ ${template.tasks
       {activeTab === 'concepts' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold">Infrastructure as Code Fundamentals</h3>
-            <p className="mb-4 text-gray-600">
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
+              Infrastructure as Code Fundamentals
+            </h3>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
               Core concepts and principles for managing infrastructure through code
             </p>
           </div>
@@ -238,16 +240,16 @@ ${template.tasks
               <h4 className="mb-4 text-lg font-semibold text-blue-900">What is IaC?</h4>
               <div className="space-y-3 text-sm">
                 <div>
-                  <p className="font-semibold text-blue-800">Definition:</p>
-                  <p className="mt-1 text-gray-700">
+                  <p className="font-semibold text-blue-800 dark:text-blue-200">Definition:</p>
+                  <p className="mt-1 text-gray-700 dark:text-gray-300">
                     Infrastructure as Code (IaC) means managing and provisioning computing
                     infrastructure using machine-readable definition files rather than interactive
                     configuration tools.
                   </p>
                 </div>
                 <div>
-                  <p className="font-semibold text-blue-800">Key Principle:</p>
-                  <p className="mt-1 text-gray-700">
+                  <p className="font-semibold text-blue-800 dark:text-blue-200">Key Principle:</p>
+                  <p className="mt-1 text-gray-700 dark:text-gray-300">
                     Treat infrastructure the same as application code: version control, code review,
                     testing, and automation.
                   </p>
@@ -258,7 +260,7 @@ ${template.tasks
             {/* Benefits */}
             <div className="rounded-lg border-2 border-green-200 bg-green-50 p-6">
               <h4 className="mb-4 text-lg font-semibold text-green-900">Key Benefits</h4>
-              <ul className="space-y-2 text-sm">
+              <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-green-600"></span>
                   <span>
@@ -297,20 +299,20 @@ ${template.tasks
           <div className="rounded-lg border-2 border-purple-200 bg-purple-50 p-6">
             <h4 className="mb-4 text-lg font-semibold text-purple-900">IaC Approaches</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="rounded border border-purple-300 bg-white p-4">
-                <div className="mb-2 text-sm font-semibold text-purple-700">
+              <div className="rounded border border-purple-300 bg-white p-4 dark:bg-gray-800">
+                <div className="mb-2 text-sm font-semibold text-purple-700 dark:text-purple-300">
                   Declarative (Desired State)
                 </div>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Define the desired final state; the tool determines how to achieve it.
                 </p>
                 <p className="mt-2 text-xs font-semibold">Examples: Terraform, Puppet</p>
               </div>
-              <div className="rounded border border-purple-300 bg-white p-4">
-                <div className="mb-2 text-sm font-semibold text-purple-700">
+              <div className="rounded border border-purple-300 bg-white p-4 dark:bg-gray-800">
+                <div className="mb-2 text-sm font-semibold text-purple-700 dark:text-purple-300">
                   Imperative (Procedural)
                 </div>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   Define specific commands to reach desired state; explicit step-by-step
                   instructions.
                 </p>
@@ -326,20 +328,26 @@ ${template.tasks
             </h4>
             <div className="space-y-3 text-sm">
               <div>
-                <p className="font-semibold text-orange-800">Configuration Management:</p>
-                <p className="mt-1 text-gray-700">
+                <p className="font-semibold text-orange-800 dark:text-orange-200">
+                  Configuration Management:
+                </p>
+                <p className="mt-1 text-gray-700 dark:text-gray-300">
                   Deploy router/switch configs, apply security policies, manage VLAN assignments
                 </p>
               </div>
               <div>
-                <p className="font-semibold text-orange-800">Service Deployment:</p>
-                <p className="mt-1 text-gray-700">
+                <p className="font-semibold text-orange-800 dark:text-orange-200">
+                  Service Deployment:
+                </p>
+                <p className="mt-1 text-gray-700 dark:text-gray-300">
                   Automate provisioning of load balancers, firewalls, SD-WAN appliances
                 </p>
               </div>
               <div>
-                <p className="font-semibold text-orange-800">Compliance & Validation:</p>
-                <p className="mt-1 text-gray-700">
+                <p className="font-semibold text-orange-800 dark:text-orange-200">
+                  Compliance & Validation:
+                </p>
+                <p className="mt-1 text-gray-700 dark:text-gray-300">
                   Enforce security baselines, validate configurations, generate compliance reports
                 </p>
               </div>
@@ -351,7 +359,7 @@ ${template.tasks
             <h4 className="mb-3 text-lg font-semibold text-red-900">
               CompTIA Network+ Exam Focus Areas
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <li className="flex items-start gap-2">
                 <span className="font-bold text-red-600">•</span>
                 <span>Understand IaC benefits and differences from traditional management</span>
@@ -381,8 +389,10 @@ ${template.tasks
       {activeTab === 'templates' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold">IaC Template Library</h3>
-            <p className="mb-4 text-gray-600">
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
+              IaC Template Library
+            </h3>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
               Pre-built templates for common network automation tasks
             </p>
           </div>
@@ -399,14 +409,18 @@ ${template.tasks
                 }`}
               >
                 <div className="mb-2 flex items-start justify-between">
-                  <div className="font-semibold text-gray-800">{template.name}</div>
+                  <div className="font-semibold text-gray-800 dark:text-gray-100">
+                    {template.name}
+                  </div>
                   <span
                     className={`rounded-full px-2 py-1 text-xs ${platformInfo[template.platform].color}`}
                   >
                     {template.platform}
                   </span>
                 </div>
-                <p className="mb-3 text-sm text-gray-600">{template.description}</p>
+                <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                  {template.description}
+                </p>
                 <div className="flex gap-2 text-xs">
                   <span className="rounded bg-gray-100 px-2 py-1">{template.difficulty}</span>
                   <span className="rounded bg-gray-100 px-2 py-1">
@@ -418,22 +432,33 @@ ${template.tasks
           </div>
 
           {selectedTemplate && (
-            <div className="mt-6 rounded-lg border-2 border-gray-300 bg-gray-50 p-6">
-              <h4 className="mb-4 text-lg font-semibold">
+            <div className="mt-6 rounded-lg border-2 border-gray-300 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+              <h4 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
                 Template Details: {selectedTemplate.name}
               </h4>
 
               <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <h5 className="mb-2 font-semibold">Parameters</h5>
+                  <h5 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                    Parameters
+                  </h5>
                   <div className="space-y-2">
                     {selectedTemplate.parameters.map((param) => (
-                      <div key={param.name} className="rounded border bg-white p-3">
+                      <div
+                        key={param.name}
+                        className="rounded border bg-white p-3 dark:bg-gray-700"
+                      >
                         <div className="flex items-start justify-between">
-                          <span className="text-sm font-semibold">{param.name}</span>
-                          <span className="text-xs text-gray-500">{param.type}</span>
+                          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                            {param.name}
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {param.type}
+                          </span>
                         </div>
-                        <p className="mt-1 text-xs text-gray-600">{param.description}</p>
+                        <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                          {param.description}
+                        </p>
                         {param.required && <span className="text-xs text-red-600">* Required</span>}
                       </div>
                     ))}
@@ -441,12 +466,16 @@ ${template.tasks
                 </div>
 
                 <div>
-                  <h5 className="mb-2 font-semibold">Tasks</h5>
+                  <h5 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Tasks</h5>
                   <div className="space-y-2">
                     {selectedTemplate.tasks.map((task) => (
-                      <div key={task.id} className="rounded border bg-white p-3">
-                        <div className="mb-1 text-sm font-semibold">{task.name}</div>
-                        <p className="text-xs text-gray-600">{task.description}</p>
+                      <div key={task.id} className="rounded border bg-white p-3 dark:bg-gray-700">
+                        <div className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">
+                          {task.name}
+                        </div>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          {task.description}
+                        </p>
                         <div className="mt-2 flex gap-2 text-xs">
                           <span className="rounded bg-blue-100 px-2 py-1 text-blue-700">
                             {task.validation.length} validation checks
@@ -458,9 +487,9 @@ ${template.tasks
                 </div>
               </div>
 
-              <div className="rounded-lg bg-white p-4">
+              <div className="rounded-lg bg-white p-4 dark:bg-gray-700">
                 <div className="mb-2 flex items-center justify-between">
-                  <h5 className="font-semibold">Generated Code</h5>
+                  <h5 className="font-semibold text-gray-900 dark:text-gray-100">Generated Code</h5>
                   <button
                     onClick={() => navigator.clipboard.writeText(codeEditorContent)}
                     className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
@@ -481,8 +510,10 @@ ${template.tasks
       {activeTab === 'builder' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold">Code Editor</h3>
-            <p className="mb-4 text-gray-600">
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
+              Code Editor
+            </h3>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
               Write and validate IaC configurations with syntax highlighting
             </p>
           </div>

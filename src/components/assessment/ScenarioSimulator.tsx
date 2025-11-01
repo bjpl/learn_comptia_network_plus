@@ -280,18 +280,22 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
     return (
       <div className="space-y-6">
         <Card
-          className={scoreAnalysis.passStatus === 'fail' ? 'border-red-300' : 'border-green-300'}
+          className={
+            scoreAnalysis.passStatus === 'fail'
+              ? 'border-red-300 dark:border-red-800'
+              : 'border-green-300 dark:border-green-800'
+          }
         >
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
+            <CardTitle className="flex items-center justify-between dark:text-gray-100">
               <span>Exam Results</span>
               <Badge
                 className={
                   scoreAnalysis.passStatus === 'fail'
-                    ? 'bg-red-500'
+                    ? 'bg-red-500 dark:bg-red-700'
                     : scoreAnalysis.passStatus === 'pass-with-distinction'
-                      ? 'bg-green-600'
-                      : 'bg-blue-500'
+                      ? 'bg-green-600 dark:bg-green-700'
+                      : 'bg-blue-500 dark:bg-blue-700'
                 }
               >
                 {scoreAnalysis.passStatus.replace('-', ' ').toUpperCase()}
@@ -299,12 +303,12 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
+            <div className="rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-6 dark:from-blue-950 dark:to-indigo-950">
               <div className="text-center">
-                <div className="mb-2 text-5xl font-bold text-blue-600">
+                <div className="mb-2 text-5xl font-bold text-blue-600 dark:text-blue-400">
                   {scoreAnalysis.percentage.toFixed(1)}%
                 </div>
-                <div className="mb-4 text-lg text-gray-700">
+                <div className="mb-4 text-lg text-gray-700 dark:text-gray-300">
                   {scoreAnalysis.totalScore} / {scoreAnalysis.maxScore} points
                 </div>
                 <Progress value={scoreAnalysis.percentage} className="mb-2" />
@@ -313,7 +317,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
             {/* By Phase Analysis */}
             <div>
-              <h4 className="mb-3 flex items-center gap-2 font-semibold">
+              <h4 className="mb-3 flex items-center gap-2 font-semibold dark:text-gray-100">
                 <BarChart3 className="h-4 w-4" />
                 Performance by Phase
               </h4>
@@ -321,12 +325,15 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 {scoreAnalysis.byPhase.map((phase) => {
                   const percentage = (phase.score / phase.maxScore) * 100;
                   return (
-                    <div key={phase.phaseId} className="flex items-center justify-between">
+                    <div
+                      key={phase.phaseId}
+                      className="flex items-center justify-between dark:text-gray-300"
+                    >
                       <span className="w-32 text-sm font-medium">{phase.phaseId}</span>
                       <div className="mx-4 flex-1">
                         <Progress value={percentage} />
                       </div>
-                      <span className="w-24 text-right text-sm text-gray-600">
+                      <span className="w-24 text-right text-sm text-gray-600 dark:text-gray-400">
                         {phase.score}/{phase.maxScore}
                       </span>
                     </div>
@@ -336,9 +343,15 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             </div>
 
             {/* Feedback and Recommendations */}
-            <Alert className={scoreAnalysis.passStatus === 'fail' ? 'bg-red-50' : 'bg-green-50'}>
+            <Alert
+              className={
+                scoreAnalysis.passStatus === 'fail'
+                  ? 'bg-red-50 dark:border-red-800 dark:bg-red-950'
+                  : 'bg-green-50 dark:border-green-800 dark:bg-green-950'
+              }
+            >
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
+              <AlertDescription className="dark:text-gray-300">
                 {scoreAnalysis.passStatus === 'pass-with-distinction' && (
                   <p>
                     Excellent performance! You have demonstrated comprehensive understanding of all
@@ -405,7 +418,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="mb-6 text-gray-600">
+            <p className="mb-6 text-gray-600 dark:text-gray-300">
               Practice with 20+ comprehensive scenarios simulating real-world network design,
               troubleshooting, and optimization. Choose your exam mode and scenario difficulty.
               Available question types include multiple-choice, simulation-based, performance-based,
@@ -414,15 +427,15 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             <div className="mb-6 grid grid-cols-3 gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-yellow-500" />
-                <span>20+ Scenarios</span>
+                <span className="dark:text-gray-200">20+ Scenarios</span>
               </div>
               <div className="flex items-center gap-2">
                 <Flag className="h-4 w-4 text-red-500" />
-                <span>Timed Mode</span>
+                <span className="dark:text-gray-200">Timed Mode</span>
               </div>
               <div className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4 text-blue-500" />
-                <span>Detailed Analysis</span>
+                <span className="dark:text-gray-200">Detailed Analysis</span>
               </div>
             </div>
           </CardContent>
@@ -443,8 +456,12 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="mb-2 text-lg font-semibold">{scenario.title}</h3>
-                    <p className="mb-3 text-sm text-gray-600">{scenario.description}</p>
+                    <h3 className="mb-2 text-lg font-semibold dark:text-gray-100">
+                      {scenario.title}
+                    </h3>
+                    <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                      {scenario.description}
+                    </p>
                   </div>
                   <Badge className={getDifficultyColor(scenario.difficulty)}>
                     {scenario.difficulty}
@@ -453,28 +470,36 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
                 <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span>{scenario.estimatedTime} min</span>
+                    <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    <span className="dark:text-gray-200">{scenario.estimatedTime} min</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-gray-500" />
-                    <span>{scenario.phases.length} phases</span>
+                    <Target className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    <span className="dark:text-gray-200">{scenario.phases.length} phases</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Award className="h-4 w-4 text-gray-500" />
-                    <span>{scenario.totalPoints} pts</span>
+                    <Award className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    <span className="dark:text-gray-200">{scenario.totalPoints} pts</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-gray-500" />
-                    <span>{scenario.learningObjectives.length} LOs</span>
+                    <FileText className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    <span className="dark:text-gray-200">
+                      {scenario.learningObjectives.length} LOs
+                    </span>
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <p className="mb-2 text-xs text-gray-500">Learning Objectives:</p>
+                  <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                    Learning Objectives:
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {scenario.learningObjectives.map((lo) => (
-                      <Badge key={lo} variant="outline" className="text-xs">
+                      <Badge
+                        key={lo}
+                        variant="outline"
+                        className="text-xs dark:border-gray-600 dark:text-gray-300"
+                      >
                         LO {lo}
                       </Badge>
                     ))}
@@ -495,12 +520,14 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
         <CardContent className="pt-6">
           <div className="mb-4 flex items-start justify-between">
             <div>
-              <h2 className="mb-2 text-2xl font-bold">{selectedScenario.title}</h2>
+              <h2 className="mb-2 text-2xl font-bold dark:text-gray-100">
+                {selectedScenario.title}
+              </h2>
               <div className="flex items-center gap-2">
                 <Badge className={getDifficultyColor(selectedScenario.difficulty)}>
                   {selectedScenario.difficulty}
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant="outline" className="dark:border-gray-600 dark:text-gray-300">
                   {examMode === 'timed' ? 'TIMED' : examMode.toUpperCase()}
                 </Badge>
               </div>
@@ -508,7 +535,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             <div className="flex flex-col items-end gap-2">
               {examMode === 'timed' && examStarted && (
                 <div
-                  className={`text-2xl font-bold ${timeRemaining < 300 ? 'text-red-600' : 'text-gray-700'}`}
+                  className={`text-2xl font-bold ${timeRemaining < 300 ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300'}`}
                 >
                   {getTimeDisplay(timeRemaining)}
                 </div>
@@ -520,7 +547,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
           </div>
 
           <Progress value={progressPercentage} className="mb-2" />
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             Phase {currentPhaseIndex + 1} of {selectedScenario.phases.length} •{totalAnswered} of{' '}
             {totalQuestions} questions answered
           </p>
@@ -535,8 +562,8 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <h4 className="mb-2 font-semibold">Company Profile</h4>
-              <ul className="space-y-1 text-sm">
+              <h4 className="mb-2 font-semibold dark:text-gray-100">Company Profile</h4>
+              <ul className="space-y-1 text-sm dark:text-gray-300">
                 <li>
                   <strong>Name:</strong> {selectedScenario.context.company}
                 </li>
@@ -549,13 +576,13 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
               </ul>
             </div>
             <div>
-              <h4 className="mb-2 font-semibold">Requirements</h4>
-              <ul className="space-y-1 text-sm">
+              <h4 className="mb-2 font-semibold dark:text-gray-100">Requirements</h4>
+              <ul className="space-y-1 text-sm dark:text-gray-300">
                 {selectedScenario.context.requirements.slice(0, 3).map((req, i) => (
                   <li key={i}>• {req}</li>
                 ))}
                 {selectedScenario.context.requirements.length > 3 && (
-                  <li className="text-gray-500">
+                  <li className="text-gray-500 dark:text-gray-400">
                     +{selectedScenario.context.requirements.length - 3} more...
                   </li>
                 )}
@@ -567,20 +594,20 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
       {/* Exam Start Screen for Timed Mode */}
       {examMode === 'timed' && !examStarted && currentPhaseIndex === 0 && !scored && (
-        <Card className="border-blue-300 bg-blue-50">
+        <Card className="border-blue-300 bg-blue-50 dark:border-blue-800 dark:bg-blue-950">
           <CardHeader>
-            <CardTitle>Ready to Start?</CardTitle>
+            <CardTitle className="dark:text-gray-100">Ready to Start?</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <p className="text-gray-700">
+              <p className="text-gray-700 dark:text-gray-300">
                 This is a timed exam. You will have{' '}
                 <strong>{getTimeDisplay(timeLimit || selectedScenario.estimatedTime * 60)}</strong>{' '}
                 to complete all questions.
               </p>
-              <Alert>
+              <Alert className="dark:border-gray-600">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
+                <AlertDescription className="dark:text-gray-300">
                   Once you start, the timer will begin. You cannot pause or resume the exam. Answer
                   all questions to the best of your ability.
                 </AlertDescription>
@@ -588,7 +615,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             </div>
             <Button
               onClick={() => setExamStarted(true)}
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
             >
               Start Exam
             </Button>
@@ -609,12 +636,12 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <p className="text-gray-700">{currentPhase.description}</p>
+            <p className="text-gray-700 dark:text-gray-300">{currentPhase.description}</p>
 
             {showHints && currentPhase.hints && (
-              <Alert>
+              <Alert className="dark:border-gray-600">
                 <Lightbulb className="h-4 w-4" />
-                <AlertDescription>
+                <AlertDescription className="dark:text-gray-300">
                   <ul className="list-inside list-disc space-y-1">
                     {currentPhase.hints.map((hint, i) => (
                       <li key={i}>{hint}</li>
@@ -636,10 +663,17 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                     <div className="mb-3 flex items-start justify-between">
                       <div>
                         <div className="mb-1 flex items-center gap-2">
-                          <Badge variant="outline">LO {ap.loCode}</Badge>
-                          <span className="text-sm text-gray-600">{ap.maxScore} points</span>
+                          <Badge
+                            variant="outline"
+                            className="dark:border-gray-600 dark:text-gray-300"
+                          >
+                            LO {ap.loCode}
+                          </Badge>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {ap.maxScore} points
+                          </span>
                         </div>
-                        <h4 className="font-semibold">{ap.description}</h4>
+                        <h4 className="font-semibold dark:text-gray-100">{ap.description}</h4>
                       </div>
                       {existingAnswer && (
                         <Badge
@@ -653,8 +687,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                     </div>
 
                     <div className="mb-3">
-                      <p className="mb-2 text-sm text-gray-600">Assessment Criteria:</p>
-                      <ul className="space-y-1 text-sm">
+                      <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                        Assessment Criteria:
+                      </p>
+                      <ul className="space-y-1 text-sm dark:text-gray-300">
                         {ap.criteria.map((criterion, i) => (
                           <li key={i} className="flex items-start gap-2">
                             <Circle className="mt-1 h-3 w-3 flex-shrink-0" />
@@ -677,12 +713,12 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                       <Alert
                         className={
                           existingAnswer.score! >= ap.maxScore * 0.7
-                            ? 'bg-green-50'
-                            : 'bg-orange-50'
+                            ? 'bg-green-50 dark:border-green-800 dark:bg-green-950'
+                            : 'bg-orange-50 dark:border-orange-800 dark:bg-orange-950'
                         }
                       >
                         <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>
+                        <AlertDescription className="dark:text-gray-300">
                           <pre className="whitespace-pre-wrap font-sans text-sm">
                             {existingAnswer.feedback}
                           </pre>

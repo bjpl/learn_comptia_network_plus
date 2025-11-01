@@ -631,10 +631,10 @@ const IPv6Planner: React.FC = () => {
   return (
     <div className="mx-auto max-w-7xl rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6">
-        <h2 className="mb-2 text-3xl font-bold text-gray-800">
+        <h2 className="mb-2 text-3xl font-bold text-gray-800 dark:text-gray-100">
           Component 19: IPv6 Planner - Complete Learning Tool
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Master IPv6 fundamentals, address types, subnetting, transition strategies, and exam
           practice.
         </p>
@@ -647,7 +647,7 @@ const IPv6Planner: React.FC = () => {
           className={`px-4 py-2 font-semibold transition-colors ${
             activeTab === 'migration'
               ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-blue-600'
+              : 'text-gray-600 hover:text-blue-600 dark:text-gray-400'
           }`}
         >
           Migration Planner
@@ -657,7 +657,7 @@ const IPv6Planner: React.FC = () => {
           className={`px-4 py-2 font-semibold transition-colors ${
             activeTab === 'fundamentals'
               ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-blue-600'
+              : 'text-gray-600 hover:text-blue-600 dark:text-gray-400'
           }`}
         >
           IPv6 Fundamentals
@@ -667,7 +667,7 @@ const IPv6Planner: React.FC = () => {
           className={`px-4 py-2 font-semibold transition-colors ${
             activeTab === 'subnetting'
               ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-blue-600'
+              : 'text-gray-600 hover:text-blue-600 dark:text-gray-400'
           }`}
         >
           Subnetting Calculator
@@ -677,7 +677,7 @@ const IPv6Planner: React.FC = () => {
           className={`px-4 py-2 font-semibold transition-colors ${
             activeTab === 'practice'
               ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-blue-600'
+              : 'text-gray-600 hover:text-blue-600 dark:text-gray-400'
           }`}
         >
           Exam Practice
@@ -690,8 +690,10 @@ const IPv6Planner: React.FC = () => {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* IPv6 Format */}
             <div className="rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
-              <h3 className="mb-4 text-xl font-bold text-blue-900">IPv6 Address Format</h3>
-              <div className="space-y-3 text-sm text-gray-700">
+              <h3 className="mb-4 text-xl font-bold text-blue-900 dark:text-blue-100">
+                IPv6 Address Format
+              </h3>
+              <div className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
                 <div>
                   <div className="font-semibold">Standard Notation</div>
                   <div className="font-mono text-blue-600">
@@ -707,7 +709,7 @@ const IPv6Planner: React.FC = () => {
                   <div className="font-mono text-blue-600">2001:db8:85a3::8a2e:370:7334</div>
                 </div>
                 <div className="border-t border-blue-300 pt-3">
-                  <div className="font-semibold text-blue-900">Key Points</div>
+                  <div className="font-semibold text-blue-900 dark:text-blue-100">Key Points</div>
                   <ul className="mt-2 space-y-1">
                     <li>128 bits total (8 groups of 16 bits)</li>
                     <li>Hexadecimal notation (0-9, a-f)</li>
@@ -720,52 +722,78 @@ const IPv6Planner: React.FC = () => {
 
             {/* Address Types */}
             <div className="rounded-lg border-2 border-green-300 bg-green-50 p-6">
-              <h3 className="mb-4 text-xl font-bold text-green-900">IPv6 Address Types</h3>
-              <div className="space-y-3 text-sm text-gray-700">
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-green-700">Unicast (2000::/3)</div>
-                  <div>One-to-one communication</div>
+              <h3 className="mb-4 text-xl font-bold text-green-900 dark:text-green-100">
+                IPv6 Address Types
+              </h3>
+              <div className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-green-700 dark:text-green-300">
+                    Unicast (2000::/3)
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300">One-to-one communication</div>
                 </div>
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-orange-700">Multicast (ff00::/8)</div>
-                  <div>One-to-many communication</div>
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-orange-700 dark:text-orange-300">
+                    Multicast (ff00::/8)
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300">One-to-many communication</div>
                 </div>
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-purple-700">Anycast (within Global)</div>
-                  <div>One-to-nearest communication</div>
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-purple-700 dark:text-purple-300">
+                    Anycast (within Global)
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300">
+                    One-to-nearest communication
+                  </div>
                 </div>
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-blue-700">Link-Local (fe80::/10)</div>
-                  <div>Auto-configured, on-link only</div>
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-blue-700 dark:text-blue-300">
+                    Link-Local (fe80::/10)
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300">
+                    Auto-configured, on-link only
+                  </div>
                 </div>
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-red-700">Unique Local (fc00::/7)</div>
-                  <div>Private, equivalent to RFC 1918</div>
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-red-700 dark:text-red-300">
+                    Unique Local (fc00::/7)
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300">
+                    Private, equivalent to RFC 1918
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Subnetting Reference */}
             <div className="rounded-lg border-2 border-purple-300 bg-purple-50 p-6">
-              <h3 className="mb-4 text-xl font-bold text-purple-900">Subnetting Reference</h3>
-              <div className="space-y-2 font-mono text-sm text-gray-700">
-                <div className="flex justify-between rounded bg-white p-2">
+              <h3 className="mb-4 text-xl font-bold text-purple-900 dark:text-purple-100">
+                Subnetting Reference
+              </h3>
+              <div className="space-y-2 font-mono text-sm text-gray-700 dark:text-gray-300">
+                <div className="flex justify-between rounded bg-white p-2 dark:bg-gray-700">
                   <span>/32</span>
-                  <span className="text-purple-600">Typical ISP allocation</span>
+                  <span className="text-purple-600 dark:text-purple-300">
+                    Typical ISP allocation
+                  </span>
                 </div>
-                <div className="flex justify-between rounded bg-white p-2">
+                <div className="flex justify-between rounded bg-white p-2 dark:bg-gray-700">
                   <span>/48</span>
-                  <span className="text-purple-600">Organization allocation</span>
+                  <span className="text-purple-600 dark:text-purple-300">
+                    Organization allocation
+                  </span>
                 </div>
-                <div className="flex justify-between rounded bg-white p-2">
+                <div className="flex justify-between rounded bg-white p-2 dark:bg-gray-700">
                   <span>/56</span>
-                  <span className="text-purple-600">Subnet allocation (256 /64s)</span>
+                  <span className="text-purple-600 dark:text-purple-300">
+                    Subnet allocation (256 /64s)
+                  </span>
                 </div>
-                <div className="flex justify-between rounded bg-white p-2">
+                <div className="flex justify-between rounded bg-white p-2 dark:bg-gray-700">
                   <span>/64</span>
-                  <span className="text-purple-600">Standard LAN/subnet</span>
+                  <span className="text-purple-600 dark:text-purple-300">Standard LAN/subnet</span>
                 </div>
-                <div className="mt-3 border-t border-purple-300 pt-3 text-xs text-purple-900">
+                <div className="mt-3 border-t border-purple-300 pt-3 text-xs text-purple-900 dark:text-purple-100">
                   <div className="font-semibold">
                     Formula: Subnets = 2^(new_prefix - old_prefix)
                   </div>
@@ -775,23 +803,39 @@ const IPv6Planner: React.FC = () => {
 
             {/* Transition Methods */}
             <div className="rounded-lg border-2 border-orange-300 bg-orange-50 p-6">
-              <h3 className="mb-4 text-xl font-bold text-orange-900">Transition Methods</h3>
-              <div className="space-y-3 text-sm text-gray-700">
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-orange-700">Dual Stack</div>
-                  <div>Run IPv4 and IPv6 simultaneously</div>
+              <h3 className="mb-4 text-xl font-bold text-orange-900 dark:text-orange-100">
+                Transition Methods
+              </h3>
+              <div className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-orange-700 dark:text-orange-300">
+                    Dual Stack
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300">
+                    Run IPv4 and IPv6 simultaneously
+                  </div>
                 </div>
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-orange-700">6to4 Tunneling</div>
-                  <div>IPv6 over IPv4, address-based</div>
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-orange-700 dark:text-orange-300">
+                    6to4 Tunneling
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300">
+                    IPv6 over IPv4, address-based
+                  </div>
                 </div>
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-orange-700">Teredo</div>
-                  <div>IPv6 through NAT and firewalls</div>
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-orange-700 dark:text-orange-300">Teredo</div>
+                  <div className="text-gray-700 dark:text-gray-300">
+                    IPv6 through NAT and firewalls
+                  </div>
                 </div>
-                <div className="rounded bg-white p-2">
-                  <div className="font-semibold text-orange-700">NAT64/DNS64</div>
-                  <div>Address/protocol translation</div>
+                <div className="rounded bg-white p-2 dark:bg-gray-700">
+                  <div className="font-semibold text-orange-700 dark:text-orange-300">
+                    NAT64/DNS64
+                  </div>
+                  <div className="text-gray-700 dark:text-gray-300">
+                    Address/protocol translation
+                  </div>
                 </div>
               </div>
             </div>
@@ -803,7 +847,9 @@ const IPv6Planner: React.FC = () => {
       {activeTab === 'subnetting' && (
         <div className="space-y-6">
           <div className="rounded-lg border-2 border-green-300 bg-green-50 p-6">
-            <h3 className="mb-4 text-xl font-bold">IPv6 Subnetting Calculator</h3>
+            <h3 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">
+              IPv6 Subnetting Calculator
+            </h3>
             <div className="mb-6 flex gap-4">
               <input
                 type="text"
@@ -822,39 +868,39 @@ const IPv6Planner: React.FC = () => {
 
             {subnettingResult && (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <div className="rounded-lg bg-white p-4">
-                  <div className="text-xs text-gray-600">Network Address</div>
-                  <div className="font-mono text-sm font-semibold text-gray-800">
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">Network Address</div>
+                  <div className="font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
                     {subnettingResult.network}
                   </div>
                 </div>
-                <div className="rounded-lg bg-white p-4">
-                  <div className="text-xs text-gray-600">Prefix Length</div>
-                  <div className="font-mono text-sm font-semibold text-gray-800">
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">Prefix Length</div>
+                  <div className="font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
                     {subnettingResult.prefix}
                   </div>
                 </div>
-                <div className="rounded-lg bg-white p-4">
-                  <div className="text-xs text-gray-600">Host Bits</div>
-                  <div className="font-mono text-sm font-semibold text-gray-800">
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">Host Bits</div>
+                  <div className="font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
                     {subnettingResult.hostBits}
                   </div>
                 </div>
-                <div className="rounded-lg bg-white p-4">
-                  <div className="text-xs text-gray-600">Total Hosts</div>
-                  <div className="font-mono text-sm font-semibold text-gray-800">
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">Total Hosts</div>
+                  <div className="font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
                     2^{subnettingResult.hostBits} - 1
                   </div>
                 </div>
-                <div className="rounded-lg bg-white p-4">
-                  <div className="text-xs text-gray-600">First Address</div>
-                  <div className="font-mono text-sm font-semibold text-gray-800">
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">First Address</div>
+                  <div className="font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
                     {subnettingResult.firstHost}
                   </div>
                 </div>
-                <div className="rounded-lg bg-white p-4">
-                  <div className="text-xs text-gray-600">Last Address</div>
-                  <div className="font-mono text-sm font-semibold text-gray-800">
+                <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">Last Address</div>
+                  <div className="font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
                     {subnettingResult.lastHost}
                   </div>
                 </div>
@@ -870,8 +916,10 @@ const IPv6Planner: React.FC = () => {
           {!showResults ? (
             <div className="rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-xl font-bold">IPv6 Exam Practice Questions</h3>
-                <div className="text-sm text-gray-600">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                  IPv6 Exam Practice Questions
+                </h3>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                   Question {currentQuestion + 1} of {ipv6Questions.length}
                 </div>
               </div>
@@ -884,7 +932,7 @@ const IPv6Planner: React.FC = () => {
               </div>
 
               <div className="mb-8">
-                <h4 className="mb-6 text-lg font-semibold text-gray-800">
+                <h4 className="mb-6 text-lg font-semibold text-gray-800 dark:text-gray-100">
                   {ipv6Questions[currentQuestion].question}
                 </h4>
                 <div className="space-y-3">
@@ -894,11 +942,11 @@ const IPv6Planner: React.FC = () => {
                       onClick={() => handleAnswerSelect(idx)}
                       className={`w-full rounded-lg border-2 p-4 text-left transition-all ${
                         answers[currentQuestion] === idx
-                          ? 'border-blue-600 bg-blue-100'
-                          : 'border-gray-300 bg-white hover:border-blue-400'
+                          ? 'border-blue-600 bg-blue-100 dark:bg-blue-900'
+                          : 'border-gray-300 bg-white hover:border-blue-400 dark:border-gray-700 dark:bg-gray-800'
                       }`}
                     >
-                      <div className="flex items-center">
+                      <div className="flex items-center text-gray-900 dark:text-gray-100">
                         <div
                           className={`mr-3 flex h-5 w-5 items-center justify-center rounded-full border-2 ${
                             answers[currentQuestion] === idx
@@ -933,10 +981,12 @@ const IPv6Planner: React.FC = () => {
             </div>
           ) : (
             <div className="rounded-lg border-2 border-green-300 bg-green-50 p-6">
-              <h3 className="mb-6 text-2xl font-bold">Quiz Results</h3>
+              <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Quiz Results
+              </h3>
               <div className="mb-8 text-center">
                 <div className="text-5xl font-bold text-green-600">{calculateScore()}%</div>
-                <div className="mt-2 text-gray-700">
+                <div className="mt-2 text-gray-700 dark:text-gray-300">
                   {answers.filter((answer, idx) => answer === ipv6Questions[idx].correct).length}{' '}
                   out of {ipv6Questions.length} correct
                 </div>
@@ -949,14 +999,18 @@ const IPv6Planner: React.FC = () => {
                     <div
                       key={q.id}
                       className={`rounded-lg border-l-4 p-4 ${
-                        isCorrect ? 'border-l-green-600 bg-white' : 'border-l-red-600 bg-white'
+                        isCorrect
+                          ? 'border-l-green-600 bg-white dark:bg-gray-800'
+                          : 'border-l-red-600 bg-white dark:bg-gray-800'
                       }`}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="font-semibold text-gray-800">{q.question}</div>
+                          <div className="font-semibold text-gray-800 dark:text-gray-100">
+                            {q.question}
+                          </div>
                           <div
-                            className={`mt-2 text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                            className={`mt-2 text-sm ${isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}
                           >
                             {isCorrect ? 'Correct' : 'Incorrect'}
                           </div>
@@ -967,8 +1021,10 @@ const IPv6Planner: React.FC = () => {
                           {isCorrect ? '✓' : '✗'}
                         </span>
                       </div>
-                      <div className="mt-3 border-t border-gray-300 pt-3 text-sm text-gray-700">
-                        <div className="font-semibold">Explanation:</div>
+                      <div className="mt-3 border-t border-gray-300 pt-3 text-sm text-gray-700 dark:text-gray-300">
+                        <div className="font-semibold text-gray-800 dark:text-gray-100">
+                          Explanation:
+                        </div>
                         <div>{q.explanation}</div>
                       </div>
                     </div>

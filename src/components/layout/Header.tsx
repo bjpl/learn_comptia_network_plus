@@ -4,19 +4,17 @@ import { useAppStore } from '../../store';
 
 export const Header: React.FC = () => {
   const { theme, toggleTheme, progress } = useAppStore();
-  const completionPercentage = Math.round(
-    (progress.componentsCompleted.length / 23) * 100
-  );
+  const completionPercentage = Math.round((progress.componentsCompleted.length / 23) * 100);
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo and Title */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-lg">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
               <svg
-                className="w-6 h-6 text-white"
+                className="h-6 w-6 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -30,10 +28,8 @@ export const Header: React.FC = () => {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                CompTIA Network+
-              </h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">CompTIA Network+</h1>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
                 Interactive Learning Platform
               </p>
             </div>
@@ -42,17 +38,15 @@ export const Header: React.FC = () => {
           {/* Progress and Actions */}
           <div className="flex items-center space-x-4">
             {/* Progress Indicator */}
-            <div className="hidden md:flex items-center space-x-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                Progress:
-              </span>
-              <div className="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div className="hidden items-center space-x-2 md:flex">
+              <span className="text-sm text-gray-700 dark:text-gray-300">Progress:</span>
+              <div className="h-2 w-32 rounded-full bg-gray-200 dark:bg-gray-700">
                 <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  className="h-2 rounded-full bg-blue-600 transition-all duration-300 dark:bg-blue-500"
                   style={{ width: `${completionPercentage}%` }}
                 />
               </div>
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <span className="text-sm font-semibold text-gray-900 dark:text-gray-200">
                 {completionPercentage}%
               </span>
             </div>
@@ -60,12 +54,12 @@ export const Header: React.FC = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
               aria-label="Toggle theme"
             >
               {theme.mode === 'light' ? (
                 <svg
-                  className="w-5 h-5 text-gray-600 dark:text-gray-400"
+                  className="h-5 w-5 text-gray-600 dark:text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -79,7 +73,7 @@ export const Header: React.FC = () => {
                 </svg>
               ) : (
                 <svg
-                  className="w-5 h-5 text-gray-600 dark:text-gray-400"
+                  className="h-5 w-5 text-gray-600 dark:text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -95,11 +89,11 @@ export const Header: React.FC = () => {
             </button>
 
             {/* User Menu */}
-            <div className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-semibold">U</span>
+            <div className="flex items-center space-x-2 rounded-lg bg-gray-100 px-3 py-2 dark:bg-gray-700">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600">
+                <span className="text-sm font-semibold text-white">U</span>
               </div>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden sm:inline">
+              <span className="hidden text-sm font-medium text-gray-700 sm:inline dark:text-gray-300">
                 Student
               </span>
             </div>
@@ -108,16 +102,16 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Mobile Progress Bar */}
-      <div className="md:hidden px-4 pb-2">
-        <div className="flex items-center justify-between text-xs mb-1">
-          <span className="text-gray-600 dark:text-gray-400">Overall Progress</span>
-          <span className="font-semibold text-gray-700 dark:text-gray-300">
+      <div className="px-4 pb-2 md:hidden">
+        <div className="mb-1 flex items-center justify-between text-xs">
+          <span className="text-gray-700 dark:text-gray-300">Overall Progress</span>
+          <span className="font-semibold text-gray-900 dark:text-gray-200">
             {completionPercentage}%
           </span>
         </div>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+        <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            className="h-2 rounded-full bg-blue-600 transition-all duration-300 dark:bg-blue-500"
             style={{ width: `${completionPercentage}%` }}
           />
         </div>

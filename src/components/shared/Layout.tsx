@@ -89,7 +89,7 @@ export const Layout: React.FC = () => {
                     ) : (
                       <Link
                         to={crumb.path}
-                        className="text-gray-600 transition-colors hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                        className="text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                       >
                         {crumb.label}
                       </Link>

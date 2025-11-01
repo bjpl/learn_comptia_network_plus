@@ -171,7 +171,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
       style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}
     >
       <div className="header" style={{ marginBottom: '30px' }}>
-        <h2>OSI Troubleshooting Scenario Bank</h2>
+        <h2 className="text-gray-900 dark:text-gray-100">OSI Troubleshooting Scenario Bank</h2>
 
         <div
           className="stats"
@@ -191,10 +191,15 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+            <div
+              className="text-gray-900 dark:text-gray-100"
+              style={{ fontSize: '24px', fontWeight: 'bold' }}
+            >
               {stats.attempted}/{TROUBLESHOOTING_SCENARIOS.length}
             </div>
-            <div style={{ fontSize: '14px', color: '#666' }}>Scenarios Attempted</div>
+            <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>
+              Scenarios Attempted
+            </div>
           </div>
 
           <div
@@ -205,8 +210,15 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{stats.correct}</div>
-            <div style={{ fontSize: '14px', color: '#666' }}>Correct Layer IDs</div>
+            <div
+              className="text-gray-900 dark:text-gray-100"
+              style={{ fontSize: '24px', fontWeight: 'bold' }}
+            >
+              {stats.correct}
+            </div>
+            <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>
+              Correct Layer IDs
+            </div>
           </div>
 
           <div
@@ -217,10 +229,15 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+            <div
+              className="text-gray-900 dark:text-gray-100"
+              style={{ fontSize: '24px', fontWeight: 'bold' }}
+            >
               {Math.round(stats.avgScore)}%
             </div>
-            <div style={{ fontSize: '14px', color: '#666' }}>Average Score</div>
+            <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>
+              Average Score
+            </div>
           </div>
         </div>
 
@@ -229,7 +246,11 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}
         >
           <div>
-            <label htmlFor="difficulty-filter" style={{ marginRight: '8px', fontWeight: 'bold' }}>
+            <label
+              htmlFor="difficulty-filter"
+              className="text-gray-900 dark:text-gray-100"
+              style={{ marginRight: '8px', fontWeight: 'bold' }}
+            >
               Difficulty:
             </label>
             <select
@@ -253,7 +274,11 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           </div>
 
           <div>
-            <label htmlFor="category-filter" style={{ marginRight: '8px', fontWeight: 'bold' }}>
+            <label
+              htmlFor="category-filter"
+              className="text-gray-900 dark:text-gray-100"
+              style={{ marginRight: '8px', fontWeight: 'bold' }}
+            >
               Category:
             </label>
             <select
@@ -298,7 +323,9 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               marginBottom: '10px',
             }}
           >
-            <h3 style={{ margin: 0 }}>{currentScenario.title}</h3>
+            <h3 className="text-gray-900 dark:text-gray-100" style={{ margin: 0 }}>
+              {currentScenario.title}
+            </h3>
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
               <span
                 style={{
@@ -332,6 +359,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           </div>
 
           <div
+            className="text-gray-700 dark:bg-gray-700 dark:text-gray-300"
             style={{
               padding: '15px',
               backgroundColor: '#f5f5f5',
@@ -348,6 +376,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           {/* Layer Selection */}
           <div className="layer-selection" style={{ marginBottom: '25px' }}>
             <div
+              className="text-gray-900 dark:text-gray-100"
               style={{
                 display: 'block',
                 fontWeight: 'bold',
@@ -384,8 +413,13 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
                     transition: 'all 0.2s',
                   }}
                 >
-                  <div style={{ fontSize: '18px' }}>Layer {layer}</div>
-                  <div style={{ fontSize: '12px', marginTop: '5px' }}>
+                  <div className="text-gray-900 dark:text-gray-100" style={{ fontSize: '18px' }}>
+                    Layer {layer}
+                  </div>
+                  <div
+                    className="text-gray-700 dark:text-gray-300"
+                    style={{ fontSize: '12px', marginTop: '5px' }}
+                  >
                     {LAYER_NAMES[layer as OSILayerNumber]}
                   </div>
                 </button>
@@ -397,6 +431,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           <div className="explanation-section" style={{ marginBottom: '25px' }}>
             <label
               htmlFor="explanation-text"
+              className="text-gray-900 dark:text-gray-100"
               style={{
                 display: 'block',
                 fontWeight: 'bold',
@@ -424,7 +459,10 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
                 resize: 'vertical',
               }}
             />
-            <div style={{ marginTop: '5px', fontSize: '12px', color: '#666' }}>
+            <div
+              className="text-gray-600 dark:text-gray-400"
+              style={{ marginTop: '5px', fontSize: '12px' }}
+            >
               Word count:{' '}
               {currentResponse.explanation?.split(' ').filter((w) => w.length > 0).length || 0} /
               100
@@ -439,6 +477,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           <div className="solution-section" style={{ marginBottom: '25px' }}>
             <label
               htmlFor="solution-text"
+              className="text-gray-900 dark:text-gray-100"
               style={{
                 display: 'block',
                 fontWeight: 'bold',
@@ -466,7 +505,10 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
                 resize: 'vertical',
               }}
             />
-            <div style={{ marginTop: '5px', fontSize: '12px', color: '#666' }}>
+            <div
+              className="text-gray-600 dark:text-gray-400"
+              style={{ marginTop: '5px', fontSize: '12px' }}
+            >
               Word count:{' '}
               {currentResponse.solution?.split(' ').filter((w) => w.length > 0).length || 0} / 50
               {(currentResponse.solution?.split(' ').filter((w) => w.length > 0).length || 0) >=
@@ -478,7 +520,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
 
           {/* Hints Section */}
           <div
-            className="hints-section"
+            className="hints-section dark:border-gray-700 dark:bg-gray-800"
             style={{
               marginBottom: '25px',
               padding: '15px',
@@ -488,7 +530,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h4 style={{ margin: 0 }}>
+              <h4 className="text-gray-900 dark:text-gray-100" style={{ margin: 0 }}>
                 Hints Available: {usedHints.has(currentScenario.id) ? 'Used' : 'Not Used'}
               </h4>
               {!showHints && !usedHints.has(currentScenario.id) && (
@@ -514,6 +556,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
                 {currentScenario.hints.map((hint, index) => (
                   <div
                     key={index}
+                    className="text-gray-900 dark:bg-gray-700 dark:text-gray-100"
                     style={{
                       padding: '10px',
                       backgroundColor: '#fff',
@@ -601,19 +644,19 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               border: `2px solid ${responses.get(currentScenario.id)?.selectedLayer === currentScenario.correctLayer ? '#4CAF50' : '#f44336'}`,
             }}
           >
-            <h4 style={{ marginTop: 0 }}>
+            <h4 className="text-gray-900 dark:text-gray-100" style={{ marginTop: 0 }}>
               {responses.get(currentScenario.id)?.selectedLayer === currentScenario.correctLayer
                 ? '✓ Correct!'
                 : '✗ Incorrect'}
             </h4>
-            <p>
+            <p className="text-gray-900 dark:text-gray-100">
               <strong>Correct Layer:</strong> Layer {currentScenario.correctLayer} (
               {LAYER_NAMES[currentScenario.correctLayer]})
             </p>
-            <p>
+            <p className="text-gray-900 dark:text-gray-100">
               <strong>Explanation:</strong> {currentScenario.explanation}
             </p>
-            <p style={{ marginBottom: 0 }}>
+            <p className="text-gray-900 dark:text-gray-100" style={{ marginBottom: 0 }}>
               <strong>Your Score:</strong> {responses.get(currentScenario.id)?.score || 0}/100
             </p>
           </div>
@@ -622,6 +665,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
 
       {/* Scenario Navigation */}
       <div
+        className="dark:border-gray-700 dark:bg-gray-800"
         style={{
           marginTop: '30px',
           padding: '20px',
@@ -630,7 +674,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           border: '1px solid #ddd',
         }}
       >
-        <h4 style={{ marginTop: 0 }}>
+        <h4 className="text-gray-900 dark:text-gray-100" style={{ marginTop: 0 }}>
           Scenario Progress ({currentScenarioIndex + 1} of {filteredScenarios.length})
         </h4>
         <div

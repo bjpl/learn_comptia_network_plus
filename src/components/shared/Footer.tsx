@@ -5,33 +5,45 @@ export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="mt-auto border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* About */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">About</h3>
+            <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">About</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Interactive learning platform for CompTIA Network+ certification preparation with hands-on practice and assessments.
+              Interactive learning platform for CompTIA Network+ certification preparation with
+              hands-on practice and assessments.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Quick Links</h3>
+            <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
+              Quick Links
+            </h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link
+                  to="/"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                >
                   Dashboard
                 </Link>
               </li>
               <li>
-                <Link to="/osi/introduction" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link
+                  to="/osi/introduction"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                >
                   Start Learning
                 </Link>
               </li>
               <li>
-                <Link to="/assessment/practice" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link
+                  to="/assessment/practice"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                >
                   Practice Exam
                 </Link>
               </li>
@@ -40,14 +52,14 @@ export const Footer: React.FC = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Resources</h3>
+            <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">Resources</h3>
             <ul className="space-y-2">
               <li>
                 <a
                   href="https://www.comptia.org/certifications/network"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   CompTIA Official Site
                 </a>
@@ -57,7 +69,7 @@ export const Footer: React.FC = () => {
                   href="https://www.comptia.org/training/resources"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Study Materials
                 </a>
@@ -67,7 +79,7 @@ export const Footer: React.FC = () => {
                   href="https://www.comptia.org/testing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Exam Information
                 </a>
@@ -77,20 +89,29 @@ export const Footer: React.FC = () => {
 
           {/* Legal */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Legal</h3>
+            <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                >
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <a
+                  href="#"
+                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                >
                   Accessibility
                 </a>
               </li>
@@ -98,8 +119,8 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="mt-8 border-t border-gray-200 pt-8 dark:border-gray-700">
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               © {currentYear} CompTIA Network+ Learning Platform. All rights reserved.
             </p>

@@ -53,7 +53,11 @@ const navigationStructure: NavigationItem[] = [
     label: 'Transmission Media',
     learningObjective: 'LO 1.4',
     children: [
-      { id: 'media-selection', label: 'Media Selection Matrix', path: '/transmission/media-selection' },
+      {
+        id: 'media-selection',
+        label: 'Media Selection Matrix',
+        path: '/transmission/media-selection',
+      },
       { id: 'connector-lab', label: 'Connector Lab', path: '/transmission/connector-lab' },
       { id: 'transceiver', label: 'Transceiver Matching', path: '/transmission/transceiver' },
     ],
@@ -110,23 +114,22 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0 }) => {
   const isActive = item.path === location.pathname;
   const isParentActive = item.children?.some((child) => child.path === location.pathname);
 
-  const completedChildren = item.children?.filter((child) =>
-    progress.completedComponents?.includes(child.id)
-  ).length || 0;
+  const completedChildren =
+    item.children?.filter((child) => progress.completedComponents?.includes(child.id)).length || 0;
   const totalChildren = item.children?.length || 0;
 
   const ItemContent = () => (
     <div
-      className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+      className={`flex items-center justify-between rounded-lg px-3 py-2 transition-colors ${
         isActive
-          ? 'bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100'
+          ? 'bg-blue-100 font-semibold text-blue-900 dark:bg-blue-900 dark:text-blue-100'
           : isParentActive
-          ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
-          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+            ? 'bg-blue-50 font-medium text-blue-900 dark:bg-blue-900/30 dark:text-blue-200'
+            : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white'
       }`}
       style={{ paddingLeft: `${depth * 12 + 12}px` }}
     >
-      <div className="flex items-center space-x-2 flex-1">
+      <div className="flex flex-1 items-center space-x-2">
         {hasChildren && (
           <button
             onClick={(e) => {
@@ -136,7 +139,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0 }) => {
             className="p-0.5"
           >
             <svg
-              className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+              className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -151,13 +154,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0 }) => {
       </div>
 
       {item.learningObjective && (
-        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+        <span className="ml-2 text-xs text-gray-600 dark:text-gray-400">
           {item.learningObjective}
         </span>
       )}
 
       {hasChildren && totalChildren > 0 && (
-        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+        <span className="ml-2 text-xs text-gray-600 dark:text-gray-400">
           {completedChildren}/{totalChildren}
         </span>
       )}
@@ -191,23 +194,23 @@ export const Sidebar: React.FC = () => {
   return (
     <>
       {/* Mobile Overlay */}
-      <div className="md:hidden fixed inset-0 bg-black/50 z-20" />
+      <div className="fixed inset-0 z-20 bg-black/50 md:hidden" />
 
       {/* Sidebar */}
       <aside
-        className={`fixed md:sticky top-16 left-0 h-[calc(100vh-4rem)] bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-30 transition-all duration-300 ${
+        className={`fixed left-0 top-16 z-30 h-[calc(100vh-4rem)] overflow-y-auto border-r border-gray-200 bg-white transition-all duration-300 md:sticky dark:border-gray-700 dark:bg-gray-800 ${
           isCollapsed ? 'w-16' : 'w-64'
         }`}
       >
         {/* Collapse Toggle */}
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-2 flex justify-end">
+        <div className="sticky top-0 flex justify-end border-b border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-800">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             <svg
-              className={`w-5 h-5 text-gray-600 dark:text-gray-400 transition-transform ${
+              className={`h-5 w-5 text-gray-600 transition-transform dark:text-gray-400 ${
                 isCollapsed ? 'rotate-180' : ''
               }`}
               fill="none"
@@ -226,7 +229,7 @@ export const Sidebar: React.FC = () => {
 
         {/* Navigation */}
         {!isCollapsed && (
-          <nav className="p-4 space-y-2">
+          <nav className="space-y-2 p-4">
             {navigationStructure.map((item) => (
               <SidebarItem key={item.id} item={item} />
             ))}

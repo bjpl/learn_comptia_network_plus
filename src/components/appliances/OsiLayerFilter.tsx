@@ -22,8 +22,10 @@ const OsiLayerFilter: React.FC<OsiLayerFilterProps> = ({
   deviceCounts,
 }) => {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 className="mb-4 text-lg font-semibold">Filter by OSI Layer</h3>
+    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+      <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Filter by OSI Layer
+      </h3>
 
       <div className="space-y-2">
         {osiLayers.map((layer) => {
@@ -37,7 +39,7 @@ const OsiLayerFilter: React.FC<OsiLayerFilterProps> = ({
               className={`w-full rounded-lg border-2 p-3 text-left transition-all ${
                 isSelected
                   ? `${layer.color} border-gray-900 text-white shadow-lg`
-                  : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                  : 'border-gray-200 bg-gray-50 hover:border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -50,17 +52,23 @@ const OsiLayerFilter: React.FC<OsiLayerFilterProps> = ({
                     {layer.number}
                   </div>
                   <div>
-                    <div className={`font-semibold ${isSelected ? 'text-white' : 'text-gray-900'}`}>
+                    <div
+                      className={`font-semibold ${isSelected ? 'text-white' : 'text-gray-900 dark:text-gray-100'}`}
+                    >
                       Layer {layer.number}: {layer.name}
                     </div>
-                    <div className={`text-sm ${isSelected ? 'text-white/80' : 'text-gray-600'}`}>
+                    <div
+                      className={`text-sm ${isSelected ? 'text-white/80' : 'text-gray-600 dark:text-gray-400'}`}
+                    >
                       {layer.examples}
                     </div>
                   </div>
                 </div>
                 <div
                   className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                    isSelected ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-700'
+                    isSelected
+                      ? 'bg-white/20 text-white'
+                      : 'bg-gray-200 text-gray-700 dark:bg-gray-600 dark:text-gray-300'
                   }`}
                 >
                   {deviceCount} devices
@@ -71,8 +79,8 @@ const OsiLayerFilter: React.FC<OsiLayerFilterProps> = ({
         })}
       </div>
 
-      <div className="mt-4 rounded-lg bg-blue-50 p-3">
-        <p className="text-sm text-blue-900">
+      <div className="mt-4 rounded-lg bg-blue-50 p-3 dark:bg-blue-900">
+        <p className="text-sm text-blue-900 dark:text-blue-100">
           <strong>Tip:</strong> Click multiple layers to see devices that operate at those levels.
           Devices may operate at multiple layers (e.g., Layer 3 switches work at Layer 2 and 3).
         </p>
@@ -81,7 +89,7 @@ const OsiLayerFilter: React.FC<OsiLayerFilterProps> = ({
       {selectedLayers.length > 0 && (
         <button
           onClick={() => selectedLayers.forEach(onLayerToggle)}
-          className="mt-3 w-full rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300"
+          className="mt-3 w-full rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         >
           Clear All Filters
         </button>
