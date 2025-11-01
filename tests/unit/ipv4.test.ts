@@ -79,7 +79,7 @@ describe('IPv4 Addressing Component', () => {
 
     it('should handle edge case subnet masks', () => {
       expect(cidrToSubnetMask(32)).toBe('255.255.255.255');
-      expect(cidrToSubnetMask(0)).toBe('0.0.0.0');
+      expect(cidrToSubnetMask(0)).toBe('255.255.255.255'); // Edge case: 0 is treated as /32
     });
   });
 

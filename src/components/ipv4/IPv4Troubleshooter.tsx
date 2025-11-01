@@ -32,10 +32,6 @@ import {
   ListItemText,
   Tab,
   Tabs,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from '@mui/material';
 import {
   ExpandMore,
@@ -54,10 +50,9 @@ import {
 } from '@mui/icons-material';
 import type {
   TroubleshootingScenario,
-  DiagnosticOutput} from './ipv4-types';
-import {
+  DiagnosticOutput,
   NetworkDevice,
-  TroubleshootingStep,
+  TroubleshootingStep
 } from './ipv4-types';
 import { troubleshootingScenarios, diagnosticCommands } from './ipv4-data';
 import { parseIPAddress } from '../../utils/networking';
@@ -82,7 +77,6 @@ const IPv4Troubleshooter: React.FC = () => {
   const [showHints, setShowHints] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
   const [tabValue, setTabValue] = useState(0);
-  const [selectedDiagnostic, setSelectedDiagnostic] = useState<DiagnosticOutput | null>(null);
 
   // Reset when scenario changes
   const handleScenarioChange = (scenarioId: string) => {

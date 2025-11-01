@@ -66,8 +66,8 @@ export const Header: React.FC = () => {
             </svg>
           </button>
 
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-2" aria-label="CompTIA Network+ Home">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center" aria-hidden="true">
               <span className="text-white font-bold text-sm">N+</span>
             </div>
             <span className="hidden sm:block font-bold text-xl text-gray-900 dark:text-white">
@@ -80,13 +80,16 @@ export const Header: React.FC = () => {
         <div className="hidden md:flex flex-1 max-w-2xl mx-8">
           <div className="relative w-full">
             <input
-              type="text"
+              type="search"
+              id="global-search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search topics, concepts..."
-              className="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-              aria-label="Search"
+              className="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-600 dark:placeholder-gray-400"
+              aria-label="Search topics and concepts"
+              aria-describedby="search-hint"
             />
+            <span id="search-hint" className="sr-only">Search through learning topics, networking concepts, and protocols</span>
             <svg
               className="absolute left-3 top-2.5 w-5 h-5 text-gray-400"
               fill="none"
@@ -106,8 +109,8 @@ export const Header: React.FC = () => {
         {/* Right side - Progress, theme toggle, user menu */}
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Progress indicator */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg">
-            <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg" role="status" aria-label={`Overall progress: ${overallProgress.percentage.toFixed(0)}% complete`}>
+            <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
               <path
                 fillRule="evenodd"
@@ -118,7 +121,7 @@ export const Header: React.FC = () => {
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               {overallProgress.totalCompleted}/{overallProgress.totalComponents}
             </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
+            <span className="text-xs text-gray-600 dark:text-gray-300">
               ({overallProgress.percentage.toFixed(0)}%)
             </span>
           </div>
@@ -126,7 +129,7 @@ export const Header: React.FC = () => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="min-w-[44px] min-h-[44px] p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center justify-center"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
             {theme === 'light' ? (

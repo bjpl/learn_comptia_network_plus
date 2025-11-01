@@ -99,7 +99,7 @@ export const RegisterForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) return;
+    if (!validateForm()) {return;}
 
     setIsSubmitting(true);
 
@@ -138,16 +138,16 @@ export const RegisterForm: React.FC = () => {
   };
 
   const getPasswordStrengthColor = (score: number): string => {
-    if (score <= 1) return '#ef4444'; // red
-    if (score === 2) return '#f59e0b'; // orange
-    if (score === 3) return '#eab308'; // yellow
+    if (score <= 1) {return '#ef4444';} // red
+    if (score === 2) {return '#f59e0b';} // orange
+    if (score === 3) {return '#eab308';} // yellow
     return '#22c55e'; // green
   };
 
   const getPasswordStrengthLabel = (score: number): string => {
-    if (score <= 1) return 'Weak';
-    if (score === 2) return 'Fair';
-    if (score === 3) return 'Good';
+    if (score <= 1) {return 'Weak';}
+    if (score === 2) {return 'Fair';}
+    if (score === 3) {return 'Good';}
     return 'Strong';
   };
 

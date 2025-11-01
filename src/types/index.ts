@@ -183,6 +183,9 @@ export interface PortInfo {
 export interface UserProgress {
   userId: string;
   componentsCompleted: string[];
+  completedComponents?: string[]; // Alias for backwards compatibility
+  componentScores?: Record<string, number>; // Component ID -> score mapping
+  totalScore?: number; // Average score across all components
   domainsCompleted: string[];
   totalTimeSpent: number; // seconds
   lastAccessed: Date;
@@ -446,8 +449,9 @@ export interface Component {
 export interface NavigationItem {
   id: string;
   label: string;
-  path: string;
+  path?: string;
   icon?: string;
+  learningObjective?: string;
   children?: NavigationItem[];
   requiredProgress?: number;
 }

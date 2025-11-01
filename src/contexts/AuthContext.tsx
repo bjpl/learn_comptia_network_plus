@@ -3,14 +3,16 @@
  * Manages authentication state and provides auth methods throughout the app
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import {
+import type { ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import type {
   User,
-  UserRole,
   AuthState,
   LoginCredentials,
   RegisterData,
-  AuthResponse,
+  AuthResponse} from '../types/auth';
+import {
+  UserRole
 } from '../types/auth';
 import {
   storeAuthData,
@@ -235,7 +237,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    */
   const updateUser = useCallback((updates: Partial<User>) => {
     setState(prev => {
-      if (!prev.user) return prev;
+      if (!prev.user) {return prev;}
 
       const updatedUser = { ...prev.user, ...updates };
 
@@ -310,7 +312,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Set up activity tracking
    */
   useEffect(() => {
-    if (!state.isAuthenticated) return;
+    if (!state.isAuthenticated) {return;}
 
     const activityEvents = ['mousedown', 'keydown', 'scroll', 'touchstart'];
 
@@ -341,7 +343,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Set up token refresh
    */
   useEffect(() => {
-    if (!state.isAuthenticated || !state.token) return;
+    if (!state.isAuthenticated || !state.token) {return;}
 
     // Check token expiry every 5 minutes
     const tokenCheck = setInterval(() => {

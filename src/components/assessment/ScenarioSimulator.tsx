@@ -38,7 +38,6 @@ interface ScenarioSimulatorProps {
 
 export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
   scenarioId,
-  timeLimit,
   onComplete
 }) => {
   const [selectedScenario, setSelectedScenario] = useState<IntegratedScenario | null>(null);

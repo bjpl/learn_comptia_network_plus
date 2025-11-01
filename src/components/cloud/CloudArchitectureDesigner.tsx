@@ -5,7 +5,7 @@
  * Drag-and-drop canvas for designing cloud architectures
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { componentLibrary, validationRules } from './cloud-data';
 import type {
   ArchitectureComponent,
@@ -172,9 +172,12 @@ export const CloudArchitectureDesigner: React.FC = () => {
     // Run validation rules
     Object.values(validationRules).forEach(rule => {
       const result = rule.check(design.components, design.connections);
-      if (!result.valid && result.message) {
+      if (!result.valid) {
+        const errorMessage = typeof result === 'object' && 'message' in result && typeof result.message === 'string'
+          ? result.message
+          : 'Validation failed';
         errors.push({
-          message: result.message,
+          message: errorMessage,
           severity: 'error',
           suggestion: 'Review architecture requirements'
         });

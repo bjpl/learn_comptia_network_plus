@@ -3,7 +3,7 @@
  * CompTIA Network+ Learning Objective 1.2
  */
 
-import type { CloudScenario, ComponentLibraryItem, ComponentType } from './cloud-types';
+import type { CloudScenario, ComponentLibraryItem } from './cloud-types';
 
 export const cloudScenarios: CloudScenario[] = [
   {
@@ -561,7 +561,7 @@ export const validationRules = {
 
   natGatewayPlacement: {
     rule: 'NAT Gateway must be in public subnet',
-    check: (components: any[], connections: any[]) => {
+    check: (components: any[]) => {
       const natGateways = components.filter(c => c.subtype === 'NAT Gateway');
       // In a real implementation, check NAT Gateway connections to public subnets
       return { valid: true };

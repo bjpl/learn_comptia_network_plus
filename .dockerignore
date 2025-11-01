@@ -1,56 +1,29 @@
-# Dependencies
 node_modules
 npm-debug.log
-package-lock.json
-
-# Build outputs
 dist
-build
-.next
-out
-
-# Environment files
+coverage
 .env
 .env.local
 .env.*.local
-
-# Testing
-coverage
-.nyc_output
-playwright-report
-test-results
-
-# IDE
-.vscode
-.idea
-*.swp
-*.swo
-*~
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Git
+*.log
 .git
 .gitignore
-.gitattributes
-
-# CI/CD
-.github
-.gitlab-ci.yml
-.travis.yml
-
-# Documentation
-docs
+.DS_Store
+.vscode
+.idea
 *.md
-LICENSE
-
-# Logs
-logs
-*.log
-
-# Temporary files
-tmp
-temp
-.cache
+!README.md
+tests
+__tests__
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+.eslintrc*
+.prettierrc*
+tsconfig.json
+vite.config.ts
+playwright.config.ts
+vitest.config.ts
+backend
+!backend/dist

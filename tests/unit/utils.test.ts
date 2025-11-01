@@ -225,13 +225,33 @@ function validateCIDR(cidr: string): boolean {
 }
 
 function calculateSubnet(ip: string, mask: string) {
-  // Simplified implementation for testing
+  // Convert mask to CIDR for calculation
+  const maskOctets = mask.split('.').map(Number);
+  const binary = maskOctets.map(o => o.toString(2).padStart(8, '0')).join('');
+  const cidr = binary.split('1').length - 1;
+
+  const ipOctets = ip.split('.').map(Number);
+  const ipInt = (ipOctets[0] << 24) + (ipOctets[1] << 16) + (ipOctets[2] << 8) + ipOctets[3];
+  const maskInt = ~((1 << (32 - cidr)) - 1);
+  const network = ipInt & maskInt;
+  const broadcast = network | ~maskInt;
+
+  const totalHosts = Math.pow(2, 32 - cidr);
+  const usableHosts = cidr === 32 ? 1 : (cidr === 31 ? 2 : totalHosts - 2);
+
+  const intToIp = (int: number) => [
+    (int >>> 24) & 0xff,
+    (int >>> 16) & 0xff,
+    (int >>> 8) & 0xff,
+    int & 0xff,
+  ].join('.');
+
   return {
-    networkAddress: '192.168.1.0',
-    broadcastAddress: '192.168.1.255',
-    usableHosts: 254,
-    firstUsable: '192.168.1.1',
-    lastUsable: '192.168.1.254',
+    networkAddress: intToIp(network),
+    broadcastAddress: intToIp(broadcast),
+    usableHosts,
+    firstUsable: intToIp(cidr === 32 ? network : network + 1),
+    lastUsable: intToIp(cidr === 32 ? network : (cidr === 31 ? broadcast : broadcast - 1)),
   };
 }
 

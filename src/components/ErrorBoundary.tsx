@@ -2,7 +2,28 @@ import React from 'react';
 import { useRouteError, Link } from 'react-router-dom';
 
 export const ErrorBoundary: React.FC = () => {
-  const error = useRouteError() as Error;
+  const error = useRouteError();
+
+  // Extract error message from various error types
+  const getErrorMessage = (): string => {
+    if (!error) return 'Unknown error';
+
+    if (error instanceof Error) {
+      return error.message || 'Unknown error';
+    }
+
+    if (typeof error === 'object' && error !== null && 'message' in error) {
+      return String((error as any).message) || 'Unknown error';
+    }
+
+    if (typeof error === 'string') {
+      return error;
+    }
+
+    return 'Unknown error';
+  };
+
+  const errorMessage = getErrorMessage();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
@@ -13,6 +34,7 @@ export const ErrorBoundary: React.FC = () => {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            role="img"
           >
             <path
               strokeLinecap="round"
@@ -31,13 +53,11 @@ export const ErrorBoundary: React.FC = () => {
           We encountered an error while loading this page.
         </p>
 
-        {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 text-left">
-            <p className="text-sm text-red-800 dark:text-red-200 font-mono">
-              {error.message || 'Unknown error'}
-            </p>
-          </div>
-        )}
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 text-left">
+          <p className="text-sm text-red-800 dark:text-red-200 font-mono">
+            {errorMessage}
+          </p>
+        </div>
 
         <div className="space-y-3">
           <Link

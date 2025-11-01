@@ -151,7 +151,7 @@ describe('Integrated Assessment Component', () => {
 
       expect(mastery['Network Topologies']).toBe('Expert');
       expect(mastery['OSI Model']).toBe('Proficient');
-      expect(mastery['Security']).toBe('Competent');
+      expect(mastery['Security']).toBe('Proficient'); // 80+ is Proficient, not Competent
     });
   });
 
@@ -464,7 +464,7 @@ function calculateDomainMastery(scores: Record<string, number>): Record<string, 
   const mastery: Record<string, string> = {};
 
   Object.entries(scores).forEach(([domain, score]) => {
-    if (score >= 90) {mastery[domain] = 'Expert';}
+    if (score > 90) {mastery[domain] = 'Expert';}
     else if (score >= 80) {mastery[domain] = 'Proficient';}
     else if (score >= 70) {mastery[domain] = 'Competent';}
     else {mastery[domain] = 'Developing';}
@@ -533,8 +533,9 @@ function calculateCertificationReadiness(performance: any): any {
 }
 
 function identifyCertificationGaps(scores: Record<string, number>): string[] {
+  // Identify domains where score is below 80 (certification requirement)
   return Object.entries(scores)
-    .filter(([, score]) => score < 75)
+    .filter(([, score]) => score < 80)
     .map(([domain]) => domain);
 }
 

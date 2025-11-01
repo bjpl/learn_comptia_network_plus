@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import * as progressService from '../services/progress-service';
+import { parseApiError, logError } from '../utils/api/error-handler';
+import { networkStatusManager } from '../utils/api/network-status';
 
 interface ComponentProgress {
   componentId: string;
@@ -19,11 +22,16 @@ interface CategoryProgress {
 }
 
 interface ProgressState {
-  // Component progress
+  // State
   componentProgress: Record<string, ComponentProgress>;
-  updateComponentProgress: (componentId: string, progress: Partial<ComponentProgress>) => void;
+  isSyncing: boolean;
+  lastSyncedAt: string | null;
+  error: string | null;
+
+  // Component progress actions
+  updateComponentProgress: (componentId: string, progress: Partial<ComponentProgress>) => Promise<void>;
   getComponentProgress: (componentId: string) => ComponentProgress | undefined;
-  markComponentComplete: (componentId: string, score?: number) => void;
+  markComponentComplete: (componentId: string, score?: number) => Promise<void>;
 
   // Category progress
   getCategoryProgress: (categoryId: string) => CategoryProgress;
@@ -36,9 +44,14 @@ interface ProgressState {
     averageScore: number;
   };
 
+  // Sync actions
+  syncProgress: () => Promise<void>;
+  loadProgress: () => Promise<void>;
+
   // Reset
-  resetProgress: () => void;
+  resetProgress: () => Promise<void>;
   resetComponentProgress: (componentId: string) => void;
+  clearError: () => void;
 }
 
 const TOTAL_COMPONENTS = 23;
@@ -46,98 +59,238 @@ const TOTAL_COMPONENTS = 23;
 export const useProgressStore = create<ProgressState>()(
   persist(
     (set, get) => ({
+      // Initial state
       componentProgress: {},
+      isSyncing: false,
+      lastSyncedAt: null,
+      error: null,
 
-      updateComponentProgress: (componentId, progress) =>
-        set((state) => ({
-          componentProgress: {
-            ...state.componentProgress,
-            [componentId]: {
-              ...state.componentProgress[componentId],
-              componentId,
-              completed: false,
-              timeSpent: 0,
-              attempts: 0,
-              lastVisited: new Date().toISOString(),
-              ...progress,
+      /**
+       * Update component progress with API sync
+       */
+      updateComponentProgress: async (componentId, progress) => {
+        // Update local state immediately
+        set((state) => {
+          const existing = state.componentProgress[componentId];
+          return {
+            componentProgress: {
+              ...state.componentProgress,
+              [componentId]: {
+                ...existing, // Preserve existing properties first
+                ...progress, // Apply updates
+                componentId, // Ensure these core fields are set
+                completed: progress.completed ?? existing?.completed ?? false,
+                timeSpent: progress.timeSpent ?? existing?.timeSpent ?? 0,
+                attempts: progress.attempts ?? existing?.attempts ?? 0,
+                lastVisited: new Date().toISOString(),
+              },
             },
-          },
-        })),
+          };
+        });
 
+        // Sync with API
+        try {
+          if (networkStatusManager.getStatus()) {
+            await progressService.updateComponentProgress(componentId, progress);
+          } else {
+            // Queue for later sync
+            progressService.queueProgressUpdate(componentId, progress);
+          }
+        } catch (error) {
+          const apiError = parseApiError(error);
+          logError(apiError, 'Update Progress');
+          // Don't throw - keep local update even if sync fails
+        }
+      },
+
+      /**
+       * Get component progress
+       */
       getComponentProgress: (componentId) => {
         const state = get();
         return state.componentProgress[componentId];
       },
 
-      markComponentComplete: (componentId, score) =>
-        set((state) => {
-          const existing = state.componentProgress[componentId] || {
-            componentId,
-            completed: false,
-            timeSpent: 0,
-            attempts: 0,
-            lastVisited: new Date().toISOString(),
-          };
+      /**
+       * Mark component complete with API sync
+       */
+      markComponentComplete: async (componentId, score) => {
+        const state = get();
+        const existing = state.componentProgress[componentId] || {
+          componentId,
+          completed: false,
+          timeSpent: 0,
+          attempts: 0,
+          lastVisited: new Date().toISOString(),
+        };
 
-          return {
-            componentProgress: {
-              ...state.componentProgress,
-              [componentId]: {
-                ...existing,
-                completed: true,
-                score,
-                lastVisited: new Date().toISOString(),
-                attempts: existing.attempts + 1,
-              },
-            },
-          };
-        }),
+        const updated = {
+          ...existing,
+          completed: true,
+          score,
+          lastVisited: new Date().toISOString(),
+          attempts: existing.attempts + 1,
+        };
 
+        // Update local state
+        set({
+          componentProgress: {
+            ...state.componentProgress,
+            [componentId]: updated,
+          },
+        });
+
+        // Sync with API
+        try {
+          if (networkStatusManager.getStatus()) {
+            await progressService.updateComponentProgress(componentId, updated);
+          } else {
+            progressService.queueProgressUpdate(componentId, updated);
+          }
+        } catch (error) {
+          const apiError = parseApiError(error);
+          logError(apiError, 'Mark Complete');
+        }
+      },
+
+      /**
+       * Get category progress
+       */
       getCategoryProgress: (categoryId) => {
         const state = get();
-        const categoryComponents = Object.values(state.componentProgress).filter(
-          (p) => p.componentId.startsWith(categoryId)
-        );
-
-        const completed = categoryComponents.filter((p) => p.completed).length;
-        const totalTimeSpent = categoryComponents.reduce((sum, p) => sum + p.timeSpent, 0);
-        const scores = categoryComponents.filter((p) => p.score !== undefined).map((p) => p.score!);
-        const averageScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
-
-        return {
-          categoryId,
-          componentsCompleted: completed,
-          totalComponents: categoryComponents.length,
-          averageScore,
-          totalTimeSpent,
-        };
+        return progressService.getCategoryProgress(state.componentProgress, categoryId);
       },
 
+      /**
+       * Get overall progress
+       */
       getOverallProgress: () => {
         const state = get();
-        const allProgress = Object.values(state.componentProgress);
-        const completed = allProgress.filter((p) => p.completed).length;
-        const scores = allProgress.filter((p) => p.score !== undefined).map((p) => p.score!);
-        const averageScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
-
-        return {
-          totalCompleted: completed,
-          totalComponents: TOTAL_COMPONENTS,
-          percentage: (completed / TOTAL_COMPONENTS) * 100,
-          averageScore,
-        };
+        return progressService.getOverallProgress(state.componentProgress, TOTAL_COMPONENTS);
       },
 
-      resetProgress: () => set({ componentProgress: {} }),
+      /**
+       * Sync progress with backend
+       */
+      syncProgress: async () => {
+        set({ isSyncing: true, error: null });
 
+        try {
+          const state = get();
+          const syncData = await progressService.syncProgress(state.componentProgress);
+
+          // Resolve conflicts
+          const { resolved, conflicts } = progressService.resolveConflicts(
+            state.componentProgress,
+            syncData.componentProgress
+          );
+
+          if (conflicts.length > 0) {
+            console.log(`Resolved ${conflicts.length} progress conflicts`);
+          }
+
+          set({
+            componentProgress: resolved,
+            lastSyncedAt: syncData.lastSyncedAt,
+            isSyncing: false,
+          });
+
+          // Process any queued updates
+          await progressService.processProgressQueue();
+        } catch (error) {
+          const apiError = parseApiError(error);
+          logError(apiError, 'Sync Progress');
+
+          set({
+            isSyncing: false,
+            error: apiError.userMessage,
+          });
+        }
+      },
+
+      /**
+       * Load progress from backend
+       */
+      loadProgress: async () => {
+        set({ isSyncing: true, error: null });
+
+        try {
+          const progress = await progressService.getAllProgress();
+
+          set({
+            componentProgress: progress,
+            lastSyncedAt: new Date().toISOString(),
+            isSyncing: false,
+          });
+        } catch (error) {
+          const apiError = parseApiError(error);
+          logError(apiError, 'Load Progress');
+
+          set({
+            isSyncing: false,
+            error: apiError.userMessage,
+          });
+        }
+      },
+
+      /**
+       * Reset all progress
+       */
+      resetProgress: async () => {
+        set({ isSyncing: true, error: null });
+
+        try {
+          await progressService.resetProgress();
+
+          set({
+            componentProgress: {},
+            isSyncing: false,
+          });
+        } catch (error) {
+          const apiError = parseApiError(error);
+          logError(apiError, 'Reset Progress');
+
+          set({
+            isSyncing: false,
+            error: apiError.userMessage,
+          });
+
+          throw apiError;
+        }
+      },
+
+      /**
+       * Reset component progress
+       */
       resetComponentProgress: (componentId) =>
         set((state) => {
           const { [componentId]: _, ...rest } = state.componentProgress;
           return { componentProgress: rest };
         }),
+
+      /**
+       * Clear error
+       */
+      clearError: () => {
+        set({ error: null });
+      },
     }),
     {
       name: 'comptia-network-plus-progress',
+      onRehydrateStorage: () => (state) => {
+        // Sync progress after hydration if online
+        if (state && networkStatusManager.getStatus()) {
+          state.syncProgress();
+        }
+      },
     }
   )
 );
+
+// Setup network status listener for auto-sync
+networkStatusManager.subscribe((isOnline) => {
+  if (isOnline) {
+    console.log('Network restored - syncing progress...');
+    useProgressStore.getState().syncProgress();
+  }
+});

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -21,16 +21,23 @@ import {
   Cable,
   Radio,
   DollarSign,
-  Gauge
+  Gauge,
+  Eye,
+  Box
 } from 'lucide-react';
 import { MEDIA_OPTIONS, SCENARIOS, calculateMediaScore } from './media-data';
 import type { ScenarioRequirement, MediaOption, MediaScore } from './media-types';
+
+// Lazy load 3D viewer for performance
+const Connector3DViewer = lazy(() => import('./Connector3DViewer'));
 
 export default function MediaSelectionMatrix() {
   const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0);
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [completedScenarios, setCompletedScenarios] = useState<Set<string>>(new Set());
+  const [show3DPreview, setShow3DPreview] = useState(false);
+  const [previewConnector, setPreviewConnector] = useState<string | null>(null);
 
   const currentScenario = SCENARIOS[currentScenarioIndex];
 
@@ -100,6 +107,26 @@ export default function MediaSelectionMatrix() {
   };
 
   const completionPercentage = (completedScenarios.size / SCENARIOS.length) * 100;
+
+  const getConnectorTypeForMedia = (mediaId: string): string | null => {
+    const media = MEDIA_OPTIONS.find(m => m.id === mediaId);
+    if (!media) {return null;}
+
+    switch (media.type) {
+      case 'fiber':
+        return 'LC'; // Default fiber connector
+      case 'copper':
+        return 'RJ45';
+      case 'coaxial':
+        return 'F-type';
+      default:
+        return null;
+    }
+  };
+
+  const handleToggle3DPreview = () => {
+    setShow3DPreview(!show3DPreview);
+  };
 
   return (
     <div className="space-y-6">
@@ -191,10 +218,22 @@ export default function MediaSelectionMatrix() {
       {/* Media Selection Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Select Transmission Media</CardTitle>
-          <CardDescription>
-            Choose the most appropriate media type for this scenario
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Select Transmission Media</CardTitle>
+              <CardDescription>
+                Choose the most appropriate media type for this scenario
+              </CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleToggle3DPreview}
+            >
+              <Box className="h-4 w-4 mr-2" />
+              {show3DPreview ? 'Hide' : 'Show'} 3D Preview
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="rounded-lg border">
@@ -244,12 +283,29 @@ export default function MediaSelectionMatrix() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <input
-                          type="radio"
-                          checked={isSelected}
-                          onChange={() => handleMediaSelect(media.id)}
-                          className="h-4 w-4"
-                        />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            checked={isSelected}
+                            onChange={() => handleMediaSelect(media.id)}
+                            className="h-4 w-4"
+                            aria-label={`Select ${media.name}`}
+                          />
+                          {(media.type === 'fiber' || media.type === 'copper' || media.type === 'coaxial') && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPreviewConnector(media.id);
+                                setShow3DPreview(true);
+                              }}
+                              aria-label={`Preview ${media.name} connector in 3D`}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
@@ -257,6 +313,41 @@ export default function MediaSelectionMatrix() {
               </TableBody>
             </Table>
           </div>
+
+          {/* 3D Preview Panel */}
+          {show3DPreview && previewConnector && (
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg border">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">3D Connector Preview</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShow3DPreview(false)}
+                >
+                  Close
+                </Button>
+              </div>
+              <Suspense
+                fallback={
+                  <div className="h-64 flex items-center justify-center bg-gray-100 rounded">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
+                      <p className="text-gray-600">Loading 3D model...</p>
+                    </div>
+                  </div>
+                }
+              >
+                {getConnectorTypeForMedia(previewConnector) && (
+                  <Connector3DViewer
+                    connectorType={getConnectorTypeForMedia(previewConnector) as any}
+                    autoRotate
+                    showLabels={true}
+                    height="400px"
+                  />
+                )}
+              </Suspense>
+            </div>
+          )}
 
           <div className="mt-4 flex justify-between items-center">
             <Button variant="outline" onClick={handlePreviousScenario}>

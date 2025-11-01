@@ -4,11 +4,14 @@ import { ProgressProvider, useProgress } from '../../../src/contexts/ProgressCon
 import { useProgressStore } from '../../../src/stores/progressStore';
 
 describe('ProgressContext', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    // Clear localStorage to reset Zustand persist state
+    localStorage.clear();
+
     // Reset progress store
     const { result } = renderHook(() => useProgressStore());
-    act(() => {
-      result.current.resetProgress();
+    await act(async () => {
+      await result.current.resetProgress();
     });
   });
 
@@ -250,21 +253,21 @@ describe('ProgressContext', () => {
       expect(progressResult.current.overallProgress.totalCompleted).toBe(1);
     });
 
-    it('should reflect store resets', () => {
+    it('should reflect store resets', async () => {
       const { result: progressResult } = renderHook(() => useProgress(), {
         wrapper: ProgressProvider,
       });
       const { result: storeResult } = renderHook(() => useProgressStore());
 
-      act(() => {
-        storeResult.current.markComponentComplete('reset-test', 90);
+      await act(async () => {
+        await storeResult.current.markComponentComplete('reset-test', 90);
         progressResult.current.trackTimeSpent('reset-test', 1);
       });
 
       expect(progressResult.current.overallProgress.totalCompleted).toBe(1);
 
-      act(() => {
-        storeResult.current.resetProgress();
+      await act(async () => {
+        await storeResult.current.resetProgress();
         progressResult.current.trackTimeSpent('trigger-update', 1);
       });
 

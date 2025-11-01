@@ -1,0 +1,220 @@
+name: Docker Build and Test
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'Dockerfile'
+      - 'backend/Dockerfile'
+      - 'docker-compose.yml'
+      - 'backend/docker-compose.yml'
+      - '.github/workflows/docker-build.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'backend/Dockerfile'
+      - 'docker-compose.yml'
+      - 'backend/docker-compose.yml'
+
+jobs:
+  hadolint:
+    name: Lint Dockerfiles
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Hadolint on Frontend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: warning
+
+      - name: Run Hadolint on Backend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: backend/Dockerfile
+          failure-threshold: warning
+
+  build-frontend:
+    name: Build Frontend Image
+    runs-on: ubuntu-latest
+    needs: hadolint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: comptia-frontend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+
+      - name: Test Frontend container
+        run: |
+          docker run -d --name frontend-test -p 8080:80 comptia-frontend:test
+          sleep 5
+          curl -f http://localhost:8080/ || exit 1
+          docker stop frontend-test
+          docker rm frontend-test
+
+      - name: Scan Frontend image for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: comptia-frontend:test
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+  build-backend:
+    name: Build Backend Image
+    runs-on: ubuntu-latest
+    needs: hadolint
+
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_DB: comptia_network_test
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: false
+          tags: comptia-backend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
+
+      - name: Test Backend container
+        run: |
+          docker run -d --name backend-test \
+            -p 3001:3001 \
+            -e NODE_ENV=production \
+            -e DATABASE_URL=postgresql://admin:test_password@host.docker.internal:5432/comptia_network_test \
+            -e JWT_SECRET=test_secret \
+            --add-host=host.docker.internal:host-gateway \
+            comptia-backend:test
+          sleep 10
+          curl -f http://localhost:3001/api/health || exit 1
+          docker logs backend-test
+          docker stop backend-test
+          docker rm backend-test
+
+      - name: Scan Backend image for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: comptia-backend:test
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+  docker-compose-test:
+    name: Test Docker Compose
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-backend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          JWT_SECRET=test_secret_for_ci
+          POSTGRES_PASSWORD=test_password
+          REDIS_PASSWORD=test_redis_password
+          NODE_ENV=production
+          EOF
+
+      - name: Start services with Docker Compose
+        run: |
+          docker-compose up -d
+          sleep 30
+
+      - name: Check services health
+        run: |
+          docker-compose ps
+
+          # Check backend health
+          curl -f http://localhost:3001/api/health || exit 1
+
+          # Check frontend
+          curl -f http://localhost/ || exit 1
+
+          # Check database
+          docker-compose exec -T postgres pg_isready -U admin -d comptia_network || exit 1
+
+          # Check redis
+          docker-compose exec -T redis redis-cli ping || exit 1
+
+      - name: View logs
+        if: always()
+        run: docker-compose logs
+
+      - name: Stop services
+        if: always()
+        run: docker-compose down -v
+
+  image-size-report:
+    name: Report Image Sizes
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-backend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build images
+        run: |
+          docker build -t comptia-frontend:test .
+          docker build -t comptia-backend:test ./backend
+
+      - name: Generate size report
+        run: |
+          echo "# Docker Image Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Frontend Image" >> $GITHUB_STEP_SUMMARY
+          docker images comptia-frontend:test --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Backend Image" >> $GITHUB_STEP_SUMMARY
+          docker images comptia-backend:test --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Layer Details" >> $GITHUB_STEP_SUMMARY
+          echo "### Frontend" >> $GITHUB_STEP_SUMMARY
+          docker history comptia-frontend:test --no-trunc >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Backend" >> $GITHUB_STEP_SUMMARY
+          docker history comptia-backend:test --no-trunc >> $GITHUB_STEP_SUMMARY

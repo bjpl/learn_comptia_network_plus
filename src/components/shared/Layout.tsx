@@ -3,8 +3,12 @@ import { Outlet, useLocation, Link } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
+import { SkipLink } from '../accessibility/SkipLink';
 import { useAppStore } from '../../stores/appStore';
 // import { breadcrumbMap } from '../../router'; // Temporarily disabled
+
+// Mock breadcrumbMap for now
+const breadcrumbMap: Record<string, { title: string; parent?: string }> = {};
 
 export const Layout: React.FC = () => {
   const sidebarOpen = useAppStore((state) => state.sidebarOpen);
@@ -42,13 +46,8 @@ export const Layout: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      {/* Skip to main content link for accessibility */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-blue-600 focus:text-white focus:outline-none"
-      >
-        Skip to main content
-      </a>
+      {/* Skip to main content link for accessibility - WCAG 2.4.1 */}
+      <SkipLink />
 
       <Header />
 

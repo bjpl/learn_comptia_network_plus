@@ -6,7 +6,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import MainLayout from '../../src/components/layout/MainLayout';
+import { MainLayout } from '../../src/components/layout/MainLayout';
 import { useAppStore } from '../../src/store';
 
 // Mock pages for testing

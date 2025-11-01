@@ -11,7 +11,6 @@ import {
   CardContent,
   Typography,
   Grid,
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -29,28 +28,21 @@ import {
   FormControl,
   InputLabel,
   Divider,
-  IconButton,
-  Tooltip,
 } from '@mui/material';
 import {
   ExpandMore,
   CheckCircle,
-  Error,
   Warning,
-  Info,
   Refresh,
   Calculate,
-  SaveAlt,
 } from '@mui/icons-material';
 import type {
   SubnetScenario,
   SubnetAllocation,
-  SubnetDesignResult} from './ipv4-types';
-import {
-  SubnetRequirement,
+  SubnetDesignResult
 } from './ipv4-types';
 import { subnetScenarios } from './ipv4-data';
-import { calculateSubnet, calculateVLSM, isIPInSubnet } from '../../utils/networking';
+import { calculateVLSM, isIPInSubnet } from '../../utils/networking';
 
 const SubnetDesigner: React.FC = () => {
   const [selectedScenario, setSelectedScenario] = useState<SubnetScenario>(subnetScenarios[0]);
@@ -95,8 +87,10 @@ const SubnetDesigner: React.FC = () => {
     }
   };
 
-  // Manual allocation for a specific requirement
+  // Manual allocation for a specific requirement (reserved for future use)
+  /*
   const handleManualAllocate = (reqId: string, cidr: string) => {
+    const { calculateSubnet } = require('../../utils/networking');
     try {
       const subnet = calculateSubnet(cidr);
       const req = selectedScenario.requirements.find(r => r.id === reqId);
@@ -124,6 +118,7 @@ const SubnetDesigner: React.FC = () => {
       console.error('Manual allocation failed:', error);
     }
   };
+  */
 
   // Validate the design
   const validateDesign = (allocs: SubnetAllocation[]) => {
@@ -158,7 +153,6 @@ const SubnetDesigner: React.FC = () => {
     }
 
     // Calculate overall efficiency
-    const totalAllocated = allocs.reduce((sum, a) => sum + a.totalHosts, 0);
     const totalWasted = allocs.reduce((sum, a) => sum + a.wastedAddresses, 0);
     const totalEfficiency = allocs.length > 0
       ? (allocs.reduce((sum, a) => sum + a.efficiency, 0) / allocs.length)

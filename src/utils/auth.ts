@@ -2,7 +2,7 @@
  * Authentication utility functions
  */
 
-import { PasswordStrength, User, AuthResponse } from '../types/auth';
+import type { PasswordStrength, User, AuthResponse } from '../types/auth';
 
 // Storage keys
 export const STORAGE_KEYS = {
@@ -116,7 +116,7 @@ export const decodeMockToken = (token: string): { exp: number; sub: string } | n
  */
 export const isTokenExpired = (token: string): boolean => {
   const decoded = decodeMockToken(token);
-  if (!decoded) return true;
+  if (!decoded) {return true;}
   return Date.now() > decoded.exp;
 };
 
@@ -152,7 +152,7 @@ export const getAuthData = (): { user: User; token: string } | null => {
   const userStr = localStorage.getItem(STORAGE_KEYS.USER) ||
                   sessionStorage.getItem(STORAGE_KEYS.USER);
 
-  if (!token || !userStr) return null;
+  if (!token || !userStr) {return null;}
 
   try {
     const user = JSON.parse(userStr);
@@ -185,7 +185,7 @@ export const updateLastActivity = (): void => {
  */
 export const isInactive = (): boolean => {
   const lastActivity = localStorage.getItem(STORAGE_KEYS.LAST_ACTIVITY);
-  if (!lastActivity) return false;
+  if (!lastActivity) {return false;}
 
   const elapsed = Date.now() - parseInt(lastActivity, 10);
   return elapsed > SESSION_CONFIG.INACTIVITY_TIMEOUT;

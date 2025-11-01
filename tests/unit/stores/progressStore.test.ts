@@ -3,11 +3,14 @@ import { useProgressStore } from '../../../src/stores/progressStore';
 import { act, renderHook } from '@testing-library/react';
 
 describe('progressStore', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    // Clear localStorage to prevent test pollution
+    localStorage.clear();
+
     // Reset store state before each test
     const { result } = renderHook(() => useProgressStore());
-    act(() => {
-      result.current.resetProgress();
+    await act(async () => {
+      await result.current.resetProgress();
     });
   });
 
@@ -200,12 +203,12 @@ describe('progressStore', () => {
   });
 
   describe('Reset Functions', () => {
-    it('should reset all progress', () => {
+    it('should reset all progress', async () => {
       const { result } = renderHook(() => useProgressStore());
-      act(() => {
-        result.current.markComponentComplete('test-1', 80);
-        result.current.markComponentComplete('test-2', 90);
-        result.current.resetProgress();
+      await act(async () => {
+        await result.current.markComponentComplete('test-1', 80);
+        await result.current.markComponentComplete('test-2', 90);
+        await result.current.resetProgress();
       });
 
       expect(result.current.componentProgress).toEqual({});
@@ -231,7 +234,8 @@ describe('progressStore', () => {
         result.current.resetComponentProgress('non-existent');
       });
 
-      expect(result.current.componentProgress).toEqual({});
+      // Should remain empty since nothing was added
+      expect(Object.keys(result.current.componentProgress).length).toBe(0);
     });
   });
 

@@ -90,7 +90,7 @@ export const UserProfile: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!validateForm()) return;
+    if (!validateForm()) {return;}
 
     setIsSaving(true);
 

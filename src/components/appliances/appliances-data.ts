@@ -557,6 +557,8 @@ export const deviceTemplates = {
       throughput: '1 Gbps',
       maxConnections: 1000,
       powerConsumption: '50W',
+      redundancy: false,
+      hotSwappable: false,
     },
   },
   switch: {
@@ -566,6 +568,8 @@ export const deviceTemplates = {
       maxConnections: 8000,
       portCount: 24,
       powerConsumption: '100W',
+      redundancy: false,
+      hotSwappable: false,
     },
   },
   firewall: {
@@ -574,6 +578,8 @@ export const deviceTemplates = {
       throughput: '2 Gbps',
       maxConnections: 50000,
       powerConsumption: '75W',
+      redundancy: true,
+      hotSwappable: false,
     },
   },
   'load-balancer': {
@@ -582,6 +588,8 @@ export const deviceTemplates = {
       throughput: '5 Gbps',
       maxConnections: 100000,
       powerConsumption: '60W',
+      redundancy: true,
+      hotSwappable: false,
     },
   },
   'wireless-controller': {
@@ -590,6 +598,8 @@ export const deviceTemplates = {
       throughput: '1 Gbps',
       maxConnections: 500,
       powerConsumption: '40W',
+      redundancy: false,
+      hotSwappable: false,
     },
   },
 };

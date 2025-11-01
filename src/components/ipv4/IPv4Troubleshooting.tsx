@@ -30,8 +30,6 @@ import {
   ListItemText,
   Divider,
   LinearProgress,
-  IconButton,
-  Tooltip,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -42,9 +40,6 @@ import {
   BugReport,
   CheckCircle,
   Error,
-  Warning,
-  Info,
-  PlayArrow,
   Refresh,
   Lightbulb,
   Terminal,
@@ -52,12 +47,10 @@ import {
   Router,
   Computer,
   Storage,
-  HelpOutline,
 } from '@mui/icons-material';
 import type {
   TroubleshootingScenario,
-  DiagnosticOutput} from './ipv4-types';
-import {
+  DiagnosticOutput,
   TroubleshootingStep,
   NetworkDevice
 } from './ipv4-types';

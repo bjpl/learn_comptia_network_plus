@@ -1,9 +1,16 @@
 import React from 'react';
-import type { Component } from '../types';
 import { ComponentCard } from '../components/layout/ComponentCard';
 import { useAppStore } from '../store';
 
-const components: Component[] = [
+interface HomePageComponent {
+  id: string;
+  name: string;
+  path: string;
+  learningObjective: string;
+  description: string;
+}
+
+const components: HomePageComponent[] = [
   // OSI Model (LO 1.0)
   {
     id: 'layer-builder',
@@ -180,7 +187,7 @@ const HomePage: React.FC = () => {
   const { progress } = useAppStore();
 
   const componentsByLO = React.useMemo(() => {
-    const grouped: Record<string, Component[]> = {};
+    const grouped: Record<string, HomePageComponent[]> = {};
     components.forEach((component) => {
       const lo = component.learningObjective;
       if (!grouped[lo]) {
@@ -192,7 +199,7 @@ const HomePage: React.FC = () => {
   }, []);
 
   const stats = React.useMemo(() => {
-    const completed = progress.completedComponents.length;
+    const completed = progress.componentsCompleted.length;
     const total = components.length;
     const percentage = Math.round((completed / total) * 100);
 
@@ -200,7 +207,7 @@ const HomePage: React.FC = () => {
       completed,
       total,
       percentage,
-      averageScore: Math.round(progress.totalScore) || 0,
+      averageScore: 0, // Score tracking not implemented yet
     };
   }, [progress]);
 
@@ -235,7 +242,7 @@ const HomePage: React.FC = () => {
       {/* Components by Learning Objective */}
       {Object.entries(componentsByLO).map(([lo, loComponents]) => {
         const completedCount = loComponents.filter((c) =>
-          progress.completedComponents.includes(c.id)
+          progress.componentsCompleted.includes(c.id)
         ).length;
 
         return (

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { DecisionNode } from './appliances-types';
+import type { DecisionNode } from './appliances-types';
 import { decisionTreeData, networkDevices } from './appliances-data';
 
 interface DecisionTreeProps {

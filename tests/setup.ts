@@ -33,6 +33,13 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {}
 } as any;
 
+// Mock URL.createObjectURL and URL.revokeObjectURL for file download tests
+global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+global.URL.revokeObjectURL = vi.fn();
+
+// Mock HTMLAnchorElement.click for download tests
+HTMLAnchorElement.prototype.click = vi.fn();
+
 // Extend expect with custom matchers if needed
 expect.extend({
   // Add custom matchers here

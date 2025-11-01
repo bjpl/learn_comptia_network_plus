@@ -46,9 +46,9 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, React.ButtonHTMLA
       onClick={(e) => {
         const parent = e.currentTarget.closest('[data-active-tab]');
         if (parent) {
-          const onTabChange = (parent as never)['onTabChange'];
+          const onTabChange = (parent as any)['onTabChange'];
           if (typeof onTabChange === 'function') {
-            onTabChange(value);
+            (onTabChange as (value: string) => void)(value);
           }
         }
         onClick?.(e);

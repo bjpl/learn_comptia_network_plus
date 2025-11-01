@@ -2,19 +2,21 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './components/shared/Layout';
 import { ErrorBoundary } from './components/shared/ErrorBoundary';
+import { LoadingSpinner } from './components/shared/LoadingSpinner';
 
-// Lazy load pages
-const Dashboard = React.lazy(() => import('./pages/Dashboard'));
-const NotFound = React.lazy(() => import('./pages/NotFound'));
+// Lazy load pages with prefetch hints
+const Dashboard = React.lazy(() => import(/* webpackChunkName: "dashboard" */ './pages/Dashboard'));
+const HomePage = React.lazy(() => import(/* webpackChunkName: "homepage" */ './pages/HomePage'));
+const NotFound = React.lazy(() => import(/* webpackChunkName: "notfound" */ './pages/NotFound'));
 
-// Loading component
-const LoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      <p className="mt-4 text-gray-600">Loading...</p>
-    </div>
-  </div>
+// Optimized loading component
+const LoadingFallback = () => <LoadingSpinner />;
+
+// Wrapper for lazy loaded routes with Suspense
+const LazyRoute: React.FC<{ component: React.LazyExoticComponent<React.ComponentType<any>> }> = ({ component: Component }) => (
+  <React.Suspense fallback={<LoadingFallback />}>
+    <Component />
+  </React.Suspense>
 );
 
 export const router = createBrowserRouter([
@@ -28,11 +30,11 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <React.Suspense fallback={<LoadingFallback />}>
-            <Dashboard />
-          </React.Suspense>
-        ),
+        element: <LazyRoute component={Dashboard} />,
+      },
+      {
+        path: 'home',
+        element: <LazyRoute component={HomePage} />,
       },
     ],
   },
@@ -41,9 +43,7 @@ export const router = createBrowserRouter([
     path: '*',
     element: (
       <ErrorBoundary>
-        <React.Suspense fallback={<LoadingFallback />}>
-          <NotFound />
-        </React.Suspense>
+        <LazyRoute component={NotFound} />
       </ErrorBoundary>
     ),
   },

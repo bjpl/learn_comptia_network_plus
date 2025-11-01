@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { breadcrumbMap } from '../../router';
+// TODO: Import breadcrumbMap when router exports it
+// import { breadcrumbMap } from '../../router';
 
 export const Breadcrumb: React.FC = () => {
   const location = useLocation();

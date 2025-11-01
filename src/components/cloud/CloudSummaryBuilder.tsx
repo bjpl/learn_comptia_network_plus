@@ -10,7 +10,6 @@ import { cloudScenarios } from './cloud-data';
 import type {
   CloudScenario,
   CloudSummary,
-  SummaryCardData,
   ScoreBreakdown,
   DeploymentModel,
   ServiceModel,

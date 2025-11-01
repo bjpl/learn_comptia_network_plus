@@ -1,0 +1,196 @@
+name: Test Matrix
+
+on:
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+  workflow_dispatch:
+
+jobs:
+  test-matrix:
+    name: Test on Node ${{ matrix.node }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20]
+        include:
+          - os: ubuntu-latest
+            node: 20
+            coverage: true
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: comptia_network_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Run frontend tests
+        run: npm run test
+        env:
+          NODE_ENV: test
+
+      - name: Run backend tests
+        working-directory: backend
+        env:
+          NODE_ENV: test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: comptia_network_test
+          DB_USER: postgres
+          DB_PASSWORD: test_password
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          JWT_SECRET: test-jwt-secret
+        run: |
+          if [ "${{ matrix.coverage }}" == "true" ]; then
+            npm run test:coverage
+          else
+            npm run test
+          fi
+
+      - name: Upload coverage
+        if: matrix.coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json,./backend/coverage/coverage-final.json
+          flags: fullstack
+          name: matrix-coverage
+
+  accessibility-tests:
+    name: Accessibility Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run accessibility tests
+        run: npm run test:e2e -- --grep @accessibility
+
+      - name: Upload accessibility report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: accessibility-report
+          path: test-results/
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          configPath: './.lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  docker-compose-test:
+    name: Docker Compose Integration Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        working-directory: backend
+        run: cp .env.test .env
+
+      - name: Start services
+        working-directory: backend
+        run: docker-compose up -d
+
+      - name: Wait for services
+        run: |
+          timeout 60 bash -c 'until docker-compose -f backend/docker-compose.yml ps postgres | grep -q "healthy"; do sleep 2; done'
+          timeout 60 bash -c 'until docker-compose -f backend/docker-compose.yml ps redis | grep -q "healthy"; do sleep 2; done'
+
+      - name: Run integration tests
+        working-directory: backend
+        run: docker-compose exec -T backend npm run test:integration
+
+      - name: Check service health
+        run: |
+          curl -f http://localhost:3000/health || exit 1
+
+      - name: Collect logs
+        if: failure()
+        working-directory: backend
+        run: docker-compose logs
+
+      - name: Stop services
+        if: always()
+        working-directory: backend
+        run: docker-compose down -v

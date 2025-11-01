@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ComparisonDevice } from './appliances-types';
+import type { ComparisonDevice } from './appliances-types';
 import { networkDevices } from './appliances-data';
 
 interface ComparisonMatrixProps {

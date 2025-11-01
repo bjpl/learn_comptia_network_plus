@@ -4,7 +4,8 @@ import type {
   NetworkConnection,
   SimulationState,
   TrafficFlow,
-  SimulationAlert} from './appliances-types';
+  SimulationAlert,
+  DeviceSpecs} from './appliances-types';
 
 import { deviceTemplates } from './appliances-data';
 

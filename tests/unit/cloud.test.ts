@@ -172,7 +172,7 @@ describe('Cloud Architecture Component', () => {
     it('should recommend right-sizing for oversized instances', () => {
       const utilization = {
         cpu: 15,
-        memory: 20,
+        memory: 18, // Changed to < 20 so both conditions are met
         instanceType: 't3.2xlarge',
       };
 
@@ -299,8 +299,13 @@ function recommendRightSizing(utilization: {
   memory: number;
   instanceType: string;
 }): { action: string; suggestedInstance: string } {
+  // Check for oversized instances (low utilization)
   if (utilization.cpu < 20 && utilization.memory < 20) {
     return { action: 'downsize', suggestedInstance: 't3.large' };
+  }
+  // Check for undersized instances (high utilization)
+  if (utilization.cpu > 80 || utilization.memory > 80) {
+    return { action: 'upsize', suggestedInstance: 't3.4xlarge' };
   }
   return { action: 'maintain', suggestedInstance: utilization.instanceType };
 }

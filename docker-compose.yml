@@ -1,60 +1,99 @@
 version: '3.8'
 
 services:
-  # Development server with hot reload
-  dev:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    ports:
-      - "5173:5173"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-    command: npm run dev
-
-  # Production build preview
-  prod:
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile
-      target: production
+    container_name: comptia-frontend
     ports:
-      - "8080:80"
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+    environment:
+      - VITE_API_URL=http://backend:3001
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: comptia-backend
+    ports:
+      - "3001:3001"
     environment:
       - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://admin:changeme@postgres:5432/comptia_network
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-change_this_secret_in_production}
+      - JWT_EXPIRES_IN=7d
+      - BCRYPT_ROUNDS=12
+      - RATE_LIMIT_WINDOW_MS=900000
+      - RATE_LIMIT_MAX_REQUESTS=100
+      - LOG_LEVEL=info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: comptia-postgres
+    environment:
+      - POSTGRES_DB=comptia_network
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d comptia_network"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
-  # Test runner
-  test:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+  redis:
+    image: redis:7-alpine
+    container_name: comptia-redis
     volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=test
-    command: npm run test
+      - redisdata:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
 
-  # E2E testing with Playwright
-  e2e:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - .:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=test
-      - CI=true
-    depends_on:
-      - dev
-    command: npm run test:e2e
+volumes:
+  pgdata:
+    driver: local
+    name: comptia_pgdata
+  redisdata:
+    driver: local
+    name: comptia_redisdata
 
 networks:
-  default:
-    name: comptia-network-plus
+  app-network:
+    driver: bridge
+    name: comptia_network

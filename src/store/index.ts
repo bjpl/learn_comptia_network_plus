@@ -32,6 +32,8 @@ export const useAppStore = create<AppState>()(
       progress: {
         userId: 'default-user',
         componentsCompleted: [],
+        componentScores: {},
+        totalScore: 0,
         domainsCompleted: [],
         totalTimeSpent: 0,
         lastAccessed: new Date(),
@@ -42,18 +44,27 @@ export const useAppStore = create<AppState>()(
       },
 
       // Progress actions
-      updateProgress: (_componentId: string, _score: number) =>
-        set((state) => ({
-          progress: {
-            ...state.progress,
-            lastAccessed: new Date(),
-          },
-        })),
+      updateProgress: (componentId: string, score: number) =>
+        set((state) => {
+          const newScores = { ...state.progress.componentScores, [componentId]: score };
+          const scores = Object.values(newScores);
+          const totalScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+
+          return {
+            progress: {
+              ...state.progress,
+              componentScores: newScores,
+              totalScore,
+              lastAccessed: new Date(),
+            },
+          };
+        }),
 
       markComponentComplete: (componentId: string) =>
         set((state) => ({
           progress: {
             ...state.progress,
+            completedComponents: [...new Set([...state.progress.componentsCompleted, componentId])],
             componentsCompleted: [...new Set([...state.progress.componentsCompleted, componentId])],
             lastAccessed: new Date(),
           },

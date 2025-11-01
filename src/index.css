@@ -30,9 +30,21 @@ body {
   @apply transition-colors duration-150;
 }
 
-/* Focus styles */
+/* Respect prefers-reduced-motion - WCAG 2.3.3 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus styles - WCAG 2.4.7 Focus Visible */
 *:focus-visible {
-  @apply outline-none ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-900;
+  @apply outline-none ring-4 ring-blue-600 ring-offset-2 dark:ring-offset-gray-900;
 }
 
 /* Link styles */
@@ -75,6 +87,19 @@ button {
 /* Custom utilities */
 .text-balance {
   text-wrap: balance;
+}
+
+/* Screen reader only utility - WCAG best practices */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* Print styles */

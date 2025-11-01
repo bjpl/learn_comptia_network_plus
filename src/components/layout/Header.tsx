@@ -5,7 +5,7 @@ import { useAppStore } from '../../store';
 export const Header: React.FC = () => {
   const { theme, toggleTheme, progress } = useAppStore();
   const completionPercentage = Math.round(
-    (progress.completedComponents.length / 23) * 100
+    (progress.componentsCompleted.length / 23) * 100
   );
 
   return (

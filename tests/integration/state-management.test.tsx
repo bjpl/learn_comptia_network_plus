@@ -9,10 +9,30 @@ import { mockUserProgress, mockStoreState } from '../fixtures/test-data';
 
 describe('State Management Integration', () => {
   beforeEach(() => {
+    // Clear localStorage first to prevent test pollution
+    localStorage.clear();
+
     // Reset store to initial state
     const store = useAppStore.getState();
     store.setCurrentPath('/');
     store.setLoading(false);
+
+    // Reset progress to clean state
+    useAppStore.setState({
+      progress: {
+        userId: 'default-user',
+        componentsCompleted: [],
+        componentScores: {},
+        totalScore: 0,
+        domainsCompleted: [],
+        totalTimeSpent: 0,
+        lastAccessed: new Date(),
+        overallProgress: 0,
+        domainProgress: new Map(),
+        achievements: [],
+        streak: 0
+      }
+    });
   });
 
   afterEach(() => {
@@ -85,7 +105,7 @@ describe('State Management Integration', () => {
       });
 
       const { progress } = useAppStore.getState();
-      const activityTime = new Date(progress.lastActivity).getTime();
+      const activityTime = new Date(progress.lastAccessed).getTime();
       expect(activityTime).toBeGreaterThanOrEqual(beforeTime);
     });
   });

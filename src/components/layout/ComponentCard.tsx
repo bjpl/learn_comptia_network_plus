@@ -1,16 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import type { Component } from '../../types';
 import { useAppStore } from '../../store';
 
+interface HomePageComponent {
+  id: string;
+  name: string;
+  path: string;
+  learningObjective: string;
+  description: string;
+}
+
 interface ComponentCardProps {
-  component: Component;
+  component: HomePageComponent;
 }
 
 export const ComponentCard: React.FC<ComponentCardProps> = ({ component }) => {
   const { progress } = useAppStore();
-  const isCompleted = progress.completedComponents.includes(component.id);
-  const score = progress.componentScores[component.id];
+  const isCompleted = progress.componentsCompleted.includes(component.id);
 
   return (
     <Link
@@ -40,11 +46,6 @@ export const ComponentCard: React.FC<ComponentCardProps> = ({ component }) => {
         <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
           {component.learningObjective}
         </span>
-        {score !== undefined && (
-          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-            Score: {score}%
-          </span>
-        )}
       </div>
     </Link>
   );
