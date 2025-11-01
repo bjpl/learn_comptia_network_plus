@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  /* Force dark mode text to be readable - CRITICAL FIX */
+  .dark .text-gray-600 {
+    color: rgb(209 213 219) !important;
+  }
+
+  .dark .text-gray-500 {
+    color: rgb(156 163 175) !important;
+  }
+
+  .dark .text-gray-400 {
+    color: rgb(209 213 219) !important;
+  }
+}
+
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
