@@ -297,7 +297,10 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
           </div>
         </div>
 
-        <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+        <div
+          className="text-gray-600 dark:text-gray-400"
+          style={{ marginTop: '10px', fontSize: '14px' }}
+        >
           <strong>Current Layer:</strong> Layer {packetState.currentLayer} (
           {LAYER_NAMES[packetState.currentLayer]}) |<strong> Direction:</strong>{' '}
           {packetState.direction === 'encapsulation'
@@ -367,6 +370,7 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
                   textAlign: 'center',
                   transition: 'all 0.3s',
                   opacity: animationState.isPlaying ? 0.9 : 1,
+                  color: 'white',
                 }}
               >
                 L{header.layer}: {header.layerName}
@@ -388,7 +392,10 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
             </div>
           </div>
 
-          <div style={{ marginTop: '15px', fontSize: '12px', textAlign: 'center', color: '#666' }}>
+          <div
+            className="text-gray-600 dark:text-gray-400"
+            style={{ marginTop: '15px', fontSize: '12px', textAlign: 'center' }}
+          >
             Click any layer to inspect its contents
           </div>
         </div>
@@ -469,7 +476,12 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
                   border: '1px solid #ddd',
                 }}
               >
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>{key}</div>
+                <div
+                  className="text-gray-600 dark:text-gray-400"
+                  style={{ fontSize: '12px', marginBottom: '5px' }}
+                >
+                  {key}
+                </div>
                 <div style={{ fontSize: '14px', fontWeight: 'bold', fontFamily: 'monospace' }}>
                   {value}
                 </div>

@@ -540,7 +540,10 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
           </div>
         </div>
 
-        <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+        <div
+          className="text-gray-600 dark:text-gray-400"
+          style={{ marginTop: '10px', fontSize: '14px' }}
+        >
           <strong>Current Layer:</strong> Layer {packetState.currentLayer} (
           {LAYER_NAMES[packetState.currentLayer]}) |<strong> Direction:</strong>{' '}
           {packetState.direction === 'encapsulation'
@@ -610,6 +613,7 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                     textAlign: 'center',
                     transition: 'all 0.3s',
                     opacity: animationState.isPlaying ? 0.9 : 1,
+                    color: 'white',
                   }}
                   role="button"
                   tabIndex={0}
@@ -635,7 +639,8 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
             </div>
 
             <div
-              style={{ marginTop: '15px', fontSize: '12px', textAlign: 'center', color: '#666' }}
+              className="text-gray-600 dark:text-gray-400"
+              style={{ marginTop: '15px', fontSize: '12px', textAlign: 'center' }}
             >
               Click any layer to inspect its contents
             </div>
@@ -815,16 +820,19 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                       <div style={{ marginTop: '8px', fontSize: '14px' }}>
                         {step.from} → {step.to}
                       </div>
-                      <div style={{ marginTop: '5px', fontSize: '12px', color: '#666' }}>
+                      <div
+                        className="text-gray-600 dark:text-gray-400"
+                        style={{ marginTop: '5px', fontSize: '12px' }}
+                      >
                         {step.description}
                       </div>
                       {step.seqNum && (
                         <div
+                          className="text-gray-500 dark:text-gray-500"
                           style={{
                             marginTop: '5px',
                             fontSize: '11px',
                             fontFamily: 'monospace',
-                            color: '#888',
                           }}
                         >
                           Seq: {step.seqNum}
@@ -946,25 +954,33 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>MTU Limit</div>
+                  <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '12px' }}>
+                    MTU Limit
+                  </div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
                     {fragmentationInfo.mtu} bytes
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>Packet Size</div>
+                  <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '12px' }}>
+                    Packet Size
+                  </div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
                     {fragmentationInfo.totalPacketSize} bytes
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>Frame Size</div>
+                  <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '12px' }}>
+                    Frame Size
+                  </div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
                     {fragmentationInfo.totalFrameSize} bytes
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>Fragmentation</div>
+                  <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '12px' }}>
+                    Fragmentation
+                  </div>
                   <div
                     style={{
                       fontSize: '20px',
@@ -1069,7 +1085,10 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                         borderRadius: '4px',
                       }}
                     >
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>
+                      <div
+                        className="text-gray-600 dark:text-gray-400"
+                        style={{ fontSize: '12px', marginBottom: '5px' }}
+                      >
                         {key}
                       </div>
                       <div
@@ -1119,7 +1138,10 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                       {step.layerName} ({step.size} bytes):
                     </div>
                     <div style={{ paddingLeft: '20px' }}>{step.content}</div>
-                    <div style={{ paddingLeft: '20px', fontSize: '10px', color: '#888' }}>
+                    <div
+                      className="text-gray-500 dark:text-gray-500"
+                      style={{ paddingLeft: '20px', fontSize: '10px' }}
+                    >
                       {step.description}
                     </div>
                   </div>
@@ -1178,7 +1200,10 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                   <div style={{ fontSize: '14px', marginBottom: '5px' }}>
                     <strong>Action:</strong> {step.action}
                   </div>
-                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>
+                  <div
+                    className="text-gray-600 dark:text-gray-400"
+                    style={{ fontSize: '12px', marginBottom: '5px' }}
+                  >
                     {step.description}
                   </div>
                   <div
@@ -1192,7 +1217,10 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                   >
                     {step.content}
                   </div>
-                  <div style={{ fontSize: '11px', color: '#888', marginTop: '5px' }}>
+                  <div
+                    className="text-gray-500 dark:text-gray-500"
+                    style={{ fontSize: '11px', marginTop: '5px' }}
+                  >
                     Total Size: {step.size} bytes
                   </div>
                 </div>
@@ -1260,7 +1288,12 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                   border: '1px solid #ddd',
                 }}
               >
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>{key}</div>
+                <div
+                  className="text-gray-600 dark:text-gray-400"
+                  style={{ fontSize: '12px', marginBottom: '5px' }}
+                >
+                  {key}
+                </div>
                 <div style={{ fontSize: '14px', fontWeight: 'bold', fontFamily: 'monospace' }}>
                   {value}
                 </div>

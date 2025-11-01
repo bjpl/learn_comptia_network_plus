@@ -197,7 +197,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {stats.attempted}/{TROUBLESHOOTING_SCENARIOS.length}
             </div>
-            <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>
+            <div style={{ fontSize: '14px' }} className="text-gray-600 dark:text-gray-400">
               Scenarios Attempted
             </div>
           </div>
@@ -216,7 +216,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {stats.correct}
             </div>
-            <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>
+            <div style={{ fontSize: '14px' }} className="text-gray-600 dark:text-gray-400">
               Correct Layer IDs
             </div>
           </div>
@@ -235,7 +235,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {Math.round(stats.avgScore)}%
             </div>
-            <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>
+            <div style={{ fontSize: '14px' }} className="text-gray-600 dark:text-gray-400">
               Average Score
             </div>
           </div>
@@ -359,7 +359,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           </div>
 
           <div
-            className="text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+            className="text-gray-700 dark:text-gray-300"
             style={{
               padding: '15px',
               backgroundColor: '#f5f5f5',
@@ -468,7 +468,9 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               100
               {(currentResponse.explanation?.split(' ').filter((w) => w.length > 0).length || 0) >=
                 100 && (
-                <span style={{ color: '#4CAF50', marginLeft: '10px' }}>✓ Meets requirement</span>
+                <span className="text-green-600 dark:text-green-400" style={{ marginLeft: '10px' }}>
+                  ✓ Meets requirement
+                </span>
               )}
             </div>
           </div>
@@ -513,14 +515,16 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               {currentResponse.solution?.split(' ').filter((w) => w.length > 0).length || 0} / 50
               {(currentResponse.solution?.split(' ').filter((w) => w.length > 0).length || 0) >=
                 50 && (
-                <span style={{ color: '#4CAF50', marginLeft: '10px' }}>✓ Meets requirement</span>
+                <span className="text-green-600 dark:text-green-400" style={{ marginLeft: '10px' }}>
+                  ✓ Meets requirement
+                </span>
               )}
             </div>
           </div>
 
           {/* Hints Section */}
           <div
-            className="hints-section dark:border-gray-700 dark:bg-gray-800"
+            className="hints-section"
             style={{
               marginBottom: '25px',
               padding: '15px',
@@ -556,7 +560,6 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
                 {currentScenario.hints.map((hint, index) => (
                   <div
                     key={index}
-                    className="text-gray-900 dark:bg-gray-700 dark:text-gray-100"
                     style={{
                       padding: '10px',
                       backgroundColor: '#fff',
@@ -665,7 +668,6 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
 
       {/* Scenario Navigation */}
       <div
-        className="dark:border-gray-700 dark:bg-gray-800"
         style={{
           marginTop: '30px',
           padding: '20px',

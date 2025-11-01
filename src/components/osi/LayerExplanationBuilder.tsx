@@ -376,7 +376,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
       {/* Enhanced Header */}
       <div style={{ marginBottom: '30px' }}>
         <h2 style={{ marginBottom: '15px' }}>OSI Layer Explanation Builder</h2>
-        <p style={{ color: '#666', marginBottom: '20px' }}>
+        <p className="text-gray-600 dark:text-gray-400" style={{ marginBottom: '20px' }}>
           Master the OSI model through interactive learning. Choose your preferred learning mode
           below.
         </p>
@@ -597,7 +597,10 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                         resize: 'vertical',
                       }}
                     />
-                    <div style={{ marginTop: '5px', fontSize: '12px', color: '#666' }}>
+                    <div
+                      className="text-gray-600 dark:text-gray-400"
+                      style={{ marginTop: '5px', fontSize: '12px' }}
+                    >
                       Word count:{' '}
                       {layer.interactionExplanation.split(' ').filter((w) => w.length > 0).length} /
                       150
@@ -624,7 +627,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
             }}
           >
             <h3>Hints Available: {3 - hintsUsed} remaining</h3>
-            <p style={{ fontSize: '14px', color: '#856404' }}>
+            <p className="text-yellow-900 dark:text-yellow-300" style={{ fontSize: '14px' }}>
               Each hint used deducts 10% from your final score. Use hints wisely!
             </p>
             {hintsUsed < 3 && (
@@ -845,7 +848,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
               backgroundColor: '#f1f8f4',
             }}
           >
-            <p style={{ marginBottom: '15px', color: '#2e7d32' }}>
+            <p className="text-green-900 dark:text-green-300" style={{ marginBottom: '15px' }}>
               Generate downloadable study notes containing all your layer definitions, protocols,
               PDUs, and notes.
             </p>
@@ -907,7 +910,10 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                   <div style={{ fontWeight: 'bold', color: LAYER_COLORS[layer.number] }}>
                     Layer {layer.number}: {layer.name}
                   </div>
-                  <div style={{ fontSize: '12px', marginTop: '8px', color: '#666' }}>
+                  <div
+                    className="text-gray-600 dark:text-gray-400"
+                    style={{ fontSize: '12px', marginTop: '8px' }}
+                  >
                     Status:{' '}
                     {layer.status === 'complete'
                       ? 'Complete ✓'
@@ -916,7 +922,10 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                         : 'Empty ○'}
                   </div>
                   {layer.primaryFunction && (
-                    <div style={{ fontSize: '12px', marginTop: '4px', color: '#666' }}>
+                    <div
+                      className="text-gray-600 dark:text-gray-400"
+                      style={{ fontSize: '12px', marginTop: '4px' }}
+                    >
                       Function: {layer.primaryFunction.substring(0, 30)}...
                     </div>
                   )}
