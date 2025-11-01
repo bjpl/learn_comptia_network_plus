@@ -26,7 +26,7 @@ export const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Dashboard
                 </Link>
@@ -34,7 +34,7 @@ export const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/osi/introduction"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Start Learning
                 </Link>
@@ -42,7 +42,7 @@ export const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/assessment/practice"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Practice Exam
                 </Link>
@@ -59,7 +59,7 @@ export const Footer: React.FC = () => {
                   href="https://www.comptia.org/certifications/network"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   CompTIA Official Site
                 </a>
@@ -69,7 +69,7 @@ export const Footer: React.FC = () => {
                   href="https://www.comptia.org/training/resources"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Study Materials
                 </a>
@@ -79,7 +79,7 @@ export const Footer: React.FC = () => {
                   href="https://www.comptia.org/testing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Exam Information
                 </a>
@@ -94,7 +94,7 @@ export const Footer: React.FC = () => {
               <li>
                 <a
                   href="#"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Privacy Policy
                 </a>
@@ -102,7 +102,7 @@ export const Footer: React.FC = () => {
               <li>
                 <a
                   href="#"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Terms of Service
                 </a>
@@ -110,7 +110,7 @@ export const Footer: React.FC = () => {
               <li>
                 <a
                   href="#"
-                  className="text-sm text-gray-600 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
+                  className="text-sm text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:text-gray-200"
                 >
                   Accessibility
                 </a>

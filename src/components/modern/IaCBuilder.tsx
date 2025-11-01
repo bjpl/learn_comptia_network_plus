@@ -229,7 +229,7 @@ ${template.tasks
             <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
               Infrastructure as Code Fundamentals
             </h3>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
+            <p className="mb-4 text-gray-700 dark:text-gray-400">
               Core concepts and principles for managing infrastructure through code
             </p>
           </div>
@@ -241,7 +241,7 @@ ${template.tasks
               <div className="space-y-3 text-sm">
                 <div>
                   <p className="font-semibold text-blue-800 dark:text-blue-200">Definition:</p>
-                  <p className="mt-1 text-gray-700 dark:text-gray-300">
+                  <p className="mt-1 text-gray-800 dark:text-gray-300">
                     Infrastructure as Code (IaC) means managing and provisioning computing
                     infrastructure using machine-readable definition files rather than interactive
                     configuration tools.
@@ -249,7 +249,7 @@ ${template.tasks
                 </div>
                 <div>
                   <p className="font-semibold text-blue-800 dark:text-blue-200">Key Principle:</p>
-                  <p className="mt-1 text-gray-700 dark:text-gray-300">
+                  <p className="mt-1 text-gray-800 dark:text-gray-300">
                     Treat infrastructure the same as application code: version control, code review,
                     testing, and automation.
                   </p>
@@ -260,7 +260,7 @@ ${template.tasks
             {/* Benefits */}
             <div className="rounded-lg border-2 border-green-200 bg-green-50 p-6">
               <h4 className="mb-4 text-lg font-semibold text-green-900">Key Benefits</h4>
-              <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+              <ul className="space-y-2 text-sm text-gray-800 dark:text-gray-300">
                 <li className="flex items-start gap-2">
                   <span className="mt-1 h-2 w-2 rounded-full bg-green-600"></span>
                   <span>
@@ -303,20 +303,22 @@ ${template.tasks
                 <div className="mb-2 text-sm font-semibold text-purple-700 dark:text-purple-300">
                   Declarative (Desired State)
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-gray-700 dark:text-gray-400">
                   Define the desired final state; the tool determines how to achieve it.
                 </p>
-                <p className="mt-2 text-xs font-semibold">Examples: Terraform, Puppet</p>
+                <p className="mt-2 text-xs font-semibold text-gray-900">
+                  Examples: Terraform, Puppet
+                </p>
               </div>
               <div className="rounded border border-purple-300 bg-white p-4 dark:bg-gray-800">
                 <div className="mb-2 text-sm font-semibold text-purple-700 dark:text-purple-300">
                   Imperative (Procedural)
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-gray-700 dark:text-gray-400">
                   Define specific commands to reach desired state; explicit step-by-step
                   instructions.
                 </p>
-                <p className="mt-2 text-xs font-semibold">Examples: Ansible, Chef</p>
+                <p className="mt-2 text-xs font-semibold text-gray-900">Examples: Ansible, Chef</p>
               </div>
             </div>
           </div>
@@ -331,7 +333,7 @@ ${template.tasks
                 <p className="font-semibold text-orange-800 dark:text-orange-200">
                   Configuration Management:
                 </p>
-                <p className="mt-1 text-gray-700 dark:text-gray-300">
+                <p className="mt-1 text-gray-800 dark:text-gray-300">
                   Deploy router/switch configs, apply security policies, manage VLAN assignments
                 </p>
               </div>
@@ -339,7 +341,7 @@ ${template.tasks
                 <p className="font-semibold text-orange-800 dark:text-orange-200">
                   Service Deployment:
                 </p>
-                <p className="mt-1 text-gray-700 dark:text-gray-300">
+                <p className="mt-1 text-gray-800 dark:text-gray-300">
                   Automate provisioning of load balancers, firewalls, SD-WAN appliances
                 </p>
               </div>
@@ -347,7 +349,7 @@ ${template.tasks
                 <p className="font-semibold text-orange-800 dark:text-orange-200">
                   Compliance & Validation:
                 </p>
-                <p className="mt-1 text-gray-700 dark:text-gray-300">
+                <p className="mt-1 text-gray-800 dark:text-gray-300">
                   Enforce security baselines, validate configurations, generate compliance reports
                 </p>
               </div>
@@ -359,7 +361,7 @@ ${template.tasks
             <h4 className="mb-3 text-lg font-semibold text-red-900">
               CompTIA Network+ Exam Focus Areas
             </h4>
-            <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <ul className="space-y-2 text-sm text-gray-800 dark:text-gray-300">
               <li className="flex items-start gap-2">
                 <span className="font-bold text-red-600">•</span>
                 <span>Understand IaC benefits and differences from traditional management</span>
@@ -392,7 +394,7 @@ ${template.tasks
             <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
               IaC Template Library
             </h3>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
+            <p className="mb-4 text-gray-700 dark:text-gray-400">
               Pre-built templates for common network automation tasks
             </p>
           </div>
@@ -418,7 +420,7 @@ ${template.tasks
                     {template.platform}
                   </span>
                 </div>
-                <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                <p className="mb-3 text-sm text-gray-700 dark:text-gray-400">
                   {template.description}
                 </p>
                 <div className="flex gap-2 text-xs">
@@ -456,7 +458,7 @@ ${template.tasks
                             {param.type}
                           </span>
                         </div>
-                        <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                        <p className="mt-1 text-xs text-gray-700 dark:text-gray-400">
                           {param.description}
                         </p>
                         {param.required && <span className="text-xs text-red-600">* Required</span>}
@@ -473,7 +475,7 @@ ${template.tasks
                         <div className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">
                           {task.name}
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="text-xs text-gray-700 dark:text-gray-400">
                           {task.description}
                         </p>
                         <div className="mt-2 flex gap-2 text-xs">
@@ -513,7 +515,7 @@ ${template.tasks
             <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
               Code Editor
             </h3>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
+            <p className="mb-4 text-gray-700 dark:text-gray-400">
               Write and validate IaC configurations with syntax highlighting
             </p>
           </div>
@@ -603,7 +605,7 @@ ${template.tasks
         <div className="space-y-6">
           <div>
             <h3 className="mb-3 text-xl font-semibold">Configuration Drift Detection</h3>
-            <p className="mb-4 text-gray-600">
+            <p className="mb-4 text-gray-700">
               Identify unauthorized changes and maintain configuration compliance
             </p>
           </div>
@@ -652,13 +654,13 @@ ${template.tasks
                       </div>
                       <div className="mb-2 grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-gray-700">Expected:</span>{' '}
+                          <span className="text-gray-900">Expected:</span>{' '}
                           <code className="rounded bg-white px-2 py-1">
                             {String(item.expected)}
                           </code>
                         </div>
                         <div>
-                          <span className="text-gray-700">Actual:</span>{' '}
+                          <span className="text-gray-900">Actual:</span>{' '}
                           <code className="rounded bg-white px-2 py-1">{String(item.actual)}</code>
                         </div>
                       </div>
@@ -696,7 +698,7 @@ ${template.tasks
         <div className="space-y-6">
           <div>
             <h3 className="mb-3 text-xl font-semibold">NetOps CI/CD Pipeline</h3>
-            <p className="mb-4 text-gray-600">
+            <p className="mb-4 text-gray-700">
               Automated workflow for network configuration deployment
             </p>
           </div>
@@ -767,9 +769,9 @@ ${template.tasks
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="text-lg font-semibold">{stage.name}</div>
-                        <p className="text-sm text-gray-600">{stage.description}</p>
+                        <p className="text-sm text-gray-700">{stage.description}</p>
                       </div>
-                      <span className="text-sm text-gray-500">{stage.duration}</span>
+                      <span className="text-sm text-gray-700">{stage.duration}</span>
                     </div>
                   </div>
                   {idx < 4 && <div className="ml-6 h-8 w-px bg-gray-300"></div>}
@@ -832,7 +834,7 @@ ${template.tasks
         <div className="space-y-6">
           <div>
             <h3 className="mb-3 text-xl font-semibold">IaC Tools Comparison</h3>
-            <p className="mb-4 text-gray-600">
+            <p className="mb-4 text-gray-700">
               Understand the differences between popular IaC tools and their network automation
               capabilities
             </p>
@@ -1062,7 +1064,7 @@ ${template.tasks
         <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
           <div>
             <h4 className="mb-2 font-semibold">Core Principles:</h4>
-            <ul className="list-inside list-disc space-y-1 text-gray-700">
+            <ul className="list-inside list-disc space-y-1 text-gray-800">
               <li>Version control all infrastructure definitions</li>
               <li>Treat code and infrastructure the same</li>
               <li>Implement code reviews and testing</li>
@@ -1072,7 +1074,7 @@ ${template.tasks
           </div>
           <div>
             <h4 className="mb-2 font-semibold">Implementation Strategy:</h4>
-            <ul className="list-inside list-disc space-y-1 text-gray-700">
+            <ul className="list-inside list-disc space-y-1 text-gray-800">
               <li>Start with non-production environments</li>
               <li>Build reusable templates and modules</li>
               <li>Implement CI/CD pipelines for deployment</li>

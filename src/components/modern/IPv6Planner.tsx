@@ -634,7 +634,7 @@ const IPv6Planner: React.FC = () => {
         <h2 className="mb-2 text-3xl font-bold text-gray-800 dark:text-gray-100">
           Component 19: IPv6 Planner - Complete Learning Tool
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-gray-700 dark:text-gray-400">
           Master IPv6 fundamentals, address types, subnetting, transition strategies, and exam
           practice.
         </p>
@@ -730,19 +730,19 @@ const IPv6Planner: React.FC = () => {
                   <div className="font-semibold text-green-700 dark:text-green-300">
                     Unicast (2000::/3)
                   </div>
-                  <div className="text-gray-700 dark:text-gray-300">One-to-one communication</div>
+                  <div className="text-gray-800 dark:text-gray-300">One-to-one communication</div>
                 </div>
                 <div className="rounded bg-white p-2 dark:bg-gray-700">
                   <div className="font-semibold text-orange-700 dark:text-orange-300">
                     Multicast (ff00::/8)
                   </div>
-                  <div className="text-gray-700 dark:text-gray-300">One-to-many communication</div>
+                  <div className="text-gray-800 dark:text-gray-300">One-to-many communication</div>
                 </div>
                 <div className="rounded bg-white p-2 dark:bg-gray-700">
                   <div className="font-semibold text-purple-700 dark:text-purple-300">
                     Anycast (within Global)
                   </div>
-                  <div className="text-gray-700 dark:text-gray-300">
+                  <div className="text-gray-800 dark:text-gray-300">
                     One-to-nearest communication
                   </div>
                 </div>
@@ -750,7 +750,7 @@ const IPv6Planner: React.FC = () => {
                   <div className="font-semibold text-blue-700 dark:text-blue-300">
                     Link-Local (fe80::/10)
                   </div>
-                  <div className="text-gray-700 dark:text-gray-300">
+                  <div className="text-gray-800 dark:text-gray-300">
                     Auto-configured, on-link only
                   </div>
                 </div>
@@ -758,7 +758,7 @@ const IPv6Planner: React.FC = () => {
                   <div className="font-semibold text-red-700 dark:text-red-300">
                     Unique Local (fc00::/7)
                   </div>
-                  <div className="text-gray-700 dark:text-gray-300">
+                  <div className="text-gray-800 dark:text-gray-300">
                     Private, equivalent to RFC 1918
                   </div>
                 </div>
@@ -770,7 +770,7 @@ const IPv6Planner: React.FC = () => {
               <h3 className="mb-4 text-xl font-bold text-purple-900 dark:text-purple-100">
                 Subnetting Reference
               </h3>
-              <div className="space-y-2 font-mono text-sm text-gray-700 dark:text-gray-300">
+              <div className="space-y-2 font-mono text-sm text-gray-800 dark:text-gray-300">
                 <div className="flex justify-between rounded bg-white p-2 dark:bg-gray-700">
                   <span>/32</span>
                   <span className="text-purple-600 dark:text-purple-300">
@@ -919,7 +919,7 @@ const IPv6Planner: React.FC = () => {
                 <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   IPv6 Exam Practice Questions
                 </h3>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-sm text-gray-700 dark:text-gray-400">
                   Question {currentQuestion + 1} of {ipv6Questions.length}
                 </div>
               </div>
@@ -932,7 +932,7 @@ const IPv6Planner: React.FC = () => {
               </div>
 
               <div className="mb-8">
-                <h4 className="mb-6 text-lg font-semibold text-gray-800 dark:text-gray-100">
+                <h4 className="mb-6 text-lg font-semibold text-gray-900 dark:text-gray-100">
                   {ipv6Questions[currentQuestion].question}
                 </h4>
                 <div className="space-y-3">
@@ -1021,8 +1021,8 @@ const IPv6Planner: React.FC = () => {
                           {isCorrect ? '✓' : '✗'}
                         </span>
                       </div>
-                      <div className="mt-3 border-t border-gray-300 pt-3 text-sm text-gray-700 dark:text-gray-300">
-                        <div className="font-semibold text-gray-800 dark:text-gray-100">
+                      <div className="mt-3 border-t border-gray-300 pt-3 text-sm text-gray-800 dark:text-gray-300">
+                        <div className="font-semibold text-gray-900 dark:text-gray-100">
                           Explanation:
                         </div>
                         <div>{q.explanation}</div>
@@ -1076,25 +1076,25 @@ const IPv6Planner: React.FC = () => {
                       {scenario.complexity}
                     </span>
                   </div>
-                  <p className="mb-3 text-sm text-gray-600">{scenario.description}</p>
+                  <p className="mb-3 text-sm text-gray-700">{scenario.description}</p>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <span className="text-gray-500">Devices:</span>{' '}
+                      <span className="text-gray-700">Devices:</span>{' '}
                       <span className="font-semibold">{scenario.currentState.devices}</span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Subnets:</span>{' '}
+                      <span className="text-gray-700">Subnets:</span>{' '}
                       <span className="font-semibold">{scenario.currentState.subnets}</span>
                     </div>
                     <div>
-                      <span className="text-gray-500">IPv6 Ready:</span>{' '}
+                      <span className="text-gray-700">IPv6 Ready:</span>{' '}
                       <span className="font-semibold">
                         {scenario.currentState.infrastructure.routers.ipv6Capable}/
                         {scenario.currentState.infrastructure.routers.total} routers
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Constraints:</span>{' '}
+                      <span className="text-gray-700">Constraints:</span>{' '}
                       <span className="font-semibold">{scenario.constraints.length}</span>
                     </div>
                   </div>
@@ -1125,13 +1125,13 @@ const IPv6Planner: React.FC = () => {
                     <div className="space-y-1 text-xs">
                       <div className="font-semibold text-green-700">Pros:</div>
                       {methodInfo[method].pros.slice(0, 2).map((pro, idx) => (
-                        <div key={idx} className="text-gray-600">
+                        <div key={idx} className="text-gray-700">
                           • {pro}
                         </div>
                       ))}
                       <div className="mt-2 font-semibold text-red-700">Cons:</div>
                       {methodInfo[method].cons.slice(0, 2).map((con, idx) => (
-                        <div key={idx} className="text-gray-600">
+                        <div key={idx} className="text-gray-700">
                           • {con}
                         </div>
                       ))}
@@ -1158,7 +1158,7 @@ const IPv6Planner: React.FC = () => {
                 <h3 className="mb-4 text-2xl font-bold">Migration Plan Overview</h3>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                   <div className="rounded-lg bg-white p-4">
-                    <div className="mb-1 text-sm text-gray-600">Duration</div>
+                    <div className="mb-1 text-sm text-gray-700">Duration</div>
                     <div className="text-2xl font-bold text-blue-600">
                       {migrationPlan.timeline.totalDays} days
                     </div>
@@ -1167,19 +1167,19 @@ const IPv6Planner: React.FC = () => {
                     </div>
                   </div>
                   <div className="rounded-lg bg-white p-4">
-                    <div className="mb-1 text-sm text-gray-600">Total Budget</div>
+                    <div className="mb-1 text-sm text-gray-700">Total Budget</div>
                     <div className="text-2xl font-bold text-green-600">
                       {formatCurrency(migrationPlan.budget.total)}
                     </div>
                   </div>
                   <div className="rounded-lg bg-white p-4">
-                    <div className="mb-1 text-sm text-gray-600">Phases</div>
+                    <div className="mb-1 text-sm text-gray-700">Phases</div>
                     <div className="text-2xl font-bold text-purple-600">
                       {migrationPlan.phases.length}
                     </div>
                   </div>
                   <div className="rounded-lg bg-white p-4">
-                    <div className="mb-1 text-sm text-gray-600">Risks</div>
+                    <div className="mb-1 text-sm text-gray-700">Risks</div>
                     <div className="text-2xl font-bold text-orange-600">
                       {migrationPlan.riskAssessment.length}
                     </div>
@@ -1191,25 +1191,25 @@ const IPv6Planner: React.FC = () => {
                   <h4 className="mb-2 font-semibold">Budget Breakdown</h4>
                   <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
                     <div>
-                      <span className="text-gray-600">Hardware:</span>{' '}
+                      <span className="text-gray-700">Hardware:</span>{' '}
                       <span className="font-semibold">
                         {formatCurrency(migrationPlan.budget.hardware)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Software:</span>{' '}
+                      <span className="text-gray-700">Software:</span>{' '}
                       <span className="font-semibold">
                         {formatCurrency(migrationPlan.budget.software)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Training:</span>{' '}
+                      <span className="text-gray-700">Training:</span>{' '}
                       <span className="font-semibold">
                         {formatCurrency(migrationPlan.budget.training)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Consulting:</span>{' '}
+                      <span className="text-gray-700">Consulting:</span>{' '}
                       <span className="font-semibold">
                         {formatCurrency(migrationPlan.budget.consulting)}
                       </span>
@@ -1243,7 +1243,7 @@ const IPv6Planner: React.FC = () => {
                       <h3 className="text-2xl font-bold">
                         Phase {activePhase + 1}: {migrationPlan.phases[activePhase].name}
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-gray-700">
                         Method: {methodInfo[migrationPlan.phases[activePhase].method].name}
                       </p>
                     </div>
@@ -1270,15 +1270,15 @@ const IPv6Planner: React.FC = () => {
                         >
                           <div className="mb-2 flex items-start justify-between">
                             <div className="font-semibold">{task.description}</div>
-                            <span className="text-sm text-gray-600">{task.duration} days</span>
+                            <span className="text-sm text-gray-700">{task.duration} days</span>
                           </div>
                           <div className="grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
                             <div>
-                              <span className="text-gray-600">Resources:</span>{' '}
+                              <span className="text-gray-700">Resources:</span>{' '}
                               <span className="text-gray-800">{task.resources.join(', ')}</span>
                             </div>
                             <div>
-                              <span className="text-gray-600">Validation:</span>{' '}
+                              <span className="text-gray-700">Validation:</span>{' '}
                               <span className="text-gray-800">{task.validation.length} checks</span>
                             </div>
                           </div>
@@ -1300,14 +1300,14 @@ const IPv6Planner: React.FC = () => {
                         >
                           <div className="mb-1 font-semibold">{risk.description}</div>
                           <div className="mb-2 text-sm">
-                            <span className="text-gray-700">Probability:</span>{' '}
+                            <span className="text-gray-800">Probability:</span>{' '}
                             <span className="font-semibold">{risk.probability}</span>
                             {' | '}
-                            <span className="text-gray-700">Impact:</span>{' '}
+                            <span className="text-gray-800">Impact:</span>{' '}
                             <span className="font-semibold">{risk.impact}</span>
                           </div>
                           <div className="text-sm">
-                            <span className="text-gray-700">Mitigation:</span> {risk.mitigation}
+                            <span className="text-gray-800">Mitigation:</span> {risk.mitigation}
                           </div>
                         </div>
                       ))}
@@ -1327,7 +1327,7 @@ const IPv6Planner: React.FC = () => {
                         {metric.target}
                         {metric.unit}
                       </div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-gray-700">
                         Measured via: {metric.measurement}
                       </div>
                       <div className="mt-2">
@@ -1354,7 +1354,7 @@ const IPv6Planner: React.FC = () => {
           {!selectedScenario && (
             <div className="mt-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
               <h3 className="mb-3 text-lg font-semibold">How to Use This Planner:</h3>
-              <ol className="list-inside list-decimal space-y-2 text-gray-700">
+              <ol className="list-inside list-decimal space-y-2 text-gray-800">
                 <li>Select a migration scenario that matches your environment</li>
                 <li>
                   Choose the most appropriate migration method (dual stack, tunneling, or NAT64)

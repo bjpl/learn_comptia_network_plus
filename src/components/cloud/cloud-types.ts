@@ -73,7 +73,10 @@ export type ComponentType =
   | 'connectivity'
   | 'vpc-element'
   | 'gateway'
-  | 'nfv-component';
+  | 'nfv-component'
+  | 'dr-component'
+  | 'ha-component'
+  | 'availability-zone';
 
 export type DeploymentZone = 'Public Cloud' | 'Private Cloud' | 'Hybrid Zone';
 export type ServiceLayer = 'SaaS Application' | 'PaaS Platform' | 'IaaS Infrastructure';
@@ -81,11 +84,34 @@ export type ConnectivityOption = 'VPN Tunnel' | 'Direct Connect Link' | 'Interne
 export type VPCElement = 'Subnet' | 'Security Group' | 'Network List';
 export type Gateway = 'Internet Gateway' | 'NAT Gateway';
 export type NFVComponent = 'Virtual Router' | 'Virtual Firewall' | 'Virtual Load Balancer';
+export type DRComponent =
+  | 'Backup Vault'
+  | 'Snapshot Service'
+  | 'DR Site'
+  | 'Replication Service'
+  | 'Failover Endpoint';
+export type HAComponent =
+  | 'Auto-Scaling Group'
+  | 'Load Balancer'
+  | 'Health Check'
+  | 'Read Replica'
+  | 'Active-Active'
+  | 'Active-Passive';
+export type AvailabilityZone = 'Availability Zone' | 'Region' | 'Multi-Region' | 'Edge Location';
 
 export interface ArchitectureComponent {
   id: string;
   type: ComponentType;
-  subtype: DeploymentZone | ServiceLayer | ConnectivityOption | VPCElement | Gateway | NFVComponent;
+  subtype:
+    | DeploymentZone
+    | ServiceLayer
+    | ConnectivityOption
+    | VPCElement
+    | Gateway
+    | NFVComponent
+    | DRComponent
+    | HAComponent
+    | AvailabilityZone;
   name: string;
   x: number;
   y: number;
@@ -179,4 +205,33 @@ export interface UserProgress {
   totalTime: number;
   architecturesCreated: number;
   bestPracticesFollowed: number;
+}
+
+// Disaster Recovery Types
+export interface DRStrategy {
+  name: string;
+  description: string;
+  rto: string; // Recovery Time Objective
+  rpo: string; // Recovery Point Objective
+  cost: 'Low' | 'Medium' | 'High' | 'Very High';
+  availability: string;
+  useCases: string[];
+}
+
+export interface BackupType {
+  name: string;
+  description: string;
+  frequency: string;
+  dataAmount: string;
+  speed: string;
+  storageRequired: string;
+}
+
+export interface HAPattern {
+  name: string;
+  description: string;
+  availability: string;
+  components: string[];
+  complexity: 'Low' | 'Medium' | 'High';
+  cost: 'Low' | 'Medium' | 'High';
 }

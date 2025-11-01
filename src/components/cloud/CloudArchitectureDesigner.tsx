@@ -10,7 +10,7 @@
  * - Cloud Security Basics
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { componentLibrary, validationRules } from './cloud-data';
 import type {
   ArchitectureComponent,
@@ -30,8 +30,43 @@ import type {
   ValidationWarning,
 } from './cloud-types';
 
+type DragState = {
+  isDragging: boolean;
+  componentId: string | null;
+  startX: number;
+  startY: number;
+  offsetX: number;
+  offsetY: number;
+};
+
+type ResizeState = {
+  isResizing: boolean;
+  componentId: string | null;
+  handle: 'se' | 'ne' | 'sw' | 'nw' | null;
+  startX: number;
+  startY: number;
+  startWidth: number;
+  startHeight: number;
+  startComponentX: number;
+  startComponentY: number;
+};
+
+type ConnectionState = {
+  isConnecting: boolean;
+  fromId: string | null;
+  cursorX: number;
+  cursorY: number;
+};
+
+type HistoryState = {
+  past: ArchitectureDesign[];
+  present: ArchitectureDesign;
+  future: ArchitectureDesign[];
+};
+
 export const CloudArchitectureDesigner: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [design, setDesign] = useState<ArchitectureDesign>({
     id: 'design-' + Date.now(),
     name: 'New Cloud Architecture',
@@ -56,12 +91,87 @@ export const CloudArchitectureDesigner: React.FC = () => {
   });
 
   const [selectedComponent, setSelectedComponent] = useState<ArchitectureComponent | null>(null);
+  const [hoveredComponent, setHoveredComponent] = useState<string | null>(null);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [showLibrary, setShowLibrary] = useState(true);
   const [activeCategory, setActiveCategory] = useState<ComponentType>('deployment-zone');
   const [showServiceComparison, setShowServiceComparison] = useState(false);
   const [showSecurityPanel, setShowSecurityPanel] = useState(false);
   const [showElasticityVisualization, setShowElasticityVisualization] = useState(false);
+  const [isDraggingFromLibrary, setIsDraggingFromLibrary] = useState(false);
+  const [dragState, setDragState] = useState<DragState>({
+    isDragging: false,
+    componentId: null,
+    startX: 0,
+    startY: 0,
+    offsetX: 0,
+    offsetY: 0,
+  });
+  const [resizeState, setResizeState] = useState<ResizeState>({
+    isResizing: false,
+    componentId: null,
+    handle: null,
+    startX: 0,
+    startY: 0,
+    startWidth: 0,
+    startHeight: 0,
+    startComponentX: 0,
+    startComponentY: 0,
+  });
+  const [connectionState, setConnectionState] = useState<ConnectionState>({
+    isConnecting: false,
+    fromId: null,
+    cursorX: 0,
+    cursorY: 0,
+  });
+  const [history, setHistory] = useState<HistoryState>({
+    past: [],
+    present: design,
+    future: [],
+  });
+  const [canvasPan, setCanvasPan] = useState({ isPanning: false, startX: 0, startY: 0 });
+
+  // Sync history with design changes
+  useEffect(() => {
+    setHistory((prev) => ({
+      past: [...prev.past, prev.present],
+      present: design,
+      future: [],
+    }));
+  }, [design]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Undo: Ctrl+Z
+      if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+      }
+      // Redo: Ctrl+Shift+Z or Ctrl+Y
+      if ((e.ctrlKey && e.shiftKey && e.key === 'z') || (e.ctrlKey && e.key === 'y')) {
+        e.preventDefault();
+        handleRedo();
+      }
+      // Delete: Delete key
+      if (e.key === 'Delete' && selectedComponent) {
+        e.preventDefault();
+        handleComponentDelete(selectedComponent.id);
+      }
+      // Escape: Cancel connection mode
+      if (e.key === 'Escape') {
+        setConnectionState({ isConnecting: false, fromId: null, cursorX: 0, cursorY: 0 });
+      }
+      // Duplicate: Ctrl+D
+      if (e.ctrlKey && e.key === 'd' && selectedComponent) {
+        e.preventDefault();
+        handleDuplicateComponent(selectedComponent.id);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedComponent, history]);
 
   const snapToGrid = (value: number): number => {
     if (!canvasState.snapToGrid) {
@@ -70,9 +180,90 @@ export const CloudArchitectureDesigner: React.FC = () => {
     return Math.round(value / canvasState.gridSize) * canvasState.gridSize;
   };
 
+  const handleUndo = () => {
+    if (history.past.length > 0) {
+      const previous = history.past[history.past.length - 1];
+      const newPast = history.past.slice(0, -1);
+      setHistory({
+        past: newPast,
+        present: previous,
+        future: [history.present, ...history.future],
+      });
+      setDesign(previous);
+    }
+  };
+
+  const handleRedo = () => {
+    if (history.future.length > 0) {
+      const next = history.future[0];
+      const newFuture = history.future.slice(1);
+      setHistory({
+        past: [...history.past, history.present],
+        present: next,
+        future: newFuture,
+      });
+      setDesign(next);
+    }
+  };
+
+  const handleZoomToFit = () => {
+    if (design.components.length === 0) {
+      return;
+    }
+
+    const minX = Math.min(...design.components.map((c) => c.x));
+    const minY = Math.min(...design.components.map((c) => c.y));
+    const maxX = Math.max(...design.components.map((c) => c.x + c.width));
+    const maxY = Math.max(...design.components.map((c) => c.y + c.height));
+
+    const width = maxX - minX;
+    const height = maxY - minY;
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) {
+      return;
+    }
+
+    const zoomX = (rect.width * 0.8) / width;
+    const zoomY = (rect.height * 0.8) / height;
+    const newZoom = Math.min(zoomX, zoomY, 2);
+
+    setCanvasState({ ...canvasState, zoom: newZoom });
+  };
+
+  const handleCenterView = () => {
+    setCanvasState({ ...canvasState, panX: 0, panY: 0 });
+  };
+
+  const handleDuplicateComponent = (componentId: string) => {
+    const component = design.components.find((c) => c.id === componentId);
+    if (!component) {
+      return;
+    }
+
+    const newComponent: ArchitectureComponent = {
+      ...component,
+      id: `component-${Date.now()}`,
+      name: `${component.name} (Copy)`,
+      x: component.x + 20,
+      y: component.y + 20,
+    };
+
+    setDesign({
+      ...design,
+      components: [...design.components, newComponent],
+      metadata: { ...design.metadata, modified: new Date() },
+    });
+    setSelectedComponent(newComponent);
+  };
+
   const handleDragStart = (e: React.DragEvent, libraryItem: ComponentLibraryItem) => {
     e.dataTransfer.setData('application/json', JSON.stringify(libraryItem));
     e.dataTransfer.effectAllowed = 'copy';
+    setIsDraggingFromLibrary(true);
+  };
+
+  const handleDragEnd = () => {
+    setIsDraggingFromLibrary(false);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -82,6 +273,7 @@ export const CloudArchitectureDesigner: React.FC = () => {
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDraggingFromLibrary(false);
 
     const data = e.dataTransfer.getData('application/json');
     if (!data) {
@@ -94,8 +286,8 @@ export const CloudArchitectureDesigner: React.FC = () => {
       return;
     }
 
-    const x = snapToGrid((e.clientX - rect.left - canvasState.panX) / canvasState.zoom);
-    const y = snapToGrid((e.clientY - rect.top - canvasState.panY) / canvasState.zoom);
+    const x = snapToGrid((e.clientX - rect.left) / canvasState.zoom);
+    const y = snapToGrid((e.clientY - rect.top) / canvasState.zoom);
 
     const newComponent: ArchitectureComponent = {
       id: `component-${Date.now()}`,
@@ -129,9 +321,234 @@ export const CloudArchitectureDesigner: React.FC = () => {
       components: [...design.components, newComponent],
       metadata: { ...design.metadata, modified: new Date() },
     });
+    setSelectedComponent(newComponent);
   };
 
-  const handleComponentClick = (component: ArchitectureComponent) => {
+  // Component dragging handlers
+  const handleComponentMouseDown = (e: React.MouseEvent, component: ArchitectureComponent) => {
+    // Don't start drag if clicking on delete button or resize handle
+    const target = e.target as HTMLElement;
+    if (target.closest('.delete-btn') || target.closest('.resize-handle')) {
+      return;
+    }
+
+    e.stopPropagation();
+    setSelectedComponent(component);
+
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) {
+      return;
+    }
+
+    setDragState({
+      isDragging: true,
+      componentId: component.id,
+      startX: e.clientX,
+      startY: e.clientY,
+      offsetX: component.x,
+      offsetY: component.y,
+    });
+  };
+
+  const handleCanvasMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (!rect) {
+        return;
+      }
+
+      // Handle component dragging
+      if (dragState.isDragging && dragState.componentId) {
+        const deltaX = (e.clientX - dragState.startX) / canvasState.zoom;
+        const deltaY = (e.clientY - dragState.startY) / canvasState.zoom;
+
+        let newX = dragState.offsetX + deltaX;
+        let newY = dragState.offsetY + deltaY;
+
+        // Snap to grid
+        newX = snapToGrid(newX);
+        newY = snapToGrid(newY);
+
+        // Keep within canvas bounds
+        newX = Math.max(0, Math.min(newX, 2000 - 100));
+        newY = Math.max(0, Math.min(newY, 1500 - 100));
+
+        const updatedComponents = design.components.map((c) =>
+          c.id === dragState.componentId ? { ...c, x: newX, y: newY } : c
+        );
+
+        setDesign({
+          ...design,
+          components: updatedComponents,
+          metadata: { ...design.metadata, modified: new Date() },
+        });
+
+        if (selectedComponent?.id === dragState.componentId) {
+          setSelectedComponent({ ...selectedComponent, x: newX, y: newY });
+        }
+      }
+
+      // Handle component resizing
+      if (resizeState.isResizing && resizeState.componentId && resizeState.handle) {
+        const deltaX = (e.clientX - resizeState.startX) / canvasState.zoom;
+        const deltaY = (e.clientY - resizeState.startY) / canvasState.zoom;
+
+        let newWidth = resizeState.startWidth;
+        let newHeight = resizeState.startHeight;
+        let newX = resizeState.startComponentX;
+        let newY = resizeState.startComponentY;
+
+        if (resizeState.handle === 'se') {
+          newWidth = Math.max(80, resizeState.startWidth + deltaX);
+          newHeight = Math.max(60, resizeState.startHeight + deltaY);
+        } else if (resizeState.handle === 'ne') {
+          newWidth = Math.max(80, resizeState.startWidth + deltaX);
+          newHeight = Math.max(60, resizeState.startHeight - deltaY);
+          newY = resizeState.startComponentY + deltaY;
+        } else if (resizeState.handle === 'sw') {
+          newWidth = Math.max(80, resizeState.startWidth - deltaX);
+          newHeight = Math.max(60, resizeState.startHeight + deltaY);
+          newX = resizeState.startComponentX + deltaX;
+        } else if (resizeState.handle === 'nw') {
+          newWidth = Math.max(80, resizeState.startWidth - deltaX);
+          newHeight = Math.max(60, resizeState.startHeight - deltaY);
+          newX = resizeState.startComponentX + deltaX;
+          newY = resizeState.startComponentY + deltaY;
+        }
+
+        // Snap to grid
+        newWidth = snapToGrid(newWidth);
+        newHeight = snapToGrid(newHeight);
+        newX = snapToGrid(newX);
+        newY = snapToGrid(newY);
+
+        const updatedComponents = design.components.map((c) =>
+          c.id === resizeState.componentId
+            ? { ...c, width: newWidth, height: newHeight, x: newX, y: newY }
+            : c
+        );
+
+        setDesign({
+          ...design,
+          components: updatedComponents,
+          metadata: { ...design.metadata, modified: new Date() },
+        });
+
+        if (selectedComponent?.id === resizeState.componentId) {
+          setSelectedComponent({
+            ...selectedComponent,
+            width: newWidth,
+            height: newHeight,
+            x: newX,
+            y: newY,
+          });
+        }
+      }
+
+      // Handle connection preview
+      if (connectionState.isConnecting) {
+        const x = (e.clientX - rect.left) / canvasState.zoom;
+        const y = (e.clientY - rect.top) / canvasState.zoom;
+        setConnectionState({ ...connectionState, cursorX: x, cursorY: y });
+      }
+
+      // Handle canvas panning
+      if (canvasPan.isPanning) {
+        const deltaX = e.clientX - canvasPan.startX;
+        const deltaY = e.clientY - canvasPan.startY;
+
+        setCanvasState({
+          ...canvasState,
+          panX: canvasState.panX + deltaX,
+          panY: canvasState.panY + deltaY,
+        });
+
+        setCanvasPan({ ...canvasPan, startX: e.clientX, startY: e.clientY });
+      }
+    },
+    [dragState, resizeState, connectionState, canvasPan, design, selectedComponent, canvasState]
+  );
+
+  const handleCanvasMouseUp = () => {
+    setDragState({
+      isDragging: false,
+      componentId: null,
+      startX: 0,
+      startY: 0,
+      offsetX: 0,
+      offsetY: 0,
+    });
+    setResizeState({
+      isResizing: false,
+      componentId: null,
+      handle: null,
+      startX: 0,
+      startY: 0,
+      startWidth: 0,
+      startHeight: 0,
+      startComponentX: 0,
+      startComponentY: 0,
+    });
+    setCanvasPan({ isPanning: false, startX: 0, startY: 0 });
+  };
+
+  const handleResizeMouseDown = (
+    e: React.MouseEvent,
+    component: ArchitectureComponent,
+    handle: 'se' | 'ne' | 'sw' | 'nw'
+  ) => {
+    e.stopPropagation();
+    setResizeState({
+      isResizing: true,
+      componentId: component.id,
+      handle,
+      startX: e.clientX,
+      startY: e.clientY,
+      startWidth: component.width,
+      startHeight: component.height,
+      startComponentX: component.x,
+      startComponentY: component.y,
+    });
+  };
+
+  const handleCanvasMouseDown = (e: React.MouseEvent) => {
+    // Only start panning if clicking on canvas background
+    const target = e.target as HTMLElement;
+    if (target === canvasRef.current || target.classList.contains('connections-layer')) {
+      setCanvasPan({
+        isPanning: true,
+        startX: e.clientX,
+        startY: e.clientY,
+      });
+      setSelectedComponent(null);
+    }
+  };
+
+  const handleConnectionModeToggle = (componentId: string) => {
+    if (connectionState.isConnecting && connectionState.fromId === componentId) {
+      // Cancel connection mode
+      setConnectionState({ isConnecting: false, fromId: null, cursorX: 0, cursorY: 0 });
+    } else if (connectionState.isConnecting && connectionState.fromId) {
+      // Complete connection
+      handleCreateConnection(connectionState.fromId, componentId);
+      setConnectionState({ isConnecting: false, fromId: null, cursorX: 0, cursorY: 0 });
+    } else {
+      // Start connection mode
+      const component = design.components.find((c) => c.id === componentId);
+      if (!component) {
+        return;
+      }
+      setConnectionState({
+        isConnecting: true,
+        fromId: componentId,
+        cursorX: component.x + component.width / 2,
+        cursorY: component.y + component.height / 2,
+      });
+    }
+  };
+
+  const handleComponentClick = (e: React.MouseEvent, component: ArchitectureComponent) => {
+    e.stopPropagation();
     setSelectedComponent(component);
   };
 
@@ -437,46 +854,84 @@ export const CloudArchitectureDesigner: React.FC = () => {
     <div className="cloud-architecture-designer">
       <div className="header">
         <div className="title-section">
-          <h2>Cloud Architecture Designer</h2>
-          <input
-            type="text"
-            className="design-name"
-            value={design.name}
-            onChange={(e) => setDesign({ ...design, name: e.target.value })}
-            placeholder="Architecture name"
-          />
+          <div className="title-wrapper">
+            <h2>Cloud Architecture Designer</h2>
+            <p className="subtitle">Design and validate cloud infrastructure architectures</p>
+          </div>
+          <div className="design-name-wrapper">
+            <input
+              type="text"
+              className="design-name"
+              value={design.name}
+              onChange={(e) => setDesign({ ...design, name: e.target.value })}
+              placeholder="Architecture name"
+            />
+            <div className="metadata">
+              <span className="metadata-item">
+                {design.components.length} component{design.components.length !== 1 ? 's' : ''}
+              </span>
+              <span className="metadata-divider">•</span>
+              <span className="metadata-item">
+                {design.connections.length} connection{design.connections.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+          </div>
         </div>
         <div className="toolbar">
-          <button onClick={() => setShowLibrary(!showLibrary)}>
-            {showLibrary ? 'Hide' : 'Show'} Library
-          </button>
-          <button
-            onClick={() => setShowServiceComparison(!showServiceComparison)}
-            title="Compare SaaS, PaaS, IaaS"
-          >
-            Service Models
-          </button>
-          <button
-            onClick={() => setShowSecurityPanel(!showSecurityPanel)}
-            title="Cloud security concepts"
-          >
-            Security
-          </button>
-          <button
-            onClick={() => setShowElasticityVisualization(!showElasticityVisualization)}
-            title="Elasticity & multi-tenancy"
-          >
-            Elasticity
-          </button>
-          <button onClick={validateArchitecture}>Validate</button>
-          <button onClick={handleExport}>Export</button>
-          <label>
+          <div className="button-group">
+            <button
+              className={`toolbar-btn ${showLibrary ? 'active' : ''}`}
+              onClick={() => setShowLibrary(!showLibrary)}
+            >
+              <span className="btn-icon">📚</span>
+              <span className="btn-text">{showLibrary ? 'Hide' : 'Show'} Library</span>
+              {showLibrary && <span className="active-badge">•</span>}
+            </button>
+            <button
+              className={`toolbar-btn secondary ${showServiceComparison ? 'active' : ''}`}
+              onClick={() => setShowServiceComparison(!showServiceComparison)}
+              title="Compare SaaS, PaaS, IaaS"
+            >
+              <span className="btn-icon">☁️</span>
+              <span className="btn-text">Service Models</span>
+              {showServiceComparison && <span className="active-badge">•</span>}
+            </button>
+            <button
+              className={`toolbar-btn secondary ${showSecurityPanel ? 'active' : ''}`}
+              onClick={() => setShowSecurityPanel(!showSecurityPanel)}
+              title="Cloud security concepts"
+            >
+              <span className="btn-icon">🔒</span>
+              <span className="btn-text">Security</span>
+              {showSecurityPanel && <span className="active-badge">•</span>}
+            </button>
+            <button
+              className={`toolbar-btn secondary ${showElasticityVisualization ? 'active' : ''}`}
+              onClick={() => setShowElasticityVisualization(!showElasticityVisualization)}
+              title="Elasticity & multi-tenancy"
+            >
+              <span className="btn-icon">⚡</span>
+              <span className="btn-text">Elasticity</span>
+              {showElasticityVisualization && <span className="active-badge">•</span>}
+            </button>
+          </div>
+          <div className="button-group actions">
+            <button className="toolbar-btn accent" onClick={validateArchitecture}>
+              <span className="btn-icon">✓</span>
+              <span className="btn-text">Validate</span>
+            </button>
+            <button className="toolbar-btn secondary" onClick={handleExport}>
+              <span className="btn-icon">↓</span>
+              <span className="btn-text">Export</span>
+            </button>
+          </div>
+          <label className="snap-toggle">
             <input
               type="checkbox"
               checked={canvasState.snapToGrid}
               onChange={(e) => setCanvasState({ ...canvasState, snapToGrid: e.target.checked })}
             />
-            Snap to Grid
+            <span className="toggle-label">Snap to Grid</span>
           </label>
         </div>
       </div>
@@ -484,43 +939,52 @@ export const CloudArchitectureDesigner: React.FC = () => {
       <div className="workspace">
         {showLibrary && (
           <div className="component-library">
-            <h3>Component Library</h3>
+            <div className="library-header">
+              <h3>Component Library</h3>
+              <p className="library-subtitle">Drag components onto the canvas</p>
+            </div>
             <div className="category-tabs">
               <button
-                className={activeCategory === 'deployment-zone' ? 'active' : ''}
+                className={`category-tab ${activeCategory === 'deployment-zone' ? 'active' : ''}`}
                 onClick={() => setActiveCategory('deployment-zone')}
               >
-                Deployment
+                <span className="tab-icon">🏢</span>
+                <span className="tab-label">Deployment</span>
               </button>
               <button
-                className={activeCategory === 'service-layer' ? 'active' : ''}
+                className={`category-tab ${activeCategory === 'service-layer' ? 'active' : ''}`}
                 onClick={() => setActiveCategory('service-layer')}
               >
-                Services
+                <span className="tab-icon">⚙️</span>
+                <span className="tab-label">Services</span>
               </button>
               <button
-                className={activeCategory === 'connectivity' ? 'active' : ''}
+                className={`category-tab ${activeCategory === 'connectivity' ? 'active' : ''}`}
                 onClick={() => setActiveCategory('connectivity')}
               >
-                Connectivity
+                <span className="tab-icon">🔗</span>
+                <span className="tab-label">Connect</span>
               </button>
               <button
-                className={activeCategory === 'vpc-element' ? 'active' : ''}
+                className={`category-tab ${activeCategory === 'vpc-element' ? 'active' : ''}`}
                 onClick={() => setActiveCategory('vpc-element')}
               >
-                VPC
+                <span className="tab-icon">🌐</span>
+                <span className="tab-label">VPC</span>
               </button>
               <button
-                className={activeCategory === 'gateway' ? 'active' : ''}
+                className={`category-tab ${activeCategory === 'gateway' ? 'active' : ''}`}
                 onClick={() => setActiveCategory('gateway')}
               >
-                Gateways
+                <span className="tab-icon">🚪</span>
+                <span className="tab-label">Gateways</span>
               </button>
               <button
-                className={activeCategory === 'nfv-component' ? 'active' : ''}
+                className={`category-tab ${activeCategory === 'nfv-component' ? 'active' : ''}`}
                 onClick={() => setActiveCategory('nfv-component')}
               >
-                NFV
+                <span className="tab-icon">🔧</span>
+                <span className="tab-label">NFV</span>
               </button>
             </div>
             <div className="library-items">
@@ -530,7 +994,8 @@ export const CloudArchitectureDesigner: React.FC = () => {
                   className="library-item"
                   draggable
                   onDragStart={(e) => handleDragStart(e, item)}
-                  style={{ borderColor: item.color }}
+                  onDragEnd={handleDragEnd}
+                  style={{ borderLeftColor: item.color }}
                 >
                   <div className="item-icon" style={{ color: item.color }}>
                     {item.icon}
@@ -546,18 +1011,82 @@ export const CloudArchitectureDesigner: React.FC = () => {
         )}
 
         <div className="canvas-container">
+          <div className="canvas-controls">
+            <div className="zoom-controls">
+              <button
+                className="control-btn"
+                onClick={() =>
+                  setCanvasState({ ...canvasState, zoom: Math.min(2, canvasState.zoom + 0.1) })
+                }
+                title="Zoom In (Ctrl + Mouse Wheel)"
+              >
+                <span className="control-icon">+</span>
+              </button>
+              <span className="zoom-level">{Math.round(canvasState.zoom * 100)}%</span>
+              <button
+                className="control-btn"
+                onClick={() =>
+                  setCanvasState({ ...canvasState, zoom: Math.max(0.5, canvasState.zoom - 0.1) })
+                }
+                title="Zoom Out (Ctrl + Mouse Wheel)"
+              >
+                <span className="control-icon">-</span>
+              </button>
+            </div>
+            <div className="view-controls">
+              <button className="control-btn" onClick={handleZoomToFit} title="Zoom to Fit">
+                <span className="control-icon">⊡</span>
+              </button>
+              <button className="control-btn" onClick={handleCenterView} title="Center View">
+                <span className="control-icon">⊙</span>
+              </button>
+            </div>
+            <div className="history-controls">
+              <button
+                className="control-btn"
+                onClick={handleUndo}
+                disabled={history.past.length === 0}
+                title="Undo (Ctrl+Z)"
+              >
+                <span className="control-icon">↶</span>
+              </button>
+              <button
+                className="control-btn"
+                onClick={handleRedo}
+                disabled={history.future.length === 0}
+                title="Redo (Ctrl+Y)"
+              >
+                <span className="control-icon">↷</span>
+              </button>
+            </div>
+          </div>
           <div
             ref={canvasRef}
-            className="canvas"
+            className={`canvas ${isDraggingFromLibrary ? 'drop-zone-active' : ''} ${
+              canvasPan.isPanning ? 'panning' : ''
+            }`}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
+            onMouseDown={handleCanvasMouseDown}
+            onMouseMove={handleCanvasMouseMove}
+            onMouseUp={handleCanvasMouseUp}
+            onMouseLeave={handleCanvasMouseUp}
+            onWheel={(e) => {
+              if (e.ctrlKey) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                const newZoom = Math.max(0.5, Math.min(2, canvasState.zoom + delta));
+                setCanvasState({ ...canvasState, zoom: newZoom });
+              }
+            }}
             style={{
               transform: `scale(${canvasState.zoom})`,
               backgroundSize: `${canvasState.gridSize}px ${canvasState.gridSize}px`,
+              cursor: canvasPan.isPanning ? 'grabbing' : dragState.isDragging ? 'move' : 'default',
             }}
           >
             {/* Render connections */}
-            <svg className="connections-layer">
+            <svg ref={svgRef} className="connections-layer">
               {design.connections.map((conn) => {
                 const from = design.components.find((c) => c.id === conn.from);
                 const to = design.components.find((c) => c.id === conn.to);
@@ -570,29 +1099,92 @@ export const CloudArchitectureDesigner: React.FC = () => {
                 const x2 = to.x + to.width / 2;
                 const y2 = to.y + to.height / 2;
 
+                // Calculate bezier control points for smooth curves
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const controlOffset = Math.min(distance * 0.4, 100);
+
+                const cx1 = x1 + controlOffset;
+                const cy1 = y1;
+                const cx2 = x2 - controlOffset;
+                const cy2 = y2;
+
+                const path = `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`;
+
                 return (
-                  <g key={conn.id}>
-                    <line
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
+                  <g key={conn.id} className="connection">
+                    <path
+                      d={path}
                       stroke="#3b82f6"
-                      strokeWidth="2"
+                      strokeWidth="3"
+                      fill="none"
                       markerEnd="url(#arrowhead)"
+                      className="connection-line"
+                    />
+                    <path
+                      d={path}
+                      stroke="transparent"
+                      strokeWidth="12"
+                      fill="none"
+                      className="connection-hit-area"
+                      style={{ cursor: 'pointer' }}
                     />
                     <text
                       x={(x1 + x2) / 2}
-                      y={(y1 + y2) / 2}
-                      fill="#1f2937"
-                      fontSize="12"
+                      y={(y1 + y2) / 2 - 10}
+                      fill="#374151"
+                      fontSize="11"
+                      fontWeight="600"
                       textAnchor="middle"
+                      className="connection-label"
                     >
                       {conn.label}
                     </text>
                   </g>
                 );
               })}
+
+              {/* Connection preview while connecting */}
+              {connectionState.isConnecting && connectionState.fromId && (
+                <g className="connection-preview">
+                  {(() => {
+                    const from = design.components.find((c) => c.id === connectionState.fromId);
+                    if (!from) {
+                      return null;
+                    }
+
+                    const x1 = from.x + from.width / 2;
+                    const y1 = from.y + from.height / 2;
+                    const x2 = connectionState.cursorX;
+                    const y2 = connectionState.cursorY;
+
+                    const dx = x2 - x1;
+                    const dy = y2 - y1;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const controlOffset = Math.min(distance * 0.4, 100);
+
+                    const cx1 = x1 + controlOffset;
+                    const cy1 = y1;
+                    const cx2 = x2 - controlOffset;
+                    const cy2 = y2;
+
+                    const path = `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`;
+
+                    return (
+                      <path
+                        d={path}
+                        stroke="#3b82f6"
+                        strokeWidth="2"
+                        strokeDasharray="5,5"
+                        fill="none"
+                        opacity="0.6"
+                      />
+                    );
+                  })()}
+                </g>
+              )}
+
               <defs>
                 <marker
                   id="arrowhead"
@@ -611,7 +1203,9 @@ export const CloudArchitectureDesigner: React.FC = () => {
             {design.components.map((component) => (
               <div
                 key={component.id}
-                className={`canvas-component ${selectedComponent?.id === component.id ? 'selected' : ''}`}
+                className={`canvas-component ${selectedComponent?.id === component.id ? 'selected' : ''} ${
+                  hoveredComponent === component.id ? 'hovered' : ''
+                } ${dragState.isDragging && dragState.componentId === component.id ? 'dragging' : ''}`}
                 style={{
                   left: component.x,
                   top: component.y,
@@ -620,24 +1214,91 @@ export const CloudArchitectureDesigner: React.FC = () => {
                   backgroundColor: component.color + '20',
                   borderColor: component.color,
                 }}
-                onClick={() => handleComponentClick(component)}
+                onClick={(e) => handleComponentClick(e, component)}
+                onMouseDown={(e) => handleComponentMouseDown(e, component)}
+                onMouseEnter={() => setHoveredComponent(component.id)}
+                onMouseLeave={() => setHoveredComponent(null)}
               >
                 <div className="component-header" style={{ backgroundColor: component.color }}>
                   <span className="component-icon">{component.icon}</span>
                   <span className="component-name">{component.name}</span>
-                  <button
-                    className="delete-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleComponentDelete(component.id);
-                    }}
-                  >
-                    ×
-                  </button>
+                  <div className="component-actions">
+                    <button
+                      className="action-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleConnectionModeToggle(component.id);
+                      }}
+                      title="Create Connection"
+                    >
+                      🔗
+                    </button>
+                    <button
+                      className="action-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDuplicateComponent(component.id);
+                      }}
+                      title="Duplicate (Ctrl+D)"
+                    >
+                      ⧉
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleComponentDelete(component.id);
+                      }}
+                      title="Delete (Del)"
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
                 <div className="component-body">
                   <div className="component-type">{component.subtype}</div>
+
+                  {/* Connection ports - visible on hover */}
+                  {(hoveredComponent === component.id || connectionState.isConnecting) && (
+                    <>
+                      <div className="connection-port port-top" title="Connection point" />
+                      <div className="connection-port port-right" title="Connection point" />
+                      <div className="connection-port port-bottom" title="Connection point" />
+                      <div className="connection-port port-left" title="Connection point" />
+                    </>
+                  )}
                 </div>
+
+                {/* Resize handles - visible only on selected component */}
+                {selectedComponent?.id === component.id && (
+                  <>
+                    <div
+                      className="resize-handle handle-nw"
+                      onMouseDown={(e) => handleResizeMouseDown(e, component, 'nw')}
+                      title="Resize"
+                    />
+                    <div
+                      className="resize-handle handle-ne"
+                      onMouseDown={(e) => handleResizeMouseDown(e, component, 'ne')}
+                      title="Resize"
+                    />
+                    <div
+                      className="resize-handle handle-sw"
+                      onMouseDown={(e) => handleResizeMouseDown(e, component, 'sw')}
+                      title="Resize"
+                    />
+                    <div
+                      className="resize-handle handle-se"
+                      onMouseDown={(e) => handleResizeMouseDown(e, component, 'se')}
+                      title="Resize"
+                    />
+
+                    {/* Size indicator */}
+                    <div className="size-indicator">
+                      {Math.round(component.width)} × {Math.round(component.height)}
+                    </div>
+                  </>
+                )}
               </div>
             ))}
           </div>
@@ -735,71 +1396,117 @@ export const CloudArchitectureDesigner: React.FC = () => {
                 ×
               </button>
             </div>
-            <div className="comparison-matrix">
-              {Object.entries(serviceModelComparison).map(([model, data]) => (
-                <div key={model} className="comparison-card">
-                  <h4>{data.name}</h4>
-                  <div className="comparison-row">
-                    <strong>Examples:</strong>
-                    <span>{data.examples.join(', ')}</span>
-                  </div>
-                  <div className="comparison-row">
-                    <strong>Management:</strong>
-                    <span>{data.management}</span>
-                  </div>
-                  <div className="comparison-row">
-                    <strong>Your Responsibility:</strong>
-                    <ul className="responsibility-list">
-                      {data.responsibility.map((r, i) => (
-                        <li key={i}>{r}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="comparison-row">
-                    <strong>Scalability:</strong>
-                    <span>{data.scalability}</span>
-                  </div>
-                  <div className="comparison-row">
-                    <strong>Cost Model:</strong>
-                    <span>{data.cost}</span>
-                  </div>
-                  <div className="comparison-row">
-                    <strong>Pros:</strong>
-                    <ul className="pros-list">
-                      {data.pros.map((p, i) => (
-                        <li key={i}>{p}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="comparison-row">
-                    <strong>Cons:</strong>
-                    <ul className="cons-list">
-                      {data.cons.map((c, i) => (
-                        <li key={i}>{c}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
+
+            <div className="service-summary-cards">
+              <div className="summary-card iaas-card">
+                <div className="summary-icon">🏗️</div>
+                <h4>IaaS</h4>
+                <p>Maximum Control</p>
+              </div>
+              <div className="summary-card paas-card">
+                <div className="summary-icon">⚙️</div>
+                <h4>PaaS</h4>
+                <p>Rapid Development</p>
+              </div>
+              <div className="summary-card saas-card">
+                <div className="summary-icon">📱</div>
+                <h4>SaaS</h4>
+                <p>Ready to Use</p>
+              </div>
             </div>
-            <div className="connectivity-grid">
-              <h4 style={{ gridColumn: '1 / -1', marginTop: '20px' }}>
-                Cloud Connectivity Options
-              </h4>
-              {connectivityOptions.map((option) => (
-                <div key={option.name} className="connectivity-card">
-                  <div className="connectivity-icon">{option.icon}</div>
-                  <h5>{option.name}</h5>
-                  <div className="connectivity-details">
-                    <div>Bandwidth: {option.bandwidth}</div>
-                    <div>Latency: {option.latency}</div>
-                    <div>Cost: {option.cost}</div>
-                    <div>Encryption: {option.encryption}</div>
-                    <div>Best For: {option.bestFor}</div>
-                    <div>Security: {option.security}</div>
+
+            <div className="comparison-matrix">
+              {Object.entries(serviceModelComparison).map(([model, data]) => {
+                const cardClass = model === 'IaaS' ? 'iaas' : model === 'PaaS' ? 'paas' : 'saas';
+                return (
+                  <div key={model} className={`comparison-card ${cardClass}`}>
+                    <h4>
+                      <span className="model-icon">
+                        {model === 'IaaS' ? '🏗️' : model === 'PaaS' ? '⚙️' : '📱'}
+                      </span>
+                      {data.name}
+                    </h4>
+                    <div className="comparison-row">
+                      <strong>Examples:</strong>
+                      <span>{data.examples.join(', ')}</span>
+                    </div>
+                    <div className="comparison-row">
+                      <strong>Management:</strong>
+                      <span>{data.management}</span>
+                    </div>
+                    <div className="comparison-row">
+                      <strong>Your Responsibility:</strong>
+                      <ul className="responsibility-list">
+                        {data.responsibility.map((r, i) => (
+                          <li key={i}>{r}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="comparison-row">
+                      <strong>Scalability:</strong>
+                      <span>{data.scalability}</span>
+                    </div>
+                    <div className="comparison-row">
+                      <strong>Cost Model:</strong>
+                      <span>{data.cost}</span>
+                    </div>
+                    <div className="comparison-row">
+                      <strong>Pros:</strong>
+                      <ul className="pros-list">
+                        {data.pros.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="comparison-row">
+                      <strong>Cons:</strong>
+                      <ul className="cons-list">
+                        {data.cons.map((c, i) => (
+                          <li key={i}>{c}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
+            </div>
+
+            <div className="connectivity-section">
+              <h4 className="section-title">Cloud Connectivity Options</h4>
+              <div className="connectivity-grid">
+                {connectivityOptions.map((option) => (
+                  <div key={option.name} className="connectivity-card">
+                    <div className="connectivity-icon">{option.icon}</div>
+                    <h5>{option.name}</h5>
+                    <div className="connectivity-details">
+                      <div className="detail-row">
+                        <span className="detail-label">Bandwidth:</span>
+                        <span className="detail-value">{option.bandwidth}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Latency:</span>
+                        <span className="detail-value">{option.latency}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Cost:</span>
+                        <span className="detail-value">{option.cost}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Encryption:</span>
+                        <span className="detail-value">{option.encryption}</span>
+                      </div>
+                      <div className="detail-row best-for">
+                        <span className="detail-label">Best For:</span>
+                        <span className="detail-value">{option.bestFor}</span>
+                      </div>
+                      <div className="detail-row security">
+                        <span className="detail-label">Security:</span>
+                        <span className="detail-value">{option.security}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -981,56 +1688,204 @@ export const CloudArchitectureDesigner: React.FC = () => {
           flex-direction: column;
           height: 100vh;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          background: #f9fafb;
+          background: linear-gradient(to bottom, #f9fafb 0%, #f3f4f6 100%);
         }
 
         .header {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          padding: 15px 20px;
+          align-items: flex-start;
+          padding: 20px 24px;
           background: white;
-          border-bottom: 1px solid #e5e7eb;
+          border-bottom: 2px solid #e5e7eb;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .title-section h2 {
-          margin: 0 0 10px 0;
-          color: #1f2937;
+        .title-section {
+          display: flex;
+          gap: 24px;
+          align-items: flex-start;
+        }
+
+        .title-wrapper h2 {
+          margin: 0 0 4px 0;
+          color: #111827;
+          font-size: 24px;
+          font-weight: 700;
+        }
+
+        .subtitle {
+          margin: 0;
+          color: #6b7280;
+          font-size: 14px;
+          font-weight: 400;
+        }
+
+        .design-name-wrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
         }
 
         .design-name {
-          padding: 8px 12px;
-          border: 1px solid #d1d5db;
-          border-radius: 6px;
-          font-size: 16px;
-          width: 300px;
+          padding: 10px 14px;
+          border: 2px solid #e5e7eb;
+          border-radius: 8px;
+          font-size: 15px;
+          font-weight: 500;
+          width: 320px;
+          background: white;
+          transition: all 0.2s;
+        }
+
+        .design-name:hover {
+          border-color: #d1d5db;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .design-name:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .metadata {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          font-size: 12px;
+          color: #6b7280;
+        }
+
+        .metadata-item {
+          font-weight: 500;
+        }
+
+        .metadata-divider {
+          color: #d1d5db;
         }
 
         .toolbar {
           display: flex;
-          gap: 10px;
+          gap: 16px;
           align-items: center;
         }
 
-        .toolbar button {
-          padding: 8px 16px;
-          background: #3b82f6;
-          color: white;
-          border: none;
-          border-radius: 6px;
-          cursor: pointer;
-          font-weight: 600;
+        .button-group {
+          display: flex;
+          gap: 8px;
+          align-items: center;
         }
 
-        .toolbar button:hover {
-          background: #2563eb;
+        .button-group.actions {
+          border-left: 1px solid #e5e7eb;
+          padding-left: 16px;
         }
 
-        .toolbar label {
+        .toolbar-btn {
           display: flex;
           align-items: center;
           gap: 6px;
+          padding: 9px 16px;
+          background: #3b82f6;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 14px;
+          transition: all 0.2s;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+          position: relative;
+        }
+
+        .toolbar-btn:hover {
+          background: #2563eb;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          transform: translateY(-1px);
+        }
+
+        .toolbar-btn:active {
+          transform: translateY(0);
+          box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .toolbar-btn.secondary {
+          background: #f3f4f6;
           color: #374151;
+        }
+
+        .toolbar-btn.secondary:hover {
+          background: #e5e7eb;
+        }
+
+        .toolbar-btn.accent {
+          background: #10b981;
+        }
+
+        .toolbar-btn.accent:hover {
+          background: #059669;
+        }
+
+        .toolbar-btn.active {
+          background: #2563eb;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .toolbar-btn.secondary.active {
+          background: #3b82f6;
+          color: white;
+        }
+
+        .btn-icon {
+          font-size: 16px;
+          line-height: 1;
+        }
+
+        .btn-text {
+          line-height: 1;
+        }
+
+        .active-badge {
+          position: absolute;
+          top: -4px;
+          right: -4px;
+          width: 8px;
+          height: 8px;
+          background: #10b981;
+          border: 2px solid white;
+          border-radius: 50%;
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+
+        .snap-toggle {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #374151;
+          font-size: 14px;
+          cursor: pointer;
+          user-select: none;
+          padding: 8px 12px;
+          border-radius: 6px;
+          transition: background 0.2s;
+        }
+
+        .snap-toggle:hover {
+          background: #f3f4f6;
+        }
+
+        .snap-toggle input[type="checkbox"] {
+          cursor: pointer;
+        }
+
+        .toggle-label {
+          font-weight: 500;
         }
 
         .workspace {
@@ -1040,70 +1895,114 @@ export const CloudArchitectureDesigner: React.FC = () => {
         }
 
         .component-library {
-          width: 280px;
+          width: 300px;
           background: white;
-          border-right: 1px solid #e5e7eb;
+          border-right: 2px solid #e5e7eb;
           overflow-y: auto;
+          box-shadow: 2px 0 8px rgba(0,0,0,0.05);
         }
 
-        .component-library h3 {
-          padding: 15px;
+        .library-header {
+          padding: 20px;
+          border-bottom: 2px solid #f3f4f6;
+          background: linear-gradient(to bottom, white 0%, #f9fafb 100%);
+        }
+
+        .library-header h3 {
+          margin: 0 0 4px 0;
+          color: #111827;
+          font-size: 18px;
+          font-weight: 700;
+        }
+
+        .library-subtitle {
           margin: 0;
-          color: #1f2937;
-          border-bottom: 1px solid #e5e7eb;
+          color: #6b7280;
+          font-size: 13px;
         }
 
         .category-tabs {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+          padding: 16px;
+          background: #f9fafb;
+          border-bottom: 2px solid #e5e7eb;
+        }
+
+        .category-tab {
           display: flex;
-          flex-wrap: wrap;
-          gap: 5px;
-          padding: 10px;
-          border-bottom: 1px solid #e5e7eb;
-        }
-
-        .category-tabs button {
-          padding: 6px 12px;
-          background: #f3f4f6;
-          border: 1px solid #d1d5db;
-          border-radius: 6px;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          padding: 10px 8px;
+          background: white;
+          border: 2px solid #e5e7eb;
+          border-radius: 8px;
           cursor: pointer;
-          font-size: 12px;
+          font-size: 11px;
+          font-weight: 600;
+          color: #6b7280;
+          transition: all 0.2s;
         }
 
-        .category-tabs button.active {
+        .category-tab:hover {
+          background: #f9fafb;
+          border-color: #d1d5db;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .category-tab.active {
           background: #3b82f6;
           color: white;
           border-color: #3b82f6;
+          box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+
+        .tab-icon {
+          font-size: 18px;
+          line-height: 1;
+        }
+
+        .tab-label {
+          line-height: 1;
         }
 
         .library-items {
-          padding: 10px;
+          padding: 16px;
         }
 
         .library-item {
           display: flex;
-          gap: 10px;
-          padding: 12px;
-          margin-bottom: 10px;
-          background: #f9fafb;
+          gap: 12px;
+          padding: 14px;
+          margin-bottom: 12px;
+          background: #ffffff;
           border: 2px solid #e5e7eb;
+          border-left: 4px solid #e5e7eb;
           border-radius: 8px;
           cursor: grab;
-          transition: all 0.2s;
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .library-item:hover {
-          background: white;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          background: #f9fafb;
+          border-color: #d1d5db;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          transform: translateX(4px);
         }
 
         .library-item:active {
           cursor: grabbing;
+          transform: scale(0.98);
+          opacity: 0.8;
         }
 
         .item-icon {
-          font-size: 24px;
+          font-size: 28px;
           flex-shrink: 0;
+          line-height: 1;
         }
 
         .item-info {
@@ -1111,8 +2010,8 @@ export const CloudArchitectureDesigner: React.FC = () => {
         }
 
         .item-name {
-          font-weight: 600;
-          color: #1f2937;
+          font-weight: 700;
+          color: #111827;
           margin-bottom: 4px;
           font-size: 13px;
         }
@@ -1120,13 +2019,82 @@ export const CloudArchitectureDesigner: React.FC = () => {
         .item-description {
           font-size: 11px;
           color: #6b7280;
-          line-height: 1.3;
+          line-height: 1.4;
         }
 
         .canvas-container {
           flex: 1;
           overflow: auto;
           position: relative;
+          background: #f9fafb;
+        }
+
+        .canvas-controls {
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          display: flex;
+          gap: 12px;
+          z-index: 50;
+        }
+
+        .zoom-controls,
+        .view-controls,
+        .history-controls {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: white;
+          padding: 8px 12px;
+          border-radius: 12px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+          border: 1px solid #e5e7eb;
+        }
+
+        .control-btn {
+          width: 36px;
+          height: 36px;
+          background: #f3f4f6;
+          color: #374151;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+        }
+
+        .control-btn:hover:not(:disabled) {
+          background: #3b82f6;
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        .control-btn:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        .control-btn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        .control-icon {
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1;
+        }
+
+        .zoom-level {
+          font-size: 13px;
+          font-weight: 600;
+          color: #374151;
+          min-width: 55px;
+          text-align: center;
+          user-select: none;
         }
 
         .canvas {
@@ -1134,9 +2102,21 @@ export const CloudArchitectureDesigner: React.FC = () => {
           min-height: 1500px;
           position: relative;
           background-image:
-            linear-gradient(to right, #e5e7eb 1px, transparent 1px),
-            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+            linear-gradient(to right, #e5e7eb60 1px, transparent 1px),
+            linear-gradient(to bottom, #e5e7eb60 1px, transparent 1px);
           background-color: white;
+          transition: background 0.2s;
+        }
+
+        .canvas.drop-zone-active {
+          background-color: #eff6ff;
+          background-image:
+            linear-gradient(to right, #3b82f640 1px, transparent 1px),
+            linear-gradient(to bottom, #3b82f640 1px, transparent 1px);
+        }
+
+        .canvas.panning {
+          cursor: grabbing !important;
         }
 
         .connections-layer {
@@ -1148,65 +2128,259 @@ export const CloudArchitectureDesigner: React.FC = () => {
           pointer-events: none;
         }
 
+        .connection-line {
+          transition: stroke-width 0.15s;
+        }
+
+        .connection:hover .connection-line {
+          stroke-width: 4;
+          filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
+        }
+
+        .connection-label {
+          opacity: 0;
+          transition: opacity 0.15s;
+        }
+
+        .connection:hover .connection-label {
+          opacity: 1;
+        }
+
         .canvas-component {
           position: absolute;
-          border: 2px solid;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: box-shadow 0.2s;
+          border: 3px solid;
+          border-radius: 12px;
+          cursor: move;
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+          user-select: none;
         }
 
         .canvas-component:hover {
-          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+          transform: translateY(-2px);
+          z-index: 10;
         }
 
         .canvas-component.selected {
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5), 0 8px 20px rgba(59, 130, 246, 0.2);
+          transform: translateY(-2px);
+          z-index: 20;
+          border-width: 4px;
+        }
+
+        .canvas-component.dragging {
+          opacity: 0.8;
+          box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+          transform: rotate(2deg) scale(1.02);
+          z-index: 30;
         }
 
         .component-header {
           display: flex;
           align-items: center;
-          gap: 8px;
-          padding: 8px 12px;
+          gap: 10px;
+          padding: 10px 14px;
           color: white;
-          font-weight: 600;
-          border-radius: 6px 6px 0 0;
+          font-weight: 700;
+          border-radius: 9px 9px 0 0;
+          background: linear-gradient(135deg, currentColor 0%, currentColor 100%);
         }
 
         .component-icon {
-          font-size: 18px;
+          font-size: 22px;
+          line-height: 1;
         }
 
         .component-name {
           flex: 1;
-          font-size: 13px;
+          font-size: 14px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .component-actions {
+          display: flex;
+          gap: 4px;
+          opacity: 0;
+          transition: opacity 0.15s;
+        }
+
+        .canvas-component:hover .component-actions,
+        .canvas-component.selected .component-actions {
+          opacity: 1;
+        }
+
+        .action-btn {
+          background: rgba(255,255,255,0.2);
+          border: none;
+          color: white;
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          line-height: 1;
+          transition: all 0.15s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .action-btn:hover {
+          background: rgba(255,255,255,0.35);
+          transform: scale(1.08);
         }
 
         .delete-btn {
-          background: rgba(255,255,255,0.3);
+          background: rgba(239,68,68,0.9);
           border: none;
           color: white;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
           cursor: pointer;
-          font-size: 16px;
+          font-size: 18px;
+          font-weight: 700;
           line-height: 1;
+          transition: all 0.15s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .delete-btn:hover {
-          background: rgba(255,255,255,0.5);
+          background: rgba(220,38,38,1);
+          transform: scale(1.08);
         }
 
         .component-body {
-          padding: 12px;
+          padding: 14px;
+          position: relative;
         }
 
         .component-type {
           font-size: 12px;
-          color: #4b5563;
-          font-weight: 500;
+          color: #6b7280;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        /* Resize Handles */
+        .resize-handle {
+          position: absolute;
+          width: 12px;
+          height: 12px;
+          background: #3b82f6;
+          border: 2px solid white;
+          border-radius: 50%;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          transition: all 0.15s;
+          z-index: 10;
+        }
+
+        .resize-handle:hover {
+          background: #2563eb;
+          transform: scale(1.3);
+          box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+        }
+
+        .handle-nw {
+          top: -6px;
+          left: -6px;
+          cursor: nw-resize;
+        }
+
+        .handle-ne {
+          top: -6px;
+          right: -6px;
+          cursor: ne-resize;
+        }
+
+        .handle-sw {
+          bottom: -6px;
+          left: -6px;
+          cursor: sw-resize;
+        }
+
+        .handle-se {
+          bottom: -6px;
+          right: -6px;
+          cursor: se-resize;
+        }
+
+        /* Size Indicator */
+        .size-indicator {
+          position: absolute;
+          bottom: -30px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #111827;
+          color: white;
+          padding: 4px 10px;
+          border-radius: 6px;
+          font-size: 11px;
+          font-weight: 600;
+          white-space: nowrap;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          pointer-events: none;
+          animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(-5px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Connection Ports */
+        .connection-port {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: #10b981;
+          border: 2px solid white;
+          border-radius: 50%;
+          box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+          transition: all 0.15s;
+          cursor: crosshair;
+          animation: pulsePort 2s infinite;
+        }
+
+        @keyframes pulsePort {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); }
+          50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        .connection-port:hover {
+          background: #059669;
+          transform: translate(-50%, -50%) scale(1.4) !important;
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.6);
+        }
+
+        .port-top {
+          top: 0;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        .port-right {
+          top: 50%;
+          right: 0;
+          transform: translate(50%, -50%);
+        }
+
+        .port-bottom {
+          bottom: 0;
+          left: 50%;
+          transform: translate(-50%, 50%);
+        }
+
+        .port-left {
+          top: 50%;
+          left: 0;
+          transform: translate(-50%, -50%);
         }
 
         .properties-panel {
@@ -1345,63 +2519,167 @@ export const CloudArchitectureDesigner: React.FC = () => {
         .feature-panel {
           position: fixed;
           right: 0;
-          top: 60px;
-          width: 500px;
-          max-height: calc(100vh - 120px);
+          top: 80px;
+          width: 550px;
+          max-height: calc(100vh - 100px);
           background: white;
-          border-left: 1px solid #e5e7eb;
+          border-left: 2px solid #e5e7eb;
           overflow-y: auto;
-          padding: 20px;
-          box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+          padding: 24px;
+          box-shadow: -4px 0 16px rgba(0,0,0,0.12);
           z-index: 100;
+          animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
         }
 
         .panel-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 20px;
-          border-bottom: 2px solid #3b82f6;
-          padding-bottom: 10px;
+          margin-bottom: 24px;
+          padding-bottom: 16px;
+          border-bottom: 3px solid #3b82f6;
         }
 
         .panel-header h3 {
           margin: 0;
-          color: #1f2937;
+          color: #111827;
+          font-size: 20px;
+          font-weight: 700;
         }
 
         .close-btn {
-          background: none;
+          background: #f3f4f6;
           border: none;
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
           font-size: 24px;
           cursor: pointer;
           color: #6b7280;
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .close-btn:hover {
-          color: #1f2937;
+          background: #e5e7eb;
+          color: #111827;
+          transform: scale(1.05);
         }
 
         /* Service Comparison Panel */
+        .service-summary-cards {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          margin-bottom: 24px;
+        }
+
+        .summary-card {
+          padding: 16px;
+          border-radius: 10px;
+          text-align: center;
+          transition: all 0.2s;
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .summary-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .summary-card.iaas-card {
+          background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+          color: white;
+        }
+
+        .summary-card.paas-card {
+          background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+          color: white;
+        }
+
+        .summary-card.saas-card {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white;
+        }
+
+        .summary-icon {
+          font-size: 36px;
+          margin-bottom: 8px;
+        }
+
+        .summary-card h4 {
+          margin: 0 0 4px 0;
+          font-size: 16px;
+          font-weight: 700;
+        }
+
+        .summary-card p {
+          margin: 0;
+          font-size: 12px;
+          opacity: 0.9;
+        }
+
         .comparison-matrix {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 15px;
-          margin-bottom: 20px;
+          gap: 16px;
+          margin-bottom: 24px;
         }
 
         .comparison-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          padding: 15px;
-          background: #f9fafb;
+          border: 2px solid #e5e7eb;
+          border-radius: 10px;
+          padding: 20px;
+          background: white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          transition: all 0.2s;
+        }
+
+        .comparison-card:hover {
+          box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+          transform: translateY(-2px);
+        }
+
+        .comparison-card.iaas {
+          border-left: 6px solid #3b82f6;
+        }
+
+        .comparison-card.paas {
+          border-left: 6px solid #8b5cf6;
+        }
+
+        .comparison-card.saas {
+          border-left: 6px solid #10b981;
         }
 
         .comparison-card h4 {
-          margin: 0 0 12px 0;
-          color: #1f2937;
-          border-bottom: 2px solid #3b82f6;
-          padding-bottom: 8px;
+          margin: 0 0 16px 0;
+          color: #111827;
+          font-size: 18px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #f3f4f6;
+        }
+
+        .model-icon {
+          font-size: 24px;
         }
 
         .comparison-row {
@@ -1434,61 +2712,138 @@ export const CloudArchitectureDesigner: React.FC = () => {
           left: 8px;
         }
 
+        .connectivity-section {
+          margin-top: 32px;
+        }
+
+        .section-title {
+          margin: 0 0 16px 0;
+          color: #111827;
+          font-size: 18px;
+          font-weight: 700;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #f3f4f6;
+        }
+
         .connectivity-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 16px;
         }
 
         .connectivity-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 6px;
-          padding: 12px;
-          text-align: center;
-          background: #f9fafb;
+          border: 2px solid #e5e7eb;
+          border-radius: 10px;
+          padding: 20px;
+          background: white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          transition: all 0.2s;
+        }
+
+        .connectivity-card:hover {
+          border-color: #3b82f6;
+          box-shadow: 0 8px 16px rgba(59, 130, 246, 0.15);
+          transform: translateY(-3px);
         }
 
         .connectivity-icon {
-          font-size: 28px;
-          margin-bottom: 8px;
+          font-size: 42px;
+          margin-bottom: 12px;
+          display: block;
+          text-align: center;
         }
 
         .connectivity-card h5 {
-          margin: 8px 0;
-          color: #1f2937;
-          font-size: 13px;
+          margin: 0 0 16px 0;
+          color: #111827;
+          font-size: 15px;
+          font-weight: 700;
+          text-align: center;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #f3f4f6;
         }
 
         .connectivity-details {
-          font-size: 11px;
-          color: #6b7280;
-          text-align: left;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
         }
 
-        .connectivity-details div {
-          padding: 4px 0;
+        .detail-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 8px;
+          padding: 6px 0;
+        }
+
+        .detail-row.best-for,
+        .detail-row.security {
+          flex-direction: column;
+          padding-top: 8px;
+          border-top: 1px solid #f3f4f6;
+        }
+
+        .detail-label {
+          font-size: 11px;
+          font-weight: 700;
+          color: #6b7280;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+          font-size: 12px;
+          color: #111827;
+          font-weight: 500;
+          text-align: right;
+        }
+
+        .detail-row.best-for .detail-value,
+        .detail-row.security .detail-value {
+          text-align: left;
+          margin-top: 4px;
         }
 
         /* Security Panel */
+        .deployment-models h4 {
+          margin: 0 0 16px 0;
+          color: #111827;
+          font-size: 18px;
+          font-weight: 700;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #f3f4f6;
+        }
+
         .deployment-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 15px;
-          margin-bottom: 20px;
+          gap: 16px;
+          margin-bottom: 32px;
         }
 
         .deployment-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          padding: 15px;
-          background: #f9fafb;
+          border: 2px solid #e5e7eb;
+          border-left: 6px solid #10b981;
+          border-radius: 10px;
+          padding: 20px;
+          background: white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          transition: all 0.2s;
+        }
+
+        .deployment-card:hover {
+          box-shadow: 0 8px 16px rgba(16, 185, 129, 0.15);
+          transform: translateY(-2px);
         }
 
         .deployment-card h5 {
-          margin: 0 0 8px 0;
-          color: #1f2937;
-          border-bottom: 2px solid #10b981;
-          padding-bottom: 6px;
+          margin: 0 0 12px 0;
+          color: #111827;
+          font-size: 16px;
+          font-weight: 700;
+          padding-bottom: 10px;
+          border-bottom: 2px solid #f3f4f6;
         }
 
         .description {
@@ -1536,21 +2891,39 @@ export const CloudArchitectureDesigner: React.FC = () => {
         .security-concepts {
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 16px;
+        }
+
+        .security-concepts h4 {
+          margin: 0 0 16px 0;
+          color: #111827;
+          font-size: 18px;
+          font-weight: 700;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #f3f4f6;
         }
 
         .security-card {
           display: flex;
-          gap: 12px;
-          border: 1px solid #e5e7eb;
-          border-radius: 6px;
-          padding: 12px;
-          background: #f9fafb;
+          gap: 16px;
+          border: 2px solid #e5e7eb;
+          border-radius: 10px;
+          padding: 18px;
+          background: white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          transition: all 0.2s;
+        }
+
+        .security-card:hover {
+          box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+          transform: translateY(-2px);
+          border-color: #3b82f6;
         }
 
         .security-icon {
-          font-size: 24px;
+          font-size: 32px;
           flex-shrink: 0;
+          line-height: 1;
         }
 
         .security-content {
@@ -1558,9 +2931,10 @@ export const CloudArchitectureDesigner: React.FC = () => {
         }
 
         .security-content h5 {
-          margin: 0 0 8px 0;
-          color: #1f2937;
-          font-size: 13px;
+          margin: 0 0 10px 0;
+          color: #111827;
+          font-size: 15px;
+          font-weight: 700;
         }
 
         .security-row {
@@ -1601,24 +2975,43 @@ export const CloudArchitectureDesigner: React.FC = () => {
         }
 
         /* Elasticity Panel */
+        .multitenancy-section h4 {
+          margin: 0 0 16px 0;
+          color: #111827;
+          font-size: 18px;
+          font-weight: 700;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #f3f4f6;
+        }
+
         .pattern-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 12px;
-          margin-bottom: 20px;
+          gap: 16px;
+          margin-bottom: 32px;
         }
 
         .pattern-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 6px;
-          padding: 12px;
-          background: #f9fafb;
+          border: 2px solid #e5e7eb;
+          border-radius: 10px;
+          padding: 18px;
+          background: white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          transition: all 0.2s;
+        }
+
+        .pattern-card:hover {
+          box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+          transform: translateY(-2px);
         }
 
         .pattern-card h5 {
-          margin: 0 0 6px 0;
-          color: #1f2937;
-          font-size: 13px;
+          margin: 0 0 10px 0;
+          color: #111827;
+          font-size: 15px;
+          font-weight: 700;
+          padding-bottom: 8px;
+          border-bottom: 2px solid #f3f4f6;
         }
 
         .pattern-description {
@@ -1673,36 +3066,58 @@ export const CloudArchitectureDesigner: React.FC = () => {
           font-weight: 600;
         }
 
+        .elasticity-info h4 {
+          margin: 0 0 16px 0;
+          color: #111827;
+          font-size: 18px;
+          font-weight: 700;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #f3f4f6;
+        }
+
         .info-cards {
           display: grid;
-          grid-template-columns: 1fr;
-          gap: 12px;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 16px;
         }
 
         .elasticity-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 6px;
-          padding: 12px;
-          background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+          border: 2px solid #e5e7eb;
+          border-radius: 10px;
+          padding: 18px;
+          background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          transition: all 0.2s;
+        }
+
+        .elasticity-card:hover {
+          border-color: #8b5cf6;
+          box-shadow: 0 8px 16px rgba(139, 92, 246, 0.15);
+          transform: translateY(-3px);
         }
 
         .elasticity-card h5 {
-          margin: 0 0 6px 0;
-          color: #1f2937;
-          font-size: 13px;
+          margin: 0 0 10px 0;
+          color: #111827;
+          font-size: 15px;
+          font-weight: 700;
+          padding-bottom: 8px;
+          border-bottom: 2px solid #f3f4f6;
         }
 
         .elasticity-card p {
           color: #6b7280;
-          font-size: 12px;
-          margin: 6px 0;
+          font-size: 13px;
+          margin: 8px 0;
+          line-height: 1.5;
         }
 
         .elasticity-card strong {
           color: #374151;
           display: block;
-          margin-top: 6px;
-          font-size: 11px;
+          margin-top: 12px;
+          font-size: 12px;
+          font-weight: 700;
         }
       `}</style>
     </div>

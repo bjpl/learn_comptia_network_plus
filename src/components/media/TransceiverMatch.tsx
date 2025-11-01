@@ -458,18 +458,18 @@ export default function TransceiverMatch() {
                         <div className="mb-1 text-sm font-medium text-gray-900 dark:text-gray-100">
                           {spec.fullName}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-gray-700 dark:text-gray-400">
                           <strong>Speed:</strong> {spec.speed} | <strong>Channels:</strong>{' '}
                           {spec.channels} | <strong>Size:</strong> {spec.size}
                         </div>
                       </div>
                       <div>
                         <div className="mb-2 text-sm">
-                          <strong className="text-blue-600">Use Case:</strong> {spec.useCase}
+                          <strong className="text-blue-700">Use Case:</strong> {spec.useCase}
                         </div>
                         <div className="flex items-start gap-2 text-sm">
                           <Lightbulb className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-500" />
-                          <span className="text-gray-600 dark:text-gray-400">
+                          <span className="text-gray-700 dark:text-gray-400">
                             {spec.keyFeature}
                           </span>
                         </div>
@@ -482,7 +482,7 @@ export default function TransceiverMatch() {
               <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
                 <div className="flex items-start gap-2">
                   <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600" />
-                  <div className="text-sm">
+                  <div className="text-sm text-gray-900">
                     <strong className="text-blue-900">Exam Tip:</strong> Remember the pattern - QSFP
                     = 4x speed of equivalent SFP (QSFP+ is 4x10G = 40G, QSFP28 is 4x25G = 100G).
                     SFP+ modules can fit in SFP ports but will run at reduced 1G speed.
@@ -514,10 +514,10 @@ export default function TransceiverMatch() {
 
                   <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
                     <div>
-                      <div className="mb-1 font-semibold text-gray-700 dark:text-gray-300">
+                      <div className="mb-1 font-semibold text-gray-800 dark:text-gray-300">
                         Technical Specs
                       </div>
-                      <div className="space-y-1 text-gray-600 dark:text-gray-400">
+                      <div className="space-y-1 text-gray-700 dark:text-gray-400">
                         <div>
                           <strong>Channels:</strong> {wdm.channels}
                         </div>
@@ -530,10 +530,10 @@ export default function TransceiverMatch() {
                       </div>
                     </div>
                     <div>
-                      <div className="mb-1 font-semibold text-gray-700 dark:text-gray-300">
+                      <div className="mb-1 font-semibold text-gray-800 dark:text-gray-300">
                         Applications
                       </div>
-                      <div className="space-y-1 text-gray-600 dark:text-gray-400">
+                      <div className="space-y-1 text-gray-700 dark:text-gray-400">
                         <div>
                           <strong>Primary Use:</strong> {wdm.useCase}
                         </div>
@@ -549,7 +549,7 @@ export default function TransceiverMatch() {
               <div className="rounded-lg border border-green-200 bg-green-50 p-4">
                 <div className="flex items-start gap-2">
                   <Lightbulb className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600" />
-                  <div className="text-sm">
+                  <div className="text-sm text-gray-900">
                     <strong className="text-green-900">BiDi Explained:</strong> Bidirectional
                     transceivers use different wavelengths for transmit (Tx) and receive (Rx) on a
                     SINGLE fiber strand. One end transmits at 1270nm / receives at 1330nm, while the
@@ -562,7 +562,7 @@ export default function TransceiverMatch() {
               <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
                 <div className="flex items-start gap-2">
                   <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-purple-600" />
-                  <div className="text-sm">
+                  <div className="text-sm text-gray-900">
                     <strong className="text-purple-900">Cost Savings:</strong> WDM technologies
                     multiply fiber capacity without adding cables. DWDM can carry 80+ channels on a
                     single fiber pair, replacing what would otherwise require 80 separate fiber
@@ -586,7 +586,7 @@ export default function TransceiverMatch() {
                   </CardDescription>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Progress</div>
+                  <div className="text-sm text-gray-700 dark:text-gray-400">Progress</div>
                   <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {completedMatches} / {useCases.length}
                   </div>
@@ -607,7 +607,7 @@ export default function TransceiverMatch() {
                 <CardContent className="space-y-4">
                   {Object.entries(groupedTransceivers).map(([category, transceivers]) => (
                     <div key={category}>
-                      <div className="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      <div className="mb-2 text-sm font-semibold text-gray-800 dark:text-gray-300">
                         {category}
                       </div>
                       <div className="space-y-2">
@@ -633,7 +633,7 @@ export default function TransceiverMatch() {
                                     <span className="ml-1">{transceiver.protocol}</span>
                                   </Badge>
                                 </div>
-                                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                <div className="mt-1 text-xs text-gray-700 dark:text-gray-400">
                                   {transceiver.speed}G · {transceiver.maxDistance}m ·{' '}
                                   {transceiver.connectorType}
                                 </div>
@@ -712,7 +712,7 @@ export default function TransceiverMatch() {
                                   ) : null)}
                               </div>
 
-                              <div className="mb-3 flex gap-2 text-xs text-gray-600 dark:text-gray-400">
+                              <div className="mb-3 flex gap-2 text-xs text-gray-700 dark:text-gray-400">
                                 <Badge variant="outline" className="text-xs">
                                   {useCase.requirements.speed}G
                                 </Badge>
@@ -735,7 +735,7 @@ export default function TransceiverMatch() {
                                     <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                                       {matchedTransceiver.name}
                                     </div>
-                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                    <div className="text-xs text-gray-700 dark:text-gray-400">
                                       {matchedTransceiver.formFactor} · {matchedTransceiver.speed}G
                                       · {matchedTransceiver.maxDistance}m
                                     </div>
@@ -765,7 +765,7 @@ export default function TransceiverMatch() {
                                   <div className="text-sm text-gray-900 dark:text-gray-100">
                                     {correctTransceiver.name}
                                   </div>
-                                  <div className="text-xs text-gray-600 dark:text-gray-400">
+                                  <div className="text-xs text-gray-700 dark:text-gray-400">
                                     {correctTransceiver.formFactor} · {correctTransceiver.speed}G ·{' '}
                                     {correctTransceiver.maxDistance}m
                                   </div>
@@ -794,7 +794,7 @@ export default function TransceiverMatch() {
                       <div className="mb-2 text-5xl font-bold text-gray-900 dark:text-gray-100">
                         {score}%
                       </div>
-                      <div className="mb-4 text-gray-600 dark:text-gray-400">
+                      <div className="mb-4 text-gray-700 dark:text-gray-400">
                         {score >= 90
                           ? 'Excellent! You have a strong understanding of transceiver selection.'
                           : score >= 70
@@ -841,7 +841,7 @@ export default function TransceiverMatch() {
                         {tip.causes.map((cause, i) => (
                           <li key={i} className="flex items-start gap-2">
                             <span className="mt-1 text-red-500">•</span>
-                            <span>{cause}</span>
+                            <span className="text-gray-900">{cause}</span>
                           </li>
                         ))}
                       </ul>
@@ -852,7 +852,7 @@ export default function TransceiverMatch() {
                         {tip.solutions.map((solution, i) => (
                           <li key={i} className="flex items-start gap-2">
                             <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-500" />
-                            <span>{solution}</span>
+                            <span className="text-gray-900">{solution}</span>
                           </li>
                         ))}
                       </ul>
@@ -864,7 +864,7 @@ export default function TransceiverMatch() {
               <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                 <div className="flex items-start gap-2">
                   <Lightbulb className="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-600" />
-                  <div className="text-sm">
+                  <div className="text-sm text-gray-900">
                     <strong className="text-yellow-900">Optical Power Budget:</strong> Always check
                     dBm levels. Typical ranges: -3 to -10 dBm (good), -10 to -20 dBm (acceptable),
                     below -20 dBm (check for issues). Use an optical power meter for accurate
@@ -890,41 +890,41 @@ export default function TransceiverMatch() {
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
                 <h3 className="mb-2 font-semibold text-blue-900">Key Exam Topics - LO 1.4</h3>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" />
                     <span>
                       <strong>Form Factor Identification:</strong> Distinguish GBIC, SFP, SFP+,
                       QSFP, QSFP+, QSFP28, CFP by size, speed, and use case
                     </span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" />
                     <span>
                       <strong>Speed Capabilities:</strong> SFP=1G, SFP+=10G, QSFP+=40G, QSFP28=100G
                     </span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" />
                     <span>
                       <strong>Distance Limitations:</strong> -SR (short range, multimode, 100-550m),
                       -LR (long range, single-mode, 10km), -ER (extended range, 40km)
                     </span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" />
                     <span>
                       <strong>Fiber Compatibility:</strong> Multimode (850nm, orange cable) vs
                       Single-mode (1310/1550nm, yellow cable)
                     </span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" />
                     <span>
                       <strong>BiDi Operation:</strong> Single fiber, different Tx/Rx wavelengths,
                       cost savings
                     </span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" />
                     <span>
                       <strong>WDM Technologies:</strong> CWDM (20nm spacing, 8-18 channels), DWDM
@@ -937,7 +937,7 @@ export default function TransceiverMatch() {
               <div className="rounded-lg border border-green-200 bg-green-50 p-4">
                 <h3 className="mb-2 font-semibold text-green-900">Common Exam Scenarios</h3>
                 <div className="space-y-3 text-sm">
-                  <div>
+                  <div className="text-gray-900">
                     <strong className="text-green-800">
                       Q: Connect two buildings 8km apart at 10Gbps?
                     </strong>
@@ -945,7 +945,7 @@ export default function TransceiverMatch() {
                       A: 10GBASE-LR (SFP+) with single-mode fiber - long range capability
                     </div>
                   </div>
-                  <div>
+                  <div className="text-gray-900">
                     <strong className="text-green-800">
                       Q: Rack-to-rack connection, 5m, 10Gbps, cost-effective?
                     </strong>
@@ -953,7 +953,7 @@ export default function TransceiverMatch() {
                       A: SFP+ DAC (Direct Attach Copper) - lowest cost for short distances
                     </div>
                   </div>
-                  <div>
+                  <div className="text-gray-900">
                     <strong className="text-green-800">
                       Q: SFP+ module in SFP port - what happens?
                     </strong>
@@ -962,7 +962,7 @@ export default function TransceiverMatch() {
                       modules CAN work in SFP+ ports at reduced 1G speed
                     </div>
                   </div>
-                  <div>
+                  <div className="text-gray-900">
                     <strong className="text-green-800">
                       Q: 100G datacenter spine, 100m distance?
                     </strong>
@@ -976,26 +976,26 @@ export default function TransceiverMatch() {
               <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
                 <h3 className="mb-2 font-semibold text-purple-900">Memory Aids</h3>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <Lightbulb className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-600" />
                     <span>
                       <strong>"QSFP = Quad = 4x"</strong> - QSFP transceivers always have 4 channels
                     </span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <Lightbulb className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-600" />
                     <span>
                       <strong>"SR = Short, LR = Long, ER = Extended"</strong> - Easy distance recall
                     </span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <Lightbulb className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-600" />
                     <span>
                       <strong>"850 = Multimode, 1310/1550 = Single-mode"</strong> - Wavelength to
                       fiber type
                     </span>
                   </li>
-                  <li className="flex items-start gap-2">
+                  <li className="flex items-start gap-2 text-gray-900">
                     <Lightbulb className="mt-0.5 h-4 w-4 flex-shrink-0 text-purple-600" />
                     <span>
                       <strong>"BiDi = Bi-directional = 1 fiber, 2 wavelengths"</strong> - Cost

@@ -220,7 +220,7 @@ export const Header: React.FC = () => {
 
                   <Link
                     to="/profile"
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                     onClick={() => setUserMenuOpen(false)}
                   >
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,7 +236,7 @@ export const Header: React.FC = () => {
 
                   <Link
                     to="/assessment/dashboard"
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                     onClick={() => setUserMenuOpen(false)}
                   >
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -273,7 +273,7 @@ export const Header: React.FC = () => {
             <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:text-white"
+                className="px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:text-white"
               >
                 Sign In
               </Link>
