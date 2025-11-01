@@ -104,9 +104,9 @@ button {
   @apply text-gray-100;
 }
 
-/* Ensure paragraphs are readable in dark mode */
-.dark p {
-  @apply text-gray-300;
+/* Ensure paragraphs are readable in both modes */
+p {
+  @apply text-gray-700 dark:text-gray-300;
 }
 
 /* Ensure list items are readable */

@@ -418,7 +418,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="mb-6 text-gray-600 dark:text-gray-300">
+            <p className="mb-6 text-gray-700 dark:text-gray-300">
               Practice with 20+ comprehensive scenarios simulating real-world network design,
               troubleshooting, and optimization. Choose your exam mode and scenario difficulty.
               Available question types include multiple-choice, simulation-based, performance-based,
