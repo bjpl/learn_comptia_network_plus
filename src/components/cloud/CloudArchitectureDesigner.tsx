@@ -14,7 +14,7 @@ import type {
   ValidationResult,
   CanvasState,
   ComponentLibraryItem,
-  ComponentType
+  ComponentType,
 } from './cloud-types';
 
 export const CloudArchitectureDesigner: React.FC = () => {
@@ -28,8 +28,8 @@ export const CloudArchitectureDesigner: React.FC = () => {
     metadata: {
       created: new Date(),
       modified: new Date(),
-      author: 'Student'
-    }
+      author: 'Student',
+    },
   });
 
   const [canvasState, setCanvasState] = useState<CanvasState>({
@@ -39,7 +39,7 @@ export const CloudArchitectureDesigner: React.FC = () => {
     isDragging: false,
     isConnecting: false,
     gridSize: 20,
-    snapToGrid: true
+    snapToGrid: true,
   });
 
   const [selectedComponent, setSelectedComponent] = useState<ArchitectureComponent | null>(null);
@@ -48,7 +48,9 @@ export const CloudArchitectureDesigner: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<ComponentType>('deployment-zone');
 
   const snapToGrid = (value: number): number => {
-    if (!canvasState.snapToGrid) {return value;}
+    if (!canvasState.snapToGrid) {
+      return value;
+    }
     return Math.round(value / canvasState.gridSize) * canvasState.gridSize;
   };
 
@@ -66,11 +68,15 @@ export const CloudArchitectureDesigner: React.FC = () => {
     e.preventDefault();
 
     const data = e.dataTransfer.getData('application/json');
-    if (!data) {return;}
+    if (!data) {
+      return;
+    }
 
-    const libraryItem: ComponentLibraryItem = JSON.parse(data);
+    const libraryItem = JSON.parse(data) as ComponentLibraryItem;
     const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) {return;}
+    if (!rect) {
+      return;
+    }
 
     const x = snapToGrid((e.clientX - rect.left - canvasState.panX) / canvasState.zoom);
     const y = snapToGrid((e.clientY - rect.top - canvasState.panY) / canvasState.zoom);
@@ -78,7 +84,7 @@ export const CloudArchitectureDesigner: React.FC = () => {
     const newComponent: ArchitectureComponent = {
       id: `component-${Date.now()}`,
       type: libraryItem.type,
-      subtype: libraryItem.subtype as any,
+      subtype: libraryItem.subtype,
       name: `${libraryItem.name} ${design.components.length + 1}`,
       x,
       y,
@@ -86,17 +92,20 @@ export const CloudArchitectureDesigner: React.FC = () => {
       height: libraryItem.defaultHeight,
       color: libraryItem.color,
       icon: libraryItem.icon,
-      properties: libraryItem.properties.reduce((acc, prop) => {
-        acc[prop.key] = prop.default || '';
-        return acc;
-      }, {} as Record<string, any>),
-      connections: []
+      properties: libraryItem.properties.reduce<Record<string, string | number | boolean>>(
+        (acc, prop) => {
+          acc[prop.key] = (prop.default as string | number | boolean | undefined) || '';
+          return acc;
+        },
+        {}
+      ),
+      connections: [],
     };
 
     setDesign({
       ...design,
       components: [...design.components, newComponent],
-      metadata: { ...design.metadata, modified: new Date() }
+      metadata: { ...design.metadata, modified: new Date() },
     });
   };
 
@@ -107,42 +116,44 @@ export const CloudArchitectureDesigner: React.FC = () => {
   const handleComponentDelete = (componentId: string) => {
     setDesign({
       ...design,
-      components: design.components.filter(c => c.id !== componentId),
-      connections: design.connections.filter(c => c.from !== componentId && c.to !== componentId),
-      metadata: { ...design.metadata, modified: new Date() }
+      components: design.components.filter((c) => c.id !== componentId),
+      connections: design.connections.filter((c) => c.from !== componentId && c.to !== componentId),
+      metadata: { ...design.metadata, modified: new Date() },
     });
     setSelectedComponent(null);
   };
 
-  const handlePropertyChange = (key: string, value: any) => {
-    if (!selectedComponent) {return;}
+  const handlePropertyChange = (key: string, value: string | number | boolean) => {
+    if (!selectedComponent) {
+      return;
+    }
 
-    const updatedComponents = design.components.map(c =>
-      c.id === selectedComponent.id
-        ? { ...c, properties: { ...c.properties, [key]: value } }
-        : c
+    const updatedComponents = design.components.map((c) =>
+      c.id === selectedComponent.id ? { ...c, properties: { ...c.properties, [key]: value } } : c
     );
 
     setDesign({
       ...design,
       components: updatedComponents,
-      metadata: { ...design.metadata, modified: new Date() }
+      metadata: { ...design.metadata, modified: new Date() },
     });
 
     setSelectedComponent({
       ...selectedComponent,
-      properties: { ...selectedComponent.properties, [key]: value }
+      properties: { ...selectedComponent.properties, [key]: value },
     });
   };
 
   const handleCreateConnection = (fromId: string, toId: string) => {
-    const from = design.components.find(c => c.id === fromId);
-    const to = design.components.find(c => c.id === toId);
+    const from = design.components.find((c) => c.id === fromId);
+    const to = design.components.find((c) => c.id === toId);
 
-    if (!from || !to) {return;}
+    if (!from || !to) {
+      return;
+    }
 
     const libraryItem = componentLibrary.find(
-      item => item.type === from.type && item.subtype === from.subtype
+      (item) => item.type === from.type && item.subtype === from.subtype
     );
 
     if (libraryItem && !libraryItem.allowedConnections.includes(to.type)) {
@@ -155,45 +166,46 @@ export const CloudArchitectureDesigner: React.FC = () => {
       from: fromId,
       to: toId,
       type: 'network',
-      label: `${from.name} → ${to.name}`
+      label: `${from.name} → ${to.name}`,
     };
 
     setDesign({
       ...design,
       connections: [...design.connections, newConnection],
-      metadata: { ...design.metadata, modified: new Date() }
+      metadata: { ...design.metadata, modified: new Date() },
     });
   };
 
   const validateArchitecture = () => {
-    const errors: any[] = [];
-    const warnings: any[] = [];
+    const errors: Array<{ message: string; severity: string; suggestion: string }> = [];
+    const warnings: Array<{ componentId: string; message: string; type: string }> = [];
 
     // Run validation rules
-    Object.values(validationRules).forEach(rule => {
+    Object.values(validationRules).forEach((rule) => {
       const result = rule.check(design.components, design.connections);
       if (!result.valid) {
-        const errorMessage = typeof result === 'object' && 'message' in result && typeof result.message === 'string'
-          ? result.message
-          : 'Validation failed';
+        const errorMessage =
+          typeof result === 'object' && 'message' in result && typeof result.message === 'string'
+            ? result.message
+            : 'Validation failed';
         errors.push({
           message: errorMessage,
           severity: 'error',
-          suggestion: 'Review architecture requirements'
+          suggestion: 'Review architecture requirements',
         });
       }
     });
 
     // Check for isolated components
-    design.components.forEach(component => {
+    design.components.forEach((component) => {
       const hasConnections = design.connections.some(
-        conn => conn.from === component.id || conn.to === component.id
+        (conn) => conn.from === component.id || conn.to === component.id
       );
       if (!hasConnections && component.type !== 'deployment-zone') {
         warnings.push({
           componentId: component.id,
           message: `${component.name} is not connected to any other components`,
-          type: 'best-practice'
+          type: 'best-practice',
         });
       }
     });
@@ -208,7 +220,7 @@ export const CloudArchitectureDesigner: React.FC = () => {
       valid: errors.length === 0,
       errors,
       warnings,
-      score
+      score,
     };
 
     setValidation(validationResult);
@@ -227,7 +239,7 @@ export const CloudArchitectureDesigner: React.FC = () => {
   };
 
   const getCategorizedLibrary = () => {
-    return componentLibrary.filter(item => item.type === activeCategory);
+    return componentLibrary.filter((item) => item.type === activeCategory);
   };
 
   return (
@@ -332,15 +344,17 @@ export const CloudArchitectureDesigner: React.FC = () => {
             onDrop={handleDrop}
             style={{
               transform: `scale(${canvasState.zoom})`,
-              backgroundSize: `${canvasState.gridSize}px ${canvasState.gridSize}px`
+              backgroundSize: `${canvasState.gridSize}px ${canvasState.gridSize}px`,
             }}
           >
             {/* Render connections */}
             <svg className="connections-layer">
-              {design.connections.map(conn => {
-                const from = design.components.find(c => c.id === conn.from);
-                const to = design.components.find(c => c.id === conn.to);
-                if (!from || !to) {return null;}
+              {design.connections.map((conn) => {
+                const from = design.components.find((c) => c.id === conn.from);
+                const to = design.components.find((c) => c.id === conn.to);
+                if (!from || !to) {
+                  return null;
+                }
 
                 const x1 = from.x + from.width / 2;
                 const y1 = from.y + from.height / 2;
@@ -385,7 +399,7 @@ export const CloudArchitectureDesigner: React.FC = () => {
             </svg>
 
             {/* Render components */}
-            {design.components.map(component => (
+            {design.components.map((component) => (
               <div
                 key={component.id}
                 className={`canvas-component ${selectedComponent?.id === component.id ? 'selected' : ''}`}
@@ -395,7 +409,7 @@ export const CloudArchitectureDesigner: React.FC = () => {
                   width: component.width,
                   height: component.height,
                   backgroundColor: component.color + '20',
-                  borderColor: component.color
+                  borderColor: component.color,
                 }}
                 onClick={() => handleComponentClick(component)}
               >
@@ -424,12 +438,13 @@ export const CloudArchitectureDesigner: React.FC = () => {
           <div className="properties-panel">
             <h3>Properties</h3>
             <div className="property-item">
-              <label>Name:</label>
+              <label htmlFor="component-name">Name:</label>
               <input
+                id="component-name"
                 type="text"
                 value={selectedComponent.name}
                 onChange={(e) => {
-                  const updatedComponents = design.components.map(c =>
+                  const updatedComponents = design.components.map((c) =>
                     c.id === selectedComponent.id ? { ...c, name: e.target.value } : c
                   );
                   setDesign({ ...design, components: updatedComponents });
@@ -439,36 +454,41 @@ export const CloudArchitectureDesigner: React.FC = () => {
             </div>
 
             {componentLibrary
-              .find(item => item.type === selectedComponent.type && item.subtype === selectedComponent.subtype)
-              ?.properties.map(prop => (
+              .find(
+                (item) =>
+                  item.type === selectedComponent.type && item.subtype === selectedComponent.subtype
+              )
+              ?.properties.map((prop) => (
                 <div key={prop.key} className="property-item">
                   <label>{prop.label}:</label>
                   {prop.type === 'select' ? (
                     <select
-                      value={selectedComponent.properties[prop.key] || ''}
+                      value={String(selectedComponent.properties[prop.key] || '')}
                       onChange={(e) => handlePropertyChange(prop.key, e.target.value)}
                     >
                       <option value="">Select...</option>
-                      {prop.options?.map(opt => (
-                        <option key={opt} value={opt}>{opt}</option>
+                      {prop.options?.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
                       ))}
                     </select>
                   ) : prop.type === 'boolean' ? (
                     <input
                       type="checkbox"
-                      checked={selectedComponent.properties[prop.key] || false}
+                      checked={Boolean(selectedComponent.properties[prop.key])}
                       onChange={(e) => handlePropertyChange(prop.key, e.target.checked)}
                     />
                   ) : prop.type === 'number' ? (
                     <input
                       type="number"
-                      value={selectedComponent.properties[prop.key] || ''}
+                      value={Number(selectedComponent.properties[prop.key] || 0)}
                       onChange={(e) => handlePropertyChange(prop.key, parseInt(e.target.value))}
                     />
                   ) : (
                     <input
                       type="text"
-                      value={selectedComponent.properties[prop.key] || ''}
+                      value={String(selectedComponent.properties[prop.key] || '')}
                       onChange={(e) => handlePropertyChange(prop.key, e.target.value)}
                     />
                   )}
@@ -487,9 +507,11 @@ export const CloudArchitectureDesigner: React.FC = () => {
               >
                 <option value="">Connect to...</option>
                 {design.components
-                  .filter(c => c.id !== selectedComponent.id)
-                  .map(c => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
+                  .filter((c) => c.id !== selectedComponent.id)
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
                   ))}
               </select>
             </div>

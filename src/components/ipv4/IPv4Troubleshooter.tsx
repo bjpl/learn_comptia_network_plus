@@ -48,12 +48,7 @@ import {
   Terminal,
   Build,
 } from '@mui/icons-material';
-import type {
-  TroubleshootingScenario,
-  DiagnosticOutput,
-  NetworkDevice,
-  TroubleshootingStep
-} from './ipv4-types';
+import type { TroubleshootingScenario } from './ipv4-types';
 import { troubleshootingScenarios, diagnosticCommands } from './ipv4-data';
 import { parseIPAddress } from '../../utils/networking';
 
@@ -80,7 +75,7 @@ const IPv4Troubleshooter: React.FC = () => {
 
   // Reset when scenario changes
   const handleScenarioChange = (scenarioId: string) => {
-    const scenario = troubleshootingScenarios.find(s => s.id === scenarioId);
+    const scenario = troubleshootingScenarios.find((s) => s.id === scenarioId);
     if (scenario) {
       setSelectedScenario(scenario);
       setActiveStep(0);
@@ -136,13 +131,21 @@ const IPv4Troubleshooter: React.FC = () => {
   const classifyIPAddress = (ip: string): string => {
     try {
       const info = parseIPAddress(ip);
-      if (info.isLoopback) {return 'Loopback (127.0.0.0/8)';}
-      if (info.isMulticast) {return 'Multicast (224.0.0.0/4)';}
-      if (info.isPrivate) {return 'Private (RFC 1918)';}
+      if (info.isLoopback) {
+        return 'Loopback (127.0.0.0/8)';
+      }
+      if (info.isMulticast) {
+        return 'Multicast (224.0.0.0/4)';
+      }
+      if (info.isPrivate) {
+        return 'Private (RFC 1918)';
+      }
 
       // Check for APIPA
       const octets = ip.split('.').map(Number);
-      if (octets[0] === 169 && octets[1] === 254) {return 'APIPA (169.254.0.0/16)';}
+      if (octets[0] === 169 && octets[1] === 254) {
+        return 'APIPA (169.254.0.0/16)';
+      }
 
       return `Public (Class ${info.class})`;
     } catch {
@@ -152,12 +155,15 @@ const IPv4Troubleshooter: React.FC = () => {
 
   // Network diagram component
   const NetworkDiagram: React.FC<{ scenario: TroubleshootingScenario }> = ({ scenario }) => (
-    <Paper variant="outlined" sx={{ p: 3, minHeight: 300, position: 'relative', bgcolor: '#f5f5f5' }}>
+    <Paper
+      variant="outlined"
+      sx={{ p: 3, minHeight: 300, position: 'relative', bgcolor: '#f5f5f5' }}
+    >
       <Typography variant="subtitle2" gutterBottom>
         Network Topology
       </Typography>
       <Grid container spacing={2}>
-        {scenario.devices.map(device => (
+        {scenario.devices.map((device) => (
           <Grid item xs={12} sm={6} md={4} key={device.id}>
             <Paper
               elevation={2}
@@ -175,7 +181,7 @@ const IPv4Troubleshooter: React.FC = () => {
                 <Chip
                   label={device.status}
                   size="small"
-                  color={getStatusColor(device.status) as any}
+                  color={getStatusColor(device.status) as 'success' | 'error' | 'default'}
                   sx={{ ml: 'auto' }}
                 />
               </Box>
@@ -210,7 +216,13 @@ const IPv4Troubleshooter: React.FC = () => {
               key={index}
               label={`${conn.from} ↔ ${conn.to} (${conn.status})`}
               size="small"
-              color={conn.status === 'ok' ? 'success' : conn.status === 'degraded' ? 'warning' : 'error'}
+              color={
+                (conn.status === 'ok'
+                  ? 'success'
+                  : conn.status === 'degraded'
+                    ? 'warning'
+                    : 'error') as 'success' | 'warning' | 'error'
+              }
               sx={{ m: 0.5 }}
             />
           ))}
@@ -240,7 +252,7 @@ const IPv4Troubleshooter: React.FC = () => {
                   onChange={(e) => handleScenarioChange(e.target.value)}
                   label="Troubleshooting Scenario"
                 >
-                  {troubleshootingScenarios.map(scenario => (
+                  {troubleshootingScenarios.map((scenario) => (
                     <MenuItem key={scenario.id} value={scenario.id}>
                       {scenario.title} ({scenario.problemType})
                     </MenuItem>
@@ -251,7 +263,13 @@ const IPv4Troubleshooter: React.FC = () => {
             <Grid item xs={12} md={4}>
               <Chip
                 label={selectedScenario.difficulty.toUpperCase()}
-                color={getDifficultyColor(selectedScenario.difficulty) as any}
+                color={
+                  getDifficultyColor(selectedScenario.difficulty) as
+                    | 'success'
+                    | 'warning'
+                    | 'error'
+                    | 'default'
+                }
                 size="small"
               />
             </Grid>
@@ -268,7 +286,7 @@ const IPv4Troubleshooter: React.FC = () => {
 
       {/* Main Content Tabs */}
       <Card sx={{ mb: 3 }}>
-        <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
+        <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue as number)}>
           <Tab label="Problem Overview" icon={<BugReport />} iconPosition="start" />
           <Tab label="Network Diagram" icon={<Router />} iconPosition="start" />
           <Tab label="Diagnostics" icon={<Terminal />} iconPosition="start" />
@@ -520,11 +538,10 @@ const IPv4Troubleshooter: React.FC = () => {
 
             {activeStep === selectedScenario.solution?.length && showSolution && (
               <Alert severity="success" icon={<CheckCircle />} sx={{ mt: 2 }}>
-                <Typography variant="subtitle2">
-                  Troubleshooting Complete!
-                </Typography>
+                <Typography variant="subtitle2">Troubleshooting Complete!</Typography>
                 <Typography variant="body2">
-                  You have successfully identified and resolved the {selectedScenario.problemType} issue.
+                  You have successfully identified and resolved the {selectedScenario.problemType}{' '}
+                  issue.
                 </Typography>
               </Alert>
             )}

@@ -27,34 +27,54 @@ export const cloudScenarios: CloudScenario[] = [
       'Centralized security controls',
       'Network function virtualization',
       'Multiple service models (SaaS/PaaS/IaaS)',
-      'Controlled internet access with NAT'
+      'Controlled internet access with NAT',
     ],
     idealSolution: {
       deploymentModel: 'Hybrid',
-      deploymentJustification: 'Regulatory requirements mandate on-premises data storage while cloud provides scalability',
+      deploymentJustification:
+        'Regulatory requirements mandate on-premises data storage while cloud provides scalability',
       serviceModel: 'PaaS',
-      serviceExamples: ['Containerized microservices on ECS/EKS', 'RDS managed databases', 'Legacy VMs on EC2'],
+      serviceExamples: [
+        'Containerized microservices on ECS/EKS',
+        'RDS managed databases',
+        'Legacy VMs on EC2',
+      ],
       connectivityMethod: 'Direct Connect',
-      connectivityReasoning: 'Low-latency, high-bandwidth requirement for 500 users accessing both environments',
-      nfvImplementation: 'Virtual firewalls and load balancers replace physical appliances, reducing CapEx',
+      connectivityReasoning:
+        'Low-latency, high-bandwidth requirement for 500 users accessing both environments',
+      nfvImplementation:
+        'Virtual firewalls and load balancers replace physical appliances, reducing CapEx',
       vpcConfiguration: {
-        subnets: ['Public subnet for web tier', 'Private subnet for app tier', 'Isolated subnet for database tier'],
-        securityGroups: ['Web-SG (allow 80/443)', 'App-SG (allow from Web-SG)', 'DB-SG (allow from App-SG)'],
-        networkLists: ['Allow on-premises CIDR', 'Deny all other traffic']
+        subnets: [
+          'Public subnet for web tier',
+          'Private subnet for app tier',
+          'Isolated subnet for database tier',
+        ],
+        securityGroups: [
+          'Web-SG (allow 80/443)',
+          'App-SG (allow from Web-SG)',
+          'DB-SG (allow from App-SG)',
+        ],
+        networkLists: ['Allow on-premises CIDR', 'Deny all other traffic'],
       },
       cloudGateways: {
         internetGateway: true,
         natGateway: true,
-        usage: 'IGW for public subnet inbound; NAT Gateway for private subnet outbound internet'
+        usage: 'IGW for public subnet inbound; NAT Gateway for private subnet outbound internet',
       },
       scalabilityFeatures: {
         type: 'Auto',
         description: 'Auto Scaling Groups respond to CloudWatch metrics',
-        triggers: ['CPU > 70%', 'Queue depth > 1000', 'Scheduled (end-of-month)']
+        triggers: ['CPU > 70%', 'Queue depth > 1000', 'Scheduled (end-of-month)'],
       },
-      elasticityImplementation: 'Auto Scaling policies automatically add/remove instances; Lambda for serverless burst capacity',
-      multitenancyConsiderations: ['VPC isolation per department', 'IAM role separation', 'Separate AWS accounts per business unit']
-    }
+      elasticityImplementation:
+        'Auto Scaling policies automatically add/remove instances; Lambda for serverless burst capacity',
+      multitenancyConsiderations: [
+        'VPC isolation per department',
+        'IAM role separation',
+        'Separate AWS accounts per business unit',
+      ],
+    },
   },
   {
     id: 'azure-saas-startup',
@@ -77,34 +97,56 @@ export const cloudScenarios: CloudScenario[] = [
       'Virtual network security controls',
       'SSL/TLS encrypted connectivity',
       'WAF and application-level security',
-      'Cost optimization for startup budget'
+      'Cost optimization for startup budget',
     ],
     idealSolution: {
       deploymentModel: 'Public',
-      deploymentJustification: 'Minimize CapEx; leverage global Azure infrastructure; pay-as-you-grow OpEx model',
+      deploymentJustification:
+        'Minimize CapEx; leverage global Azure infrastructure; pay-as-you-grow OpEx model',
       serviceModel: 'SaaS',
-      serviceExamples: ['Azure App Service for web app', 'Azure SQL Database elastic pools', 'Azure AD B2C for authentication'],
+      serviceExamples: [
+        'Azure App Service for web app',
+        'Azure SQL Database elastic pools',
+        'Azure AD B2C for authentication',
+      ],
       connectivityMethod: 'VPN',
-      connectivityReasoning: 'Internet-based access sufficient for SaaS; VPN for admin access to management plane',
-      nfvImplementation: 'Azure Application Gateway (virtual ADC), Azure Firewall, Traffic Manager (virtual load balancer)',
+      connectivityReasoning:
+        'Internet-based access sufficient for SaaS; VPN for admin access to management plane',
+      nfvImplementation:
+        'Azure Application Gateway (virtual ADC), Azure Firewall, Traffic Manager (virtual load balancer)',
       vpcConfiguration: {
-        subnets: ['Frontend subnet for App Gateway', 'Backend subnet for App Service', 'Data subnet for SQL'],
-        securityGroups: ['Frontend-NSG (allow 443)', 'Backend-NSG (allow from Frontend)', 'Data-NSG (allow from Backend)'],
-        networkLists: ['Allow Azure Load Balancer probes', 'Allow Azure infrastructure services']
+        subnets: [
+          'Frontend subnet for App Gateway',
+          'Backend subnet for App Service',
+          'Data subnet for SQL',
+        ],
+        securityGroups: [
+          'Frontend-NSG (allow 443)',
+          'Backend-NSG (allow from Frontend)',
+          'Data-NSG (allow from Backend)',
+        ],
+        networkLists: ['Allow Azure Load Balancer probes', 'Allow Azure infrastructure services'],
       },
       cloudGateways: {
         internetGateway: true,
         natGateway: false,
-        usage: 'Internet Gateway for inbound HTTPS traffic; App Service has outbound internet access by default'
+        usage:
+          'Internet Gateway for inbound HTTPS traffic; App Service has outbound internet access by default',
       },
       scalabilityFeatures: {
         type: 'Auto',
         description: 'App Service Plan auto-scale based on HTTP queue length and CPU',
-        triggers: ['HTTP queue > 100', 'CPU > 75%', 'Memory > 80%']
+        triggers: ['HTTP queue > 100', 'CPU > 75%', 'Memory > 80%'],
       },
-      elasticityImplementation: 'Automatic scale-out/in based on metrics; SQL elastic pools share resources across tenants; CDN for static content',
-      multitenancyConsiderations: ['Row-level security in SQL for tenant isolation', 'Separate App Service instances per tier', 'Azure AD tenant separation', 'Encryption at rest with customer-managed keys']
-    }
+      elasticityImplementation:
+        'Automatic scale-out/in based on metrics; SQL elastic pools share resources across tenants; CDN for static content',
+      multitenancyConsiderations: [
+        'Row-level security in SQL for tenant isolation',
+        'Separate App Service instances per tier',
+        'Azure AD tenant separation',
+        'Encryption at rest with customer-managed keys',
+      ],
+    },
   },
   {
     id: 'gcp-ml-research',
@@ -127,34 +169,59 @@ export const cloudScenarios: CloudScenario[] = [
       'Secure campus connectivity',
       'Private networking with controlled internet',
       'Virtual security appliances',
-      'Cost optimization during idle periods'
+      'Cost optimization during idle periods',
     ],
     idealSolution: {
       deploymentModel: 'Public',
-      deploymentJustification: 'Access to TPU/GPU hardware unavailable on-premises; elastic scaling for bursty workloads',
+      deploymentJustification:
+        'Access to TPU/GPU hardware unavailable on-premises; elastic scaling for bursty workloads',
       serviceModel: 'IaaS',
-      serviceExamples: ['Compute Engine VMs with A100 GPUs', 'Cloud AI Platform for distributed training', 'BigQuery for analytics'],
+      serviceExamples: [
+        'Compute Engine VMs with A100 GPUs',
+        'Cloud AI Platform for distributed training',
+        'BigQuery for analytics',
+      ],
       connectivityMethod: 'Direct Connect',
-      connectivityReasoning: 'Dedicated Interconnect required for multi-TB dataset transfers from sequencing equipment',
-      nfvImplementation: 'Virtual firewalls enforce HIPAA controls; virtual load balancers distribute training across GPU clusters',
+      connectivityReasoning:
+        'Dedicated Interconnect required for multi-TB dataset transfers from sequencing equipment',
+      nfvImplementation:
+        'Virtual firewalls enforce HIPAA controls; virtual load balancers distribute training across GPU clusters',
       vpcConfiguration: {
-        subnets: ['Private subnet for compute (no external IPs)', 'Management subnet for admin access', 'Data subnet for Cloud Storage'],
-        securityGroups: ['Compute-FW (deny all inbound)', 'Management-FW (allow VPN only)', 'Data-FW (allow from Compute)'],
-        networkLists: ['Allow campus VPN subnet', 'Allow Google API ranges', 'Deny internet']
+        subnets: [
+          'Private subnet for compute (no external IPs)',
+          'Management subnet for admin access',
+          'Data subnet for Cloud Storage',
+        ],
+        securityGroups: [
+          'Compute-FW (deny all inbound)',
+          'Management-FW (allow VPN only)',
+          'Data-FW (allow from Compute)',
+        ],
+        networkLists: ['Allow campus VPN subnet', 'Allow Google API ranges', 'Deny internet'],
       },
       cloudGateways: {
         internetGateway: false,
         natGateway: true,
-        usage: 'Cloud NAT for outbound package downloads; no inbound internet access'
+        usage: 'Cloud NAT for outbound package downloads; no inbound internet access',
       },
       scalabilityFeatures: {
         type: 'Horizontal',
         description: 'Managed Instance Groups scale VM count based on training queue depth',
-        triggers: ['Job queue > 0 (scale to 1000)', 'Job queue = 0 (scale to 0)', 'Training completion (deallocate)']
+        triggers: [
+          'Job queue > 0 (scale to 1000)',
+          'Job queue = 0 (scale to 0)',
+          'Training completion (deallocate)',
+        ],
       },
-      elasticityImplementation: 'Preemptible VMs reduce costs; auto-scaling to zero during idle; Cloud Functions trigger VM creation on data arrival',
-      multitenancyConsiderations: ['Separate projects per research team', 'VPC Service Controls for data perimeter', 'Encryption with customer-supplied keys', 'Audit logging for compliance']
-    }
+      elasticityImplementation:
+        'Preemptible VMs reduce costs; auto-scaling to zero during idle; Cloud Functions trigger VM creation on data arrival',
+      multitenancyConsiderations: [
+        'Separate projects per research team',
+        'VPC Service Controls for data perimeter',
+        'Encryption with customer-supplied keys',
+        'Audit logging for compliance',
+      ],
+    },
   },
   {
     id: 'multicloud-disaster-recovery',
@@ -179,34 +246,59 @@ export const cloudScenarios: CloudScenario[] = [
       'Redundant connectivity paths',
       'Pre-deployed DR infrastructure',
       'Synchronized data replication',
-      'Cost-optimized DR site (minimal capacity)'
+      'Cost-optimized DR site (minimal capacity)',
     ],
     idealSolution: {
       deploymentModel: 'Hybrid',
-      deploymentJustification: 'On-premises for compliance; multi-cloud for disaster recovery resilience',
+      deploymentJustification:
+        'On-premises for compliance; multi-cloud for disaster recovery resilience',
       serviceModel: 'IaaS',
-      serviceExamples: ['AWS EC2 and Azure VMs for application compatibility', 'AWS RDS and Azure SQL for databases', 'Cross-region replication'],
+      serviceExamples: [
+        'AWS EC2 and Azure VMs for application compatibility',
+        'AWS RDS and Azure SQL for databases',
+        'Cross-region replication',
+      ],
       connectivityMethod: 'Direct Connect',
-      connectivityReasoning: 'AWS Direct Connect + Azure ExpressRoute provide redundant low-latency paths; VPN as backup',
-      nfvImplementation: 'Identical virtual firewall configs in AWS and Azure; virtual load balancers with synchronized rules',
+      connectivityReasoning:
+        'AWS Direct Connect + Azure ExpressRoute provide redundant low-latency paths; VPN as backup',
+      nfvImplementation:
+        'Identical virtual firewall configs in AWS and Azure; virtual load balancers with synchronized rules',
       vpcConfiguration: {
-        subnets: ['Public-DMZ (mirrored AWS/Azure)', 'Private-App (mirrored)', 'Private-Data (mirrored)'],
-        securityGroups: ['Web-SG (identical rules)', 'App-SG (identical rules)', 'DB-SG (identical rules)'],
-        networkLists: ['Mirror of on-premises allowed ranges', 'Cross-cloud VPN subnets']
+        subnets: [
+          'Public-DMZ (mirrored AWS/Azure)',
+          'Private-App (mirrored)',
+          'Private-Data (mirrored)',
+        ],
+        securityGroups: [
+          'Web-SG (identical rules)',
+          'App-SG (identical rules)',
+          'DB-SG (identical rules)',
+        ],
+        networkLists: ['Mirror of on-premises allowed ranges', 'Cross-cloud VPN subnets'],
       },
       cloudGateways: {
         internetGateway: true,
         natGateway: true,
-        usage: 'Mirrored configuration: IGW for public tier, NAT Gateway for private tier outbound'
+        usage: 'Mirrored configuration: IGW for public tier, NAT Gateway for private tier outbound',
       },
       scalabilityFeatures: {
         type: 'Auto',
         description: 'DR site pre-scaled to minimum; auto-scale to production capacity on failover',
-        triggers: ['Failover event (scale DR to 100%)', 'Health check failures (trigger failover)', 'Manual activation']
+        triggers: [
+          'Failover event (scale DR to 100%)',
+          'Health check failures (trigger failover)',
+          'Manual activation',
+        ],
       },
-      elasticityImplementation: 'DR site runs minimal instances (20% capacity); automation scales to 100% within RTO; post-failback scales down',
-      multitenancyConsiderations: ['Separate AWS accounts for prod/DR', 'Separate Azure subscriptions', 'Identical IAM/RBAC policies', 'Cross-cloud encryption key management']
-    }
+      elasticityImplementation:
+        'DR site runs minimal instances (20% capacity); automation scales to 100% within RTO; post-failback scales down',
+      multitenancyConsiderations: [
+        'Separate AWS accounts for prod/DR',
+        'Separate Azure subscriptions',
+        'Identical IAM/RBAC policies',
+        'Cross-cloud encryption key management',
+      ],
+    },
   },
   {
     id: 'aws-gaming-platform',
@@ -231,35 +323,69 @@ export const cloudScenarios: CloudScenario[] = [
       'Cross-region data replication',
       'DDoS protection and traffic inspection',
       'Session isolation per player',
-      'Cost optimization post-launch'
+      'Cost optimization post-launch',
     ],
     idealSolution: {
       deploymentModel: 'Public',
-      deploymentJustification: 'Global AWS presence provides low-latency access; elastic scaling for unpredictable player counts',
+      deploymentJustification:
+        'Global AWS presence provides low-latency access; elastic scaling for unpredictable player counts',
       serviceModel: 'PaaS',
-      serviceExamples: ['ECS Fargate for game servers', 'DynamoDB Global Tables for player data', 'ElastiCache Redis for sessions', 'S3 for game assets'],
+      serviceExamples: [
+        'ECS Fargate for game servers',
+        'DynamoDB Global Tables for player data',
+        'ElastiCache Redis for sessions',
+        'S3 for game assets',
+      ],
       connectivityMethod: 'Internet Gateway',
-      connectivityReasoning: 'Players connect via internet; AWS Global Accelerator optimizes routing; VPC peering for inter-region',
-      nfvImplementation: 'AWS Network Firewall for DDoS mitigation; Application Load Balancer for L7 routing; NAT Gateway for outbound',
+      connectivityReasoning:
+        'Players connect via internet; AWS Global Accelerator optimizes routing; VPC peering for inter-region',
+      nfvImplementation:
+        'AWS Network Firewall for DDoS mitigation; Application Load Balancer for L7 routing; NAT Gateway for outbound',
       vpcConfiguration: {
-        subnets: ['Public (ALB in 3 AZs)', 'Private-App (ECS in 3 AZs)', 'Private-Data (DynamoDB VPC endpoints)', 'Isolated-Cache (ElastiCache)'],
-        securityGroups: ['ALB-SG (allow 443, 80, UDP game ports)', 'ECS-SG (allow from ALB)', 'Cache-SG (allow from ECS)', 'DB-SG (allow from ECS)'],
-        networkLists: ['Allow all player IPs', 'Rate limit per source IP', 'Block known malicious ranges']
+        subnets: [
+          'Public (ALB in 3 AZs)',
+          'Private-App (ECS in 3 AZs)',
+          'Private-Data (DynamoDB VPC endpoints)',
+          'Isolated-Cache (ElastiCache)',
+        ],
+        securityGroups: [
+          'ALB-SG (allow 443, 80, UDP game ports)',
+          'ECS-SG (allow from ALB)',
+          'Cache-SG (allow from ECS)',
+          'DB-SG (allow from ECS)',
+        ],
+        networkLists: [
+          'Allow all player IPs',
+          'Rate limit per source IP',
+          'Block known malicious ranges',
+        ],
       },
       cloudGateways: {
         internetGateway: true,
         natGateway: true,
-        usage: 'IGW for ALB inbound player traffic; NAT Gateway for ECS outbound (patches, telemetry)'
+        usage:
+          'IGW for ALB inbound player traffic; NAT Gateway for ECS outbound (patches, telemetry)',
       },
       scalabilityFeatures: {
         type: 'Auto',
         description: 'ECS Service Auto Scaling based on target tracking and step policies',
-        triggers: ['CPU > 70% (scale out)', 'Custom metric: players per server > 100', 'Launch event (pre-scale)', 'Post-launch (scale in)']
+        triggers: [
+          'CPU > 70% (scale out)',
+          'Custom metric: players per server > 100',
+          'Launch event (pre-scale)',
+          'Post-launch (scale in)',
+        ],
       },
-      elasticityImplementation: 'Target tracking auto-scaling maintains optimal player density; scheduled scaling for daily peaks; spot instances for cost optimization',
-      multitenancyConsiderations: ['Separate ECS task per game session', 'DynamoDB partition key by player ID', 'Rate limiting via API Gateway', 'Separate CloudWatch log groups per region']
-    }
-  }
+      elasticityImplementation:
+        'Target tracking auto-scaling maintains optimal player density; scheduled scaling for daily peaks; spot instances for cost optimization',
+      multitenancyConsiderations: [
+        'Separate ECS task per game session',
+        'DynamoDB partition key by player ID',
+        'Rate limiting via API Gateway',
+        'Separate CloudWatch log groups per region',
+      ],
+    },
+  },
 ];
 
 export const componentLibrary: ComponentLibraryItem[] = [
@@ -268,17 +394,24 @@ export const componentLibrary: ComponentLibraryItem[] = [
     type: 'deployment-zone',
     subtype: 'Public Cloud',
     name: 'Public Cloud Zone',
-    description: 'Multi-tenant cloud infrastructure operated by third-party provider (AWS, Azure, GCP)',
+    description:
+      'Multi-tenant cloud infrastructure operated by third-party provider (AWS, Azure, GCP)',
     icon: '☁️',
     color: '#3B82F6',
     defaultWidth: 300,
     defaultHeight: 400,
     allowedConnections: ['connectivity', 'service-layer', 'gateway'],
     properties: [
-      { key: 'provider', label: 'Cloud Provider', type: 'select', options: ['AWS', 'Azure', 'GCP', 'Oracle Cloud'], required: true },
+      {
+        key: 'provider',
+        label: 'Cloud Provider',
+        type: 'select',
+        options: ['AWS', 'Azure', 'GCP', 'Oracle Cloud'],
+        required: true,
+      },
       { key: 'region', label: 'Region', type: 'text', default: 'us-east-1' },
-      { key: 'availabilityZones', label: 'Availability Zones', type: 'number', default: 3 }
-    ]
+      { key: 'availabilityZones', label: 'Availability Zones', type: 'number', default: 3 },
+    ],
   },
   {
     type: 'deployment-zone',
@@ -291,10 +424,26 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 400,
     allowedConnections: ['connectivity', 'service-layer', 'gateway'],
     properties: [
-      { key: 'location', label: 'Location', type: 'select', options: ['On-Premises', 'Hosted Private', 'Colo'], required: true },
-      { key: 'hypervisor', label: 'Hypervisor', type: 'select', options: ['VMware', 'Hyper-V', 'KVM', 'Proxmox'] },
-      { key: 'complianceLevel', label: 'Compliance', type: 'select', options: ['HIPAA', 'PCI-DSS', 'FedRAMP', 'None'] }
-    ]
+      {
+        key: 'location',
+        label: 'Location',
+        type: 'select',
+        options: ['On-Premises', 'Hosted Private', 'Colo'],
+        required: true,
+      },
+      {
+        key: 'hypervisor',
+        label: 'Hypervisor',
+        type: 'select',
+        options: ['VMware', 'Hyper-V', 'KVM', 'Proxmox'],
+      },
+      {
+        key: 'complianceLevel',
+        label: 'Compliance',
+        type: 'select',
+        options: ['HIPAA', 'PCI-DSS', 'FedRAMP', 'None'],
+      },
+    ],
   },
   {
     type: 'deployment-zone',
@@ -307,9 +456,19 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 200,
     allowedConnections: ['deployment-zone', 'connectivity'],
     properties: [
-      { key: 'orchestration', label: 'Orchestration Platform', type: 'select', options: ['VMware Cloud', 'Azure Arc', 'Anthos', 'Custom'] },
-      { key: 'workloadType', label: 'Workload Distribution', type: 'select', options: ['Data Locality', 'Burst to Cloud', 'DR/Backup', 'Compliance Split'] }
-    ]
+      {
+        key: 'orchestration',
+        label: 'Orchestration Platform',
+        type: 'select',
+        options: ['VMware Cloud', 'Azure Arc', 'Anthos', 'Custom'],
+      },
+      {
+        key: 'workloadType',
+        label: 'Workload Distribution',
+        type: 'select',
+        options: ['Data Locality', 'Burst to Cloud', 'DR/Backup', 'Compliance Split'],
+      },
+    ],
   },
 
   // Service Layers
@@ -324,10 +483,25 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 100,
     allowedConnections: ['deployment-zone', 'connectivity', 'gateway'],
     properties: [
-      { key: 'application', label: 'Application Type', type: 'select', options: ['CRM', 'Email', 'Collaboration', 'Analytics', 'Custom'] },
-      { key: 'licensing', label: 'Licensing Model', type: 'select', options: ['Per User', 'Per Feature', 'Consumption', 'Enterprise'] },
-      { key: 'multitenancy', label: 'Tenancy Model', type: 'select', options: ['Shared', 'Dedicated Instance', 'Private Tenant'] }
-    ]
+      {
+        key: 'application',
+        label: 'Application Type',
+        type: 'select',
+        options: ['CRM', 'Email', 'Collaboration', 'Analytics', 'Custom'],
+      },
+      {
+        key: 'licensing',
+        label: 'Licensing Model',
+        type: 'select',
+        options: ['Per User', 'Per Feature', 'Consumption', 'Enterprise'],
+      },
+      {
+        key: 'multitenancy',
+        label: 'Tenancy Model',
+        type: 'select',
+        options: ['Shared', 'Dedicated Instance', 'Private Tenant'],
+      },
+    ],
   },
   {
     type: 'service-layer',
@@ -340,10 +514,15 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 100,
     allowedConnections: ['deployment-zone', 'vpc-element', 'nfv-component'],
     properties: [
-      { key: 'runtime', label: 'Runtime', type: 'select', options: ['Containers', 'Serverless', 'Web App', 'API Platform'] },
+      {
+        key: 'runtime',
+        label: 'Runtime',
+        type: 'select',
+        options: ['Containers', 'Serverless', 'Web App', 'API Platform'],
+      },
       { key: 'scaling', label: 'Auto-Scaling', type: 'boolean', default: true },
-      { key: 'instances', label: 'Instance Count', type: 'number', default: 2 }
-    ]
+      { key: 'instances', label: 'Instance Count', type: 'number', default: 2 },
+    ],
   },
   {
     type: 'service-layer',
@@ -356,10 +535,25 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 100,
     allowedConnections: ['deployment-zone', 'vpc-element', 'nfv-component'],
     properties: [
-      { key: 'instanceType', label: 'Instance Type', type: 'select', options: ['General Purpose', 'Compute Optimized', 'Memory Optimized', 'GPU'] },
-      { key: 'os', label: 'Operating System', type: 'select', options: ['Linux', 'Windows', 'Container OS'] },
-      { key: 'storage', label: 'Storage Type', type: 'select', options: ['SSD', 'HDD', 'NVMe', 'Network Storage'] }
-    ]
+      {
+        key: 'instanceType',
+        label: 'Instance Type',
+        type: 'select',
+        options: ['General Purpose', 'Compute Optimized', 'Memory Optimized', 'GPU'],
+      },
+      {
+        key: 'os',
+        label: 'Operating System',
+        type: 'select',
+        options: ['Linux', 'Windows', 'Container OS'],
+      },
+      {
+        key: 'storage',
+        label: 'Storage Type',
+        type: 'select',
+        options: ['SSD', 'HDD', 'NVMe', 'Network Storage'],
+      },
+    ],
   },
 
   // Connectivity Options
@@ -374,10 +568,16 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 80,
     allowedConnections: ['deployment-zone', 'gateway'],
     properties: [
-      { key: 'encryption', label: 'Encryption', type: 'select', options: ['IPSec', 'SSL/TLS', 'WireGuard'], default: 'IPSec' },
+      {
+        key: 'encryption',
+        label: 'Encryption',
+        type: 'select',
+        options: ['IPSec', 'SSL/TLS', 'WireGuard'],
+        default: 'IPSec',
+      },
       { key: 'bandwidth', label: 'Bandwidth (Mbps)', type: 'number', default: 100 },
-      { key: 'redundancy', label: 'Redundant Tunnel', type: 'boolean', default: false }
-    ]
+      { key: 'redundancy', label: 'Redundant Tunnel', type: 'boolean', default: false },
+    ],
   },
   {
     type: 'connectivity',
@@ -390,10 +590,21 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 80,
     allowedConnections: ['deployment-zone', 'deployment-zone'],
     properties: [
-      { key: 'speed', label: 'Port Speed', type: 'select', options: ['1 Gbps', '10 Gbps', '100 Gbps'], default: '10 Gbps' },
-      { key: 'provider', label: 'Provider Type', type: 'select', options: ['Direct', 'Partner', 'Hosted'] },
-      { key: 'vlan', label: 'VLAN Count', type: 'number', default: 1 }
-    ]
+      {
+        key: 'speed',
+        label: 'Port Speed',
+        type: 'select',
+        options: ['1 Gbps', '10 Gbps', '100 Gbps'],
+        default: '10 Gbps',
+      },
+      {
+        key: 'provider',
+        label: 'Provider Type',
+        type: 'select',
+        options: ['Direct', 'Partner', 'Hosted'],
+      },
+      { key: 'vlan', label: 'VLAN Count', type: 'number', default: 1 },
+    ],
   },
   {
     type: 'connectivity',
@@ -406,9 +617,14 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 80,
     allowedConnections: ['gateway', 'service-layer'],
     properties: [
-      { key: 'security', label: 'Security', type: 'multiselect', options: ['TLS', 'WAF', 'DDoS Protection', 'CDN'] },
-      { key: 'bandwidth', label: 'Expected Bandwidth', type: 'text', default: 'Best effort' }
-    ]
+      {
+        key: 'security',
+        label: 'Security',
+        type: 'multiselect',
+        options: ['TLS', 'WAF', 'DDoS Protection', 'CDN'],
+      },
+      { key: 'bandwidth', label: 'Expected Bandwidth', type: 'text', default: 'Best effort' },
+    ],
   },
 
   // VPC Elements
@@ -424,9 +640,14 @@ export const componentLibrary: ComponentLibraryItem[] = [
     allowedConnections: ['service-layer', 'nfv-component', 'gateway'],
     properties: [
       { key: 'cidr', label: 'CIDR Block', type: 'text', default: '10.0.1.0/24', required: true },
-      { key: 'type', label: 'Subnet Type', type: 'select', options: ['Public', 'Private', 'Isolated'] },
-      { key: 'az', label: 'Availability Zone', type: 'text' }
-    ]
+      {
+        key: 'type',
+        label: 'Subnet Type',
+        type: 'select',
+        options: ['Public', 'Private', 'Isolated'],
+      },
+      { key: 'az', label: 'Availability Zone', type: 'text' },
+    ],
   },
   {
     type: 'vpc-element',
@@ -439,10 +660,15 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 100,
     allowedConnections: ['service-layer', 'vpc-element'],
     properties: [
-      { key: 'inboundRules', label: 'Inbound Rules', type: 'text', default: 'Allow 443 from 0.0.0.0/0' },
+      {
+        key: 'inboundRules',
+        label: 'Inbound Rules',
+        type: 'text',
+        default: 'Allow 443 from 0.0.0.0/0',
+      },
       { key: 'outboundRules', label: 'Outbound Rules', type: 'text', default: 'Allow all' },
-      { key: 'stateful', label: 'Stateful', type: 'boolean', default: true }
-    ]
+      { key: 'stateful', label: 'Stateful', type: 'boolean', default: true },
+    ],
   },
   {
     type: 'vpc-element',
@@ -456,8 +682,14 @@ export const componentLibrary: ComponentLibraryItem[] = [
     allowedConnections: ['vpc-element'],
     properties: [
       { key: 'rules', label: 'Rule Count', type: 'number', default: 5 },
-      { key: 'defaultAction', label: 'Default Action', type: 'select', options: ['Deny', 'Allow'], default: 'Deny' }
-    ]
+      {
+        key: 'defaultAction',
+        label: 'Default Action',
+        type: 'select',
+        options: ['Deny', 'Allow'],
+        default: 'Deny',
+      },
+    ],
   },
 
   // Gateways
@@ -473,8 +705,8 @@ export const componentLibrary: ComponentLibraryItem[] = [
     allowedConnections: ['vpc-element', 'connectivity'],
     properties: [
       { key: 'publicIPs', label: 'Public IP Allocation', type: 'boolean', default: true },
-      { key: 'ipv6', label: 'IPv6 Support', type: 'boolean', default: false }
-    ]
+      { key: 'ipv6', label: 'IPv6 Support', type: 'boolean', default: false },
+    ],
   },
   {
     type: 'gateway',
@@ -488,8 +720,14 @@ export const componentLibrary: ComponentLibraryItem[] = [
     allowedConnections: ['vpc-element', 'gateway'],
     properties: [
       { key: 'highAvailability', label: 'HA Deployment', type: 'boolean', default: false },
-      { key: 'bandwidth', label: 'Bandwidth (Gbps)', type: 'select', options: ['5', '10', '45', '100'], default: '5' }
-    ]
+      {
+        key: 'bandwidth',
+        label: 'Bandwidth (Gbps)',
+        type: 'select',
+        options: ['5', '10', '45', '100'],
+        default: '5',
+      },
+    ],
   },
 
   // NFV Components
@@ -504,9 +742,14 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 90,
     allowedConnections: ['vpc-element', 'connectivity'],
     properties: [
-      { key: 'routingProtocol', label: 'Routing Protocol', type: 'select', options: ['BGP', 'OSPF', 'Static', 'Policy-Based'] },
-      { key: 'throughput', label: 'Throughput (Gbps)', type: 'number', default: 10 }
-    ]
+      {
+        key: 'routingProtocol',
+        label: 'Routing Protocol',
+        type: 'select',
+        options: ['BGP', 'OSPF', 'Static', 'Policy-Based'],
+      },
+      { key: 'throughput', label: 'Throughput (Gbps)', type: 'number', default: 10 },
+    ],
   },
   {
     type: 'nfv-component',
@@ -519,9 +762,20 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 90,
     allowedConnections: ['vpc-element', 'service-layer'],
     properties: [
-      { key: 'features', label: 'Features', type: 'multiselect', options: ['IPS', 'DPI', 'URL Filtering', 'Malware Protection'] },
-      { key: 'mode', label: 'Deployment Mode', type: 'select', options: ['Inline', 'Monitor', 'Tap'], default: 'Inline' }
-    ]
+      {
+        key: 'features',
+        label: 'Features',
+        type: 'multiselect',
+        options: ['IPS', 'DPI', 'URL Filtering', 'Malware Protection'],
+      },
+      {
+        key: 'mode',
+        label: 'Deployment Mode',
+        type: 'select',
+        options: ['Inline', 'Monitor', 'Tap'],
+        default: 'Inline',
+      },
+    ],
   },
   {
     type: 'nfv-component',
@@ -534,63 +788,76 @@ export const componentLibrary: ComponentLibraryItem[] = [
     defaultHeight: 90,
     allowedConnections: ['vpc-element', 'service-layer'],
     properties: [
-      { key: 'algorithm', label: 'Algorithm', type: 'select', options: ['Round Robin', 'Least Connections', 'IP Hash', 'Weighted'], default: 'Round Robin' },
+      {
+        key: 'algorithm',
+        label: 'Algorithm',
+        type: 'select',
+        options: ['Round Robin', 'Least Connections', 'IP Hash', 'Weighted'],
+        default: 'Round Robin',
+      },
       { key: 'healthCheck', label: 'Health Check Interval', type: 'number', default: 30 },
-      { key: 'sslOffload', label: 'SSL Offloading', type: 'boolean', default: true }
-    ]
-  }
+      { key: 'sslOffload', label: 'SSL Offloading', type: 'boolean', default: true },
+    ],
+  },
 ];
+
+interface ComponentForValidation {
+  type?: string;
+  subtype?: string;
+  properties?: Record<string, unknown>;
+}
 
 export const validationRules = {
   internetAccess: {
     rule: 'Public subnets must have Internet Gateway for inbound access',
-    check: (components: any[]) => {
-      const publicSubnets = components.filter(c =>
-        c.type === 'vpc-element' &&
-        c.subtype === 'Subnet' &&
-        c.properties?.type === 'Public'
+    check: (components: ComponentForValidation[]) => {
+      const publicSubnets = components.filter(
+        (c) =>
+          c.type === 'vpc-element' &&
+          c.subtype === 'Subnet' &&
+          (c.properties?.type as string) === 'Public'
       );
-      const internetGateways = components.filter(c => c.subtype === 'Internet Gateway');
+      const internetGateways = components.filter((c) => c.subtype === 'Internet Gateway');
 
       if (publicSubnets.length > 0 && internetGateways.length === 0) {
         return { valid: false, message: 'Public subnets require Internet Gateway' };
       }
       return { valid: true };
-    }
+    },
   },
 
   natGatewayPlacement: {
     rule: 'NAT Gateway must be in public subnet',
-    check: (components: any[]) => {
-      const natGateways = components.filter(c => c.subtype === 'NAT Gateway');
+    check: (components: ComponentForValidation[]) => {
+      const _natGateways = components.filter((c) => c.subtype === 'NAT Gateway');
       // In a real implementation, check NAT Gateway connections to public subnets
       return { valid: true };
-    }
+    },
   },
 
   securityGroupCoverage: {
     rule: 'All service layers should have security group protection',
-    check: (components: any[]) => {
-      const serviceLayers = components.filter(c => c.type === 'service-layer');
-      const securityGroups = components.filter(c => c.subtype === 'Security Group');
+    check: (components: ComponentForValidation[]) => {
+      const serviceLayers = components.filter((c) => c.type === 'service-layer');
+      const securityGroups = components.filter((c) => c.subtype === 'Security Group');
 
       if (serviceLayers.length > 0 && securityGroups.length === 0) {
         return { valid: false, message: 'Service layers should be protected by security groups' };
       }
       return { valid: true };
-    }
+    },
   },
 
   connectivityRequired: {
     rule: 'Hybrid deployments require connectivity components',
-    check: (components: any[]) => {
-      const hybridZones = components.filter(c => c.subtype === 'Hybrid Zone');
-      const connectivity = components.filter(c => c.type === 'connectivity');
+    check: (components: ComponentForValidation[]) => {
+      const hybridZones = components.filter((c) => c.subtype === 'Hybrid Zone');
+      const connectivity = components.filter((c) => c.type === 'connectivity');
 
       if (hybridZones.length > 0 && connectivity.length === 0) {
         return { valid: false, message: 'Hybrid deployments need VPN or Direct Connect' };
       }
       return { valid: true };
-    }
-  }
+    },
+  },
 };
