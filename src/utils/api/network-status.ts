@@ -16,7 +16,7 @@ class NetworkStatusManager {
   private isOnline: boolean = navigator.onLine;
   private callbacks: Set<NetworkStatusCallback> = new Set();
   private requestQueue: RequestQueueItem[] = [];
-  private reconnectAttempts: number = 0;
+  // Removed unused _reconnectAttempts property
 
   constructor() {
     this.setupListeners();
@@ -39,7 +39,7 @@ class NetworkStatusManager {
   private handleOnline = (): void => {
     console.log('🟢 Network connection restored');
     this.isOnline = true;
-    this.reconnectAttempts = 0;
+    // Reconnect logic reset would go here
     this.notifyCallbacks(true);
     this.processQueue();
   };
@@ -57,7 +57,7 @@ class NetworkStatusManager {
    * Notify all callbacks of status change
    */
   private notifyCallbacks(isOnline: boolean): void {
-    this.callbacks.forEach(callback => {
+    this.callbacks.forEach((callback) => {
       try {
         callback(isOnline);
       } catch (error) {
@@ -194,7 +194,7 @@ class NetworkStatusManager {
     const now = Date.now();
     const before = this.requestQueue.length;
 
-    this.requestQueue = this.requestQueue.filter(item => {
+    this.requestQueue = this.requestQueue.filter((item) => {
       const age = now - item.timestamp;
       if (age > maxAge) {
         item.reject(new Error('Request expired'));

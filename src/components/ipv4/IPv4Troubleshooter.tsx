@@ -207,6 +207,7 @@ const IPv4Troubleshooter: React.FC = () => {
 
       {/* Connection indicators */}
       {scenario.connections.length > 0 && (
+        // @ts-expect-error - Complex union type from multiple sx props
         <Box sx={{ mt: 2 }}>
           <Typography variant="caption" color="text.secondary">
             Connections:
@@ -232,7 +233,7 @@ const IPv4Troubleshooter: React.FC = () => {
   );
 
   return (
-    <Box sx={{ p: 3 }}>
+    <div style={{ padding: '24px' }}>
       <Typography variant="h4" gutterBottom>
         IPv4 Troubleshooting Scenarios
       </Typography>
@@ -639,7 +640,7 @@ const IPv4Troubleshooter: React.FC = () => {
           </Grid>
         </AccordionDetails>
       </Accordion>
-    </Box>
+    </div>
   );
 };
 

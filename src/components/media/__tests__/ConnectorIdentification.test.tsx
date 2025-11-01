@@ -11,7 +11,7 @@ import ConnectorIdentification from '../ConnectorIdentification';
 vi.mock('../Connector3DViewer', () => ({
   default: ({ connectorType }: any) => (
     <div data-testid="3d-viewer-mock">3D Viewer: {connectorType}</div>
-  )
+  ),
 }));
 
 describe('ConnectorIdentification', () => {
@@ -49,10 +49,11 @@ describe('ConnectorIdentification', () => {
     render(<ConnectorIdentification />);
 
     const buttons = screen.getAllByRole('button');
-    const answerButton = buttons.find(btn =>
-      btn.textContent?.includes('SC') ||
-      btn.textContent?.includes('LC') ||
-      btn.textContent?.includes('RJ45')
+    const answerButton = buttons.find(
+      (btn) =>
+        btn.textContent?.includes('SC') ||
+        btn.textContent?.includes('LC') ||
+        btn.textContent?.includes('RJ45')
     );
 
     if (answerButton) {
@@ -72,9 +73,8 @@ describe('ConnectorIdentification', () => {
     render(<ConnectorIdentification />);
 
     const buttons = screen.getAllByRole('button');
-    const answerButton = buttons.find(btn =>
-      btn.textContent?.includes('SC') ||
-      btn.textContent?.includes('LC')
+    const answerButton = buttons.find(
+      (btn) => btn.textContent?.includes('SC') || btn.textContent?.includes('LC')
     );
 
     if (answerButton) {
@@ -90,9 +90,8 @@ describe('ConnectorIdentification', () => {
 
     // Select first answer
     const buttons = screen.getAllByRole('button');
-    const answerButton = buttons.find(btn =>
-      btn.textContent?.includes('SC') ||
-      btn.textContent?.includes('LC')
+    const answerButton = buttons.find(
+      (btn) => btn.textContent?.includes('SC') || btn.textContent?.includes('LC')
     );
 
     if (answerButton) {
@@ -100,15 +99,13 @@ describe('ConnectorIdentification', () => {
       await user.click(screen.getByText('Submit Answer'));
 
       await waitFor(() => {
-        expect(
-          screen.getByText('Correct!') || screen.getByText('Incorrect')
-        ).toBeInTheDocument();
+        expect(screen.getByText('Correct!') || screen.getByText('Incorrect')).toBeInTheDocument();
       });
     }
   });
 
   it('increments score on correct answer', async () => {
-    const user = userEvent.setup();
+    userEvent.setup();
     render(<ConnectorIdentification />);
 
     // This test would need to know the correct answer
@@ -121,9 +118,8 @@ describe('ConnectorIdentification', () => {
     render(<ConnectorIdentification />);
 
     const buttons = screen.getAllByRole('button');
-    const answerButton = buttons.find(btn =>
-      btn.textContent?.includes('SC') ||
-      btn.textContent?.includes('LC')
+    const answerButton = buttons.find(
+      (btn) => btn.textContent?.includes('SC') || btn.textContent?.includes('LC')
     );
 
     if (answerButton) {
@@ -178,7 +174,7 @@ describe('ConnectorIdentification', () => {
   });
 
   it('displays completion screen after all questions', async () => {
-    const user = userEvent.setup();
+    userEvent.setup();
     render(<ConnectorIdentification />);
 
     // This would need to answer all questions
@@ -208,6 +204,8 @@ describe('ConnectorIdentification', () => {
     render(<ConnectorIdentification />);
 
     // Check for heading structure
-    expect(screen.getByRole('heading', { name: /Connector Identification Challenge/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Connector Identification Challenge/i })
+    ).toBeInTheDocument();
   });
 });

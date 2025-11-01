@@ -3,10 +3,9 @@
  * Flashcard system requiring explanations, not just memorization
  */
 
-import React, { useState, useEffect } from 'react';
-import { FLASH_CARDS, PROTOCOLS, IP_PROTOCOLS } from './protocols-data';
-import type { FlashCard} from './protocols-types';
-import { Protocol, IPProtocol } from './protocols-types';
+import React, { useState } from 'react';
+import { FLASH_CARDS, PROTOCOLS } from './protocols-data';
+import type { FlashCard } from './protocols-types';
 
 interface ExplanationState {
   userExplanation: string;
@@ -25,22 +24,24 @@ export const PortProtocolTrainer: React.FC = () => {
     wordCount: 0,
     submitted: false,
     feedback: '',
-    score: 0
+    score: 0,
   });
   const [completedCards, setCompletedCards] = useState<Set<string>>(new Set());
   const [filterProtocol, setFilterProtocol] = useState<string>('all');
-  const [currentMode, setCurrentMode] = useState<'protocols' | 'ip-types'>('protocols');
 
   const currentCard = FLASH_CARDS[currentCardIndex];
-  const protocol = PROTOCOLS.find(p => p.id === currentCard?.protocolId);
+  const protocol = PROTOCOLS.find((p) => p.id === currentCard?.protocolId);
 
   const handleExplanationChange = (text: string) => {
-    const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+    const words = text
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 0);
     setExplanation({
       ...explanation,
       userExplanation: text,
       wordCount: words.length,
-      submitted: false
+      submitted: false,
     });
   };
 
@@ -54,17 +55,18 @@ export const PortProtocolTrainer: React.FC = () => {
     } else if (score < 60) {
       feedback = 'Your explanation needs more detail. Try to include key concepts from the answer.';
     } else if (score < 80) {
-      feedback = 'Good effort! Consider adding more specific details about security or functionality.';
+      feedback =
+        'Good effort! Consider adding more specific details about security or functionality.';
     } else {
       feedback = 'Excellent explanation! You demonstrated clear understanding.';
-      setCompletedCards(prev => new Set([...prev, currentCard.id]));
+      setCompletedCards((prev) => new Set([...prev, currentCard.id]));
     }
 
     setExplanation({
       ...explanation,
       submitted: true,
       feedback,
-      score
+      score,
     });
   };
 
@@ -74,14 +76,27 @@ export const PortProtocolTrainer: React.FC = () => {
 
     // Extract key concepts from the answer
     const keyConcepts = [
-      'encrypt', 'plaintext', 'security', 'authentication',
-      'port', 'tcp', 'udp', 'server', 'client',
-      'data', 'control', 'command', 'vulnerable',
-      'attack', 'protection', 'tls', 'ssl'
+      'encrypt',
+      'plaintext',
+      'security',
+      'authentication',
+      'port',
+      'tcp',
+      'udp',
+      'server',
+      'client',
+      'data',
+      'control',
+      'command',
+      'vulnerable',
+      'attack',
+      'protection',
+      'tls',
+      'ssl',
     ];
 
     let conceptScore = 0;
-    keyConcepts.forEach(concept => {
+    keyConcepts.forEach((concept) => {
       if (lowerUser.includes(concept) && lowerAnswer.includes(concept)) {
         conceptScore += 5;
       }
@@ -91,9 +106,9 @@ export const PortProtocolTrainer: React.FC = () => {
     const lengthScore = Math.min(20, (userText.length / 150) * 20);
 
     // Specific terms from answer (up to 30 points)
-    const answerWords = lowerAnswer.split(/\s+/).filter(w => w.length > 5);
+    const answerWords = lowerAnswer.split(/\s+/).filter((w) => w.length > 5);
     const userWords = new Set(lowerUser.split(/\s+/));
-    const matchedWords = answerWords.filter(w => userWords.has(w));
+    const matchedWords = answerWords.filter((w) => userWords.has(w));
     const specificityScore = Math.min(30, (matchedWords.length / answerWords.length) * 30);
 
     return Math.min(100, conceptScore + lengthScore + specificityScore);
@@ -108,7 +123,7 @@ export const PortProtocolTrainer: React.FC = () => {
       wordCount: 0,
       submitted: false,
       feedback: '',
-      score: 0
+      score: 0,
     });
   };
 
@@ -121,7 +136,7 @@ export const PortProtocolTrainer: React.FC = () => {
       wordCount: 0,
       submitted: false,
       feedback: '',
-      score: 0
+      score: 0,
     });
   };
 
@@ -131,9 +146,7 @@ export const PortProtocolTrainer: React.FC = () => {
     }
   };
 
-  const filteredCards = filterProtocol === 'all'
-    ? FLASH_CARDS
-    : FLASH_CARDS.filter(card => card.protocolId === filterProtocol);
+  // Card filtering logic removed (was unused)
 
   const progressPercentage = (completedCards.size / FLASH_CARDS.length) * 100;
 
@@ -152,13 +165,12 @@ export const PortProtocolTrainer: React.FC = () => {
 
         <div className="filter-controls">
           <label>Filter by protocol:</label>
-          <select
-            value={filterProtocol}
-            onChange={(e) => setFilterProtocol(e.target.value)}
-          >
+          <select value={filterProtocol} onChange={(e) => setFilterProtocol(e.target.value)}>
             <option value="all">All Protocols</option>
-            {PROTOCOLS.map(p => (
-              <option key={p.id} value={p.id}>{p.name}</option>
+            {PROTOCOLS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
             ))}
           </select>
         </div>
@@ -172,12 +184,8 @@ export const PortProtocolTrainer: React.FC = () => {
         {protocol && (
           <div className={`protocol-badge ${protocol.security}`}>
             <span className="protocol-name">{protocol.name}</span>
-            <span className="protocol-ports">
-              {protocol.ports.map(p => p.number).join(', ')}
-            </span>
-            <span className={`security-indicator ${protocol.security}`}>
-              {protocol.security}
-            </span>
+            <span className="protocol-ports">{protocol.ports.map((p) => p.number).join(', ')}</span>
+            <span className={`security-indicator ${protocol.security}`}>{protocol.security}</span>
           </div>
         )}
 
@@ -199,7 +207,9 @@ export const PortProtocolTrainer: React.FC = () => {
               />
 
               <div className="explanation-meta">
-                <span className={`word-count ${explanation.wordCount < (currentCard.minimumWords || 20) ? 'insufficient' : 'sufficient'}`}>
+                <span
+                  className={`word-count ${explanation.wordCount < (currentCard.minimumWords || 20) ? 'insufficient' : 'sufficient'}`}
+                >
                   Word count: {explanation.wordCount} / {currentCard.minimumWords || 20} minimum
                 </span>
 
@@ -249,10 +259,7 @@ export const PortProtocolTrainer: React.FC = () => {
             </div>
           )}
 
-          <button
-            onClick={() => setShowAnswer(!showAnswer)}
-            className="toggle-answer-btn"
-          >
+          <button onClick={() => setShowAnswer(!showAnswer)} className="toggle-answer-btn">
             {showAnswer ? 'Hide Answer' : 'Show Answer'}
           </button>
         </div>

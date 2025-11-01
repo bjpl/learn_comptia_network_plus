@@ -4,11 +4,7 @@
  */
 
 import { useState, useCallback, useMemo } from 'react';
-import type {
-  AssessmentResult,
-  ScoreBreakdown,
-  Question,
-} from '../types';
+import type { AssessmentResult, ScoreBreakdown, Question } from '../types';
 import {
   calculateScore,
   calculateDifficultyPoints,
@@ -88,12 +84,7 @@ interface UseScoringReturn {
  * ```
  */
 export function useScoring(options: UseScoringOptions): UseScoringReturn {
-  const {
-    questions,
-    passingPercentage = 70,
-    enableBonuses = true,
-    enablePenalties = false,
-  } = options;
+  const { questions, passingPercentage = 70, enableBonuses = true } = options;
 
   const [results, setResults] = useState<AssessmentResult[]>([]);
   const [currentStreak, setCurrentStreak] = useState(0);
@@ -101,20 +92,22 @@ export function useScoring(options: UseScoringOptions): UseScoringReturn {
 
   // Calculate score breakdown (memoized)
   const scoreBreakdown = useMemo(() => {
-    if (results.length === 0) {return null;}
+    if (results.length === 0) {
+      return null;
+    }
     return calculateScore(results, questions, passingPercentage);
   }, [results, questions, passingPercentage]);
 
   // Add a result
   const addResult = useCallback(
     (result: AssessmentResult) => {
-      setResults(prev => {
+      setResults((prev) => {
         // Remove existing result for this question if any
-        const filtered = prev.filter(r => r.questionId !== result.questionId);
+        const filtered = prev.filter((r) => r.questionId !== result.questionId);
 
         // Update streak
         if (result.isCorrect) {
-          setCurrentStreak(s => s + 1);
+          setCurrentStreak((s) => s + 1);
         } else {
           setCurrentStreak(0);
         }
@@ -122,14 +115,11 @@ export function useScoring(options: UseScoringOptions): UseScoringReturn {
         // Apply bonuses if enabled
         let finalResult = { ...result };
         if (applyBonuses) {
-          const question = questions.find(q => q.id === result.questionId);
+          const question = questions.find((q) => q.id === result.questionId);
           if (question && result.isCorrect) {
             // Apply difficulty multiplier
             const basePoints = question.points;
-            const difficultyPoints = calculateDifficultyPoints(
-              basePoints,
-              question.difficulty
-            );
+            const difficultyPoints = calculateDifficultyPoints(basePoints, question.difficulty);
 
             // Apply time bonus
             const timeBonus = calculateTimeBonus(result.timeSpent, difficultyPoints);
@@ -138,9 +128,7 @@ export function useScoring(options: UseScoringOptions): UseScoringReturn {
             const streakMultiplier = calculateStreakBonus(currentStreak);
 
             // Calculate final points
-            const totalPoints = Math.round(
-              (difficultyPoints + timeBonus) * streakMultiplier
-            );
+            const totalPoints = Math.round((difficultyPoints + timeBonus) * streakMultiplier);
 
             finalResult = {
               ...result,
@@ -157,7 +145,7 @@ export function useScoring(options: UseScoringOptions): UseScoringReturn {
 
   // Remove a result
   const removeResult = useCallback((questionId: string) => {
-    setResults(prev => prev.filter(r => r.questionId !== questionId));
+    setResults((prev) => prev.filter((r) => r.questionId !== questionId));
   }, []);
 
   // Clear all results
@@ -174,7 +162,7 @@ export function useScoring(options: UseScoringOptions): UseScoringReturn {
   // Get result for specific question
   const getQuestionResult = useCallback(
     (questionId: string) => {
-      return results.find(r => r.questionId === questionId);
+      return results.find((r) => r.questionId === questionId);
     },
     [results]
   );
@@ -182,7 +170,7 @@ export function useScoring(options: UseScoringOptions): UseScoringReturn {
   // Check if question is answered
   const isQuestionAnswered = useCallback(
     (questionId: string) => {
-      return results.some(r => r.questionId === questionId);
+      return results.some((r) => r.questionId === questionId);
     },
     [results]
   );
@@ -194,13 +182,17 @@ export function useScoring(options: UseScoringOptions): UseScoringReturn {
 
   // Get letter grade
   const getLetterGradeValue = useCallback(() => {
-    if (!scoreBreakdown) {return 'N/A';}
+    if (!scoreBreakdown) {
+      return 'N/A';
+    }
     return getLetterGrade(scoreBreakdown.percentage);
   }, [scoreBreakdown]);
 
   // Get exam readiness
   const getExamReadinessValue = useCallback(() => {
-    if (!scoreBreakdown) {return 0;}
+    if (!scoreBreakdown) {
+      return 0;
+    }
     return calculateExamReadiness(scoreBreakdown.domainScores);
   }, [scoreBreakdown]);
 
@@ -239,13 +231,12 @@ export function useScoring(options: UseScoringOptions): UseScoringReturn {
  * @param questions - Questions array
  * @returns Real-time score percentage
  */
-export function useRealtimeScore(
-  results: AssessmentResult[],
-  questions: Question[]
-): number {
+export function useRealtimeScore(results: AssessmentResult[]): number {
   return useMemo(() => {
-    if (results.length === 0) {return 0;}
-    const correct = results.filter(r => r.isCorrect).length;
+    if (results.length === 0) {
+      return 0;
+    }
+    const correct = results.filter((r) => r.isCorrect).length;
     return Math.round((correct / results.length) * 100);
   }, [results]);
 }
@@ -296,14 +287,14 @@ export function useDomainProgress(
   domain: string
 ): number {
   return useMemo(() => {
-    const domainQuestions = questions.filter(q => q.domain === domain);
-    if (domainQuestions.length === 0) {return 0;}
+    const domainQuestions = questions.filter((q) => q.domain === domain);
+    if (domainQuestions.length === 0) {
+      return 0;
+    }
 
-    const domainResults = results.filter(r =>
-      domainQuestions.some(q => q.id === r.questionId)
-    );
+    const domainResults = results.filter((r) => domainQuestions.some((q) => q.id === r.questionId));
 
-    const correct = domainResults.filter(r => r.isCorrect).length;
+    const correct = domainResults.filter((r) => r.isCorrect).length;
     return Math.round((correct / domainQuestions.length) * 100);
   }, [results, questions, domain]);
 }
@@ -330,7 +321,7 @@ export function useTimeTracking(results: AssessmentResult[]): {
       };
     }
 
-    const times = results.map(r => r.timeSpent);
+    const times = results.map((r) => r.timeSpent);
     const totalTime = times.reduce((sum, t) => sum + t, 0);
     const avgTime = totalTime / times.length;
     const fastestTime = Math.min(...times);
@@ -362,7 +353,7 @@ export function useScorePrediction(
 } {
   return useMemo(() => {
     const answered = results.length;
-    const correct = results.filter(r => r.isCorrect).length;
+    const correct = results.filter((r) => r.isCorrect).length;
     const remaining = totalQuestions - answered;
 
     const current = answered > 0 ? (correct / answered) * 100 : 0;

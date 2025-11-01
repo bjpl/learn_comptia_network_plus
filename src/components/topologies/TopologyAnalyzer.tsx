@@ -4,11 +4,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import {
-  topologyDefinitions,
-  threeTierModel,
-  trafficFlowAnimations,
-} from './topologies-data';
+import { topologyDefinitions, threeTierModel, trafficFlowAnimations } from './topologies-data';
 import type {
   TopologyType,
   TopologyDefinition,
@@ -22,9 +18,6 @@ interface TopologyAnalyzerProps {
 
 export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = '' }) => {
   const [selectedTopologies, setSelectedTopologies] = useState<TopologyType[]>(['star', 'mesh']);
-  const [comparisonMetric, setComparisonMetric] = useState<
-    'cost' | 'scalability' | 'fault-tolerance' | 'all'
-  >('all');
   const [nodeCount, setNodeCount] = useState(4);
   const [showTrafficFlow, setShowTrafficFlow] = useState(false);
   const [activeTrafficType, setActiveTrafficType] = useState<TrafficFlowType>('north-south');
@@ -40,14 +33,28 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
       return {
         topology: topology.id,
         scores: {
-          faultTolerance: chars.faultTolerance.level === 'very-high' ? 100 :
-                          chars.faultTolerance.level === 'high' ? 75 :
-                          chars.faultTolerance.level === 'medium' ? 50 : 25,
-          scalability: chars.scalability.level === 'high' ? 90 :
-                      chars.scalability.level === 'medium' ? 60 : 30,
-          cost: chars.cost.initial === 'low' ? 90 :
-                chars.cost.initial === 'medium' ? 60 :
-                chars.cost.initial === 'high' ? 30 : 10,
+          faultTolerance:
+            chars.faultTolerance.level === 'very-high'
+              ? 100
+              : chars.faultTolerance.level === 'high'
+                ? 75
+                : chars.faultTolerance.level === 'medium'
+                  ? 50
+                  : 25,
+          scalability:
+            chars.scalability.level === 'high'
+              ? 90
+              : chars.scalability.level === 'medium'
+                ? 60
+                : 30,
+          cost:
+            chars.cost.initial === 'low'
+              ? 90
+              : chars.cost.initial === 'medium'
+                ? 60
+                : chars.cost.initial === 'high'
+                  ? 30
+                  : 10,
           performance: 100 - chars.trafficFlow.bottlenecks.length * 20,
           complexity: chars.scalability.limitations.length < 3 ? 80 : 40,
         },
@@ -64,9 +71,7 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
 
   const toggleTopology = (topology: TopologyType) => {
     setSelectedTopologies((prev) =>
-      prev.includes(topology)
-        ? prev.filter((t) => t !== topology)
-        : [...prev, topology].slice(-3)
+      prev.includes(topology) ? prev.filter((t) => t !== topology) : [...prev, topology].slice(-3)
     );
   };
 
@@ -90,9 +95,7 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
               key={topology.id}
               className={`topology-btn ${selectedTopologies.includes(topology.id) ? 'active' : ''}`}
               onClick={() => toggleTopology(topology.id)}
-              disabled={
-                selectedTopologies.length >= 3 && !selectedTopologies.includes(topology.id)
-              }
+              disabled={selectedTopologies.length >= 3 && !selectedTopologies.includes(topology.id)}
             >
               {topology.name}
             </button>
@@ -124,7 +127,9 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
             <div className="metric-section">
               <h4>Cable Requirements</h4>
               <div className="metric-value">
-                <span className="formula">{topology.characteristics.cableRequirements.formula}</span>
+                <span className="formula">
+                  {topology.characteristics.cableRequirements.formula}
+                </span>
                 <span className="calculation">
                   For {nodeCount} nodes: <strong>{calculateCables(topology)} cables</strong>
                 </span>
@@ -145,9 +150,7 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
                   </strong>
                 </div>
               </div>
-              <p className="description">
-                {topology.characteristics.faultTolerance.description}
-              </p>
+              <p className="description">{topology.characteristics.faultTolerance.description}</p>
             </div>
 
             {/* Scalability */}
@@ -281,10 +284,7 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
 
       {/* Three-Tier Model Explorer */}
       <div className="three-tier-explorer">
-        <button
-          className="toggle-btn"
-          onClick={() => setShowThreeTier(!showThreeTier)}
-        >
+        <button className="toggle-btn" onClick={() => setShowThreeTier(!showThreeTier)}>
           {showThreeTier ? 'Hide' : 'Show'} Three-Tier Model Details
         </button>
 

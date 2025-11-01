@@ -48,12 +48,7 @@ import {
   Computer,
   Storage,
 } from '@mui/icons-material';
-import type {
-  TroubleshootingScenario,
-  DiagnosticOutput,
-  TroubleshootingStep,
-  NetworkDevice
-} from './ipv4-types';
+import type { TroubleshootingScenario, DiagnosticOutput } from './ipv4-types';
 import { troubleshootingScenarios } from './ipv4-data';
 
 const IPv4Troubleshooting: React.FC = () => {
@@ -63,7 +58,7 @@ const IPv4Troubleshooting: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [showHints, setShowHints] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
-  const [userDiagnosis, setUserDiagnosis] = useState('');
+  const [, setUserDiagnosis] = useState('');
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [score, setScore] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -136,7 +131,7 @@ const IPv4Troubleshooting: React.FC = () => {
     // Calculate score based on efficiency
     const stepPoints = 100 / (selectedScenario.solution?.length || 1);
     const penaltyForHints = showHints ? 10 : 0;
-    const newScore = Math.round((newCompleted.size * stepPoints) - penaltyForHints);
+    const newScore = Math.round(newCompleted.size * stepPoints - penaltyForHints);
     setScore(Math.max(0, Math.min(100, newScore)));
 
     // Move to next step
@@ -158,7 +153,9 @@ const IPv4Troubleshooting: React.FC = () => {
 
   // Calculate time elapsed
   const getTimeElapsed = () => {
-    if (!startTime) {return '0:00';}
+    if (!startTime) {
+      return '0:00';
+    }
     const seconds = Math.floor((Date.now() - startTime) / 1000);
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -190,12 +187,14 @@ const IPv4Troubleshooting: React.FC = () => {
                 <Select
                   value={selectedScenario.id}
                   onChange={(e) => {
-                    const scenario = troubleshootingScenarios.find(s => s.id === e.target.value);
-                    if (scenario) {setSelectedScenario(scenario);}
+                    const scenario = troubleshootingScenarios.find((s) => s.id === e.target.value);
+                    if (scenario) {
+                      setSelectedScenario(scenario);
+                    }
                   }}
                   label="Scenario"
                 >
-                  {troubleshootingScenarios.map(scenario => (
+                  {troubleshootingScenarios.map((scenario) => (
                     <MenuItem key={scenario.id} value={scenario.id}>
                       {scenario.title}
                     </MenuItem>
@@ -239,11 +238,7 @@ const IPv4Troubleshooting: React.FC = () => {
             <Typography variant="h3" color="primary">
               {score}
             </Typography>
-            <LinearProgress
-              variant="determinate"
-              value={score}
-              sx={{ mt: 1 }}
-            />
+            <LinearProgress variant="determinate" value={score} sx={{ mt: 1 }} />
           </Paper>
         </Grid>
         <Grid item xs={12} sm={4}>
@@ -300,10 +295,18 @@ const IPv4Troubleshooting: React.FC = () => {
                       p: 2,
                       textAlign: 'center',
                       minWidth: 120,
-                      bgcolor: device.status === 'error' ? 'error.light' :
-                               device.status === 'offline' ? 'grey.300' : 'success.light',
-                      color: device.status === 'error' ? 'error.contrastText' :
-                             device.status === 'offline' ? 'text.secondary' : 'success.contrastText',
+                      bgcolor:
+                        device.status === 'error'
+                          ? 'error.light'
+                          : device.status === 'offline'
+                            ? 'grey.300'
+                            : 'success.light',
+                      color:
+                        device.status === 'error'
+                          ? 'error.contrastText'
+                          : device.status === 'offline'
+                            ? 'text.secondary'
+                            : 'success.contrastText',
                     }}
                   >
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
@@ -355,17 +358,13 @@ const IPv4Troubleshooting: React.FC = () => {
               <Typography variant="subtitle2" color="success.main" gutterBottom>
                 Expected Behavior:
               </Typography>
-              <Typography variant="body2">
-                {selectedScenario.expectedBehavior}
-              </Typography>
+              <Typography variant="body2">{selectedScenario.expectedBehavior}</Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="subtitle2" color="error.main" gutterBottom>
                 Actual Behavior:
               </Typography>
-              <Typography variant="body2">
-                {selectedScenario.actualBehavior}
-              </Typography>
+              <Typography variant="body2">{selectedScenario.actualBehavior}</Typography>
             </Grid>
           </Grid>
         </CardContent>
@@ -410,17 +409,10 @@ const IPv4Troubleshooting: React.FC = () => {
         >
           {showHints ? 'Hide' : 'Show'} Hints
         </Button>
-        <Button
-          variant="outlined"
-          onClick={() => setShowSolution(!showSolution)}
-        >
+        <Button variant="outlined" onClick={() => setShowSolution(!showSolution)}>
           {showSolution ? 'Hide' : 'Show'} Solution
         </Button>
-        <Button
-          variant="outlined"
-          startIcon={<Refresh />}
-          onClick={handleReset}
-        >
+        <Button variant="outlined" startIcon={<Refresh />} onClick={handleReset}>
           Reset
         </Button>
       </Box>
@@ -453,12 +445,10 @@ const IPv4Troubleshooting: React.FC = () => {
                   <StepLabel
                     optional={
                       showSolution && (
-                        <Typography variant="caption">
-                          Step {step.stepNumber}
-                        </Typography>
+                        <Typography variant="caption">Step {step.stepNumber}</Typography>
                       )
                     }
-                    StepIconComponent={() => (
+                    StepIconComponent={() =>
                       completedSteps.has(index) ? (
                         <CheckCircle color="success" />
                       ) : (
@@ -477,7 +467,7 @@ const IPv4Troubleshooting: React.FC = () => {
                           {step.stepNumber}
                         </Box>
                       )
-                    )}
+                    }
                   >
                     <Typography variant="subtitle1" fontWeight="bold">
                       {step.description}
@@ -586,11 +576,21 @@ const IPv4Troubleshooting: React.FC = () => {
                 Windows:
               </Typography>
               <ul style={{ fontSize: '0.875rem' }}>
-                <li><code>ipconfig /all</code> - View IP configuration</li>
-                <li><code>ping [address]</code> - Test connectivity</li>
-                <li><code>tracert [address]</code> - Trace route path</li>
-                <li><code>arp -a</code> - View ARP cache</li>
-                <li><code>route print</code> - Display routing table</li>
+                <li>
+                  <code>ipconfig /all</code> - View IP configuration
+                </li>
+                <li>
+                  <code>ping [address]</code> - Test connectivity
+                </li>
+                <li>
+                  <code>tracert [address]</code> - Trace route path
+                </li>
+                <li>
+                  <code>arp -a</code> - View ARP cache
+                </li>
+                <li>
+                  <code>route print</code> - Display routing table
+                </li>
               </ul>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -598,11 +598,21 @@ const IPv4Troubleshooting: React.FC = () => {
                 Linux:
               </Typography>
               <ul style={{ fontSize: '0.875rem' }}>
-                <li><code>ip addr show</code> - Show IP addresses</li>
-                <li><code>ping [address]</code> - Test connectivity</li>
-                <li><code>traceroute [address]</code> - Trace route</li>
-                <li><code>arp -n</code> - Show ARP table</li>
-                <li><code>ip route show</code> - Display routes</li>
+                <li>
+                  <code>ip addr show</code> - Show IP addresses
+                </li>
+                <li>
+                  <code>ping [address]</code> - Test connectivity
+                </li>
+                <li>
+                  <code>traceroute [address]</code> - Trace route
+                </li>
+                <li>
+                  <code>arp -n</code> - Show ARP table
+                </li>
+                <li>
+                  <code>ip route show</code> - Display routes
+                </li>
               </ul>
             </Grid>
           </Grid>

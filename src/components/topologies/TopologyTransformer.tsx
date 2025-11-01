@@ -5,15 +5,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { transformationScenarios } from './topologies-data';
-import type { TopologyTransformation, TransformationStep } from './topologies-types';
+import type { TopologyTransformation } from './topologies-types';
 
 interface TopologyTransformerProps {
   className?: string;
 }
 
 export const TopologyTransformer: React.FC<TopologyTransformerProps> = ({ className = '' }) => {
-  const [selectedTransformation, setSelectedTransformation] =
-    useState<TopologyTransformation>(transformationScenarios[0]);
+  const [selectedTransformation, setSelectedTransformation] = useState<TopologyTransformation>(
+    transformationScenarios[0]
+  );
   const [currentStep, setCurrentStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
@@ -185,7 +186,11 @@ export const TopologyTransformer: React.FC<TopologyTransformerProps> = ({ classN
                         : 'Transitioning...'}
                   </span>
                   <div className="topology-icon">
-                    {currentStep === 0 ? '🔷' : currentStep === selectedTransformation.steps.length - 1 ? '🔶' : '🔄'}
+                    {currentStep === 0
+                      ? '🔷'
+                      : currentStep === selectedTransformation.steps.length - 1
+                        ? '🔶'
+                        : '🔄'}
                   </div>
                 </div>
               </div>
@@ -257,7 +262,9 @@ export const TopologyTransformer: React.FC<TopologyTransformerProps> = ({ classN
             <h4>Traffic Patterns</h4>
             <div className="analysis-item">
               <span className="label">Before:</span>
-              <span className="value">{selectedTransformation.analysis.trafficPatterns.before}</span>
+              <span className="value">
+                {selectedTransformation.analysis.trafficPatterns.before}
+              </span>
             </div>
             <div className="analysis-item">
               <span className="label">After:</span>

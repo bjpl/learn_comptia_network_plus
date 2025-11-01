@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import type { ComparisonDevice } from './appliances-types';
 import { networkDevices } from './appliances-data';
 
 interface ComparisonMatrixProps {
@@ -15,7 +14,9 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
   );
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [filterCategory, setFilterCategory] = useState<'all' | 'physical' | 'virtual' | 'cloud'>('all');
+  const [filterCategory, setFilterCategory] = useState<'all' | 'physical' | 'virtual' | 'cloud'>(
+    'all'
+  );
   const [filterType, setFilterType] = useState<string>('all');
 
   const selectedDevices = useMemo(
@@ -79,8 +80,12 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
           return 0;
       }
 
-      if (aVal < bVal) {return sortDirection === 'asc' ? -1 : 1;}
-      if (aVal > bVal) {return sortDirection === 'asc' ? 1 : -1;}
+      if (aVal < bVal) {
+        return sortDirection === 'asc' ? -1 : 1;
+      }
+      if (aVal > bVal) {
+        return sortDirection === 'asc' ? 1 : -1;
+      }
       return 0;
     });
 
@@ -89,7 +94,9 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
 
   const parseThroughput = (throughput: string): number => {
     const match = throughput.match(/(\d+(?:\.\d+)?)\s*(Mbps|Gbps)/i);
-    if (!match) {return 0;}
+    if (!match) {
+      return 0;
+    }
 
     const value = parseFloat(match[1]);
     const unit = match[2].toLowerCase();
@@ -120,25 +127,29 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
 
   const getFeatureIcon = (supported: boolean) => {
     return supported ? (
-      <span className="text-green-500" title="Supported">✓</span>
+      <span className="text-green-500" title="Supported">
+        ✓
+      </span>
     ) : (
-      <span className="text-gray-300" title="Not supported">✗</span>
+      <span className="text-gray-300" title="Not supported">
+        ✗
+      </span>
     );
   };
 
   const uniqueTypes = Array.from(new Set(networkDevices.map((d) => d.type)));
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-4">Network Appliance Comparison Matrix</h2>
+        <h2 className="mb-4 text-2xl font-bold">Network Appliance Comparison Matrix</h2>
 
         {/* Device Selector */}
         <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-2">Add Devices to Compare</h3>
-          <div className="flex gap-2 mb-3">
+          <h3 className="mb-2 text-lg font-semibold">Add Devices to Compare</h3>
+          <div className="mb-3 flex gap-2">
             <select
-              className="px-3 py-2 border rounded"
+              className="rounded border px-3 py-2"
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value as any)}
             >
@@ -149,7 +160,7 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
             </select>
 
             <select
-              className="px-3 py-2 border rounded"
+              className="rounded border px-3 py-2"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
             >
@@ -167,7 +178,7 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
               <button
                 key={device.id}
                 onClick={() => addDevice(device.id)}
-                className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+                className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
               >
                 + {device.name}
               </button>
@@ -183,18 +194,20 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
             <tr className="bg-gray-100">
               <th className="border p-3 text-left font-semibold">Feature</th>
               {sortedDevices.map((device) => (
-                <th key={device.id} className="border p-3 text-left min-w-[200px]">
-                  <div className="flex justify-between items-start">
+                <th key={device.id} className="min-w-[200px] border p-3 text-left">
+                  <div className="flex items-start justify-between">
                     <div>
                       <div className="font-bold">{device.name}</div>
                       <div className="text-xs text-gray-500">{device.model}</div>
-                      <span className={`inline-block px-2 py-1 rounded text-xs mt-1 ${getCategoryBadgeColor(device.category)}`}>
+                      <span
+                        className={`mt-1 inline-block rounded px-2 py-1 text-xs ${getCategoryBadgeColor(device.category)}`}
+                      >
                         {device.category}
                       </span>
                     </div>
                     <button
                       onClick={() => removeDevice(device.id)}
-                      className="text-red-500 hover:text-red-700 ml-2"
+                      className="ml-2 text-red-500 hover:text-red-700"
                       title="Remove from comparison"
                     >
                       ×
@@ -235,7 +248,10 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
               </td>
             </tr>
             <tr>
-              <td className="border p-3 font-medium cursor-pointer hover:bg-gray-50" onClick={() => handleSort('throughput')}>
+              <td
+                className="cursor-pointer border p-3 font-medium hover:bg-gray-50"
+                onClick={() => handleSort('throughput')}
+              >
                 Throughput {sortField === 'throughput' && (sortDirection === 'asc' ? '↑' : '↓')}
               </td>
               {sortedDevices.map((device) => (
@@ -245,8 +261,12 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
               ))}
             </tr>
             <tr>
-              <td className="border p-3 font-medium cursor-pointer hover:bg-gray-50" onClick={() => handleSort('maxConnections')}>
-                Max Connections {sortField === 'maxConnections' && (sortDirection === 'asc' ? '↑' : '↓')}
+              <td
+                className="cursor-pointer border p-3 font-medium hover:bg-gray-50"
+                onClick={() => handleSort('maxConnections')}
+              >
+                Max Connections{' '}
+                {sortField === 'maxConnections' && (sortDirection === 'asc' ? '↑' : '↓')}
               </td>
               {sortedDevices.map((device) => (
                 <td key={device.id} className="border p-3">
@@ -325,7 +345,10 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
               ))}
             </tr>
             <tr>
-              <td className="border p-3 font-medium cursor-pointer hover:bg-gray-50" onClick={() => handleSort('cost1yr')}>
+              <td
+                className="cursor-pointer border p-3 font-medium hover:bg-gray-50"
+                onClick={() => handleSort('cost1yr')}
+              >
                 Year 1 Total {sortField === 'cost1yr' && (sortDirection === 'asc' ? '↑' : '↓')}
               </td>
               {sortedDevices.map((device) => (
@@ -343,7 +366,10 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
               ))}
             </tr>
             <tr>
-              <td className="border p-3 font-medium cursor-pointer hover:bg-gray-50" onClick={() => handleSort('cost5yr')}>
+              <td
+                className="cursor-pointer border p-3 font-medium hover:bg-gray-50"
+                onClick={() => handleSort('cost5yr')}
+              >
                 5-Year Total {sortField === 'cost5yr' && (sortDirection === 'asc' ? '↑' : '↓')}
               </td>
               {sortedDevices.map((device) => (
@@ -363,7 +389,7 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
               <td className="border p-3 font-medium">Best For</td>
               {sortedDevices.map((device) => (
                 <td key={device.id} className="border p-3">
-                  <ul className="list-disc list-inside text-sm">
+                  <ul className="list-inside list-disc text-sm">
                     {device.useCase.map((use, idx) => (
                       <li key={idx}>{use}</li>
                     ))}
@@ -375,7 +401,7 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
               <td className="border p-3 font-medium">Pros</td>
               {sortedDevices.map((device) => (
                 <td key={device.id} className="border p-3">
-                  <ul className="list-disc list-inside text-sm text-green-700">
+                  <ul className="list-inside list-disc text-sm text-green-700">
                     {device.pros.slice(0, 3).map((pro, idx) => (
                       <li key={idx}>{pro}</li>
                     ))}
@@ -387,7 +413,7 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
               <td className="border p-3 font-medium">Cons</td>
               {sortedDevices.map((device) => (
                 <td key={device.id} className="border p-3">
-                  <ul className="list-disc list-inside text-sm text-red-700">
+                  <ul className="list-inside list-disc text-sm text-red-700">
                     {device.cons.slice(0, 3).map((con, idx) => (
                       <li key={idx}>{con}</li>
                     ))}
@@ -401,12 +427,33 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
 
       {/* Summary */}
       {selectedDevices.length > 0 && (
-        <div className="mt-6 p-4 bg-blue-50 rounded">
-          <h3 className="font-semibold mb-2">Comparison Summary</h3>
+        <div className="mt-6 rounded bg-blue-50 p-4">
+          <h3 className="mb-2 font-semibold">Comparison Summary</h3>
           <p className="text-sm text-gray-700">
-            Comparing {selectedDevices.length} device{selectedDevices.length !== 1 ? 's' : ''}.
-            Most affordable (Year 1): <strong>{sortedDevices.reduce((min, d) => d.pricing.totalCostYear1 < min.pricing.totalCostYear1 ? d : min).name}</strong> at ${sortedDevices.reduce((min, d) => d.pricing.totalCostYear1 < min.pricing.totalCostYear1 ? d : min).pricing.totalCostYear1.toLocaleString()}.
-            Highest throughput: <strong>{sortedDevices.reduce((max, d) => parseThroughput(d.specs.throughput) > parseThroughput(max.specs.throughput) ? d : max).name}</strong>.
+            Comparing {selectedDevices.length} device{selectedDevices.length !== 1 ? 's' : ''}. Most
+            affordable (Year 1):{' '}
+            <strong>
+              {
+                sortedDevices.reduce((min, d) =>
+                  d.pricing.totalCostYear1 < min.pricing.totalCostYear1 ? d : min
+                ).name
+              }
+            </strong>{' '}
+            at $
+            {sortedDevices
+              .reduce((min, d) => (d.pricing.totalCostYear1 < min.pricing.totalCostYear1 ? d : min))
+              .pricing.totalCostYear1.toLocaleString()}
+            . Highest throughput:{' '}
+            <strong>
+              {
+                sortedDevices.reduce((max, d) =>
+                  parseThroughput(d.specs.throughput) > parseThroughput(max.specs.throughput)
+                    ? d
+                    : max
+                ).name
+              }
+            </strong>
+            .
           </p>
         </div>
       )}

@@ -15,6 +15,14 @@ import type {
   CanvasState,
   ComponentLibraryItem,
   ComponentType,
+  DeploymentZone,
+  ServiceLayer,
+  ConnectivityOption,
+  VPCElement,
+  Gateway,
+  NFVComponent,
+  ValidationError,
+  ValidationWarning,
 } from './cloud-types';
 
 export const CloudArchitectureDesigner: React.FC = () => {
@@ -84,7 +92,13 @@ export const CloudArchitectureDesigner: React.FC = () => {
     const newComponent: ArchitectureComponent = {
       id: `component-${Date.now()}`,
       type: libraryItem.type,
-      subtype: libraryItem.subtype,
+      subtype: libraryItem.subtype as
+        | DeploymentZone
+        | ServiceLayer
+        | ConnectivityOption
+        | VPCElement
+        | Gateway
+        | NFVComponent,
       name: `${libraryItem.name} ${design.components.length + 1}`,
       x,
       y,
@@ -177,12 +191,12 @@ export const CloudArchitectureDesigner: React.FC = () => {
   };
 
   const validateArchitecture = () => {
-    const errors: Array<{ message: string; severity: string; suggestion: string }> = [];
-    const warnings: Array<{ componentId: string; message: string; type: string }> = [];
+    const errors: ValidationError[] = [];
+    const warnings: ValidationWarning[] = [];
 
     // Run validation rules
     Object.values(validationRules).forEach((rule) => {
-      const result = rule.check(design.components, design.connections);
+      const result = rule.check(design.components);
       if (!result.valid) {
         const errorMessage =
           typeof result === 'object' && 'message' in result && typeof result.message === 'string'

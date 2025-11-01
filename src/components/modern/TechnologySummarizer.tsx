@@ -5,7 +5,7 @@ import type {
   SummarySection,
   TechnologySummary,
 } from './modern-types';
-import { technologyArticles, sdnFeatures, vxlanFeatures } from './modern-data';
+import { technologyArticles } from './modern-data';
 
 const TechnologySummarizer: React.FC = () => {
   const [selectedArticle, setSelectedArticle] = useState<TechnologyArticle | null>(null);
@@ -71,7 +71,9 @@ const TechnologySummarizer: React.FC = () => {
   };
 
   const evaluateSummary = () => {
-    if (!selectedArticle) {return;}
+    if (!selectedArticle) {
+      return;
+    }
 
     const category = selectedArticle.category;
     const summaryText = summaries[category] || '';
@@ -132,18 +134,7 @@ const TechnologySummarizer: React.FC = () => {
     const summaryLower = summary.toLowerCase();
     const articleLower = article.toLowerCase();
 
-    // Check for key technical terms
-    const keyTerms = [
-      'network',
-      'routing',
-      'security',
-      'policy',
-      'configuration',
-      'traffic',
-      'control',
-      'protocol',
-      'automation',
-    ];
+    // Check for key technical terms (removed unused keyTerms array)
 
     let accuracyScore = 80; // Base score
 
@@ -172,15 +163,19 @@ const TechnologySummarizer: React.FC = () => {
   };
 
   const getScoreColor = (score: number): string => {
-    if (score >= 90) {return 'text-green-600';}
-    if (score >= 70) {return 'text-yellow-600';}
+    if (score >= 90) {
+      return 'text-green-600';
+    }
+    if (score >= 70) {
+      return 'text-yellow-600';
+    }
     return 'text-red-600';
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="mx-auto max-w-6xl rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+        <h2 className="mb-2 text-3xl font-bold text-gray-800">
           Component 19: Modern Network Technology Summarizer
         </h2>
         <p className="text-gray-600">
@@ -191,28 +186,25 @@ const TechnologySummarizer: React.FC = () => {
 
       {/* Article Selection */}
       <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-3">Select an Article to Summarize</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h3 className="mb-3 text-xl font-semibold">Select an Article to Summarize</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {technologyArticles.map((article) => (
             <button
               key={article.id}
               onClick={() => handleArticleSelect(article)}
-              className={`p-4 rounded-lg border-2 text-left transition-all ${
+              className={`rounded-lg border-2 p-4 text-left transition-all ${
                 selectedArticle?.id === article.id
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-300 hover:border-blue-300'
               }`}
             >
-              <div className="font-semibold text-gray-800 mb-1">{article.title}</div>
-              <div className="text-sm text-gray-600 mb-2">
+              <div className="mb-1 font-semibold text-gray-800">{article.title}</div>
+              <div className="mb-2 text-sm text-gray-600">
                 {article.wordCount} words • {article.difficulty}
               </div>
               <div className="flex flex-wrap gap-1">
                 {article.keyTopics.map((topic, idx) => (
-                  <span
-                    key={idx}
-                    className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded"
-                  >
+                  <span key={idx} className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700">
                     {topic}
                   </span>
                 ))}
@@ -226,21 +218,21 @@ const TechnologySummarizer: React.FC = () => {
       {selectedArticle && (
         <div className="space-y-6">
           {/* Article Content */}
-          <div className="border-2 border-gray-300 rounded-lg">
+          <div className="rounded-lg border-2 border-gray-300">
             <button
               onClick={() => setShowArticle(!showArticle)}
-              className="w-full p-4 flex justify-between items-center bg-gray-50 hover:bg-gray-100 rounded-t-lg"
+              className="flex w-full items-center justify-between rounded-t-lg bg-gray-50 p-4 hover:bg-gray-100"
             >
               <h3 className="text-xl font-semibold">
                 {selectedArticle.title}
-                <span className="text-sm text-gray-600 ml-3">
+                <span className="ml-3 text-sm text-gray-600">
                   ({selectedArticle.wordCount} words)
                 </span>
               </h3>
               <span className="text-2xl">{showArticle ? '−' : '+'}</span>
             </button>
             {showArticle && (
-              <div className="p-6 max-h-96 overflow-y-auto border-t-2 border-gray-200">
+              <div className="max-h-96 overflow-y-auto border-t-2 border-gray-200 p-6">
                 <div className="prose max-w-none whitespace-pre-line">
                   {selectedArticle.content}
                 </div>
@@ -249,13 +241,13 @@ const TechnologySummarizer: React.FC = () => {
           </div>
 
           {/* Summary Input */}
-          <div className="border-2 border-blue-300 rounded-lg p-6 bg-blue-50">
-            <h3 className="text-xl font-semibold mb-3">
+          <div className="rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
+            <h3 className="mb-3 text-xl font-semibold">
               Write Your Summary: {categoryInfo[selectedArticle.category].name}
             </h3>
             <div className="mb-4">
-              <p className="text-sm text-gray-700 mb-2">Required features to cover:</p>
-              <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
+              <p className="mb-2 text-sm text-gray-700">Required features to cover:</p>
+              <ul className="list-inside list-disc space-y-1 text-sm text-gray-600">
                 {categoryInfo[selectedArticle.category].features.map((feature, idx) => (
                   <li key={idx}>{feature}</li>
                 ))}
@@ -265,16 +257,16 @@ const TechnologySummarizer: React.FC = () => {
               value={summaries[selectedArticle.category] || ''}
               onChange={(e) => handleSummaryChange(selectedArticle.category, e.target.value)}
               placeholder="Write your summary here (max 200 words)..."
-              className="w-full h-48 p-3 border-2 border-gray-300 rounded-lg resize-none focus:border-blue-500 focus:outline-none"
+              className="h-48 w-full resize-none rounded-lg border-2 border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
             />
-            <div className="flex justify-between items-center mt-2">
+            <div className="mt-2 flex items-center justify-between">
               <span className="text-sm text-gray-600">
-                Word count:{' '}
-                {summaries[selectedArticle.category]?.trim().split(/\s+/).length || 0} / 200
+                Word count: {summaries[selectedArticle.category]?.trim().split(/\s+/).length || 0} /
+                200
               </span>
               <button
                 onClick={evaluateSummary}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
               >
                 Evaluate Summary
               </button>
@@ -283,30 +275,38 @@ const TechnologySummarizer: React.FC = () => {
 
           {/* Evaluation Results */}
           {evaluationResult && (
-            <div className="border-2 border-green-300 rounded-lg p-6 bg-green-50">
-              <h3 className="text-xl font-semibold mb-4">Evaluation Results</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-white p-4 rounded-lg">
-                  <div className="text-sm text-gray-600 mb-1">Completeness</div>
-                  <div className={`text-2xl font-bold ${getScoreColor(evaluationResult.completenessScore)}`}>
+            <div className="rounded-lg border-2 border-green-300 bg-green-50 p-6">
+              <h3 className="mb-4 text-xl font-semibold">Evaluation Results</h3>
+              <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div className="rounded-lg bg-white p-4">
+                  <div className="mb-1 text-sm text-gray-600">Completeness</div>
+                  <div
+                    className={`text-2xl font-bold ${getScoreColor(evaluationResult.completenessScore)}`}
+                  >
                     {evaluationResult.completenessScore.toFixed(0)}%
                   </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg">
-                  <div className="text-sm text-gray-600 mb-1">Accuracy</div>
-                  <div className={`text-2xl font-bold ${getScoreColor(evaluationResult.accuracyScore)}`}>
+                <div className="rounded-lg bg-white p-4">
+                  <div className="mb-1 text-sm text-gray-600">Accuracy</div>
+                  <div
+                    className={`text-2xl font-bold ${getScoreColor(evaluationResult.accuracyScore)}`}
+                  >
                     {evaluationResult.accuracyScore.toFixed(0)}%
                   </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg">
-                  <div className="text-sm text-gray-600 mb-1">Word Count</div>
-                  <div className={`text-2xl font-bold ${evaluationResult.totalWordCount <= 200 ? 'text-green-600' : 'text-red-600'}`}>
+                <div className="rounded-lg bg-white p-4">
+                  <div className="mb-1 text-sm text-gray-600">Word Count</div>
+                  <div
+                    className={`text-2xl font-bold ${evaluationResult.totalWordCount <= 200 ? 'text-green-600' : 'text-red-600'}`}
+                  >
                     {evaluationResult.totalWordCount}
                   </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg">
-                  <div className="text-sm text-gray-600 mb-1">Overall Score</div>
-                  <div className={`text-2xl font-bold ${getScoreColor(evaluationResult.overallScore)}`}>
+                <div className="rounded-lg bg-white p-4">
+                  <div className="mb-1 text-sm text-gray-600">Overall Score</div>
+                  <div
+                    className={`text-2xl font-bold ${getScoreColor(evaluationResult.overallScore)}`}
+                  >
                     {evaluationResult.overallScore.toFixed(0)}%
                   </div>
                 </div>
@@ -314,17 +314,15 @@ const TechnologySummarizer: React.FC = () => {
 
               {/* Features Coverage */}
               <div className="mb-4">
-                <h4 className="font-semibold mb-2">Features Covered:</h4>
+                <h4 className="mb-2 font-semibold">Features Covered:</h4>
                 <div className="flex flex-wrap gap-2">
                   {categoryInfo[selectedArticle.category].features.map((feature) => {
                     const covered = evaluationResult.sections[0].features.includes(feature);
                     return (
                       <span
                         key={feature}
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          covered
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                        className={`rounded-full px-3 py-1 text-sm ${
+                          covered ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                         }`}
                       >
                         {covered ? '✓' : '✗'} {feature}
@@ -336,7 +334,7 @@ const TechnologySummarizer: React.FC = () => {
 
               {/* Feedback */}
               <div>
-                <h4 className="font-semibold mb-2">Feedback:</h4>
+                <h4 className="mb-2 font-semibold">Feedback:</h4>
                 <ul className="space-y-1">
                   {evaluationResult.feedback.map((item, idx) => (
                     <li key={idx} className="flex items-start">
@@ -353,9 +351,9 @@ const TechnologySummarizer: React.FC = () => {
 
       {/* Instructions */}
       {!selectedArticle && (
-        <div className="mt-6 p-6 bg-blue-50 rounded-lg border-2 border-blue-200">
-          <h3 className="text-lg font-semibold mb-3">How to Use This Tool:</h3>
-          <ol className="list-decimal list-inside space-y-2 text-gray-700">
+        <div className="mt-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
+          <h3 className="mb-3 text-lg font-semibold">How to Use This Tool:</h3>
+          <ol className="list-inside list-decimal space-y-2 text-gray-700">
             <li>Select an article from the available options above</li>
             <li>Read the article carefully (expand to view full content)</li>
             <li>Write a summary covering all required features for that technology</li>
@@ -363,7 +361,7 @@ const TechnologySummarizer: React.FC = () => {
             <li>Click "Evaluate Summary" to see your scores and feedback</li>
             <li>Review feedback and revise your summary to improve your score</li>
           </ol>
-          <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400">
+          <div className="mt-4 border-l-4 border-yellow-400 bg-yellow-50 p-4">
             <p className="text-sm text-gray-700">
               <strong>Scoring:</strong> Your summary is evaluated on completeness (coverage of
               required features), accuracy (technical correctness), and conciseness (word count

@@ -5,7 +5,7 @@ import type {
   SimulationState,
   TrafficFlow,
   SimulationAlert,
-  DeviceSpecs} from './appliances-types';
+} from './appliances-types';
 
 import { deviceTemplates } from './appliances-data';
 
@@ -36,56 +36,72 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
   ];
 
   // Add device to canvas
-  const addDevice = useCallback((type: SimulatedDevice['type']) => {
-    const newDevice: SimulatedDevice = {
-      id: `device-${Date.now()}`,
-      name: `${type.charAt(0).toUpperCase() + type.slice(1)} ${devices.length + 1}`,
-      type,
-      category: 'physical',
-      position: {
-        x: 100 + (devices.length * 50) % 500,
-        y: 100 + Math.floor(devices.length / 10) * 100,
-      },
-      specs: deviceTemplates[type as keyof typeof deviceTemplates]?.defaultSpecs || {
-        throughput: '1 Gbps',
-        maxConnections: 1000,
-        powerConsumption: '50W',
-        redundancy: false,
-        hotSwappable: false,
-      },
-      status: 'active',
-      connections: [],
-      currentLoad: 0,
-      maxLoad: 100,
-    };
+  const addDevice = useCallback(
+    (type: SimulatedDevice['type']) => {
+      const newDevice: SimulatedDevice = {
+        id: `device-${Date.now()}`,
+        name: `${type.charAt(0).toUpperCase() + type.slice(1)} ${devices.length + 1}`,
+        type,
+        category: 'physical',
+        position: {
+          x: 100 + ((devices.length * 50) % 500),
+          y: 100 + Math.floor(devices.length / 10) * 100,
+        },
+        specs: deviceTemplates[type as keyof typeof deviceTemplates]?.defaultSpecs || {
+          throughput: '1 Gbps',
+          maxConnections: 1000,
+          powerConsumption: '50W',
+          redundancy: false,
+          hotSwappable: false,
+        },
+        status: 'active',
+        connections: [],
+        currentLoad: 0,
+        maxLoad: 100,
+      };
 
-    setDevices([...devices, newDevice]);
-  }, [devices]);
+      setDevices([...devices, newDevice]);
+    },
+    [devices]
+  );
 
   // Handle device dragging
   const handleMouseDown = (deviceId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (connecting) {return;}
+    if (connecting) {
+      return;
+    }
 
     setDragging(deviceId);
     setSelectedDevice(deviceId);
   };
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!dragging || !canvasRef.current) {return;}
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!dragging || !canvasRef.current) {
+        return;
+      }
 
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+      const rect = canvasRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-    setDevices((prevDevices) =>
-      prevDevices.map((device) =>
-        device.id === dragging
-          ? { ...device, position: { x: Math.max(0, Math.min(x, rect.width - 80)), y: Math.max(0, Math.min(y, rect.height - 80)) } }
-          : device
-      )
-    );
-  }, [dragging]);
+      setDevices((prevDevices) =>
+        prevDevices.map((device) =>
+          device.id === dragging
+            ? {
+                ...device,
+                position: {
+                  x: Math.max(0, Math.min(x, rect.width - 80)),
+                  y: Math.max(0, Math.min(y, rect.height - 80)),
+                },
+              }
+            : device
+        )
+      );
+    },
+    [dragging]
+  );
 
   const handleMouseUp = useCallback(() => {
     setDragging(null);
@@ -194,7 +210,9 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
 
   // Simulation tick
   useEffect(() => {
-    if (!simulationState.isRunning) {return;}
+    if (!simulationState.isRunning) {
+      return;
+    }
 
     const interval = setInterval(() => {
       setSimulationState((prev) => {
@@ -236,7 +254,8 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
 
             const load = Math.min(
               100,
-              (device.currentLoad || 0) + deviceFlows.reduce((sum, flow) => sum + flow.bandwidth / 10, 0)
+              (device.currentLoad || 0) +
+                deviceFlows.reduce((sum, flow) => sum + flow.bandwidth / 10, 0)
             );
 
             let status: SimulatedDevice['status'] = 'active';
@@ -333,17 +352,17 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
   const selectedDeviceData = devices.find((d) => d.id === selectedDevice);
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold mb-4">Network Architecture Simulator</h2>
+    <div className="rounded-lg bg-white p-6 shadow-lg">
+      <h2 className="mb-4 text-2xl font-bold">Network Architecture Simulator</h2>
 
       {/* Toolbar */}
-      <div className="mb-4 flex flex-wrap gap-2 items-center">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="flex gap-2">
           {deviceTypeOptions.map((option) => (
             <button
               key={option.value}
               onClick={() => addDevice(option.value)}
-              className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+              className="rounded bg-blue-500 px-3 py-2 text-sm text-white hover:bg-blue-600"
               title={`Add ${option.label}`}
             >
               {getDeviceIcon(option.value)} {option.label}
@@ -351,20 +370,20 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
           ))}
         </div>
 
-        <div className="flex gap-2 ml-auto">
+        <div className="ml-auto flex gap-2">
           <button
             onClick={toggleSimulation}
-            className={`px-4 py-2 rounded font-medium ${
+            className={`rounded px-4 py-2 font-medium ${
               simulationState.isRunning
-                ? 'bg-red-500 hover:bg-red-600 text-white'
-                : 'bg-green-500 hover:bg-green-600 text-white'
+                ? 'bg-red-500 text-white hover:bg-red-600'
+                : 'bg-green-500 text-white hover:bg-green-600'
             }`}
           >
             {simulationState.isRunning ? '⏸ Pause' : '▶ Start'} Simulation
           </button>
           <button
             onClick={resetSimulation}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            className="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
           >
             🔄 Reset
           </button>
@@ -374,19 +393,21 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
       {/* Canvas */}
       <div
         ref={canvasRef}
-        className="relative border-2 border-gray-300 rounded-lg bg-gray-50 overflow-hidden"
+        className="relative overflow-hidden rounded-lg border-2 border-gray-300 bg-gray-50"
         style={{ height: '500px' }}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       >
         {/* Connections */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+        <svg className="pointer-events-none absolute inset-0 h-full w-full">
           {connections.map((conn) => {
             const sourceDevice = devices.find((d) => d.id === conn.sourceId);
             const targetDevice = devices.find((d) => d.id === conn.targetId);
 
-            if (!sourceDevice || !targetDevice) {return null;}
+            if (!sourceDevice || !targetDevice) {
+              return null;
+            }
 
             const isAnimated = simulationState.trafficFlows.some((flow) =>
               flow.connectionIds.includes(conn.id)
@@ -407,7 +428,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
                 <text
                   x={(sourceDevice.position.x + targetDevice.position.x) / 2 + 40}
                   y={(sourceDevice.position.y + targetDevice.position.y) / 2 + 30}
-                  className="text-xs fill-gray-600"
+                  className="fill-gray-600 text-xs"
                   textAnchor="middle"
                 >
                   {conn.bandwidth}
@@ -421,7 +442,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
         {devices.map((device) => (
           <div
             key={device.id}
-            className={`absolute w-20 h-20 border-2 rounded-lg cursor-move flex flex-col items-center justify-center text-center shadow-md transition-all ${getStatusColor(
+            className={`absolute flex h-20 w-20 cursor-move flex-col items-center justify-center rounded-lg border-2 text-center shadow-md transition-all ${getStatusColor(
               device.status
             )} ${selectedDevice === device.id ? 'ring-4 ring-blue-500' : ''} ${
               connecting === device.id ? 'ring-4 ring-green-500' : ''
@@ -439,14 +460,18 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
             }}
           >
             <div className="text-2xl">{getDeviceIcon(device.type)}</div>
-            <div className="text-xs font-medium truncate w-full px-1">{device.name}</div>
+            <div className="w-full truncate px-1 text-xs font-medium">{device.name}</div>
 
             {/* Load indicator */}
             {device.currentLoad !== undefined && device.currentLoad > 0 && (
-              <div className="absolute bottom-1 left-1 right-1 h-1 bg-gray-200 rounded">
+              <div className="absolute bottom-1 left-1 right-1 h-1 rounded bg-gray-200">
                 <div
                   className={`h-full rounded ${
-                    device.currentLoad > 90 ? 'bg-red-500' : device.currentLoad > 70 ? 'bg-yellow-500' : 'bg-green-500'
+                    device.currentLoad > 90
+                      ? 'bg-red-500'
+                      : device.currentLoad > 70
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'
                   }`}
                   style={{ width: `${device.currentLoad}%` }}
                 />
@@ -455,7 +480,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
 
             {/* Connection button */}
             <button
-              className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 text-white rounded-full text-xs hover:bg-blue-600"
+              className="absolute -right-2 -top-2 h-6 w-6 rounded-full bg-blue-500 text-xs text-white hover:bg-blue-600"
               onClick={(e) => {
                 e.stopPropagation();
                 startConnection(device.id);
@@ -467,7 +492,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
 
             {/* Delete button */}
             <button
-              className="absolute -top-2 -left-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600"
+              className="absolute -left-2 -top-2 h-6 w-6 rounded-full bg-red-500 text-xs text-white hover:bg-red-600"
               onClick={(e) => {
                 e.stopPropagation();
                 removeDevice(device.id);
@@ -480,18 +505,18 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
         ))}
 
         {connecting && (
-          <div className="absolute top-2 left-2 bg-green-100 border border-green-500 rounded px-3 py-1 text-sm">
+          <div className="absolute left-2 top-2 rounded border border-green-500 bg-green-100 px-3 py-1 text-sm">
             Click on another device to connect
           </div>
         )}
       </div>
 
       {/* Info Panel */}
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Simulation Stats */}
-        <div className="bg-gray-50 rounded p-4">
-          <h3 className="font-semibold mb-2">Simulation Stats</h3>
-          <div className="text-sm space-y-1">
+        <div className="rounded bg-gray-50 p-4">
+          <h3 className="mb-2 font-semibold">Simulation Stats</h3>
+          <div className="space-y-1 text-sm">
             <p>Time: {simulationState.time}s</p>
             <p>Devices: {devices.length}</p>
             <p>Connections: {connections.length}</p>
@@ -500,10 +525,10 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
         </div>
 
         {/* Selected Device Info */}
-        <div className="bg-gray-50 rounded p-4">
-          <h3 className="font-semibold mb-2">Device Details</h3>
+        <div className="rounded bg-gray-50 p-4">
+          <h3 className="mb-2 font-semibold">Device Details</h3>
           {selectedDeviceData ? (
-            <div className="text-sm space-y-1">
+            <div className="space-y-1 text-sm">
               <p className="font-medium">{selectedDeviceData.name}</p>
               <p>Type: {selectedDeviceData.type}</p>
               <p>Status: {selectedDeviceData.status}</p>
@@ -517,19 +542,19 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
         </div>
 
         {/* Alerts */}
-        <div className="bg-gray-50 rounded p-4">
-          <h3 className="font-semibold mb-2">Alerts</h3>
-          <div className="text-sm space-y-1 max-h-24 overflow-y-auto">
+        <div className="rounded bg-gray-50 p-4">
+          <h3 className="mb-2 font-semibold">Alerts</h3>
+          <div className="max-h-24 space-y-1 overflow-y-auto text-sm">
             {simulationState.alerts.length > 0 ? (
               simulationState.alerts.map((alert) => (
                 <div
                   key={alert.id}
-                  className={`p-2 rounded ${
+                  className={`rounded p-2 ${
                     alert.severity === 'critical'
                       ? 'bg-red-100 text-red-800'
                       : alert.severity === 'warning'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-blue-100 text-blue-800'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-blue-100 text-blue-800'
                   }`}
                 >
                   {alert.message}
@@ -543,9 +568,9 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
       </div>
 
       {/* Instructions */}
-      <div className="mt-4 p-4 bg-blue-50 rounded">
-        <h4 className="font-semibold text-sm mb-2">💡 How to use:</h4>
-        <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
+      <div className="mt-4 rounded bg-blue-50 p-4">
+        <h4 className="mb-2 text-sm font-semibold">💡 How to use:</h4>
+        <ul className="list-inside list-disc space-y-1 text-sm text-gray-700">
           <li>Click device type buttons to add devices to the canvas</li>
           <li>Drag devices to reposition them</li>
           <li>Click the 🔗 button on a device, then click another device to create a connection</li>

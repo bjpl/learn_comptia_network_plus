@@ -6,7 +6,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VIRTUAL_NETWORKS, PROTOCOLS } from './protocols-data';
 import type { VirtualNetwork, ScannerState } from './protocols-types';
-import { ScanResult } from './protocols-types';
 
 export const PortScanner: React.FC = () => {
   const [selectedNetwork, setSelectedNetwork] = useState<VirtualNetwork>(VIRTUAL_NETWORKS[0]);
@@ -14,7 +13,7 @@ export const PortScanner: React.FC = () => {
     scanning: false,
     currentPort: 0,
     results: [],
-    selectedPort: undefined
+    selectedPort: undefined,
   });
   const [terminalOutput, setTerminalOutput] = useState<string[]>([
     '╔════════════════════════════════════════════════════════════════╗',
@@ -24,11 +23,11 @@ export const PortScanner: React.FC = () => {
     '',
     'Type "help" for available commands',
     'Select a target network to begin scanning',
-    ''
+    '',
   ]);
   const [command, setCommand] = useState('');
   const [score, setScore] = useState(0);
-  const [assessmentMode, setAssessmentMode] = useState(false);
+  const [, setAssessmentMode] = useState(false);
   const [remediation, setRemediation] = useState<Map<number, string[]>>(new Map());
   const terminalRef = useRef<HTMLDivElement>(null);
 
@@ -40,7 +39,7 @@ export const PortScanner: React.FC = () => {
 
   const addOutput = (lines: string | string[]) => {
     const newLines = Array.isArray(lines) ? lines : [lines];
-    setTerminalOutput(prev => [...prev, ...newLines]);
+    setTerminalOutput((prev) => [...prev, ...newLines]);
   };
 
   const handleCommand = (cmd: string) => {
@@ -89,7 +88,7 @@ export const PortScanner: React.FC = () => {
       '  help              - Show this help message',
       '',
       '════════════════════════════════════════════════════════════',
-      ''
+      '',
     ]);
   };
 
@@ -98,12 +97,13 @@ export const PortScanner: React.FC = () => {
       '',
       '═══════════════ AVAILABLE NETWORKS ═══════════════',
       '',
-      ...VIRTUAL_NETWORKS.map(net =>
-        `  ${net.id.padEnd(20)} - ${net.difficulty.toUpperCase().padEnd(10)} - ${net.description}`
+      ...VIRTUAL_NETWORKS.map(
+        (net) =>
+          `  ${net.id.padEnd(20)} - ${net.difficulty.toUpperCase().padEnd(10)} - ${net.description}`
       ),
       '',
       'Use "scan [network-id]" to scan a specific network',
-      ''
+      '',
     ]);
   };
 
@@ -113,7 +113,7 @@ export const PortScanner: React.FC = () => {
 
     if (parts.length > 1) {
       const networkId = parts[1];
-      const found = VIRTUAL_NETWORKS.find(n => n.id === networkId);
+      const found = VIRTUAL_NETWORKS.find((n) => n.id === networkId);
       if (found) {
         targetNetwork = found;
         setSelectedNetwork(found);
@@ -131,59 +131,60 @@ export const PortScanner: React.FC = () => {
       '',
       '════════════════════════════════════════════════════════════',
       'PORT      STATE    SERVICE           VERSION',
-      '════════════════════════════════════════════════════════════'
+      '════════════════════════════════════════════════════════════',
     ]);
 
     setScannerState({
       scanning: true,
       currentPort: 0,
       results: [],
-      selectedPort: undefined
+      selectedPort: undefined,
     });
 
     // Simulate scanning with delays
     targetNetwork.services.forEach((service, index) => {
-      setTimeout(() => {
-        const portStr = service.port.toString().padEnd(10);
-        const stateStr = service.state.padEnd(9);
-        const serviceStr = service.service.padEnd(18);
-        const versionStr = service.version;
+      setTimeout(
+        () => {
+          const portStr = service.port.toString().padEnd(10);
+          const stateStr = service.state.padEnd(9);
+          const serviceStr = service.service.padEnd(18);
+          const versionStr = service.version;
 
-        addOutput(`${portStr}${stateStr}${serviceStr}${versionStr}`);
+          addOutput(`${portStr}${stateStr}${serviceStr}${versionStr}`);
 
-        setScannerState(prev => ({
-          ...prev,
-          currentPort: service.port,
-          results: [...prev.results, service]
-        }));
+          setScannerState((prev) => ({
+            ...prev,
+            currentPort: service.port,
+            results: [...prev.results, service],
+          }));
 
-        if (index === targetNetwork.services.length - 1) {
-          setTimeout(() => {
-            addOutput([
-              '════════════════════════════════════════════════════════════',
-              '',
-              `Scan complete. Found ${targetNetwork.services.length} open ports.`,
-              'Use "info [port]" to get detailed information',
-              'Use "assess" to start security assessment',
-              ''
-            ]);
-            setScannerState(prev => ({ ...prev, scanning: false }));
-          }, 500);
-        }
-      }, (index + 1) * 800);
+          if (index === targetNetwork.services.length - 1) {
+            setTimeout(() => {
+              addOutput([
+                '════════════════════════════════════════════════════════════',
+                '',
+                `Scan complete. Found ${targetNetwork.services.length} open ports.`,
+                'Use "info [port]" to get detailed information',
+                'Use "assess" to start security assessment',
+                '',
+              ]);
+              setScannerState((prev) => ({ ...prev, scanning: false }));
+            }, 500);
+          }
+        },
+        (index + 1) * 800
+      );
     });
   };
 
   const showPortInfo = (port: number) => {
-    const service = selectedNetwork.services.find(s => s.port === port);
+    const service = selectedNetwork.services.find((s) => s.port === port);
     if (!service) {
       addOutput(`Port ${port} not found in scan results. Run "scan" first.`);
       return;
     }
 
-    const protocol = PROTOCOLS.find(p =>
-      p.ports.some(portInfo => portInfo.number === port)
-    );
+    const protocol = PROTOCOLS.find((p) => p.ports.some((portInfo) => portInfo.number === port));
 
     addOutput([
       '',
@@ -194,7 +195,7 @@ export const PortScanner: React.FC = () => {
       `State:       ${service.state}`,
       `Protocol:    ${service.protocol}`,
       `Risk Level:  ${service.risk.toUpperCase()}`,
-      ''
+      '',
     ]);
 
     if (protocol) {
@@ -209,22 +210,22 @@ export const PortScanner: React.FC = () => {
         '',
         'Security Implications:',
         `  ${protocol.securityImplications}`,
-        ''
+        '',
       ]);
     }
 
     addOutput([
       '─────────────── SECURITY RECOMMENDATIONS ───────────────',
       '',
-      ...service.recommendations.map((rec, idx) => `  ${idx + 1}. ${rec}`),
+      ...service.recommendations.map((rec, _idx) => `  ${_idx + 1}. ${rec}`),
       '',
       `Use "remediate ${port}" to start remediation decision tree`,
-      ''
+      '',
     ]);
   };
 
   const showRemediationOptions = (port: number) => {
-    const service = selectedNetwork.services.find(s => s.port === port);
+    const service = selectedNetwork.services.find((s) => s.port === port);
     if (!service) {
       addOutput(`Port ${port} not found. Run "scan" first.`);
       return;
@@ -237,7 +238,7 @@ export const PortScanner: React.FC = () => {
       `Service: ${service.service} (${service.risk.toUpperCase()} risk)`,
       '',
       'What would you do? (Choose your approach)',
-      ''
+      '',
     ]);
 
     // Generate decision tree based on risk level
@@ -254,8 +255,8 @@ export const PortScanner: React.FC = () => {
         '  6. MONITOR for suspicious activity',
         '',
         'Specific recommendations for this service:',
-        ...service.recommendations.map((rec, idx) => `  → ${rec}`),
-        ''
+        ...service.recommendations.map((rec) => `  → ${rec}`),
+        '',
       ]);
     } else if (service.risk === 'high') {
       addOutput([
@@ -269,8 +270,8 @@ export const PortScanner: React.FC = () => {
         '  5. MONITOR access logs',
         '',
         'Specific recommendations:',
-        ...service.recommendations.map((rec, idx) => `  → ${rec}`),
-        ''
+        ...service.recommendations.map((rec) => `  → ${rec}`),
+        '',
       ]);
     } else if (service.risk === 'medium') {
       addOutput([
@@ -283,8 +284,8 @@ export const PortScanner: React.FC = () => {
         '  4. REVIEW access controls',
         '',
         'Specific recommendations:',
-        ...service.recommendations.map((rec, idx) => `  → ${rec}`),
-        ''
+        ...service.recommendations.map((rec) => `  → ${rec}`),
+        '',
       ]);
     } else {
       addOutput([
@@ -296,14 +297,16 @@ export const PortScanner: React.FC = () => {
         '  3. PERIODIC security reviews',
         '',
         'Specific recommendations:',
-        ...service.recommendations.map((rec, idx) => `  → ${rec}`),
-        ''
+        ...service.recommendations.map((rec) => `  → ${rec}`),
+        '',
       ]);
     }
 
     // Track remediation for scoring
     const currentRemediation = remediation.get(port) || [];
-    setRemediation(prev => new Map(prev).set(port, [...currentRemediation, ...service.recommendations]));
+    setRemediation((prev) =>
+      new Map(prev).set(port, [...currentRemediation, ...service.recommendations])
+    );
   };
 
   const startAssessment = () => {
@@ -321,13 +324,13 @@ export const PortScanner: React.FC = () => {
       '',
       'Use "info [port]" to review services',
       'Use "score" when ready to see your assessment',
-      ''
+      '',
     ]);
   };
 
   const showScore = () => {
     const totalServices = selectedNetwork.services.length;
-    const criticalServices = selectedNetwork.services.filter(s => s.risk === 'critical').length;
+    const criticalServices = selectedNetwork.services.filter((s) => s.risk === 'critical').length;
     const remediatedServices = remediation.size;
 
     const baseScore = (remediatedServices / totalServices) * 100;
@@ -351,11 +354,14 @@ export const PortScanner: React.FC = () => {
       `FINAL SCORE:           ${finalScore.toFixed(1)}%`,
       `═══════════════════════════════════════════════`,
       '',
-      finalScore >= 90 ? '🏆 EXCELLENT! Outstanding security awareness!' :
-      finalScore >= 75 ? '✓ GOOD! Solid understanding of security principles' :
-      finalScore >= 60 ? '⚡ FAIR! Review critical vulnerabilities' :
-      '⚠️  NEEDS IMPROVEMENT! Focus on high-risk services',
-      ''
+      finalScore >= 90
+        ? '🏆 EXCELLENT! Outstanding security awareness!'
+        : finalScore >= 75
+          ? '✓ GOOD! Solid understanding of security principles'
+          : finalScore >= 60
+            ? '⚡ FAIR! Review critical vulnerabilities'
+            : '⚠️  NEEDS IMPROVEMENT! Focus on high-risk services',
+      '',
     ]);
   };
 
@@ -372,7 +378,7 @@ export const PortScanner: React.FC = () => {
           <select
             value={selectedNetwork.id}
             onChange={(e) => {
-              const network = VIRTUAL_NETWORKS.find(n => n.id === e.target.value);
+              const network = VIRTUAL_NETWORKS.find((n) => n.id === e.target.value);
               if (network) {
                 setSelectedNetwork(network);
                 addOutput([
@@ -380,12 +386,12 @@ export const PortScanner: React.FC = () => {
                   `Target changed to: ${network.name}`,
                   `Difficulty: ${network.difficulty.toUpperCase()}`,
                   `Run "scan" to begin port scan`,
-                  ''
+                  '',
                 ]);
               }
             }}
           >
-            {VIRTUAL_NETWORKS.map(net => (
+            {VIRTUAL_NETWORKS.map((net) => (
               <option key={net.id} value={net.id}>
                 {net.name} ({net.difficulty})
               </option>
@@ -430,15 +436,9 @@ export const PortScanner: React.FC = () => {
           <button onClick={() => handleCommand('scan')} disabled={scannerState.scanning}>
             🔍 Scan Network
           </button>
-          <button onClick={() => handleCommand('assess')}>
-            📊 Start Assessment
-          </button>
-          <button onClick={() => handleCommand('score')}>
-            🏆 Show Score
-          </button>
-          <button onClick={() => handleCommand('help')}>
-            ❓ Help
-          </button>
+          <button onClick={() => handleCommand('assess')}>📊 Start Assessment</button>
+          <button onClick={() => handleCommand('score')}>🏆 Show Score</button>
+          <button onClick={() => handleCommand('help')}>❓ Help</button>
         </div>
 
         {score > 0 && (

@@ -7,14 +7,39 @@ interface LayerExplanationBuilderProps {
 }
 
 const DIFFICULTY_LEVELS: DifficultyLevel[] = [
-  { level: 1, name: 'Order Layers', description: 'Place layers in order with names visible', enabled: true },
-  { level: 2, name: 'Numbers Only', description: 'Place layers with only numbers shown', enabled: false },
-  { level: 3, name: 'Match Protocols', description: 'Match protocols to correct layers', enabled: false },
-  { level: 4, name: 'Troubleshooting', description: 'Match troubleshooting scenarios to layers', enabled: false },
-  { level: 5, name: 'Speed Challenge', description: 'Complete full stack explanation in under 30 seconds', enabled: false },
+  {
+    level: 1,
+    name: 'Order Layers',
+    description: 'Place layers in order with names visible',
+    enabled: true,
+  },
+  {
+    level: 2,
+    name: 'Numbers Only',
+    description: 'Place layers with only numbers shown',
+    enabled: false,
+  },
+  {
+    level: 3,
+    name: 'Match Protocols',
+    description: 'Match protocols to correct layers',
+    enabled: false,
+  },
+  {
+    level: 4,
+    name: 'Troubleshooting',
+    description: 'Match troubleshooting scenarios to layers',
+    enabled: false,
+  },
+  {
+    level: 5,
+    name: 'Speed Challenge',
+    description: 'Complete full stack explanation in under 30 seconds',
+    enabled: false,
+  },
 ];
 
-const initialLayers: OSILayer[] = [7, 6, 5, 4, 3, 2, 1].map(num => ({
+const initialLayers: OSILayer[] = [7, 6, 5, 4, 3, 2, 1].map((num) => ({
   number: num as OSILayerNumber,
   name: LAYER_NAMES[num as OSILayerNumber],
   status: 'empty' as CompletionStatus,
@@ -24,10 +49,12 @@ const initialLayers: OSILayer[] = [7, 6, 5, 4, 3, 2, 1].map(num => ({
   interactionExplanation: '',
 }));
 
-export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = ({ onProgressUpdate }) => {
+export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = ({
+  onProgressUpdate,
+}) => {
   const [layers, setLayers] = useState<OSILayer[]>(initialLayers);
   const [expandedLayer, setExpandedLayer] = useState<OSILayerNumber | null>(null);
-  const [currentLevel, setCurrentLevel] = useState<number>(1);
+  const [currentLevel] = useState<number>(1);
   const [hintsUsed, setHintsUsed] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
 
@@ -35,79 +62,111 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
     let completedFields = 0;
     const totalFields = 4;
 
-    if (layer.primaryFunction) {completedFields++;}
-    if (layer.selectedProtocols.length >= 2) {completedFields++;}
-    if (layer.pdu) {completedFields++;}
-    if (layer.interactionExplanation.split(' ').length >= 20) {completedFields++;}
+    if (layer.primaryFunction) {
+      completedFields++;
+    }
+    if (layer.selectedProtocols.length >= 2) {
+      completedFields++;
+    }
+    if (layer.pdu) {
+      completedFields++;
+    }
+    if (layer.interactionExplanation.split(' ').length >= 20) {
+      completedFields++;
+    }
 
-    if (completedFields === 0) {return 'empty';}
-    if (completedFields === totalFields) {return 'complete';}
+    if (completedFields === 0) {
+      return 'empty';
+    }
+    if (completedFields === totalFields) {
+      return 'complete';
+    }
     return 'partial';
   }, []);
 
-  const updateLayer = useCallback((layerNumber: OSILayerNumber, updates: Partial<OSILayer>) => {
-    setLayers(prev => {
-      const newLayers = prev.map(layer => {
-        if (layer.number === layerNumber) {
-          const updatedLayer = { ...layer, ...updates };
-          updatedLayer.status = calculateLayerCompletion(updatedLayer);
-          return updatedLayer;
-        }
-        return layer;
+  const updateLayer = useCallback(
+    (layerNumber: OSILayerNumber, updates: Partial<OSILayer>) => {
+      setLayers((prev) => {
+        const newLayers = prev.map((layer) => {
+          if (layer.number === layerNumber) {
+            const updatedLayer = { ...layer, ...updates };
+            updatedLayer.status = calculateLayerCompletion(updatedLayer);
+            return updatedLayer;
+          }
+          return layer;
+        });
+
+        // Calculate overall progress
+        const completedCount = newLayers.filter((l) => l.status === 'complete').length;
+        const progress = (completedCount / 7) * 100;
+        onProgressUpdate?.(progress);
+
+        return newLayers;
       });
+    },
+    [calculateLayerCompletion, onProgressUpdate]
+  );
 
-      // Calculate overall progress
-      const completedCount = newLayers.filter(l => l.status === 'complete').length;
-      const progress = (completedCount / 7) * 100;
-      onProgressUpdate?.(progress);
+  const toggleProtocol = useCallback(
+    (layerNumber: OSILayerNumber, protocolName: string) => {
+      const layer = layers.find((l) => l.number === layerNumber);
+      if (!layer) {
+        return;
+      }
 
-      return newLayers;
-    });
-  }, [calculateLayerCompletion, onProgressUpdate]);
+      const isSelected = layer.selectedProtocols.includes(protocolName);
+      const newProtocols = isSelected
+        ? layer.selectedProtocols.filter((p) => p !== protocolName)
+        : [...layer.selectedProtocols, protocolName];
 
-  const toggleProtocol = useCallback((layerNumber: OSILayerNumber, protocolName: string) => {
-    const layer = layers.find(l => l.number === layerNumber);
-    if (!layer) {return;}
-
-    const isSelected = layer.selectedProtocols.includes(protocolName);
-    const newProtocols = isSelected
-      ? layer.selectedProtocols.filter(p => p !== protocolName)
-      : [...layer.selectedProtocols, protocolName];
-
-    updateLayer(layerNumber, { selectedProtocols: newProtocols });
-  }, [layers, updateLayer]);
+      updateLayer(layerNumber, { selectedProtocols: newProtocols });
+    },
+    [layers, updateLayer]
+  );
 
   const calculateScore = useCallback(() => {
     let totalScore = 0;
     let maxScore = 0;
 
-    layers.forEach(layer => {
+    layers.forEach((layer) => {
       // Primary function (25%)
-      const correctFunction = LAYER_FUNCTIONS[layer.number].find(f => f.correct && f.id === layer.primaryFunction);
-      if (correctFunction) {totalScore += 25;}
+      const correctFunction = LAYER_FUNCTIONS[layer.number].find(
+        (f) => f.correct && f.id === layer.primaryFunction
+      );
+      if (correctFunction) {
+        totalScore += 25;
+      }
       maxScore += 25;
 
       // Protocols (25%)
-      const correctProtocols = PROTOCOLS.filter(p => p.layer === layer.number).map(p => p.name);
-      const correctSelected = layer.selectedProtocols.filter(p => correctProtocols.includes(p)).length;
-      const incorrectSelected = layer.selectedProtocols.filter(p => !correctProtocols.includes(p)).length;
-      const protocolScore = Math.max(0, (correctSelected * 10) - (incorrectSelected * 5));
+      const correctProtocols = PROTOCOLS.filter((p) => p.layer === layer.number).map((p) => p.name);
+      const correctSelected = layer.selectedProtocols.filter((p) =>
+        correctProtocols.includes(p)
+      ).length;
+      const incorrectSelected = layer.selectedProtocols.filter(
+        (p) => !correctProtocols.includes(p)
+      ).length;
+      const protocolScore = Math.max(0, correctSelected * 10 - incorrectSelected * 5);
       totalScore += Math.min(25, protocolScore);
       maxScore += 25;
 
       // PDU (10%)
-      const correctPDU = PDUS.find(p => p.layer === layer.number);
+      const correctPDU = PDUS.find((p) => p.layer === layer.number);
       if (correctPDU && layer.pdu.toLowerCase() === correctPDU.name.toLowerCase()) {
         totalScore += 10;
       }
       maxScore += 10;
 
       // Explanation (40%)
-      const wordCount = layer.interactionExplanation.split(' ').filter(w => w.length > 0).length;
+      const wordCount = layer.interactionExplanation.split(' ').filter((w) => w.length > 0).length;
       if (wordCount >= 150) {
         // Basic quality checks
-        const hasUpperLayer = layer.number < 7 && layer.interactionExplanation.toLowerCase().includes('layer ' + (layer.number + 1));
-        const hasLowerLayer = layer.number > 1 && layer.interactionExplanation.toLowerCase().includes('layer ' + (layer.number - 1));
+        const hasUpperLayer =
+          layer.number < 7 &&
+          layer.interactionExplanation.toLowerCase().includes('layer ' + (layer.number + 1));
+        const hasLowerLayer =
+          layer.number > 1 &&
+          layer.interactionExplanation.toLowerCase().includes('layer ' + (layer.number - 1));
         const qualityScore = (hasUpperLayer ? 20 : 0) + (hasLowerLayer ? 20 : 0);
         totalScore += qualityScore;
       }
@@ -122,26 +181,34 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
 
   const getStatusIcon = (status: CompletionStatus): string => {
     switch (status) {
-      case 'complete': return '✓';
-      case 'partial': return '◐';
-      case 'empty': return '○';
+      case 'complete':
+        return '✓';
+      case 'partial':
+        return '◐';
+      case 'empty':
+        return '○';
     }
   };
 
   const getLayerProtocols = (layerNumber: OSILayerNumber) => {
-    return PROTOCOLS.filter(p => p.layer === layerNumber);
+    return PROTOCOLS.filter((p) => p.layer === layerNumber);
   };
 
   const getDecoyProtocols = (layerNumber: OSILayerNumber) => {
-    return PROTOCOLS.filter(p => p.layer !== layerNumber).slice(0, 10);
+    return PROTOCOLS.filter((p) => p.layer !== layerNumber).slice(0, 10);
   };
 
   return (
-    <div className="layer-explanation-builder" style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+    <div
+      className="layer-explanation-builder"
+      style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}
+    >
       <div className="header" style={{ marginBottom: '30px' }}>
         <h2>OSI Layer Explanation Builder</h2>
         <div className="stats" style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
-          <div>Level: {currentLevel} - {DIFFICULTY_LEVELS[currentLevel - 1]?.name}</div>
+          <div>
+            Level: {currentLevel} - {DIFFICULTY_LEVELS[currentLevel - 1]?.name}
+          </div>
           <div>Hints Used: {hintsUsed}/3</div>
           <div>Score: {score}%</div>
           <button
@@ -152,7 +219,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             Calculate Score
@@ -160,7 +227,10 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
         </div>
       </div>
 
-      <div className="layers-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div
+        className="layers-container"
+        style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+      >
         {layers.map((layer) => (
           <div
             key={layer.number}
@@ -169,7 +239,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
               border: `2px solid ${LAYER_COLORS[layer.number]}`,
               borderRadius: '8px',
               overflow: 'hidden',
-              backgroundColor: 'white'
+              backgroundColor: 'white',
             }}
           >
             <div
@@ -182,7 +252,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
               }}
             >
               <span>
@@ -194,7 +264,10 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
             </div>
 
             {expandedLayer === layer.number && (
-              <div className="layer-content" style={{ padding: '20px', backgroundColor: '#f9f9f9' }}>
+              <div
+                className="layer-content"
+                style={{ padding: '20px', backgroundColor: '#f9f9f9' }}
+              >
                 {/* Primary Function Selector */}
                 <div className="section" style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
@@ -208,11 +281,11 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                       padding: '10px',
                       fontSize: '14px',
                       borderRadius: '4px',
-                      border: '1px solid #ddd'
+                      border: '1px solid #ddd',
                     }}
                   >
                     <option value="">Select a function...</option>
-                    {LAYER_FUNCTIONS[layer.number].map(func => (
+                    {LAYER_FUNCTIONS[layer.number].map((func) => (
                       <option key={func.id} value={func.id}>
                         {func.label}
                       </option>
@@ -225,14 +298,16 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                   <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
                     Protocols (select 2-3 correct ones):
                   </label>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-                    gap: '10px'
-                  }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+                      gap: '10px',
+                    }}
+                  >
                     {[...getLayerProtocols(layer.number), ...getDecoyProtocols(layer.number)]
                       .sort(() => Math.random() - 0.5)
-                      .map(protocol => (
+                      .map((protocol) => (
                         <label
                           key={protocol.name}
                           style={{
@@ -240,10 +315,12 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                             alignItems: 'center',
                             gap: '8px',
                             padding: '8px',
-                            backgroundColor: layer.selectedProtocols.includes(protocol.name) ? '#e3f2fd' : 'white',
+                            backgroundColor: layer.selectedProtocols.includes(protocol.name)
+                              ? '#e3f2fd'
+                              : 'white',
                             borderRadius: '4px',
                             cursor: 'pointer',
-                            border: '1px solid #ddd'
+                            border: '1px solid #ddd',
                           }}
                         >
                           <input
@@ -272,7 +349,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                       padding: '10px',
                       fontSize: '14px',
                       borderRadius: '4px',
-                      border: '1px solid #ddd'
+                      border: '1px solid #ddd',
                     }}
                   />
                 </div>
@@ -284,7 +361,9 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                   </label>
                   <textarea
                     value={layer.interactionExplanation}
-                    onChange={(e) => updateLayer(layer.number, { interactionExplanation: e.target.value })}
+                    onChange={(e) =>
+                      updateLayer(layer.number, { interactionExplanation: e.target.value })
+                    }
                     placeholder="Explain how this layer interacts with the layers above and below it..."
                     rows={6}
                     style={{
@@ -294,13 +373,18 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                       borderRadius: '4px',
                       border: '1px solid #ddd',
                       fontFamily: 'inherit',
-                      resize: 'vertical'
+                      resize: 'vertical',
                     }}
                   />
                   <div style={{ marginTop: '5px', fontSize: '12px', color: '#666' }}>
-                    Word count: {layer.interactionExplanation.split(' ').filter(w => w.length > 0).length} / 150
-                    {layer.interactionExplanation.split(' ').filter(w => w.length > 0).length >= 150 && (
-                      <span style={{ color: '#4CAF50', marginLeft: '10px' }}>✓ Meets requirement</span>
+                    Word count:{' '}
+                    {layer.interactionExplanation.split(' ').filter((w) => w.length > 0).length} /
+                    150
+                    {layer.interactionExplanation.split(' ').filter((w) => w.length > 0).length >=
+                      150 && (
+                      <span style={{ color: '#4CAF50', marginLeft: '10px' }}>
+                        ✓ Meets requirement
+                      </span>
                     )}
                   </div>
                 </div>
@@ -310,14 +394,22 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
         ))}
       </div>
 
-      <div className="hint-section" style={{ marginTop: '30px', padding: '20px', backgroundColor: '#fff3cd', borderRadius: '8px' }}>
+      <div
+        className="hint-section"
+        style={{
+          marginTop: '30px',
+          padding: '20px',
+          backgroundColor: '#fff3cd',
+          borderRadius: '8px',
+        }}
+      >
         <h3>Hints Available: {3 - hintsUsed} remaining</h3>
         <p style={{ fontSize: '14px', color: '#856404' }}>
           Each hint used deducts 10% from your final score. Use hints wisely!
         </p>
         {hintsUsed < 3 && (
           <button
-            onClick={() => setHintsUsed(h => h + 1)}
+            onClick={() => setHintsUsed((h) => h + 1)}
             style={{
               padding: '8px 16px',
               backgroundColor: '#ffc107',
@@ -325,7 +417,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
               border: 'none',
               borderRadius: '4px',
               cursor: 'pointer',
-              marginTop: '10px'
+              marginTop: '10px',
             }}
           >
             Use Hint

@@ -9,12 +9,7 @@ import type {
   IaCTemplate,
   ValidationCheck,
   Playbook,
-  ConfigurationDrift} from './modern-types';
-import {
-  AutomationTask,
-  InventoryGroup,
-  Handler,
-  DriftItem,
+  ConfigurationDrift,
 } from './modern-types';
 
 // Technology Articles for Summarization
@@ -317,7 +312,11 @@ export const migrationScenarios: IPv6MigrationScenario[] = [
     constraints: [
       { type: 'budget', description: 'Hardware replacement limited to $200,000', severity: 'high' },
       { type: 'timeline', description: 'Must complete within 18 months', severity: 'medium' },
-      { type: 'compatibility', description: 'ERP system requires vendor upgrade', severity: 'high' },
+      {
+        type: 'compatibility',
+        description: 'ERP system requires vendor upgrade',
+        severity: 'high',
+      },
       { type: 'expertise', description: 'Limited IPv6 experience in team', severity: 'medium' },
     ],
   },
@@ -365,7 +364,11 @@ export const migrationScenarios: IPv6MigrationScenario[] = [
       },
     },
     constraints: [
-      { type: 'budget', description: 'Infrastructure investment of $2M approved', severity: 'medium' },
+      {
+        type: 'budget',
+        description: 'Infrastructure investment of $2M approved',
+        severity: 'medium',
+      },
       { type: 'timeline', description: '3-year migration plan', severity: 'low' },
       { type: 'business', description: 'Cannot disrupt customer service', severity: 'high' },
       { type: 'compatibility', description: 'Legacy CPE devices in field', severity: 'high' },
@@ -385,8 +388,19 @@ export const iacTemplates: IaCTemplate[] = [
     tags: ['router', 'security', 'baseline'],
     parameters: [
       { name: 'hostname', type: 'string', description: 'Router hostname', required: true },
-      { name: 'management_ip', type: 'string', description: 'Management interface IP', required: true },
-      { name: 'snmp_community', type: 'string', description: 'SNMP community string', required: false, default: 'public' },
+      {
+        name: 'management_ip',
+        type: 'string',
+        description: 'Management interface IP',
+        required: true,
+      },
+      {
+        name: 'snmp_community',
+        type: 'string',
+        description: 'SNMP community string',
+        required: false,
+        default: 'public',
+      },
       { name: 'ntp_servers', type: 'list', description: 'NTP server addresses', required: true },
     ],
     tasks: [
@@ -415,7 +429,11 @@ export const iacTemplates: IaCTemplate[] = [
         description: 'Set management interface IP and enable SSH',
         order: 2,
         dependencies: ['task-1'],
-        parameters: { interface: 'GigabitEthernet0/0', ip: '{{ management_ip }}', mask: '255.255.255.0' },
+        parameters: {
+          interface: 'GigabitEthernet0/0',
+          ip: '{{ management_ip }}',
+          mask: '255.255.255.0',
+        },
         validation: [
           {
             name: 'Verify interface',
@@ -478,7 +496,13 @@ export const iacTemplates: IaCTemplate[] = [
     parameters: [
       { name: 'vlans', type: 'list', description: 'List of VLANs to create', required: true },
       { name: 'trunk_ports', type: 'list', description: 'Trunk port interfaces', required: true },
-      { name: 'native_vlan', type: 'number', description: 'Native VLAN ID', required: false, default: 1 },
+      {
+        name: 'native_vlan',
+        type: 'number',
+        description: 'Native VLAN ID',
+        required: false,
+        default: 1,
+      },
     ],
     tasks: [
       {
@@ -534,7 +558,13 @@ export const iacTemplates: IaCTemplate[] = [
     parameters: [
       { name: 'acl_rules', type: 'list', description: 'Access control list rules', required: true },
       { name: 'nat_rules', type: 'list', description: 'NAT translation rules', required: false },
-      { name: 'log_level', type: 'string', description: 'Logging level', required: false, default: 'informational' },
+      {
+        name: 'log_level',
+        type: 'string',
+        description: 'Logging level',
+        required: false,
+        default: 'informational',
+      },
     ],
     tasks: [
       {

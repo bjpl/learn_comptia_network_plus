@@ -4,12 +4,7 @@ import type {
   MigrationMethod,
   MigrationPlan,
   MigrationPhase,
-  SuccessMetric} from './modern-types';
-import {
-  MigrationTask,
-  TunnelingConfig,
-  NAT64Config,
-  Risk
+  SuccessMetric,
 } from './modern-types';
 import { migrationScenarios } from './modern-data';
 
@@ -73,17 +68,15 @@ const IPv6Planner: React.FC = () => {
         'Flexibility for complex environments',
         'Balanced trade-offs',
       ],
-      cons: [
-        'Increased complexity',
-        'Higher management overhead',
-        'Requires careful planning',
-      ],
+      cons: ['Increased complexity', 'Higher management overhead', 'Requires careful planning'],
       complexity: 'critical',
     },
   };
 
   const generateMigrationPlan = () => {
-    if (!selectedScenario) {return;}
+    if (!selectedScenario) {
+      return;
+    }
 
     const phases: MigrationPhase[] = [];
     const now = new Date();
@@ -207,7 +200,7 @@ const IPv6Planner: React.FC = () => {
           {
             description: 'Configuration errors cause outages',
             probability: 'medium',
-            impact: 'critical',
+            impact: 'high',
             mitigation: 'Test in lab, implement during maintenance windows',
           },
         ],
@@ -281,7 +274,12 @@ const IPv6Planner: React.FC = () => {
     });
 
     // Phase 4: Full Deployment
-    const fullDeploymentDuration = selectedScenario.complexity === 'high' ? 180 : selectedScenario.complexity === 'medium' ? 120 : 90;
+    const fullDeploymentDuration =
+      selectedScenario.complexity === 'high'
+        ? 180
+        : selectedScenario.complexity === 'medium'
+          ? 120
+          : 90;
     phases.push({
       id: 'phase-4',
       name: 'Full Network Deployment',
@@ -341,7 +339,8 @@ const IPv6Planner: React.FC = () => {
     endDate.setDate(endDate.getDate() + totalDays);
 
     // Calculate budget
-    const hardwareCost = selectedMethod === 'dual-stack' ? 200000 : selectedMethod === 'tunneling' ? 50000 : 100000;
+    const hardwareCost =
+      selectedMethod === 'dual-stack' ? 200000 : selectedMethod === 'tunneling' ? 50000 : 100000;
     const softwareCost = 75000;
     const trainingCost = 50000;
     const consultingCost = 100000;
@@ -413,10 +412,15 @@ const IPv6Planner: React.FC = () => {
   };
 
   const getRiskColor = (probability: string, impact: string): string => {
-    const score = (probability === 'high' ? 3 : probability === 'medium' ? 2 : 1) +
-                  (impact === 'critical' ? 4 : impact === 'high' ? 3 : impact === 'medium' ? 2 : 1);
-    if (score >= 6) {return 'bg-red-100 border-red-500';}
-    if (score >= 4) {return 'bg-yellow-100 border-yellow-500';}
+    const score =
+      (probability === 'high' ? 3 : probability === 'medium' ? 2 : 1) +
+      (impact === 'critical' ? 4 : impact === 'high' ? 3 : impact === 'medium' ? 2 : 1);
+    if (score >= 6) {
+      return 'bg-red-100 border-red-500';
+    }
+    if (score >= 4) {
+      return 'bg-yellow-100 border-yellow-500';
+    }
     return 'bg-green-100 border-green-500';
   };
 
@@ -425,48 +429,48 @@ const IPv6Planner: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="mx-auto max-w-7xl rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+        <h2 className="mb-2 text-3xl font-bold text-gray-800">
           Component 20: IPv6 Migration Planner
         </h2>
         <p className="text-gray-600">
-          Plan comprehensive IPv6 migration strategies using dual stack, tunneling, or NAT64 methods.
-          Generate detailed migration plans with timelines, costs, and risk assessments.
+          Plan comprehensive IPv6 migration strategies using dual stack, tunneling, or NAT64
+          methods. Generate detailed migration plans with timelines, costs, and risk assessments.
         </p>
       </div>
 
       {/* Scenario Selection */}
       <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-3">Select Migration Scenario</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h3 className="mb-3 text-xl font-semibold">Select Migration Scenario</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {migrationScenarios.map((scenario) => (
             <button
               key={scenario.id}
               onClick={() => setSelectedScenario(scenario)}
-              className={`p-4 rounded-lg border-2 text-left transition-all ${
+              className={`rounded-lg border-2 p-4 text-left transition-all ${
                 selectedScenario?.id === scenario.id
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-300 hover:border-blue-300'
               }`}
             >
-              <div className="flex justify-between items-start mb-2">
+              <div className="mb-2 flex items-start justify-between">
                 <div className="font-semibold text-gray-800">{scenario.name}</div>
                 <span
-                  className={`px-2 py-1 text-xs rounded-full ${
+                  className={`rounded-full px-2 py-1 text-xs ${
                     scenario.complexity === 'critical'
                       ? 'bg-red-100 text-red-700'
                       : scenario.complexity === 'high'
-                      ? 'bg-orange-100 text-orange-700'
-                      : scenario.complexity === 'medium'
-                      ? 'bg-yellow-100 text-yellow-700'
-                      : 'bg-green-100 text-green-700'
+                        ? 'bg-orange-100 text-orange-700'
+                        : scenario.complexity === 'medium'
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : 'bg-green-100 text-green-700'
                   }`}
                 >
                   {scenario.complexity}
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-3">{scenario.description}</p>
+              <p className="mb-3 text-sm text-gray-600">{scenario.description}</p>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
                   <span className="text-gray-500">Devices:</span>{' '}
@@ -496,28 +500,32 @@ const IPv6Planner: React.FC = () => {
       {/* Migration Method Selection */}
       {selectedScenario && (
         <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-3">Select Migration Method</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <h3 className="mb-3 text-xl font-semibold">Select Migration Method</h3>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {(Object.keys(methodInfo) as MigrationMethod[]).map((method) => (
               <button
                 key={method}
                 onClick={() => setSelectedMethod(method)}
-                className={`p-4 rounded-lg border-2 text-left transition-all ${
+                className={`rounded-lg border-2 p-4 text-left transition-all ${
                   selectedMethod === method
                     ? 'border-green-500 bg-green-50'
                     : 'border-gray-300 hover:border-green-300'
                 }`}
               >
-                <div className="font-semibold text-gray-800 mb-2">{methodInfo[method].name}</div>
-                <p className="text-sm text-gray-600 mb-3">{methodInfo[method].description}</p>
+                <div className="mb-2 font-semibold text-gray-800">{methodInfo[method].name}</div>
+                <p className="mb-3 text-sm text-gray-600">{methodInfo[method].description}</p>
                 <div className="space-y-1 text-xs">
                   <div className="font-semibold text-green-700">Pros:</div>
                   {methodInfo[method].pros.slice(0, 2).map((pro, idx) => (
-                    <div key={idx} className="text-gray-600">• {pro}</div>
+                    <div key={idx} className="text-gray-600">
+                      • {pro}
+                    </div>
                   ))}
-                  <div className="font-semibold text-red-700 mt-2">Cons:</div>
+                  <div className="mt-2 font-semibold text-red-700">Cons:</div>
                   {methodInfo[method].cons.slice(0, 2).map((con, idx) => (
-                    <div key={idx} className="text-gray-600">• {con}</div>
+                    <div key={idx} className="text-gray-600">
+                      • {con}
+                    </div>
                   ))}
                 </div>
               </button>
@@ -526,7 +534,7 @@ const IPv6Planner: React.FC = () => {
           <div className="mt-4 text-center">
             <button
               onClick={generateMigrationPlan}
-              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+              className="rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white transition-colors hover:bg-blue-700"
             >
               Generate Migration Plan
             </button>
@@ -538,11 +546,11 @@ const IPv6Planner: React.FC = () => {
       {migrationPlan && (
         <div className="space-y-6">
           {/* Plan Overview */}
-          <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg border-2 border-blue-300">
-            <h3 className="text-2xl font-bold mb-4">Migration Plan Overview</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-1">Duration</div>
+          <div className="rounded-lg border-2 border-blue-300 bg-gradient-to-r from-blue-50 to-green-50 p-6">
+            <h3 className="mb-4 text-2xl font-bold">Migration Plan Overview</h3>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              <div className="rounded-lg bg-white p-4">
+                <div className="mb-1 text-sm text-gray-600">Duration</div>
                 <div className="text-2xl font-bold text-blue-600">
                   {migrationPlan.timeline.totalDays} days
                 </div>
@@ -550,20 +558,20 @@ const IPv6Planner: React.FC = () => {
                   {(migrationPlan.timeline.totalDays / 30).toFixed(1)} months
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-1">Total Budget</div>
+              <div className="rounded-lg bg-white p-4">
+                <div className="mb-1 text-sm text-gray-600">Total Budget</div>
                 <div className="text-2xl font-bold text-green-600">
                   {formatCurrency(migrationPlan.budget.total)}
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-1">Phases</div>
+              <div className="rounded-lg bg-white p-4">
+                <div className="mb-1 text-sm text-gray-600">Phases</div>
                 <div className="text-2xl font-bold text-purple-600">
                   {migrationPlan.phases.length}
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-1">Risks</div>
+              <div className="rounded-lg bg-white p-4">
+                <div className="mb-1 text-sm text-gray-600">Risks</div>
                 <div className="text-2xl font-bold text-orange-600">
                   {migrationPlan.riskAssessment.length}
                 </div>
@@ -571,24 +579,32 @@ const IPv6Planner: React.FC = () => {
             </div>
 
             {/* Budget Breakdown */}
-            <div className="mt-4 bg-white p-4 rounded-lg">
-              <h4 className="font-semibold mb-2">Budget Breakdown</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+            <div className="mt-4 rounded-lg bg-white p-4">
+              <h4 className="mb-2 font-semibold">Budget Breakdown</h4>
+              <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
                 <div>
                   <span className="text-gray-600">Hardware:</span>{' '}
-                  <span className="font-semibold">{formatCurrency(migrationPlan.budget.hardware)}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(migrationPlan.budget.hardware)}
+                  </span>
                 </div>
                 <div>
                   <span className="text-gray-600">Software:</span>{' '}
-                  <span className="font-semibold">{formatCurrency(migrationPlan.budget.software)}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(migrationPlan.budget.software)}
+                  </span>
                 </div>
                 <div>
                   <span className="text-gray-600">Training:</span>{' '}
-                  <span className="font-semibold">{formatCurrency(migrationPlan.budget.training)}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(migrationPlan.budget.training)}
+                  </span>
                 </div>
                 <div>
                   <span className="text-gray-600">Consulting:</span>{' '}
-                  <span className="font-semibold">{formatCurrency(migrationPlan.budget.consulting)}</span>
+                  <span className="font-semibold">
+                    {formatCurrency(migrationPlan.budget.consulting)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -600,7 +616,7 @@ const IPv6Planner: React.FC = () => {
               <button
                 key={phase.id}
                 onClick={() => setActivePhase(idx)}
-                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
+                className={`whitespace-nowrap rounded-lg px-4 py-2 transition-all ${
                   activePhase === idx
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -613,13 +629,15 @@ const IPv6Planner: React.FC = () => {
 
           {/* Active Phase Details */}
           {migrationPlan.phases[activePhase] && (
-            <div className="border-2 border-gray-300 rounded-lg p-6">
-              <div className="flex justify-between items-start mb-4">
+            <div className="rounded-lg border-2 border-gray-300 p-6">
+              <div className="mb-4 flex items-start justify-between">
                 <div>
                   <h3 className="text-2xl font-bold">
                     Phase {activePhase + 1}: {migrationPlan.phases[activePhase].name}
                   </h3>
-                  <p className="text-gray-600">Method: {methodInfo[migrationPlan.phases[activePhase].method].name}</p>
+                  <p className="text-gray-600">
+                    Method: {methodInfo[migrationPlan.phases[activePhase].method].name}
+                  </p>
                 </div>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-blue-600">
@@ -633,15 +651,20 @@ const IPv6Planner: React.FC = () => {
 
               {/* Tasks */}
               <div className="mb-6">
-                <h4 className="font-semibold mb-3">Tasks ({migrationPlan.phases[activePhase].tasks.length})</h4>
+                <h4 className="mb-3 font-semibold">
+                  Tasks ({migrationPlan.phases[activePhase].tasks.length})
+                </h4>
                 <div className="space-y-3">
                   {migrationPlan.phases[activePhase].tasks.map((task) => (
-                    <div key={task.id} className="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
-                      <div className="flex justify-between items-start mb-2">
+                    <div
+                      key={task.id}
+                      className="rounded-lg border-l-4 border-blue-500 bg-gray-50 p-4"
+                    >
+                      <div className="mb-2 flex items-start justify-between">
                         <div className="font-semibold">{task.description}</div>
                         <span className="text-sm text-gray-600">{task.duration} days</span>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                      <div className="grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
                         <div>
                           <span className="text-gray-600">Resources:</span>{' '}
                           <span className="text-gray-800">{task.resources.join(', ')}</span>
@@ -658,12 +681,17 @@ const IPv6Planner: React.FC = () => {
 
               {/* Risks */}
               <div>
-                <h4 className="font-semibold mb-3">Phase Risks ({migrationPlan.phases[activePhase].risks.length})</h4>
+                <h4 className="mb-3 font-semibold">
+                  Phase Risks ({migrationPlan.phases[activePhase].risks.length})
+                </h4>
                 <div className="space-y-3">
                   {migrationPlan.phases[activePhase].risks.map((risk, idx) => (
-                    <div key={idx} className={`p-4 rounded-lg border-2 ${getRiskColor(risk.probability, risk.impact)}`}>
-                      <div className="font-semibold mb-1">{risk.description}</div>
-                      <div className="text-sm mb-2">
+                    <div
+                      key={idx}
+                      className={`rounded-lg border-2 p-4 ${getRiskColor(risk.probability, risk.impact)}`}
+                    >
+                      <div className="mb-1 font-semibold">{risk.description}</div>
+                      <div className="mb-2 text-sm">
                         <span className="text-gray-700">Probability:</span>{' '}
                         <span className="font-semibold">{risk.probability}</span>
                         {' | '}
@@ -681,24 +709,27 @@ const IPv6Planner: React.FC = () => {
           )}
 
           {/* Success Metrics */}
-          <div className="bg-green-50 p-6 rounded-lg border-2 border-green-300">
-            <h3 className="text-xl font-bold mb-4">Success Metrics</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="rounded-lg border-2 border-green-300 bg-green-50 p-6">
+            <h3 className="mb-4 text-xl font-bold">Success Metrics</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {migrationPlan.successMetrics.map((metric, idx) => (
-                <div key={idx} className="bg-white p-4 rounded-lg">
-                  <div className="font-semibold text-gray-800 mb-1">{metric.name}</div>
-                  <div className="text-2xl font-bold text-green-600 mb-1">
-                    {metric.target}{metric.unit}
+                <div key={idx} className="rounded-lg bg-white p-4">
+                  <div className="mb-1 font-semibold text-gray-800">{metric.name}</div>
+                  <div className="mb-1 text-2xl font-bold text-green-600">
+                    {metric.target}
+                    {metric.unit}
                   </div>
-                  <div className="text-sm text-gray-600">
-                    Measured via: {metric.measurement}
-                  </div>
+                  <div className="text-sm text-gray-600">Measured via: {metric.measurement}</div>
                   <div className="mt-2">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      metric.priority === 'high' ? 'bg-red-100 text-red-700' :
-                      metric.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-blue-100 text-blue-700'
-                    }`}>
+                    <span
+                      className={`rounded-full px-2 py-1 text-xs ${
+                        metric.priority === 'high'
+                          ? 'bg-red-100 text-red-700'
+                          : metric.priority === 'medium'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-blue-100 text-blue-700'
+                      }`}
+                    >
                       {metric.priority} priority
                     </span>
                   </div>
@@ -711,9 +742,9 @@ const IPv6Planner: React.FC = () => {
 
       {/* Instructions */}
       {!selectedScenario && (
-        <div className="mt-6 p-6 bg-blue-50 rounded-lg border-2 border-blue-200">
-          <h3 className="text-lg font-semibold mb-3">How to Use This Planner:</h3>
-          <ol className="list-decimal list-inside space-y-2 text-gray-700">
+        <div className="mt-6 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
+          <h3 className="mb-3 text-lg font-semibold">How to Use This Planner:</h3>
+          <ol className="list-inside list-decimal space-y-2 text-gray-700">
             <li>Select a migration scenario that matches your environment</li>
             <li>Choose the most appropriate migration method (dual stack, tunneling, or NAT64)</li>
             <li>Click "Generate Migration Plan" to create a detailed implementation plan</li>

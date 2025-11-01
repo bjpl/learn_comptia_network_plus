@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import type { DecisionNode } from './appliances-types';
 import { decisionTreeData, networkDevices } from './appliances-data';
 
 interface DecisionTreeProps {
@@ -13,25 +12,30 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
 
   const currentNode = decisionTreeData.get(currentNodeId);
 
-  const handleAnswer = useCallback((answer: 'yes' | 'no') => {
-    if (!currentNode || currentNode.type === 'recommendation') {return;}
+  const handleAnswer = useCallback(
+    (answer: 'yes' | 'no') => {
+      if (!currentNode || currentNode.type === 'recommendation') {
+        return;
+      }
 
-    const nextNodeId = answer === 'yes' ? currentNode.yesPath : currentNode.noPath;
+      const nextNodeId = answer === 'yes' ? currentNode.yesPath : currentNode.noPath;
 
-    if (nextNodeId) {
-      const nextNode = decisionTreeData.get(nextNodeId);
+      if (nextNodeId) {
+        const nextNode = decisionTreeData.get(nextNodeId);
 
-      setCurrentNodeId(nextNodeId);
-      setHistory([...history, nextNodeId]);
+        setCurrentNodeId(nextNodeId);
+        setHistory([...history, nextNodeId]);
 
-      if (nextNode?.type === 'recommendation') {
-        setShowRecommendation(true);
-        if (onRecommendation && nextNode.devices) {
-          onRecommendation(nextNode.devices);
+        if (nextNode?.type === 'recommendation') {
+          setShowRecommendation(true);
+          if (onRecommendation && nextNode.devices) {
+            onRecommendation(nextNode.devices);
+          }
         }
       }
-    }
-  }, [currentNode, history, onRecommendation]);
+    },
+    [currentNode, history, onRecommendation]
+  );
 
   const handleReset = () => {
     setCurrentNodeId('start');
@@ -51,16 +55,16 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
   };
 
   const getDeviceDetails = (deviceId: string) => {
-    return networkDevices.find(d => d.id === deviceId);
+    return networkDevices.find((d) => d.id === deviceId);
   };
 
   if (!currentNode) {
     return (
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="rounded-lg bg-white p-6 shadow-lg">
         <p className="text-red-500">Error: Node not found</p>
         <button
           onClick={handleReset}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         >
           Restart
         </button>
@@ -69,22 +73,23 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
+    <div className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-lg">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Virtual vs Physical Decision Tree</h2>
+        <h2 className="mb-2 text-2xl font-bold">Virtual vs Physical Decision Tree</h2>
         <p className="text-gray-600">
-          Answer a series of questions to determine whether physical, virtual, or cloud-based appliances are best for your needs.
+          Answer a series of questions to determine whether physical, virtual, or cloud-based
+          appliances are best for your needs.
         </p>
       </div>
 
       {/* Progress Indicator */}
       <div className="mb-6">
-        <div className="flex items-center space-x-2 mb-2">
+        <div className="mb-2 flex items-center space-x-2">
           <span className="text-sm font-medium text-gray-700">Progress:</span>
-          <div className="flex-1 bg-gray-200 rounded-full h-2">
+          <div className="h-2 flex-1 rounded-full bg-gray-200">
             <div
-              className="bg-blue-500 rounded-full h-2 transition-all duration-300"
+              className="h-2 rounded-full bg-blue-500 transition-all duration-300"
               style={{ width: `${(history.length / 5) * 100}%` }}
             />
           </div>
@@ -92,7 +97,7 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
         </div>
 
         {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-xs text-gray-500 overflow-x-auto">
+        <div className="flex items-center space-x-2 overflow-x-auto text-xs text-gray-500">
           {history.map((nodeId, index) => {
             const node = decisionTreeData.get(nodeId);
             return (
@@ -109,24 +114,24 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
 
       {/* Question or Recommendation */}
       {currentNode.type === 'question' ? (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 mb-6">
+        <div className="mb-6 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
           <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-xl font-bold text-white">
               ?
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-semibold mb-4 text-gray-800">{currentNode.text}</h3>
+              <h3 className="mb-4 text-xl font-semibold text-gray-800">{currentNode.text}</h3>
 
               <div className="flex space-x-4">
                 <button
                   onClick={() => handleAnswer('yes')}
-                  className="flex-1 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium shadow-md hover:shadow-lg"
+                  className="flex-1 rounded-lg bg-green-500 px-6 py-3 font-medium text-white shadow-md transition-colors hover:bg-green-600 hover:shadow-lg"
                 >
                   ✓ Yes
                 </button>
                 <button
                   onClick={() => handleAnswer('no')}
-                  className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium shadow-md hover:shadow-lg"
+                  className="flex-1 rounded-lg bg-red-500 px-6 py-3 font-medium text-white shadow-md transition-colors hover:bg-red-600 hover:shadow-lg"
                 >
                   ✗ No
                 </button>
@@ -135,57 +140,68 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 mb-6">
-          <div className="flex items-start space-x-4 mb-4">
-            <div className="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+        <div className="mb-6 rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+          <div className="mb-4 flex items-start space-x-4">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-500 text-xl font-bold text-white">
               ✓
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold mb-2 text-gray-800">Recommendation: {currentNode.text}</h3>
-              <p className="text-gray-700 mb-4">{currentNode.rationale}</p>
+              <h3 className="mb-2 text-xl font-bold text-gray-800">
+                Recommendation: {currentNode.text}
+              </h3>
+              <p className="mb-4 text-gray-700">{currentNode.rationale}</p>
             </div>
           </div>
 
           {/* Recommended Devices */}
           {currentNode.devices && currentNode.devices.length > 0 && (
             <div className="space-y-4">
-              <h4 className="font-semibold text-lg">Recommended Devices:</h4>
+              <h4 className="text-lg font-semibold">Recommended Devices:</h4>
 
               <div className="grid gap-4 md:grid-cols-2">
                 {currentNode.devices.map((deviceId) => {
                   const device = getDeviceDetails(deviceId);
-                  if (!device) {return null;}
+                  if (!device) {
+                    return null;
+                  }
 
                   return (
                     <div
                       key={deviceId}
-                      className="bg-white rounded-lg p-4 border-2 border-green-200 hover:border-green-400 transition-colors"
+                      className="rounded-lg border-2 border-green-200 bg-white p-4 transition-colors hover:border-green-400"
                     >
-                      <div className="flex justify-between items-start mb-2">
+                      <div className="mb-2 flex items-start justify-between">
                         <h5 className="font-bold text-gray-800">{device.name}</h5>
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          device.category === 'physical' ? 'bg-blue-100 text-blue-800' :
-                          device.category === 'virtual' ? 'bg-green-100 text-green-800' :
-                          'bg-purple-100 text-purple-800'
-                        }`}>
+                        <span
+                          className={`rounded px-2 py-1 text-xs font-medium ${
+                            device.category === 'physical'
+                              ? 'bg-blue-100 text-blue-800'
+                              : device.category === 'virtual'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-purple-100 text-purple-800'
+                          }`}
+                        >
                           {device.category}
                         </span>
                       </div>
 
-                      <p className="text-sm text-gray-600 mb-2">{device.manufacturer} - {device.model}</p>
+                      <p className="mb-2 text-sm text-gray-600">
+                        {device.manufacturer} - {device.model}
+                      </p>
 
-                      <div className="grid grid-cols-2 gap-2 text-xs text-gray-700 mb-2">
+                      <div className="mb-2 grid grid-cols-2 gap-2 text-xs text-gray-700">
                         <div>
                           <span className="font-medium">Throughput:</span> {device.specs.throughput}
                         </div>
                         <div>
-                          <span className="font-medium">Year 1:</span> ${device.pricing.totalCostYear1.toLocaleString()}
+                          <span className="font-medium">Year 1:</span> $
+                          {device.pricing.totalCostYear1.toLocaleString()}
                         </div>
                       </div>
 
                       <div className="text-xs text-gray-600">
-                        <p className="font-medium mb-1">Best for:</p>
-                        <ul className="list-disc list-inside">
+                        <p className="mb-1 font-medium">Best for:</p>
+                        <ul className="list-inside list-disc">
                           {device.useCase.slice(0, 2).map((use, idx) => (
                             <li key={idx}>{use}</li>
                           ))}
@@ -201,13 +217,13 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
       )}
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <button
           onClick={handleGoBack}
           disabled={history.length <= 1}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`rounded-lg px-4 py-2 font-medium transition-colors ${
             history.length <= 1
-              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'cursor-not-allowed bg-gray-200 text-gray-400'
               : 'bg-gray-500 text-white hover:bg-gray-600'
           }`}
         >
@@ -216,16 +232,16 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
 
         <button
           onClick={handleReset}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+          className="rounded-lg bg-blue-500 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-600"
         >
           🔄 Start Over
         </button>
       </div>
 
       {/* Help Text */}
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <h4 className="font-semibold text-sm mb-2">💡 How to use this tool:</h4>
-        <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside">
+      <div className="mt-6 rounded-lg bg-gray-50 p-4">
+        <h4 className="mb-2 text-sm font-semibold">💡 How to use this tool:</h4>
+        <ul className="list-inside list-disc space-y-1 text-sm text-gray-700">
           <li>Answer each question based on your organization's requirements</li>
           <li>Click "Go Back" if you want to change a previous answer</li>
           <li>The tool will recommend physical, virtual, or cloud-based appliances</li>

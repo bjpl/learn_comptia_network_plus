@@ -56,13 +56,7 @@ interface UseTimerReturn extends TimerState {
  * ```
  */
 export function useTimer(config: TimerConfig = {}): UseTimerReturn {
-  const {
-    duration,
-    autoStart = false,
-    onComplete,
-    onTick,
-    warningThreshold = 10,
-  } = config;
+  const { duration, autoStart = false, onComplete, onTick } = config;
 
   const [elapsed, setElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(autoStart);
@@ -165,13 +159,16 @@ export function useTimer(config: TimerConfig = {}): UseTimerReturn {
   }, []);
 
   // Add time (for countdown)
-  const addTime = useCallback((seconds: number) => {
-    if (duration !== undefined) {
-      // Adjust start time to effectively add time
-      startTimeRef.current -= seconds * 1000;
-      setElapsed(prev => Math.max(0, prev - seconds));
-    }
-  }, [duration]);
+  const addTime = useCallback(
+    (seconds: number) => {
+      if (duration !== undefined) {
+        // Adjust start time to effectively add time
+        startTimeRef.current -= seconds * 1000;
+        setElapsed((prev) => Math.max(0, prev - seconds));
+      }
+    },
+    [duration]
+  );
 
   // Format time display
   const formatTime = useCallback(
@@ -236,7 +233,9 @@ export function useInterval(callback: () => void, delay: number | null): void {
   }, [callback]);
 
   useEffect(() => {
-    if (delay === null) {return;}
+    if (delay === null) {
+      return;
+    }
 
     const id = setInterval(() => savedCallback.current(), delay);
     return () => clearInterval(id);
@@ -288,12 +287,15 @@ export function useThrottle<T>(value: T, delay: number): T {
   const lastRan = useRef(Date.now());
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      if (Date.now() - lastRan.current >= delay) {
-        setThrottledValue(value);
-        lastRan.current = Date.now();
-      }
-    }, delay - (Date.now() - lastRan.current));
+    const handler = setTimeout(
+      () => {
+        if (Date.now() - lastRan.current >= delay) {
+          setThrottledValue(value);
+          lastRan.current = Date.now();
+        }
+      },
+      delay - (Date.now() - lastRan.current)
+    );
 
     return () => {
       clearTimeout(handler);
@@ -328,7 +330,9 @@ export function useCountdownWithCallbacks(
   const timer = useTimer({
     duration,
     onTick: (state) => {
-      if (state.remaining === undefined) {return;}
+      if (state.remaining === undefined) {
+        return;
+      }
 
       Object.entries(callbacks).forEach(([time, callback]) => {
         const timeNum = parseInt(time, 10);
@@ -375,9 +379,7 @@ export function useTimedChallenge(
     warningThreshold: 10,
   });
 
-  const percentRemaining = timer.remaining
-    ? (timer.remaining / duration) * 100
-    : 0;
+  const percentRemaining = timer.remaining ? (timer.remaining / duration) * 100 : 0;
 
   const isTimeWarning = percentRemaining <= 25 && percentRemaining > 10;
   const isCritical = percentRemaining <= 10;
@@ -413,9 +415,15 @@ export function formatDuration(seconds: number): string {
   const secs = seconds % 60;
 
   const parts: string[] = [];
-  if (hours > 0) {parts.push(`${hours}h`);}
-  if (minutes > 0) {parts.push(`${minutes}m`);}
-  if (secs > 0 || parts.length === 0) {parts.push(`${secs}s`);}
+  if (hours > 0) {
+    parts.push(`${hours}h`);
+  }
+  if (minutes > 0) {
+    parts.push(`${minutes}m`);
+  }
+  if (secs > 0 || parts.length === 0) {
+    parts.push(`${secs}s`);
+  }
 
   return parts.join(' ');
 }
