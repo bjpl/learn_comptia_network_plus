@@ -6,7 +6,7 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/',
+  base: '/learn_comptia_network_plus/',
   plugins: [
     react(),
     visualizer({
