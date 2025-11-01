@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { transformationScenarios, topologyDefinitions } from './topologies-data';
-import type { TopologyTransformation, TopologyType, TopologyDefinition } from './topologies-types';
+import type { TopologyTransformation, TopologyType } from './topologies-types';
 
 interface TopologyTransformerProps {
   className?: string;

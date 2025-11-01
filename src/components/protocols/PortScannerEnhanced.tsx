@@ -217,7 +217,7 @@ export const PortScannerEnhanced: React.FC = () => {
 
   const simulatePacketExchange = (
     scanType: ScanType,
-    port: number,
+    _port: number,
     isFiltered: boolean
   ): PacketExchange[] => {
     const isOpen = Math.random() > 0.5;
@@ -575,7 +575,11 @@ export const PortScannerEnhanced: React.FC = () => {
 
       // Check if port is filtered by firewall
       const rule = defenseConfig.rules.find((r) => r.port === portInfo.port);
-      const isFiltered = defenseConfig.firewallEnabled && rule?.enabled && rule.action === 'block';
+      const isFiltered = !!(
+        defenseConfig.firewallEnabled &&
+        rule?.enabled &&
+        rule.action === 'block'
+      );
 
       const exchanges = simulatePacketExchange(selectedScanType, portInfo.port, isFiltered);
       const state = determinePortState(selectedScanType, exchanges, isFiltered);

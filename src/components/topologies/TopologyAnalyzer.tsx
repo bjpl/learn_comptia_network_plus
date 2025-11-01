@@ -10,8 +10,6 @@ import type {
   TopologyDefinition,
   ComparisonMetrics,
   TrafficFlowType,
-  TopologyNode,
-  TopologyEdge,
 } from './topologies-types';
 
 interface TopologyAnalyzerProps {
@@ -52,7 +50,7 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
   const [showThreeTier, setShowThreeTier] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showExamQuestions, setShowExamQuestions] = useState(false);
-  const [selectedQuestion, setSelectedQuestion] = useState<ExamQuestion | null>(null);
+  const [_selectedQuestion, _setSelectedQuestion] = useState<ExamQuestion | null>(null);
   const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
 
   const selectedTopologyData = useMemo(() => {

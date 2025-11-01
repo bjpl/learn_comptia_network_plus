@@ -5,7 +5,6 @@ import type {
   SimulationState,
   TrafficFlow,
   SimulationAlert,
-  TroubleshootingScenario,
 } from './appliances-types';
 
 import { deviceTemplates } from './appliances-data';
