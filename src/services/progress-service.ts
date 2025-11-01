@@ -124,7 +124,7 @@ const mockUpdateComponentProgress = async (
   await mockApiDelay(300);
 
   const progressStr = localStorage.getItem('comptia-network-plus-progress');
-  let data = progressStr ? JSON.parse(progressStr) : { state: { componentProgress: {} } };
+  const data = progressStr ? JSON.parse(progressStr) : { state: { componentProgress: {} } };
 
   const existing = data.state.componentProgress[componentId] || {
     componentId,
@@ -282,10 +282,10 @@ export const queueProgressUpdate = (
  */
 export const processProgressQueue = async (): Promise<void> => {
   const queueStr = localStorage.getItem('progress_queue');
-  if (!queueStr) return;
+  if (!queueStr) {return;}
 
   const queue = JSON.parse(queueStr);
-  if (queue.length === 0) return;
+  if (queue.length === 0) {return;}
 
   console.log(`Processing ${queue.length} queued progress updates...`);
 

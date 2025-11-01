@@ -1,4 +1,5 @@
-import React, { lazy, Suspense, ComponentType } from 'react';
+import type { ComponentType } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LoadingSpinner } from './LoadingSpinner';
 

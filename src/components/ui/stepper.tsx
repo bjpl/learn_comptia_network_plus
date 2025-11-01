@@ -38,7 +38,7 @@ export interface StepProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Step = React.forwardRef<HTMLDivElement, StepProps>(
   ({ className, children, index = 0, ...props }, ref) => {
     const context = React.useContext(StepperContext);
-    if (!context) throw new Error('Step must be used within Stepper');
+    if (!context) {throw new Error('Step must be used within Stepper');}
 
     const isActive = context.activeStep === index;
     const isCompleted = context.activeStep > index;

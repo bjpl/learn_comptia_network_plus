@@ -5,7 +5,7 @@
 
 import { apiClient } from './api-client';
 import { API_ENDPOINTS, shouldUseMockAPI } from '../config/api-config';
-import { User } from '../types/auth';
+import type { User } from '../types/auth';
 import { mockApiDelay } from '../utils/auth';
 
 export interface UpdateProfileData {

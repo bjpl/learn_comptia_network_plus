@@ -8,7 +8,6 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableHeader,
   TableRow,
 } from '@/components/ui/table';
 import {
@@ -26,7 +25,7 @@ import {
   Box
 } from 'lucide-react';
 import { MEDIA_OPTIONS, SCENARIOS, calculateMediaScore } from './media-data';
-import type { ScenarioRequirement, MediaOption, MediaScore } from './media-types';
+import type { ScenarioRequirement, MediaOption } from './media-types';
 
 // Lazy load 3D viewer for performance
 const Connector3DViewer = lazy(() => import('./Connector3DViewer'));
@@ -238,7 +237,7 @@ export default function MediaSelectionMatrix() {
         <CardContent>
           <div className="rounded-lg border">
             <Table>
-              <TableHeader>
+              <TableHead>
                 <TableRow>
                   <TableHead>Media Type</TableHead>
                   <TableHead>Max Distance</TableHead>
@@ -247,11 +246,10 @@ export default function MediaSelectionMatrix() {
                   <TableHead>Environment</TableHead>
                   <TableHead>Select</TableHead>
                 </TableRow>
-              </TableHeader>
+              </TableHead>
               <TableBody>
                 {MEDIA_OPTIONS.map((media) => {
                   const isSelected = selectedMedia === media.id;
-                  const score = mediaScores.find(s => s.mediaId === media.id);
 
                   return (
                     <TableRow

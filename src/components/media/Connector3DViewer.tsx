@@ -11,7 +11,6 @@ import { RotateCw, ZoomIn, ZoomOut, Eye, Maximize, Smartphone } from 'lucide-rea
 import { RJ45Connector } from './models/RJ45Connector';
 import { FiberOpticConnector } from './models/FiberOpticConnector';
 import { CoaxialConnector } from './models/CoaxialConnector';
-import { USBConnector } from './models/USBConnector';
 import { useDeviceDetection, getRenderSettings } from './hooks/useDeviceDetection';
 import type { ConnectorType } from './media-types';
 

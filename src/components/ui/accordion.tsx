@@ -38,7 +38,7 @@ export interface AccordionSummaryProps extends React.HTMLAttributes<HTMLDivEleme
 export const AccordionSummary = React.forwardRef<HTMLDivElement, AccordionSummaryProps>(
   ({ className, children, expandIcon, panel, ...props }, ref) => {
     const context = React.useContext(AccordionContext);
-    if (!context) throw new Error('AccordionSummary must be used within Accordion');
+    if (!context) {throw new Error('AccordionSummary must be used within Accordion');}
 
     const isExpanded = context.expanded === panel;
 
@@ -72,11 +72,11 @@ export interface AccordionDetailsProps extends React.HTMLAttributes<HTMLDivEleme
 export const AccordionDetails = React.forwardRef<HTMLDivElement, AccordionDetailsProps>(
   ({ className, children, panel, ...props }, ref) => {
     const context = React.useContext(AccordionContext);
-    if (!context) throw new Error('AccordionDetails must be used within Accordion');
+    if (!context) {throw new Error('AccordionDetails must be used within Accordion');}
 
     const isExpanded = context.expanded === panel;
 
-    if (!isExpanded) return null;
+    if (!isExpanded) {return null;}
 
     return (
       <div ref={ref} className={`p-4 border-b ${className || ''}`} {...props}>

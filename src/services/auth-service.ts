@@ -5,11 +5,12 @@
 
 import { apiClient } from './api-client';
 import { API_ENDPOINTS, shouldUseMockAPI } from '../config/api-config';
-import {
+import type {
   AuthResponse,
   LoginCredentials,
   RegisterData,
-  User,
+  User} from '../types/auth';
+import {
   UserRole,
 } from '../types/auth';
 import {
@@ -345,7 +346,7 @@ const mockResetPassword = async (token: string, newPassword: string): Promise<vo
  * Check if user has required role
  */
 export const hasRole = (user: User | null, role: UserRole): boolean => {
-  if (!user) return false;
+  if (!user) {return false;}
   return user.role === role;
 };
 
@@ -353,6 +354,6 @@ export const hasRole = (user: User | null, role: UserRole): boolean => {
  * Check if user has any of the required roles
  */
 export const hasAnyRole = (user: User | null, roles: UserRole[]): boolean => {
-  if (!user) return false;
+  if (!user) {return false;}
   return roles.includes(user.role);
 };

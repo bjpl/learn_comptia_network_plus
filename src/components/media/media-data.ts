@@ -7,7 +7,8 @@ import type {
   ScenarioRequirement,
   Connector3DModel,
   Transceiver,
-  PinLayout
+  PinLayout,
+  MediaScore
 } from './media-types';
 
 // T568A and T568B pin layouts for RJ45

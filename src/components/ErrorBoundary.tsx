@@ -6,7 +6,7 @@ export const ErrorBoundary: React.FC = () => {
 
   // Extract error message from various error types
   const getErrorMessage = (): string => {
-    if (!error) return 'Unknown error';
+    if (!error) {return 'Unknown error';}
 
     if (error instanceof Error) {
       return error.message || 'Unknown error';

@@ -7,7 +7,7 @@ class WorkerManager {
   private errorHandlers: Map<string, (error: string) => void> = new Map();
 
   initialize() {
-    if (this.worker) return;
+    if (this.worker) {return;}
 
     try {
       this.worker = new Worker(
@@ -20,18 +20,18 @@ class WorkerManager {
 
         if (type === 'ERROR' && error) {
           const errorHandler = this.errorHandlers.get('default');
-          if (errorHandler) errorHandler(error);
+          if (errorHandler) {errorHandler(error);}
           return;
         }
 
         const handler = this.messageHandlers.get(type);
-        if (handler) handler(result);
+        if (handler) {handler(result);}
       });
 
       this.worker.addEventListener('error', (error) => {
         console.error('Worker error:', error);
         const errorHandler = this.errorHandlers.get('default');
-        if (errorHandler) errorHandler(error.message);
+        if (errorHandler) {errorHandler(error.message);}
       });
     } catch (error) {
       console.warn('Web Workers not supported:', error);

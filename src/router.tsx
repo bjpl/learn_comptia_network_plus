@@ -19,6 +19,12 @@ const LazyRoute: React.FC<{ component: React.LazyExoticComponent<React.Component
   </React.Suspense>
 );
 
+// Breadcrumb navigation map
+export const breadcrumbMap: Record<string, { title: string; parent?: string }> = {
+  '/': { title: 'Home' },
+  '/home': { title: 'Home' },
+};
+
 export const router = createBrowserRouter([
   {
     path: '/',

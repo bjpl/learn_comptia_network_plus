@@ -19,7 +19,7 @@ export const LiveRegion: React.FC<LiveRegionProps> = ({
   priority = 'polite',
   className = ''
 }) => {
-  if (!message) return null;
+  if (!message) {return null;}
 
   return (
     <div

@@ -24,9 +24,9 @@ export const Dialog: React.FC<DialogProps> = ({ open = false, onOpenChange, chil
 export const DialogContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => {
     const context = React.useContext(DialogContext);
-    if (!context) throw new Error('DialogContent must be used within Dialog');
+    if (!context) {throw new Error('DialogContent must be used within Dialog');}
 
-    if (!context.open) return null;
+    if (!context.open) {return null;}
 
     return (
       <>

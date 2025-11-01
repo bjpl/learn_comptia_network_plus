@@ -111,7 +111,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0 }) => {
   const isParentActive = item.children?.some((child) => child.path === location.pathname);
 
   const completedChildren = item.children?.filter((child) =>
-    progress.completedComponents.includes(child.id)
+    progress.completedComponents?.includes(child.id)
   ).length || 0;
   const totalChildren = item.children?.length || 0;
 

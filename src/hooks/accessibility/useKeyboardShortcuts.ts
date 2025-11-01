@@ -20,7 +20,7 @@ export const useKeyboardShortcuts = (
   enabled: boolean = true
 ) => {
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {return;}
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const matchingShortcut = shortcuts.find(shortcut => {

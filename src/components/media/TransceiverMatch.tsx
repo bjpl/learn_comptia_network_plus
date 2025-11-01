@@ -16,11 +16,7 @@ import {
 import { TRANSCEIVERS } from './media-data';
 import type { Transceiver, TransceiverFormFactor, TransceiverProtocol } from './media-types';
 
-interface MatchPair {
-  transceiver: Transceiver;
-  correctUseCase: string;
-  position: 'left' | 'right';
-}
+// Removed unused MatchPair interface
 
 interface UseCaseCard {
   id: string;

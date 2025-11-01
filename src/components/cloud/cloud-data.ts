@@ -829,7 +829,7 @@ export const validationRules = {
   natGatewayPlacement: {
     rule: 'NAT Gateway must be in public subnet',
     check: (components: ComponentForValidation[]) => {
-      const _natGateways = components.filter((c) => c.subtype === 'NAT Gateway');
+      // NAT Gateway validation would check connections to public subnets
       // In a real implementation, check NAT Gateway connections to public subnets
       return { valid: true };
     },

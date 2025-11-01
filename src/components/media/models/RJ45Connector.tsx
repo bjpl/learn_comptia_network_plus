@@ -6,7 +6,7 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
-import * as THREE from 'three';
+import type * as THREE from 'three';
 
 interface RJ45ConnectorProps {
   rotation?: number;
@@ -43,7 +43,7 @@ export function RJ45Connector({
     '#8B4513'  // 8: brown
   ];
 
-  const pinLabels = ['TX+', 'TX-', 'RX+', 'Unused', 'Unused', 'RX-', 'Unused', 'Unused'];
+  // Pin labels for reference: ['TX+', 'TX-', 'RX+', 'Unused', 'Unused', 'RX-', 'Unused', 'Unused']
 
   return (
     <group ref={groupRef} scale={scale}>

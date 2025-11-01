@@ -1,6 +1,7 @@
-import React, { useState, useRef, Suspense } from 'react';
+import { useState, useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid } from '@react-three/drei';
+import * as THREE from 'three';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,7 +25,7 @@ interface Connector3DProps {
   rotation: number;
 }
 
-function Connector3D({ connectorId, xrayMode, rotation }: Connector3DProps) {
+function Connector3D({ connectorId, rotation }: Connector3DProps) {
   const groupRef = useRef<THREE.Group>(null);
   const geometry = CONNECTOR_GEOMETRIES[connectorId];
 
@@ -52,7 +53,7 @@ export default function ConnectorLab() {
   const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
   const [comparisonConnector, setComparisonConnector] = useState<ConnectorType>('RJ11');
-  const [showPinLayout, setShowPinLayout] = useState(false);
+  // Removed unused showPinLayout state
   const [wiringStandard, setWiringStandard] = useState<'T568A' | 'T568B'>('T568B');
 
   const connector = CONNECTORS.find(c => c.id === selectedConnector);

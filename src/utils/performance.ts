@@ -1,4 +1,5 @@
-import { onCLS, onINP, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
+import type { Metric } from 'web-vitals';
+import { onCLS, onINP, onFCP, onLCP, onTTFB } from 'web-vitals';
 
 export interface PerformanceMetrics {
   cls: number | null;
@@ -8,7 +9,7 @@ export interface PerformanceMetrics {
   ttfb: number | null;
 }
 
-let metrics: PerformanceMetrics = {
+const metrics: PerformanceMetrics = {
   cls: null,
   inp: null,
   fcp: null,

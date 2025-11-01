@@ -5,7 +5,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { User } from '../types/auth';
+import type { User } from '../types/auth';
 import * as userService from '../services/user-service';
 import { parseApiError, logError } from '../utils/api/error-handler';
 import type { UpdateProfileData, UserSettings, ChangePasswordData } from '../services/user-service';
