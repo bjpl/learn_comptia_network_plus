@@ -1,19 +1,47 @@
 /**
  * Topology Comparison Analyzer Component
- * Interactive workspace for comparing network topologies
+ * Advanced topology analysis tool with SPOF detection, redundancy analysis, and exam scenarios
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { topologyDefinitions, threeTierModel, trafficFlowAnimations } from './topologies-data';
 import type {
   TopologyType,
   TopologyDefinition,
   ComparisonMetrics,
   TrafficFlowType,
+  TopologyNode,
+  TopologyEdge,
 } from './topologies-types';
 
 interface TopologyAnalyzerProps {
   className?: string;
+}
+
+interface SPOFAnalysis {
+  nodeId: string;
+  label: string;
+  isSPOF: boolean;
+  impact: string;
+  affectedNodes: string[];
+  redundancy: number;
+}
+
+interface RedundancyMetrics {
+  pathRedundancy: number;
+  linkRedundancy: number;
+  overallRedundancy: number;
+  criticalPaths: string[];
+}
+
+interface ExamQuestion {
+  id: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+  topologyType: TopologyType;
 }
 
 export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = '' }) => {
@@ -22,6 +50,10 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
   const [showTrafficFlow, setShowTrafficFlow] = useState(false);
   const [activeTrafficType, setActiveTrafficType] = useState<TrafficFlowType>('north-south');
   const [showThreeTier, setShowThreeTier] = useState(false);
+  const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showExamQuestions, setShowExamQuestions] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState<ExamQuestion | null>(null);
+  const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
 
   const selectedTopologyData = useMemo(() => {
     return topologyDefinitions.filter((t) => selectedTopologies.includes(t.id));
@@ -74,6 +106,104 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
       prev.includes(topology) ? prev.filter((t) => t !== topology) : [...prev, topology].slice(-3)
     );
   };
+
+  // SPOF Analysis: Identify single points of failure
+  const analyzeSPOF = useCallback((topology: TopologyDefinition): SPOFAnalysis[] => {
+    const analysis: SPOFAnalysis[] = [];
+
+    topology.nodes.forEach((node) => {
+      const connectedEdges = topology.edges.filter(
+        (e) => e.source === node.id || e.target === node.id
+      );
+      const affectedNodes = connectedEdges.map((e) => (e.source === node.id ? e.target : e.source));
+      const redundancy = connectedEdges.length;
+
+      analysis.push({
+        nodeId: node.id,
+        label: node.label,
+        isSPOF: redundancy === 1 && node.type !== 'host',
+        impact: redundancy === 1 ? 'Critical' : redundancy === 2 ? 'High' : 'Low',
+        affectedNodes,
+        redundancy,
+      });
+    });
+
+    return analysis;
+  }, []);
+
+  // Calculate redundancy metrics
+  const analyzeRedundancy = useCallback((topology: TopologyDefinition): RedundancyMetrics => {
+    const nodeCount = topology.nodes.length;
+    const edgeCount = topology.edges.length;
+
+    // Theoretical minimum edges for connectivity: n-1
+    const minConnectivity = nodeCount - 1;
+    const pathRedundancy =
+      edgeCount > minConnectivity ? ((edgeCount - minConnectivity) / minConnectivity) * 100 : 0;
+
+    // Link redundancy: percentage of redundant links
+    const redundantLinks = topology.edges.filter((e) => e.type === 'redundant').length;
+    const linkRedundancy = (redundantLinks / edgeCount) * 100;
+
+    // Overall redundancy score
+    const overallRedundancy = (pathRedundancy + linkRedundancy) / 2;
+
+    // Find critical paths
+    const criticalPaths: string[] = [];
+    topology.nodes.forEach((node) => {
+      const connections = topology.edges.filter(
+        (e) => e.source === node.id || e.target === node.id
+      );
+      if (connections.length === 1) {
+        criticalPaths.push(`${node.label} (1 connection)`);
+      }
+    });
+
+    return {
+      pathRedundancy: Math.round(pathRedundancy),
+      linkRedundancy: Math.round(linkRedundancy),
+      overallRedundancy: Math.round(overallRedundancy),
+      criticalPaths,
+    };
+  }, []);
+
+  // Generate exam questions for topology
+  const generateExamQuestions = useCallback((): ExamQuestion[] => {
+    const questions: ExamQuestion[] = [];
+
+    selectedTopologyData.forEach((topology) => {
+      if (topology.id === 'star') {
+        questions.push({
+          id: 'star-1',
+          difficulty: 'easy',
+          question: 'In a star topology, what happens when the central hub fails?',
+          options: [
+            'Only devices connected to that hub are affected',
+            'The entire network becomes disconnected',
+            'Other hubs in the network are unaffected',
+            'Traffic automatically reroutes through backup links',
+          ],
+          correctAnswer: 1,
+          explanation:
+            'Star topologies have a single point of failure. When the central device fails, all nodes lose connectivity.',
+          topologyType: 'star',
+        });
+      } else if (topology.id === 'mesh') {
+        questions.push({
+          id: 'mesh-1',
+          difficulty: 'hard',
+          question: 'How many cables are required for a full mesh topology with 6 nodes?',
+          options: ['5', '6', '15', '30'],
+          correctAnswer: 2,
+          explanation:
+            'Full mesh uses formula n(n-1)/2 = 6(5)/2 = 15 cables for direct connections between all nodes.',
+          topologyType: 'mesh',
+        });
+      }
+    });
+
+    return questions;
+  }, [selectedTopologyData]);
 
   return (
     <div className={`topology-analyzer ${className}`}>
@@ -418,6 +548,181 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
                 </div>
               </div>
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Topology Analysis Section */}
+      <div className="analysis-section-container">
+        <button className="toggle-btn" onClick={() => setShowAnalysis(!showAnalysis)}>
+          {showAnalysis ? 'Hide' : 'Show'} Detailed Topology Analysis
+        </button>
+
+        {showAnalysis && (
+          <div className="analysis-details">
+            <h3>Topology Analysis</h3>
+
+            {selectedTopologyData.map((topology) => {
+              const spofData = analyzeSPOF(topology);
+              const redundancyData = analyzeRedundancy(topology);
+              const spofCount = spofData.filter((s) => s.isSPOF).length;
+
+              return (
+                <div key={topology.id} className="topology-analysis">
+                  <h4>{topology.name} - Detailed Analysis</h4>
+
+                  {/* SPOF Analysis */}
+                  <div className="spof-analysis">
+                    <h5>Single Points of Failure (SPOF) Detection</h5>
+                    <div className="spof-summary">
+                      <div className="spof-badge">
+                        <span className={`count ${spofCount === 0 ? 'safe' : 'critical'}`}>
+                          {spofCount} SPOF{spofCount !== 1 ? 's' : ''}
+                        </span>
+                        <span className="label">Found</span>
+                      </div>
+                    </div>
+
+                    {spofData.length > 0 && (
+                      <div className="spof-details">
+                        {spofData.map((spof) => (
+                          <div
+                            key={spof.nodeId}
+                            className={`spof-item ${spof.isSPOF ? 'critical' : 'safe'}`}
+                          >
+                            <div className="spof-header">
+                              <span className="node-label">{spof.label}</span>
+                              <span className={`impact-badge ${spof.impact.toLowerCase()}`}>
+                                {spof.impact} Risk
+                              </span>
+                            </div>
+                            <div className="spof-info">
+                              <div className="info-row">
+                                <span className="label">Connections:</span>
+                                <span className="value">{spof.redundancy}</span>
+                              </div>
+                              {spof.affectedNodes.length > 0 && (
+                                <div className="info-row">
+                                  <span className="label">Affects:</span>
+                                  <span className="value">{spof.affectedNodes.join(', ')}</span>
+                                </div>
+                              )}
+                              {spof.isSPOF && (
+                                <div className="warning">
+                                  This node is a single point of failure. Network interruption
+                                  occurs if it fails.
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Redundancy Metrics */}
+                  <div className="redundancy-metrics">
+                    <h5>Redundancy Analysis</h5>
+                    <div className="metrics-grid">
+                      <div className="metric-card">
+                        <span className="label">Path Redundancy</span>
+                        <span className="value">{redundancyData.pathRedundancy}%</span>
+                        <span className="description">Extra paths beyond minimum</span>
+                      </div>
+                      <div className="metric-card">
+                        <span className="label">Link Redundancy</span>
+                        <span className="value">{redundancyData.linkRedundancy}%</span>
+                        <span className="description">Redundant links</span>
+                      </div>
+                      <div className="metric-card">
+                        <span className="label">Overall Score</span>
+                        <span className="value">{redundancyData.overallRedundancy}%</span>
+                        <span className="description">Combined redundancy</span>
+                      </div>
+                    </div>
+
+                    {redundancyData.criticalPaths.length > 0 && (
+                      <div className="critical-paths">
+                        <h6>Critical Paths Identified</h6>
+                        <ul>
+                          {redundancyData.criticalPaths.map((path, idx) => (
+                            <li key={idx}>{path}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Exam Questions Section */}
+      <div className="exam-section-container">
+        <button className="toggle-btn" onClick={() => setShowExamQuestions(!showExamQuestions)}>
+          {showExamQuestions ? 'Hide' : 'Show'} Exam Questions
+        </button>
+
+        {showExamQuestions && (
+          <div className="exam-details">
+            <h3>CompTIA Network+ Exam Scenarios</h3>
+            <p className="intro-text">Test your knowledge with topology-specific exam questions</p>
+
+            {generateExamQuestions().length > 0 ? (
+              <div className="questions-container">
+                {generateExamQuestions().map((question) => {
+                  const userAnswer = userAnswers[question.id];
+                  const isAnswered = userAnswer !== undefined;
+                  const isCorrect = isAnswered && userAnswer === question.correctAnswer;
+
+                  return (
+                    <div
+                      key={question.id}
+                      className={`question-card ${isAnswered ? (isCorrect ? 'correct' : 'incorrect') : ''}`}
+                    >
+                      <div className="question-header">
+                        <span className="difficulty-badge">{question.difficulty}</span>
+                        <span className="topology-tag">{question.topologyType}</span>
+                      </div>
+
+                      <p className="question-text">{question.question}</p>
+
+                      <div className="options">
+                        {question.options.map((option, idx) => (
+                          <button
+                            key={idx}
+                            className={`option ${
+                              userAnswer === idx
+                                ? idx === question.correctAnswer
+                                  ? 'selected-correct'
+                                  : 'selected-wrong'
+                                : idx === question.correctAnswer && isAnswered
+                                  ? 'correct-answer'
+                                  : ''
+                            }`}
+                            onClick={() => setUserAnswers({ ...userAnswers, [question.id]: idx })}
+                          >
+                            <span className="option-letter">{String.fromCharCode(65 + idx)}</span>
+                            <span className="option-text">{option}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      {isAnswered && (
+                        <div className={`feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
+                          <strong>{isCorrect ? 'Correct!' : 'Incorrect'}</strong>
+                          <p>{question.explanation}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="no-questions">Select topologies to see exam questions</p>
+            )}
           </div>
         )}
       </div>
@@ -1012,6 +1317,404 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
           50% {
             opacity: 1;
           }
+        }
+
+        /* Analysis Section Styles */
+        .analysis-section-container,
+        .exam-section-container {
+          margin-bottom: 2rem;
+        }
+
+        .analysis-details,
+        .exam-details {
+          margin-top: 1rem;
+          padding: 1.5rem;
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.5rem;
+        }
+
+        .topology-analysis {
+          margin-bottom: 2rem;
+          padding: 1.5rem;
+          border: 1px solid #f3f4f6;
+          border-radius: 0.5rem;
+          background: #f9fafb;
+        }
+
+        .spof-analysis,
+        .redundancy-metrics {
+          margin-bottom: 1.5rem;
+        }
+
+        .spof-analysis h5,
+        .redundancy-metrics h5 {
+          color: #374151;
+          margin-bottom: 1rem;
+        }
+
+        .spof-summary {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .spof-badge {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.25rem;
+          padding: 1rem;
+          background: white;
+          border-radius: 0.5rem;
+          min-width: 120px;
+          text-align: center;
+        }
+
+        .spof-badge .count {
+          font-size: 1.75rem;
+          font-weight: 700;
+        }
+
+        .spof-badge .count.safe {
+          color: #059669;
+        }
+
+        .spof-badge .count.critical {
+          color: #dc2626;
+        }
+
+        .spof-badge .label {
+          font-size: 0.875rem;
+          color: #6b7280;
+        }
+
+        .spof-details {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1rem;
+        }
+
+        .spof-item {
+          padding: 1rem;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.5rem;
+          background: white;
+        }
+
+        .spof-item.critical {
+          border-color: #dc2626;
+          background: #fef2f2;
+        }
+
+        .spof-item.safe {
+          border-color: #10b981;
+          background: #f0fdf4;
+        }
+
+        .spof-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.75rem;
+        }
+
+        .node-label {
+          font-weight: 600;
+          color: #374151;
+        }
+
+        .impact-badge {
+          font-size: 0.75rem;
+          font-weight: 600;
+          padding: 0.25rem 0.75rem;
+          border-radius: 0.25rem;
+        }
+
+        .impact-badge.critical {
+          background: #fecaca;
+          color: #991b1b;
+        }
+
+        .impact-badge.high {
+          background: #fed7aa;
+          color: #92400e;
+        }
+
+        .impact-badge.low {
+          background: #d1fae5;
+          color: #065f46;
+        }
+
+        .spof-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .info-row {
+          display: flex;
+          gap: 0.5rem;
+          font-size: 0.875rem;
+        }
+
+        .info-row .label {
+          color: #6b7280;
+          font-weight: 500;
+        }
+
+        .info-row .value {
+          color: #374151;
+          font-weight: 600;
+        }
+
+        .warning {
+          margin-top: 0.5rem;
+          padding: 0.75rem;
+          background: #fecaca;
+          border-left: 3px solid #dc2626;
+          color: #7f1d1d;
+          font-size: 0.875rem;
+          border-radius: 0.25rem;
+        }
+
+        .metrics-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .metric-card {
+          padding: 1rem;
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.5rem;
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .metric-card .label {
+          font-size: 0.875rem;
+          color: #6b7280;
+          font-weight: 500;
+        }
+
+        .metric-card .value {
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: #3b82f6;
+        }
+
+        .metric-card .description {
+          font-size: 0.75rem;
+          color: #9ca3af;
+        }
+
+        .critical-paths {
+          padding: 1rem;
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.5rem;
+        }
+
+        .critical-paths h6 {
+          color: #374151;
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+        }
+
+        .critical-paths ul {
+          list-style: none;
+          padding-left: 0;
+        }
+
+        .critical-paths li {
+          padding: 0.25rem 0;
+          color: #6b7280;
+          font-size: 0.875rem;
+          padding-left: 1.5rem;
+          position: relative;
+        }
+
+        .critical-paths li::before {
+          content: '⚠';
+          position: absolute;
+          left: 0;
+          color: #f59e0b;
+        }
+
+        /* Exam Section Styles */
+        .exam-details {
+          padding: 1.5rem;
+        }
+
+        .intro-text {
+          color: #6b7280;
+          margin-bottom: 1.5rem;
+          font-size: 0.95rem;
+        }
+
+        .questions-container {
+          display: grid;
+          gap: 1.5rem;
+        }
+
+        .question-card {
+          padding: 1.5rem;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.5rem;
+          background: white;
+        }
+
+        .question-card.correct {
+          border-color: #10b981;
+          background: #f0fdf4;
+        }
+
+        .question-card.incorrect {
+          border-color: #dc2626;
+          background: #fef2f2;
+        }
+
+        .question-header {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 1rem;
+        }
+
+        .difficulty-badge {
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          background: #fef3c7;
+          color: #92400e;
+        }
+
+        .difficulty-badge:has(+ .topology-tag) {
+          margin-right: 0.5rem;
+        }
+
+        .topology-tag {
+          display: inline-block;
+          padding: 0.25rem 0.75rem;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: capitalize;
+          background: #dbeafe;
+          color: #1e40af;
+        }
+
+        .question-text {
+          color: #1f2937;
+          font-weight: 500;
+          margin-bottom: 1rem;
+          font-size: 0.95rem;
+        }
+
+        .options {
+          display: grid;
+          gap: 0.75rem;
+          margin-bottom: 1rem;
+        }
+
+        .option {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.75rem;
+          padding: 0.75rem 1rem;
+          border: 2px solid #e5e7eb;
+          background: white;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          transition: all 0.2s;
+          text-align: left;
+        }
+
+        .option:hover {
+          border-color: #3b82f6;
+          background: #eff6ff;
+        }
+
+        .option.selected-correct {
+          border-color: #10b981;
+          background: #d1fae5;
+          color: #065f46;
+        }
+
+        .option.selected-wrong {
+          border-color: #dc2626;
+          background: #fee2e2;
+          color: #991b1b;
+        }
+
+        .option.correct-answer {
+          border-color: #10b981;
+          background: #d1fae5;
+        }
+
+        .option-letter {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          font-weight: 600;
+          background: rgba(59, 130, 246, 0.1);
+          color: #3b82f6;
+          flex-shrink: 0;
+        }
+
+        .option.selected-correct .option-letter,
+        .option.correct-answer .option-letter {
+          background: #10b981;
+          color: white;
+        }
+
+        .option.selected-wrong .option-letter {
+          background: #dc2626;
+          color: white;
+        }
+
+        .option-text {
+          flex: 1;
+        }
+
+        .feedback {
+          margin-top: 1rem;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          font-size: 0.875rem;
+        }
+
+        .feedback.correct {
+          background: #d1fae5;
+          border-left: 3px solid #10b981;
+          color: #065f46;
+        }
+
+        .feedback.incorrect {
+          background: #fee2e2;
+          border-left: 3px solid #dc2626;
+          color: #991b1b;
+        }
+
+        .feedback p {
+          margin-top: 0.5rem;
+          margin-bottom: 0;
+        }
+
+        .no-questions {
+          text-align: center;
+          color: #9ca3af;
+          padding: 2rem;
         }
       `}</style>
     </div>

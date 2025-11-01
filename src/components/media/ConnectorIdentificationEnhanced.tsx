@@ -22,7 +22,7 @@ import {
   Target,
   Lightbulb,
   RefreshCw,
-  ArrowRight
+  ArrowRight,
 } from 'lucide-react';
 import Connector3DViewer from './Connector3DViewer';
 import { CONNECTORS, T568A_LAYOUT, T568B_LAYOUT } from './media-data';
@@ -61,109 +61,130 @@ const TERMINATION_STEPS: TerminationStep[] = [
     title: 'Strip Outer Jacket',
     description: 'Remove 1-1.5 inches of the outer cable jacket using a cable stripper',
     tip: 'Be careful not to nick the inner wires',
-    commonMistakes: ['Stripping too much jacket', 'Cutting into wire insulation', 'Uneven cuts']
+    commonMistakes: ['Stripping too much jacket', 'Cutting into wire insulation', 'Uneven cuts'],
   },
   {
     id: 2,
     title: 'Untwist Wire Pairs',
     description: 'Carefully untwist the four pairs of wires, maintaining pair integrity',
     tip: 'Untwist only as much as necessary (about 0.5 inches)',
-    commonMistakes: ['Untwisting too much (causes crosstalk)', 'Damaging wire insulation', 'Mixing up pairs']
+    commonMistakes: [
+      'Untwisting too much (causes crosstalk)',
+      'Damaging wire insulation',
+      'Mixing up pairs',
+    ],
   },
   {
     id: 3,
     title: 'Arrange Wires',
     description: 'Arrange wires in correct order according to T568A or T568B standard',
     tip: 'Double-check color order before proceeding',
-    commonMistakes: ['Wrong color order', 'Mixing T568A and T568B', 'Crossed wires']
+    commonMistakes: ['Wrong color order', 'Mixing T568A and T568B', 'Crossed wires'],
   },
   {
     id: 4,
     title: 'Trim Wires',
     description: 'Trim wires to be even, leaving about 1/2 inch from jacket',
     tip: 'Use proper wire cutters for a clean, straight cut',
-    commonMistakes: ['Uneven wire lengths', 'Too short (won\'t reach pins)', 'Too long (won\'t crimp properly)']
+    commonMistakes: [
+      'Uneven wire lengths',
+      "Too short (won't reach pins)",
+      "Too long (won't crimp properly)",
+    ],
   },
   {
     id: 5,
     title: 'Insert into RJ45',
     description: 'Insert wires fully into RJ45 connector until they reach the end',
     tip: 'Ensure jacket enters connector for strain relief',
-    commonMistakes: ['Wires not fully inserted', 'Jacket not inside connector', 'Wire order changed during insertion']
+    commonMistakes: [
+      'Wires not fully inserted',
+      'Jacket not inside connector',
+      'Wire order changed during insertion',
+    ],
   },
   {
     id: 6,
     title: 'Crimp Connector',
     description: 'Use crimping tool to firmly crimp the RJ45 connector',
     tip: 'One firm squeeze is better than multiple partial crimps',
-    commonMistakes: ['Partial crimp', 'Crimping at wrong angle', 'Insufficient pressure']
+    commonMistakes: ['Partial crimp', 'Crimping at wrong angle', 'Insufficient pressure'],
   },
   {
     id: 7,
     title: 'Test Cable',
     description: 'Use cable tester to verify all pins are properly connected',
     tip: 'Test for continuity, shorts, and proper wiring',
-    commonMistakes: ['Skipping testing', 'Not checking all pins', 'Ignoring intermittent failures']
-  }
+    commonMistakes: ['Skipping testing', 'Not checking all pins', 'Ignoring intermittent failures'],
+  },
 ];
 
 const USE_CASE_SCENARIOS: UseCaseScenario[] = [
   {
     id: 'uc1',
-    scenario: 'Connecting multiple servers in a datacenter rack with limited space and high density requirements',
+    scenario:
+      'Connecting multiple servers in a datacenter rack with limited space and high density requirements',
     correctConnector: 'LC',
     incorrectConnectors: ['SC', 'ST', 'RJ45'],
-    explanation: 'LC connectors have a small form factor (half the size of SC), making them ideal for high-density datacenter applications. Their latch mechanism provides secure connections.'
+    explanation:
+      'LC connectors have a small form factor (half the size of SC), making them ideal for high-density datacenter applications. Their latch mechanism provides secure connections.',
   },
   {
     id: 'uc2',
     scenario: 'Standard office desktop computer connection to wall jack, 50 meters from switch',
     correctConnector: 'RJ45',
     incorrectConnectors: ['RJ11', 'LC', 'F-type'],
-    explanation: 'RJ45 is the standard Ethernet connector for copper twisted-pair cabling, supporting up to 100 meters and commonly used for desktop connections.'
+    explanation:
+      'RJ45 is the standard Ethernet connector for copper twisted-pair cabling, supporting up to 100 meters and commonly used for desktop connections.',
   },
   {
     id: 'uc3',
     scenario: 'Connecting two buildings 2km apart on a campus with 10Gbps bandwidth requirements',
     correctConnector: 'LC',
     incorrectConnectors: ['RJ45', 'BNC', 'RJ11'],
-    explanation: 'Single-mode fiber with LC connectors can support 10Gbps over long distances (10km+), making it ideal for building-to-building connections.'
+    explanation:
+      'Single-mode fiber with LC connectors can support 10Gbps over long distances (10km+), making it ideal for building-to-building connections.',
   },
   {
     id: 'uc4',
     scenario: 'Legacy multimode fiber installation from 1990s requiring bayonet-style connection',
     correctConnector: 'ST',
     incorrectConnectors: ['LC', 'SC', 'MPO'],
-    explanation: 'ST connectors with bayonet twist-lock mechanism were common in legacy installations and are still found in older multimode fiber systems.'
+    explanation:
+      'ST connectors with bayonet twist-lock mechanism were common in legacy installations and are still found in older multimode fiber systems.',
   },
   {
     id: 'uc5',
     scenario: 'Analog telephone connection for fax machine',
     correctConnector: 'RJ11',
     incorrectConnectors: ['RJ45', 'LC', 'BNC'],
-    explanation: 'RJ11 is the standard telephone connector with 6 positions, used for analog phone lines, fax machines, and modems.'
+    explanation:
+      'RJ11 is the standard telephone connector with 6 positions, used for analog phone lines, fax machines, and modems.',
   },
   {
     id: 'uc6',
     scenario: 'Cable TV modem connection to service provider coaxial cable',
     correctConnector: 'F-type',
     incorrectConnectors: ['BNC', 'RJ45', 'RJ11'],
-    explanation: 'F-type connectors are threaded coaxial connectors used for cable TV and cable internet services, providing secure weather-resistant connections.'
+    explanation:
+      'F-type connectors are threaded coaxial connectors used for cable TV and cable internet services, providing secure weather-resistant connections.',
   },
   {
     id: 'uc7',
     scenario: '40Gbps or 100Gbps spine-leaf datacenter connection using ribbon fiber cable',
     correctConnector: 'MPO',
     incorrectConnectors: ['LC', 'SC', 'ST'],
-    explanation: 'MPO (Multi-fiber Push On) connectors can handle 12 or 24 fibers simultaneously, making them ideal for high-bandwidth datacenter spine-leaf architectures.'
+    explanation:
+      'MPO (Multi-fiber Push On) connectors can handle 12 or 24 fibers simultaneously, making them ideal for high-bandwidth datacenter spine-leaf architectures.',
   },
   {
     id: 'uc8',
     scenario: 'Professional video camera BNC output to production switcher',
     correctConnector: 'BNC',
     incorrectConnectors: ['F-type', 'RJ45', 'LC'],
-    explanation: 'BNC connectors with bayonet mount provide quick, secure connections for professional video equipment and are commonly used in broadcast and security camera systems.'
-  }
+    explanation:
+      'BNC connectors with bayonet mount provide quick, secure connections for professional video equipment and are commonly used in broadcast and security camera systems.',
+  },
 ];
 
 export default function ConnectorIdentificationEnhanced() {
@@ -223,12 +244,16 @@ export default function ConnectorIdentificationEnhanced() {
 
   // Quiz handlers
   const handleAnswerSelect = (answer: ConnectorType) => {
-    if (showResult) return;
+    if (showResult) {
+      return;
+    }
     setSelectedAnswer(answer);
   };
 
   const handleSubmit = () => {
-    if (!selectedAnswer) return;
+    if (!selectedAnswer) {
+      return;
+    }
     setShowResult(true);
     if (selectedAnswer === currentQuestion.connectorId) {
       setScore((prev) => prev + 1);
@@ -263,8 +288,8 @@ export default function ConnectorIdentificationEnhanced() {
   // Wiring trainer handlers
   const handleCheckWiring = () => {
     const correctLayout = wiringStandard === 'T568A' ? T568A_LAYOUT : T568B_LAYOUT;
-    const isCorrectOrder = draggedWires.every((wire, idx) =>
-      wire.number === correctLayout.pins[idx].number
+    const isCorrectOrder = draggedWires.every(
+      (wire, idx) => wire.number === correctLayout.pins[idx].number
     );
 
     setWiringComplete(isCorrectOrder);
@@ -328,7 +353,9 @@ export default function ConnectorIdentificationEnhanced() {
   };
 
   const handleCheckScenario = () => {
-    if (!selectedConnectorCase) return;
+    if (!selectedConnectorCase) {
+      return;
+    }
 
     const scenario = USE_CASE_SCENARIOS[currentScenario];
     const isCorrect = selectedConnectorCase === scenario.correctConnector;
@@ -370,7 +397,8 @@ export default function ConnectorIdentificationEnhanced() {
                 Connector Lab Enhancement
               </CardTitle>
               <CardDescription>
-                Interactive training for CompTIA Network+ LO 1.4 - Connector identification and termination
+                Interactive training for CompTIA Network+ LO 1.4 - Connector identification and
+                termination
               </CardDescription>
             </div>
             <div className="text-right">
@@ -379,7 +407,11 @@ export default function ConnectorIdentificationEnhanced() {
                 <div>
                   <div className="text-sm text-gray-500">Overall Progress</div>
                   <div className="text-2xl font-bold text-blue-600">
-                    {Math.round(((score + scenarioScore) / (questions.length + USE_CASE_SCENARIOS.length)) * 100)}%
+                    {Math.round(
+                      ((score + scenarioScore) / (questions.length + USE_CASE_SCENARIOS.length)) *
+                        100
+                    )}
+                    %
                   </div>
                 </div>
               </div>
@@ -449,7 +481,9 @@ export default function ConnectorIdentificationEnhanced() {
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {currentQuestion.options.map((optionId) => {
                       const option = CONNECTORS.find((c) => c.id === optionId);
-                      if (!option) return null;
+                      if (!option) {
+                        return null;
+                      }
 
                       const isSelected = selectedAnswer === optionId;
                       const isCorrectAnswer = optionId === currentQuestion.connectorId;
@@ -478,7 +512,9 @@ export default function ConnectorIdentificationEnhanced() {
                             <div className="flex-1 text-left">
                               <div className="font-semibold">{option.name}</div>
                               {showResult && (
-                                <div className="mt-1 text-sm text-gray-600">{option.description}</div>
+                                <div className="mt-1 text-sm text-gray-600">
+                                  {option.description}
+                                </div>
                               )}
                             </div>
                           </div>
@@ -488,7 +524,11 @@ export default function ConnectorIdentificationEnhanced() {
                   </div>
 
                   <div className="mt-6 flex items-center justify-between">
-                    <Button variant="outline" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
+                    <Button
+                      variant="outline"
+                      onClick={handlePrevious}
+                      disabled={currentQuestionIndex === 0}
+                    >
                       Previous
                     </Button>
 
@@ -497,7 +537,10 @@ export default function ConnectorIdentificationEnhanced() {
                         Submit Answer
                       </Button>
                     ) : (
-                      <Button onClick={handleNext} disabled={currentQuestionIndex === questions.length - 1}>
+                      <Button
+                        onClick={handleNext}
+                        disabled={currentQuestionIndex === questions.length - 1}
+                      >
                         Next Question
                       </Button>
                     )}
@@ -735,9 +778,7 @@ export default function ConnectorIdentificationEnhanced() {
                       <RefreshCw className="mr-2 h-4 w-4" />
                       Reset
                     </Button>
-                    <Button onClick={handleCheckWiring}>
-                      Check Wiring
-                    </Button>
+                    <Button onClick={handleCheckWiring}>Check Wiring</Button>
                   </div>
                 </div>
 
@@ -745,9 +786,7 @@ export default function ConnectorIdentificationEnhanced() {
                 {wiringAttempts > 0 && (
                   <div
                     className={`rounded-lg border-2 p-4 ${
-                      wiringComplete
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-red-500 bg-red-50'
+                      wiringComplete ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -767,7 +806,8 @@ export default function ConnectorIdentificationEnhanced() {
                           <div>
                             <div className="font-semibold text-red-800">Not quite right</div>
                             <div className="text-sm text-red-700">
-                              Check the wire order and try again. Compare with the correct order on the right.
+                              Check the wire order and try again. Compare with the correct order on
+                              the right.
                             </div>
                           </div>
                         </>
@@ -831,7 +871,8 @@ export default function ConnectorIdentificationEnhanced() {
               <Card>
                 <CardHeader>
                   <CardTitle>
-                    Cable Termination Simulator - Step {terminationStep + 1} of {TERMINATION_STEPS.length}
+                    Cable Termination Simulator - Step {terminationStep + 1} of{' '}
+                    {TERMINATION_STEPS.length}
                   </CardTitle>
                   <Progress value={((terminationStep + 1) / TERMINATION_STEPS.length) * 100} />
                 </CardHeader>
@@ -854,7 +895,9 @@ export default function ConnectorIdentificationEnhanced() {
 
                     {/* Common mistakes */}
                     <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-                      <div className="mb-2 text-sm font-medium text-red-800">Common Mistakes to Avoid:</div>
+                      <div className="mb-2 text-sm font-medium text-red-800">
+                        Common Mistakes to Avoid:
+                      </div>
                       <ul className="space-y-1">
                         {currentStep.commonMistakes.map((mistake, idx) => (
                           <li key={idx} className="text-sm text-red-700">
@@ -874,7 +917,9 @@ export default function ConnectorIdentificationEnhanced() {
                         Previous Step
                       </Button>
                       <Button onClick={handleNextStep}>
-                        {terminationStep === TERMINATION_STEPS.length - 1 ? 'Complete' : 'Next Step'}
+                        {terminationStep === TERMINATION_STEPS.length - 1
+                          ? 'Complete'
+                          : 'Next Step'}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
@@ -955,51 +1000,79 @@ export default function ConnectorIdentificationEnhanced() {
                 {/* PC Polish */}
                 <div className="rounded-lg border-2 border-gray-300 p-4">
                   <h3 className="mb-2 text-lg font-bold">PC (Physical Contact)</h3>
-                  <div className="mb-3 h-40 rounded bg-gray-100 flex items-center justify-center">
+                  <div className="mb-3 flex h-40 items-center justify-center rounded bg-gray-100">
                     <div className="text-center">
                       <div className="text-4xl font-bold text-gray-400">PC</div>
                       <div className="text-xs text-gray-500">Flat Polish</div>
                     </div>
                   </div>
                   <ul className="space-y-1 text-sm">
-                    <li>• <strong>Return Loss:</strong> -35 dB to -40 dB</li>
-                    <li>• <strong>Use:</strong> Multimode fiber</li>
-                    <li>• <strong>Polish:</strong> Flat endface</li>
-                    <li>• <strong>Color:</strong> Typically blue</li>
+                    <li>
+                      • <strong>Return Loss:</strong> -35 dB to -40 dB
+                    </li>
+                    <li>
+                      • <strong>Use:</strong> Multimode fiber
+                    </li>
+                    <li>
+                      • <strong>Polish:</strong> Flat endface
+                    </li>
+                    <li>
+                      • <strong>Color:</strong> Typically blue
+                    </li>
                   </ul>
                 </div>
 
                 {/* UPC Polish */}
                 <div className="rounded-lg border-2 border-blue-500 p-4">
-                  <h3 className="mb-2 text-lg font-bold text-blue-700">UPC (Ultra Physical Contact)</h3>
-                  <div className="mb-3 h-40 rounded bg-blue-50 flex items-center justify-center">
+                  <h3 className="mb-2 text-lg font-bold text-blue-700">
+                    UPC (Ultra Physical Contact)
+                  </h3>
+                  <div className="mb-3 flex h-40 items-center justify-center rounded bg-blue-50">
                     <div className="text-center">
                       <div className="text-4xl font-bold text-blue-400">UPC</div>
                       <div className="text-xs text-blue-600">Curved Polish</div>
                     </div>
                   </div>
                   <ul className="space-y-1 text-sm">
-                    <li>• <strong>Return Loss:</strong> -50 dB or better</li>
-                    <li>• <strong>Use:</strong> Single-mode fiber</li>
-                    <li>• <strong>Polish:</strong> Slight curve</li>
-                    <li>• <strong>Color:</strong> Blue connector</li>
+                    <li>
+                      • <strong>Return Loss:</strong> -50 dB or better
+                    </li>
+                    <li>
+                      • <strong>Use:</strong> Single-mode fiber
+                    </li>
+                    <li>
+                      • <strong>Polish:</strong> Slight curve
+                    </li>
+                    <li>
+                      • <strong>Color:</strong> Blue connector
+                    </li>
                   </ul>
                 </div>
 
                 {/* APC Polish */}
                 <div className="rounded-lg border-2 border-green-500 p-4">
-                  <h3 className="mb-2 text-lg font-bold text-green-700">APC (Angled Physical Contact)</h3>
-                  <div className="mb-3 h-40 rounded bg-green-50 flex items-center justify-center">
+                  <h3 className="mb-2 text-lg font-bold text-green-700">
+                    APC (Angled Physical Contact)
+                  </h3>
+                  <div className="mb-3 flex h-40 items-center justify-center rounded bg-green-50">
                     <div className="text-center">
                       <div className="text-4xl font-bold text-green-400">APC</div>
                       <div className="text-xs text-green-600">8° Angle</div>
                     </div>
                   </div>
                   <ul className="space-y-1 text-sm">
-                    <li>• <strong>Return Loss:</strong> -60 dB or better</li>
-                    <li>• <strong>Use:</strong> High-performance SMF</li>
-                    <li>• <strong>Polish:</strong> 8° angle</li>
-                    <li>• <strong>Color:</strong> Green connector</li>
+                    <li>
+                      • <strong>Return Loss:</strong> -60 dB or better
+                    </li>
+                    <li>
+                      • <strong>Use:</strong> High-performance SMF
+                    </li>
+                    <li>
+                      • <strong>Polish:</strong> 8° angle
+                    </li>
+                    <li>
+                      • <strong>Color:</strong> Green connector
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -1050,13 +1123,18 @@ export default function ConnectorIdentificationEnhanced() {
                 </div>
 
                 <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-                  <h4 className="mb-2 text-sm font-medium text-yellow-800">Insertion Loss vs Return Loss:</h4>
+                  <h4 className="mb-2 text-sm font-medium text-yellow-800">
+                    Insertion Loss vs Return Loss:
+                  </h4>
                   <div className="grid grid-cols-2 gap-4 text-sm text-yellow-700">
                     <div>
-                      <strong>Insertion Loss:</strong> Loss of signal power resulting from insertion of device (connector, splice). Measured in dB. Lower is better.
+                      <strong>Insertion Loss:</strong> Loss of signal power resulting from insertion
+                      of device (connector, splice). Measured in dB. Lower is better.
                     </div>
                     <div>
-                      <strong>Return Loss:</strong> Light reflected back toward source. Measured in negative dB. Higher magnitude (more negative) is better. Critical for high-speed applications.
+                      <strong>Return Loss:</strong> Light reflected back toward source. Measured in
+                      negative dB. Higher magnitude (more negative) is better. Critical for
+                      high-speed applications.
                     </div>
                   </div>
                 </div>
@@ -1097,7 +1175,9 @@ export default function ConnectorIdentificationEnhanced() {
                           .sort(() => Math.random() - 0.5)
                           .map((connectorId) => {
                             const connector = CONNECTORS.find((c) => c.id === connectorId);
-                            if (!connector) return null;
+                            if (!connector) {
+                              return null;
+                            }
 
                             const isSelected = selectedConnectorCase === connectorId;
                             const isCorrect = connectorId === scenario.correctConnector;
@@ -1152,7 +1232,9 @@ export default function ConnectorIdentificationEnhanced() {
                     {scenarioResult !== null && (
                       <div
                         className={`rounded-lg border-2 p-4 ${
-                          scenarioResult ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
+                          scenarioResult
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-red-500 bg-red-50'
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -1235,14 +1317,35 @@ export default function ConnectorIdentificationEnhanced() {
         </CardHeader>
         <CardContent>
           <ul className="space-y-2 text-sm text-gray-700">
-            <li>• <strong>Visual Identification:</strong> Be able to identify connectors by sight on the exam</li>
-            <li>• <strong>T568A vs T568B:</strong> Know pin arrangements and when to use each standard</li>
-            <li>• <strong>Fiber Connectors:</strong> Understand SC (square/push-pull), LC (small), ST (bayonet), MPO (multi-fiber)</li>
-            <li>• <strong>Cable Types:</strong> Match connectors to cable types (fiber, copper, coaxial)</li>
-            <li>• <strong>Crossover Cables:</strong> Created by mixing T568A and T568B on same cable</li>
-            <li>• <strong>Auto-MDIX:</strong> Modern switches automatically detect and adapt, eliminating need for crossover cables</li>
-            <li>• <strong>Fiber Polish:</strong> PC (multimode), UPC (single-mode), APC (angled, best return loss)</li>
-            <li>• <strong>Testing:</strong> Always test terminated cables before deployment</li>
+            <li>
+              • <strong>Visual Identification:</strong> Be able to identify connectors by sight on
+              the exam
+            </li>
+            <li>
+              • <strong>T568A vs T568B:</strong> Know pin arrangements and when to use each standard
+            </li>
+            <li>
+              • <strong>Fiber Connectors:</strong> Understand SC (square/push-pull), LC (small), ST
+              (bayonet), MPO (multi-fiber)
+            </li>
+            <li>
+              • <strong>Cable Types:</strong> Match connectors to cable types (fiber, copper,
+              coaxial)
+            </li>
+            <li>
+              • <strong>Crossover Cables:</strong> Created by mixing T568A and T568B on same cable
+            </li>
+            <li>
+              • <strong>Auto-MDIX:</strong> Modern switches automatically detect and adapt,
+              eliminating need for crossover cables
+            </li>
+            <li>
+              • <strong>Fiber Polish:</strong> PC (multimode), UPC (single-mode), APC (angled, best
+              return loss)
+            </li>
+            <li>
+              • <strong>Testing:</strong> Always test terminated cables before deployment
+            </li>
           </ul>
         </CardContent>
       </Card>

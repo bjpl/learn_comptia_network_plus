@@ -440,14 +440,62 @@ const EXAM_CRITICAL_PORTS: PortCard[] = [
 // ===========================
 
 const ACHIEVEMENTS: Achievement[] = [
-  { id: 'first-card', name: 'First Steps', description: 'Review your first flashcard', icon: '🎯', unlocked: false },
-  { id: 'ten-cards', name: 'Getting Started', description: 'Review 10 cards', icon: '📚', unlocked: false },
-  { id: 'master-ten', name: 'Expert Level', description: 'Master 10 cards (box 4)', icon: '🏆', unlocked: false },
-  { id: 'perfect-quiz', name: 'Perfect Score', description: 'Score 100% on a quiz', icon: '💯', unlocked: false },
-  { id: 'week-streak', name: 'Dedicated Learner', description: 'Study for 7 days in a row', icon: '🔥', unlocked: false },
-  { id: 'all-secure', name: 'Security Expert', description: 'Master all secure protocol ports', icon: '🔒', unlocked: false },
-  { id: 'speed-demon', name: 'Speed Demon', description: 'Complete quiz in under 2 minutes', icon: '⚡', unlocked: false },
-  { id: 'master-all', name: 'Port Master', description: 'Master all exam-critical ports', icon: '👑', unlocked: false },
+  {
+    id: 'first-card',
+    name: 'First Steps',
+    description: 'Review your first flashcard',
+    icon: '🎯',
+    unlocked: false,
+  },
+  {
+    id: 'ten-cards',
+    name: 'Getting Started',
+    description: 'Review 10 cards',
+    icon: '📚',
+    unlocked: false,
+  },
+  {
+    id: 'master-ten',
+    name: 'Expert Level',
+    description: 'Master 10 cards (box 4)',
+    icon: '🏆',
+    unlocked: false,
+  },
+  {
+    id: 'perfect-quiz',
+    name: 'Perfect Score',
+    description: 'Score 100% on a quiz',
+    icon: '💯',
+    unlocked: false,
+  },
+  {
+    id: 'week-streak',
+    name: 'Dedicated Learner',
+    description: 'Study for 7 days in a row',
+    icon: '🔥',
+    unlocked: false,
+  },
+  {
+    id: 'all-secure',
+    name: 'Security Expert',
+    description: 'Master all secure protocol ports',
+    icon: '🔒',
+    unlocked: false,
+  },
+  {
+    id: 'speed-demon',
+    name: 'Speed Demon',
+    description: 'Complete quiz in under 2 minutes',
+    icon: '⚡',
+    unlocked: false,
+  },
+  {
+    id: 'master-all',
+    name: 'Port Master',
+    description: 'Master all exam-critical ports',
+    icon: '👑',
+    unlocked: false,
+  },
 ];
 
 // ===========================
@@ -464,7 +512,9 @@ const getDueCards = (progress: Map<string, CardProgress>): PortCard[] => {
   const now = Date.now();
   return EXAM_CRITICAL_PORTS.filter((card) => {
     const cardProgress = progress.get(card.id);
-    if (!cardProgress) return true; // New cards
+    if (!cardProgress) {
+      return true;
+    } // New cards
     return cardProgress.nextReview <= now;
   }).sort((a, b) => {
     const progressA = progress.get(a.id);
@@ -482,19 +532,22 @@ const generateQuizQuestions = (count: number = 10): QuizQuestion[] => {
 
   selected.forEach((card, index) => {
     const questionType: QuizQuestion['type'] =
-      index % 4 === 0 ? 'port-to-protocol' :
-      index % 4 === 1 ? 'protocol-to-port' :
-      index % 4 === 2 ? 'tcp-udp' :
-      'security';
+      index % 4 === 0
+        ? 'port-to-protocol'
+        : index % 4 === 1
+          ? 'protocol-to-port'
+          : index % 4 === 2
+            ? 'tcp-udp'
+            : 'security';
 
     let question: QuizQuestion;
 
     switch (questionType) {
       case 'port-to-protocol': {
         const wrongProtocols = shuffled
-          .filter(c => c.protocol !== card.protocol)
+          .filter((c) => c.protocol !== card.protocol)
           .slice(0, 3)
-          .map(c => c.protocol);
+          .map((c) => c.protocol);
         question = {
           id: `q-${card.id}-${index}`,
           type: questionType,
@@ -509,9 +562,9 @@ const generateQuizQuestions = (count: number = 10): QuizQuestion[] => {
 
       case 'protocol-to-port': {
         const wrongPorts = shuffled
-          .filter(c => c.port !== card.port)
+          .filter((c) => c.port !== card.port)
           .slice(0, 3)
-          .map(c => c.port.toString());
+          .map((c) => c.port.toString());
         question = {
           id: `q-${card.id}-${index}`,
           type: questionType,
@@ -522,30 +575,43 @@ const generateQuizQuestions = (count: number = 10): QuizQuestion[] => {
           portNumber: card.port,
         };
         break;
+      }
 
-      case 'tcp-udp':
+      case 'tcp-udp': {
         question = {
           id: `q-${card.id}-${index}`,
           type: questionType,
           question: `Does port ${card.port} (${card.protocol}) use TCP or UDP?`,
           correctAnswer: card.tcpUdp,
-          options: card.tcpUdp === 'TCP/UDP' ? ['TCP/UDP', 'TCP only', 'UDP only', 'Neither'] : ['TCP', 'UDP', 'TCP/UDP', 'Both equally'],
+          options:
+            card.tcpUdp === 'TCP/UDP'
+              ? ['TCP/UDP', 'TCP only', 'UDP only', 'Neither']
+              : ['TCP', 'UDP', 'TCP/UDP', 'Both equally'],
           explanation: `${card.protocol} on port ${card.port} uses ${card.tcpUdp}.`,
           portNumber: card.port,
         };
         break;
+      }
 
-      case 'security':
+      case 'security': {
         question = {
           id: `q-${card.id}-${index}`,
           type: questionType,
           question: `Is ${card.protocol} (port ${card.port}) considered secure by default?`,
-          correctAnswer: card.security === 'Secure' ? 'Yes' : card.security === 'Insecure' ? 'No' : 'Optional/Depends',
-          options: ['Yes', 'No', 'Optional/Depends', 'Not applicable'].sort(() => Math.random() - 0.5),
+          correctAnswer:
+            card.security === 'Secure'
+              ? 'Yes'
+              : card.security === 'Insecure'
+                ? 'No'
+                : 'Optional/Depends',
+          options: ['Yes', 'No', 'Optional/Depends', 'Not applicable'].sort(
+            () => Math.random() - 0.5
+          ),
           explanation: `${card.protocol} is ${card.security}. ${card.description}`,
           portNumber: card.port,
         };
         break;
+      }
 
       default:
         throw new Error('Invalid question type');
@@ -563,7 +629,7 @@ const calculateLevel = (xp: number): number => {
 
 const calculateXPForReview = (correct: boolean, box: number): number => {
   const baseXP = 10;
-  const multiplier = correct ? (box + 1) : 0.5;
+  const multiplier = correct ? box + 1 : 0.5;
   return Math.floor(baseXP * multiplier);
 };
 
@@ -650,7 +716,9 @@ export const PortProtocolTrainer: React.FC = () => {
 
   // Handle card review
   const handleCardReview = (correct: boolean) => {
-    if (!currentCard) return;
+    if (!currentCard) {
+      return;
+    }
 
     const currentProg = progress.get(currentCard.id) || {
       cardId: currentCard.id,
@@ -662,9 +730,7 @@ export const PortProtocolTrainer: React.FC = () => {
       accuracy: 0,
     };
 
-    const newBox = correct
-      ? Math.min(currentProg.box + 1, 4)
-      : Math.max(currentProg.box - 1, 0);
+    const newBox = correct ? Math.min(currentProg.box + 1, 4) : Math.max(currentProg.box - 1, 0);
 
     const correctCount = currentProg.correctCount + (correct ? 1 : 0);
     const incorrectCount = currentProg.incorrectCount + (correct ? 0 : 1);
@@ -690,26 +756,26 @@ export const PortProtocolTrainer: React.FC = () => {
     const newXP = stats.xp + xpGained;
     const newLevel = calculateLevel(newXP);
 
-    const masteredCards = Array.from(newProgressMap.values()).filter(p => p.box === 4).length;
+    const masteredCards = Array.from(newProgressMap.values()).filter((p) => p.box === 4).length;
 
     // Check for achievements
     const newAchievements = [...stats.achievements];
     if (stats.totalReviews === 0) {
-      const achievement = newAchievements.find(a => a.id === 'first-card');
+      const achievement = newAchievements.find((a) => a.id === 'first-card');
       if (achievement && !achievement.unlocked) {
         achievement.unlocked = true;
         achievement.unlockedAt = Date.now();
       }
     }
     if (stats.totalReviews + 1 >= 10) {
-      const achievement = newAchievements.find(a => a.id === 'ten-cards');
+      const achievement = newAchievements.find((a) => a.id === 'ten-cards');
       if (achievement && !achievement.unlocked) {
         achievement.unlocked = true;
         achievement.unlockedAt = Date.now();
       }
     }
     if (masteredCards >= 10) {
-      const achievement = newAchievements.find(a => a.id === 'master-ten');
+      const achievement = newAchievements.find((a) => a.id === 'master-ten');
       if (achievement && !achievement.unlocked) {
         achievement.unlocked = true;
         achievement.unlockedAt = Date.now();
@@ -724,7 +790,9 @@ export const PortProtocolTrainer: React.FC = () => {
     if (lastStudy !== today) {
       const lastDate = new Date(lastStudy);
       const todayDate = new Date(today);
-      const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+      const diffDays = Math.floor(
+        (todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
 
       if (diffDays === 1) {
         newStreak += 1;
@@ -733,7 +801,7 @@ export const PortProtocolTrainer: React.FC = () => {
       }
 
       if (newStreak >= 7) {
-        const achievement = newAchievements.find(a => a.id === 'week-streak');
+        const achievement = newAchievements.find((a) => a.id === 'week-streak');
         if (achievement && !achievement.unlocked) {
           achievement.unlocked = true;
           achievement.unlockedAt = Date.now();
@@ -777,7 +845,9 @@ export const PortProtocolTrainer: React.FC = () => {
 
   // Handle quiz answer
   const handleQuizAnswer = (answer: string) => {
-    if (!quizQuestions[currentQuestionIndex]) return;
+    if (!quizQuestions[currentQuestionIndex]) {
+      return;
+    }
 
     const question = quizQuestions[currentQuestionIndex];
     const correct = answer === question.correctAnswer;
@@ -799,20 +869,21 @@ export const PortProtocolTrainer: React.FC = () => {
       setQuestionStartTime(Date.now());
     } else {
       // Quiz completed
-      const score = (newResults.filter(r => r.correct).length / newResults.length) * 100;
+      const score = (newResults.filter((r) => r.correct).length / newResults.length) * 100;
       const totalTime = Date.now() - quizStartTime;
 
       // Check achievements
       const newAchievements = [...stats.achievements];
       if (score === 100) {
-        const achievement = newAchievements.find(a => a.id === 'perfect-quiz');
+        const achievement = newAchievements.find((a) => a.id === 'perfect-quiz');
         if (achievement && !achievement.unlocked) {
           achievement.unlocked = true;
           achievement.unlockedAt = Date.now();
         }
       }
-      if (totalTime < 120000) { // Under 2 minutes
-        const achievement = newAchievements.find(a => a.id === 'speed-demon');
+      if (totalTime < 120000) {
+        // Under 2 minutes
+        const achievement = newAchievements.find((a) => a.id === 'speed-demon');
         if (achievement && !achievement.unlocked) {
           achievement.unlocked = true;
           achievement.unlockedAt = Date.now();
@@ -839,7 +910,9 @@ export const PortProtocolTrainer: React.FC = () => {
         <div className="no-cards">
           <h3>🎉 All caught up!</h3>
           <p>You've reviewed all due cards. Come back later or start a quiz!</p>
-          <button onClick={startQuiz} className="quiz-btn">Start Quiz</button>
+          <button onClick={startQuiz} className="quiz-btn">
+            Start Quiz
+          </button>
         </div>
       );
     }
@@ -904,7 +977,7 @@ export const PortProtocolTrainer: React.FC = () => {
 
   const renderQuiz = () => {
     if (quizCompleted) {
-      const score = (quizResults.filter(r => r.correct).length / quizResults.length) * 100;
+      const score = (quizResults.filter((r) => r.correct).length / quizResults.length) * 100;
       const totalTime = quizResults.reduce((sum, r) => sum + r.timeSpent, 0);
 
       return (
@@ -913,24 +986,29 @@ export const PortProtocolTrainer: React.FC = () => {
           <div className="score-display">
             <div className="score-number">{score.toFixed(0)}%</div>
             <div className="score-details">
-              {quizResults.filter(r => r.correct).length} / {quizResults.length} correct
+              {quizResults.filter((r) => r.correct).length} / {quizResults.length} correct
             </div>
-            <div className="time-taken">
-              Time: {(totalTime / 1000).toFixed(1)}s
-            </div>
+            <div className="time-taken">Time: {(totalTime / 1000).toFixed(1)}s</div>
           </div>
 
           <div className="quiz-breakdown">
             {quizQuestions.map((q, index) => {
               const result = quizResults[index];
               return (
-                <div key={q.id} className={`question-review ${result.correct ? 'correct' : 'incorrect'}`}>
+                <div
+                  key={q.id}
+                  className={`question-review ${result.correct ? 'correct' : 'incorrect'}`}
+                >
                   <div className="question-number">Q{index + 1}</div>
                   <div className="question-text">{q.question}</div>
                   <div className="answer-comparison">
-                    <div>Your answer: <strong>{result.selectedAnswer}</strong></div>
+                    <div>
+                      Your answer: <strong>{result.selectedAnswer}</strong>
+                    </div>
                     {!result.correct && (
-                      <div className="correct-answer">Correct: <strong>{q.correctAnswer}</strong></div>
+                      <div className="correct-answer">
+                        Correct: <strong>{q.correctAnswer}</strong>
+                      </div>
                     )}
                   </div>
                   <div className="explanation">{q.explanation}</div>
@@ -940,15 +1018,21 @@ export const PortProtocolTrainer: React.FC = () => {
           </div>
 
           <div className="quiz-actions">
-            <button onClick={startQuiz} className="retry-btn">Try Again</button>
-            <button onClick={() => setMode('flashcards')} className="back-btn">Back to Flashcards</button>
+            <button onClick={startQuiz} className="retry-btn">
+              Try Again
+            </button>
+            <button onClick={() => setMode('flashcards')} className="back-btn">
+              Back to Flashcards
+            </button>
           </div>
         </div>
       );
     }
 
     const question = quizQuestions[currentQuestionIndex];
-    if (!question) return null;
+    if (!question) {
+      return null;
+    }
 
     return (
       <div className="quiz-mode">
@@ -988,11 +1072,11 @@ export const PortProtocolTrainer: React.FC = () => {
 
   const renderMemoryPalace = () => {
     const portGroups = {
-      '20-30': EXAM_CRITICAL_PORTS.filter(c => c.port >= 20 && c.port < 30),
-      '50-100': EXAM_CRITICAL_PORTS.filter(c => c.port >= 50 && c.port < 100),
-      '100-200': EXAM_CRITICAL_PORTS.filter(c => c.port >= 100 && c.port < 200),
-      '300-500': EXAM_CRITICAL_PORTS.filter(c => c.port >= 300 && c.port < 500),
-      '500+': EXAM_CRITICAL_PORTS.filter(c => c.port >= 500),
+      '20-30': EXAM_CRITICAL_PORTS.filter((c) => c.port >= 20 && c.port < 30),
+      '50-100': EXAM_CRITICAL_PORTS.filter((c) => c.port >= 50 && c.port < 100),
+      '100-200': EXAM_CRITICAL_PORTS.filter((c) => c.port >= 100 && c.port < 200),
+      '300-500': EXAM_CRITICAL_PORTS.filter((c) => c.port >= 300 && c.port < 500),
+      '500+': EXAM_CRITICAL_PORTS.filter((c) => c.port >= 500),
     };
 
     return (
@@ -1022,13 +1106,14 @@ export const PortProtocolTrainer: React.FC = () => {
   };
 
   const renderAnalytics = () => {
-    const boxDistribution = [0, 1, 2, 3, 4].map(box =>
-      Array.from(progress.values()).filter(p => p.box === box).length
+    const boxDistribution = [0, 1, 2, 3, 4].map(
+      (box) => Array.from(progress.values()).filter((p) => p.box === box).length
     );
 
-    const averageQuizScore = stats.quizScores.length > 0
-      ? stats.quizScores.reduce((a, b) => a + b, 0) / stats.quizScores.length
-      : 0;
+    const averageQuizScore =
+      stats.quizScores.length > 0
+        ? stats.quizScores.reduce((a, b) => a + b, 0) / stats.quizScores.length
+        : 0;
 
     return (
       <div className="analytics-mode">
@@ -1053,7 +1138,9 @@ export const PortProtocolTrainer: React.FC = () => {
           </div>
           <div className="stat-card">
             <div className="stat-label">Mastered Cards</div>
-            <div className="stat-value">{stats.masteredCards}/{stats.totalCards}</div>
+            <div className="stat-value">
+              {stats.masteredCards}/{stats.totalCards}
+            </div>
           </div>
           <div className="stat-card">
             <div className="stat-label">Avg Quiz Score</div>
@@ -1068,7 +1155,10 @@ export const PortProtocolTrainer: React.FC = () => {
               <div key={box} className="leitner-box-stat">
                 <div className="box-label">Box {box + 1}</div>
                 <div className="box-count">{count} cards</div>
-                <div className="box-bar" style={{ width: `${(count / EXAM_CRITICAL_PORTS.length) * 100}%` }} />
+                <div
+                  className="box-bar"
+                  style={{ width: `${(count / EXAM_CRITICAL_PORTS.length) * 100}%` }}
+                />
               </div>
             ))}
           </div>
@@ -1078,7 +1168,10 @@ export const PortProtocolTrainer: React.FC = () => {
           <h3>🏆 Achievements</h3>
           <div className="achievements-grid">
             {stats.achievements.map((achievement) => (
-              <div key={achievement.id} className={`achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`}>
+              <div
+                key={achievement.id}
+                className={`achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`}
+              >
                 <div className="achievement-icon">{achievement.icon}</div>
                 <div className="achievement-name">{achievement.name}</div>
                 <div className="achievement-desc">{achievement.description}</div>
@@ -1124,7 +1217,9 @@ export const PortProtocolTrainer: React.FC = () => {
           </div>
           <div className="stat-item">
             <span className="stat-label">Mastered</span>
-            <span className="stat-value">{stats.masteredCards}/{stats.totalCards}</span>
+            <span className="stat-value">
+              {stats.masteredCards}/{stats.totalCards}
+            </span>
           </div>
         </div>
       </header>
@@ -1136,10 +1231,7 @@ export const PortProtocolTrainer: React.FC = () => {
         >
           📇 Flashcards
         </button>
-        <button
-          onClick={startQuiz}
-          className={`mode-btn ${mode === 'quiz' ? 'active' : ''}`}
-        >
+        <button onClick={startQuiz} className={`mode-btn ${mode === 'quiz' ? 'active' : ''}`}>
           📝 Quiz Mode
         </button>
         <button

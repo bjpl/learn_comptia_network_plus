@@ -5,9 +5,26 @@ import type {
   SimulationState,
   TrafficFlow,
   SimulationAlert,
+  TroubleshootingScenario,
 } from './appliances-types';
 
 import { deviceTemplates } from './appliances-data';
+import { getTroubleshootingScenarios } from './simulator-scenarios';
+
+interface DeviceConfig {
+  name: string;
+  throughput: string;
+  maxConnections: number;
+  redundancy: boolean;
+}
+
+interface SavedNetwork {
+  id: string;
+  name: string;
+  timestamp: number;
+  devices: SimulatedDevice[];
+  connections: NetworkConnection[];
+}
 
 interface NetworkSimulatorProps {
   initialDevices?: SimulatedDevice[];
@@ -20,6 +37,11 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
   const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
   const [dragging, setDragging] = useState<string | null>(null);
   const [connecting, setConnecting] = useState<string | null>(null);
+  const [showConfigPanel, setShowConfigPanel] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showScenarios, setShowScenarios] = useState(false);
+  const [savedNetworks, setSavedNetworks] = useState<SavedNetwork[]>([]);
+  const [deviceConfig, setDeviceConfig] = useState<DeviceConfig | null>(null);
   const [simulationState, setSimulationState] = useState<SimulationState>({
     isRunning: false,
     time: 0,
@@ -349,6 +371,106 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
     }
   };
 
+  // Configuration Panel Management
+  const openDeviceConfig = (deviceId: string) => {
+    const device = devices.find((d) => d.id === deviceId);
+    if (device) {
+      setDeviceConfig({
+        name: device.name,
+        throughput: device.specs.throughput,
+        maxConnections: device.specs.maxConnections,
+        redundancy: device.specs.redundancy,
+      });
+      setSelectedDevice(deviceId);
+      setShowConfigPanel(true);
+    }
+  };
+
+  const updateDeviceConfig = () => {
+    if (!selectedDevice || !deviceConfig) {
+      return;
+    }
+
+    setDevices((prevDevices) =>
+      prevDevices.map((device) =>
+        device.id === selectedDevice
+          ? {
+              ...device,
+              name: deviceConfig.name,
+              specs: {
+                ...device.specs,
+                throughput: deviceConfig.throughput,
+                maxConnections: deviceConfig.maxConnections,
+                redundancy: deviceConfig.redundancy,
+              },
+            }
+          : device
+      )
+    );
+
+    setShowConfigPanel(false);
+  };
+
+  // Save/Load Network Designs
+  const saveNetworkDesign = (name: string) => {
+    const newSave: SavedNetwork = {
+      id: `save-${Date.now()}`,
+      name,
+      timestamp: Date.now(),
+      devices: JSON.parse(JSON.stringify(devices)),
+      connections: JSON.parse(JSON.stringify(connections)),
+    };
+
+    setSavedNetworks([...savedNetworks, newSave]);
+    setShowSaveDialog(false);
+  };
+
+  const loadNetworkDesign = (saveId: string) => {
+    const saved = savedNetworks.find((s) => s.id === saveId);
+    if (saved) {
+      setDevices(JSON.parse(JSON.stringify(saved.devices)));
+      setConnections(JSON.parse(JSON.stringify(saved.connections)));
+      resetSimulation();
+    }
+  };
+
+  const deleteNetworkDesign = (saveId: string) => {
+    setSavedNetworks(savedNetworks.filter((s) => s.id !== saveId));
+  };
+
+  const exportNetworkDesign = () => {
+    const data = {
+      devices,
+      connections,
+      timestamp: new Date().toISOString(),
+    };
+
+    const element = document.createElement('a');
+    element.setAttribute(
+      'href',
+      `data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(data, null, 2))}`
+    );
+    element.setAttribute('download', `network-design-${Date.now()}.json`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  // Get troubleshooting scenarios
+  const troubleshootingScenarios = getTroubleshootingScenarios();
+
+  const loadScenario = (scenarioId: string) => {
+    const scenario = troubleshootingScenarios.find((s) => s.id === scenarioId);
+    if (scenario) {
+      const setup = scenario.setup();
+      setDevices(setup.devices);
+      setConnections(setup.connections);
+      resetSimulation();
+      setShowScenarios(false);
+    }
+  };
+
   const selectedDeviceData = devices.find((d) => d.id === selectedDevice);
 
   return (
@@ -357,7 +479,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
 
       {/* Toolbar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {deviceTypeOptions.map((option) => (
             <button
               key={option.value}
@@ -370,7 +492,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
           ))}
         </div>
 
-        <div className="ml-auto flex gap-2">
+        <div className="flex flex-wrap gap-2 lg:ml-auto">
           <button
             onClick={toggleSimulation}
             className={`rounded px-4 py-2 font-medium ${
@@ -387,8 +509,223 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
           >
             🔄 Reset
           </button>
+          <button
+            onClick={() => setShowScenarios(!showScenarios)}
+            className="rounded bg-purple-500 px-4 py-2 text-white hover:bg-purple-600"
+            title="Load troubleshooting scenarios"
+          >
+            📋 Scenarios
+          </button>
+          <button
+            onClick={() => setShowSaveDialog(!showSaveDialog)}
+            className="rounded bg-amber-500 px-4 py-2 text-white hover:bg-amber-600"
+            title="Save/Load network designs"
+          >
+            💾 Save/Load
+          </button>
+          <button
+            onClick={exportNetworkDesign}
+            className="rounded bg-cyan-500 px-4 py-2 text-white hover:bg-cyan-600"
+            title="Export network as JSON"
+          >
+            📤 Export
+          </button>
         </div>
       </div>
+
+      {/* Troubleshooting Scenarios Panel */}
+      {showScenarios && (
+        <div className="mb-4 rounded border border-purple-300 bg-purple-50 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="font-semibold">Network Troubleshooting Scenarios</h3>
+            <button
+              onClick={() => setShowScenarios(false)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ×
+            </button>
+          </div>
+          <div className="space-y-2">
+            {troubleshootingScenarios.map((scenario) => (
+              <div key={scenario.id} className="rounded bg-white p-3">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="font-medium">{scenario.name}</p>
+                    <p className="text-sm text-gray-600">{scenario.description}</p>
+                    <p className="mt-1 text-xs text-blue-600">Issue: {scenario.expectedIssue}</p>
+                    <p className="text-xs text-green-600">Hint: {scenario.hint}</p>
+                  </div>
+                  <button
+                    onClick={() => loadScenario(scenario.id)}
+                    className="rounded bg-purple-500 px-3 py-1 text-sm text-white hover:bg-purple-600"
+                  >
+                    Load
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Save/Load Panel */}
+      {showSaveDialog && (
+        <div className="mb-4 rounded border border-amber-300 bg-amber-50 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="font-semibold">Save & Load Networks</h3>
+            <button
+              onClick={() => setShowSaveDialog(false)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Save Network */}
+          <div className="mb-4 rounded bg-white p-3">
+            <p className="mb-2 text-sm font-medium">Save Current Design</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Network name"
+                id="save-name"
+                className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+              <button
+                onClick={() => {
+                  const name = (document.getElementById('save-name') as HTMLInputElement)?.value;
+                  if (name) {
+                    saveNetworkDesign(name);
+                    (document.getElementById('save-name') as HTMLInputElement).value = '';
+                  }
+                }}
+                className="rounded bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+
+          {/* Load Networks */}
+          {savedNetworks.length > 0 && (
+            <div className="rounded bg-white p-3">
+              <p className="mb-2 text-sm font-medium">Saved Designs</p>
+              <div className="space-y-2">
+                {savedNetworks.map((saved) => (
+                  <div
+                    key={saved.id}
+                    className="flex items-center justify-between rounded border border-gray-200 p-2"
+                  >
+                    <div className="text-sm">
+                      <p className="font-medium">{saved.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(saved.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => loadNetworkDesign(saved.id)}
+                        className="rounded bg-blue-500 px-2 py-1 text-xs text-white hover:bg-blue-600"
+                      >
+                        Load
+                      </button>
+                      <button
+                        onClick={() => deleteNetworkDesign(saved.id)}
+                        className="rounded bg-red-500 px-2 py-1 text-xs text-white hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Device Configuration Panel */}
+      {showConfigPanel && selectedDeviceData && (
+        <div className="mb-4 rounded border border-blue-300 bg-blue-50 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="font-semibold">Device Configuration: {selectedDeviceData.name}</h3>
+            <button
+              onClick={() => setShowConfigPanel(false)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ×
+            </button>
+          </div>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium">Device Name</label>
+              <input
+                type="text"
+                value={deviceConfig?.name || ''}
+                onChange={(e) =>
+                  setDeviceConfig(deviceConfig ? { ...deviceConfig, name: e.target.value } : null)
+                }
+                className="mt-1 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Throughput</label>
+              <input
+                type="text"
+                value={deviceConfig?.throughput || ''}
+                onChange={(e) =>
+                  setDeviceConfig(
+                    deviceConfig ? { ...deviceConfig, throughput: e.target.value } : null
+                  )
+                }
+                className="mt-1 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Max Connections</label>
+              <input
+                type="number"
+                value={deviceConfig?.maxConnections || 0}
+                onChange={(e) =>
+                  setDeviceConfig(
+                    deviceConfig
+                      ? { ...deviceConfig, maxConnections: parseInt(e.target.value, 10) }
+                      : null
+                  )
+                }
+                className="mt-1 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+              />
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={deviceConfig?.redundancy || false}
+                onChange={(e) =>
+                  setDeviceConfig(
+                    deviceConfig ? { ...deviceConfig, redundancy: e.target.checked } : null
+                  )
+                }
+                className="rounded border-gray-300"
+              />
+              <label className="ml-2 text-sm font-medium">Enable Redundancy</label>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={updateDeviceConfig}
+                className="rounded bg-green-500 px-4 py-2 text-sm text-white hover:bg-green-600"
+              >
+                Update
+              </button>
+              <button
+                onClick={() => setShowConfigPanel(false)}
+                className="rounded bg-gray-500 px-4 py-2 text-sm text-white hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Canvas */}
       <div
@@ -488,6 +825,18 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
               title="Create connection"
             >
               🔗
+            </button>
+
+            {/* Configuration button */}
+            <button
+              className="absolute bottom-1 right-1 h-5 w-5 rounded-full bg-indigo-500 text-xs text-white hover:bg-indigo-600"
+              onClick={(e) => {
+                e.stopPropagation();
+                openDeviceConfig(device.id);
+              }}
+              title="Configure device"
+            >
+              ⚙
             </button>
 
             {/* Delete button */}

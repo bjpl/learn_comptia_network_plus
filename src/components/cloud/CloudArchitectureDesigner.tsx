@@ -1,8 +1,13 @@
 /**
- * Component 8: Cloud Architecture Designer
+ * Component 5: Cloud Architecture Designer (Enhanced)
  * CompTIA Network+ Learning Objective 1.2
  *
- * Drag-and-drop canvas for designing cloud architectures
+ * Interactive cloud architecture design tool with:
+ * - Service Model Comparison (IaaS/PaaS/SaaS)
+ * - Deployment Model Builder
+ * - Cloud Connectivity Options
+ * - Multi-tenancy & Elasticity Visualization
+ * - Cloud Security Basics
  */
 
 import React, { useState, useRef } from 'react';
@@ -54,6 +59,9 @@ export const CloudArchitectureDesigner: React.FC = () => {
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [showLibrary, setShowLibrary] = useState(true);
   const [activeCategory, setActiveCategory] = useState<ComponentType>('deployment-zone');
+  const [showServiceComparison, setShowServiceComparison] = useState(false);
+  const [showSecurityPanel, setShowSecurityPanel] = useState(false);
+  const [showElasticityVisualization, setShowElasticityVisualization] = useState(false);
 
   const snapToGrid = (value: number): number => {
     if (!canvasState.snapToGrid) {
@@ -256,6 +264,175 @@ export const CloudArchitectureDesigner: React.FC = () => {
     return componentLibrary.filter((item) => item.type === activeCategory);
   };
 
+  // Service Model Comparison Data
+  const serviceModelComparison = {
+    SaaS: {
+      name: 'Software as a Service',
+      examples: ['Salesforce', 'Office 365', 'Slack', 'Google Workspace'],
+      management: 'Fully Managed by Vendor',
+      responsibility: ['User data', 'Configuration'],
+      scalability: 'Automatic',
+      cost: 'Per-user subscription',
+      pros: ['Low maintenance', 'Easy collaboration', 'Automatic updates'],
+      cons: ['Less customization', 'Vendor lock-in', 'Limited control'],
+    },
+    PaaS: {
+      name: 'Platform as a Service',
+      examples: ['AWS Lambda', 'Azure App Service', 'Heroku', 'Firebase'],
+      management: 'Managed Runtime/Middleware',
+      responsibility: ['Application', 'Data', 'Runtime config'],
+      scalability: 'Automatic with auto-scaling',
+      cost: 'Per resource usage',
+      pros: ['Rapid development', 'Built-in services', 'Automatic scaling'],
+      cons: ['Platform constraints', 'Vendor APIs', 'Potential costs'],
+    },
+    IaaS: {
+      name: 'Infrastructure as a Service',
+      examples: ['AWS EC2', 'Azure VMs', 'GCP Compute Engine', 'DigitalOcean'],
+      management: 'Compute/Storage/Network',
+      responsibility: ['OS', 'Middleware', 'Applications', 'Data'],
+      scalability: 'Manual or auto-scaling setup',
+      cost: 'Per instance/storage/data transfer',
+      pros: ['Maximum flexibility', 'No CapEx', 'Complete control'],
+      cons: ['Management overhead', 'Security responsibility', 'Complexity'],
+    },
+  };
+
+  // Cloud Connectivity Options
+  const connectivityOptions = [
+    {
+      name: 'VPN (Virtual Private Network)',
+      icon: '🔐',
+      bandwidth: '50-500 Mbps',
+      latency: '20-100 ms',
+      cost: '$',
+      encryption: 'IPSec/TLS',
+      bestFor: 'Remote offices, low bandwidth requirements',
+      security: 'Encrypted over internet',
+    },
+    {
+      name: 'Direct Connect',
+      icon: '⚡',
+      bandwidth: '1-100 Gbps',
+      latency: '< 10 ms',
+      cost: '$$$',
+      encryption: 'Optional (dedicated line)',
+      bestFor: 'High bandwidth, mission-critical, low latency',
+      security: 'Dedicated private connection',
+    },
+    {
+      name: 'Internet Gateway',
+      icon: '🌐',
+      bandwidth: 'Best effort',
+      latency: '50-200 ms',
+      cost: '$',
+      encryption: 'TLS/HTTPS',
+      bestFor: 'Public web services, internet access',
+      security: 'Application-level encryption',
+    },
+  ];
+
+  // Deployment Model Details
+  const deploymentModels = {
+    Public: {
+      description: 'Multi-tenant cloud infrastructure operated by third-party',
+      providers: ['AWS', 'Azure', 'GCP', 'Oracle Cloud'],
+      advantages: ['Cost effective', 'Scalable', 'Global presence', 'Managed services'],
+      challenges: ['Security concerns', 'Compliance', 'Multi-tenancy', 'Limited customization'],
+      useCases: ['Web applications', 'SaaS delivery', 'Big data analytics'],
+    },
+    Private: {
+      description: 'Dedicated cloud infrastructure for single organization',
+      providers: ['On-premises', 'Hosted private clouds', 'Dedicated hosting'],
+      advantages: ['Data control', 'Custom configuration', 'Compliance', 'Security'],
+      challenges: ['High CapEx', 'Skilled staff required', 'Limited scalability'],
+      useCases: ['Banking/Finance', 'Healthcare', 'Government'],
+    },
+    Hybrid: {
+      description: 'Combination of public and private cloud resources',
+      providers: ['VMware Cloud', 'Azure Stack', 'AWS Outposts'],
+      advantages: ['Flexibility', 'Cost optimization', 'Compliance', 'Scalability'],
+      challenges: ['Complexity', 'Management overhead', 'Inter-cloud connectivity'],
+      useCases: ['Burst capacity', 'Data sovereignty', 'Legacy + cloud'],
+    },
+  };
+
+  // Cloud Security Concepts
+  const securityConcepts = [
+    {
+      area: 'Identity & Access Management (IAM)',
+      icon: '🔑',
+      concepts: ['Multi-factor authentication', 'RBAC', 'Service accounts', 'API keys'],
+      bestPractices: [
+        'Principle of least privilege',
+        'Regular access reviews',
+        'Centralized identity management',
+        'Conditional access policies',
+      ],
+    },
+    {
+      area: 'Encryption',
+      icon: '🔒',
+      concepts: ['Encryption at rest', 'Encryption in transit', 'Key management', 'TLS/SSL'],
+      bestPractices: [
+        'Always encrypt sensitive data',
+        'Use strong encryption algorithms',
+        'Separate key management',
+        'Certificate pinning for APIs',
+      ],
+    },
+    {
+      area: 'Network Security',
+      icon: '🛡️',
+      concepts: ['Security groups', 'NACLs', 'WAF', 'Virtual firewalls'],
+      bestPractices: [
+        'Network segmentation',
+        'Defense in depth',
+        'DDoS protection',
+        'Traffic inspection',
+      ],
+    },
+    {
+      area: 'Compliance & Governance',
+      icon: '📋',
+      concepts: ['HIPAA', 'PCI-DSS', 'GDPR', 'FedRAMP'],
+      bestPractices: [
+        'Audit logging',
+        'Data residency controls',
+        'Compliance monitoring',
+        'Regular assessments',
+      ],
+    },
+  ];
+
+  // Multi-tenancy Visualization
+  const multitenancyPatterns = [
+    {
+      name: 'Shared Instance',
+      description: 'All customers share same application instance',
+      isolation: 'Logical (database rows, application logic)',
+      dataComplexity: 'Moderate',
+      costEfficiency: 'High',
+      securityRisk: 'Medium',
+    },
+    {
+      name: 'Dedicated Instance',
+      description: 'Each customer has dedicated application instance',
+      isolation: 'Instance-level',
+      dataComplexity: 'Low',
+      costEfficiency: 'Medium',
+      securityRisk: 'Low',
+    },
+    {
+      name: 'Separate Database',
+      description: 'Each customer has separate database',
+      isolation: 'Database-level',
+      dataComplexity: 'Low',
+      costEfficiency: 'Low',
+      securityRisk: 'Very Low',
+    },
+  ];
+
   return (
     <div className="cloud-architecture-designer">
       <div className="header">
@@ -272,6 +449,24 @@ export const CloudArchitectureDesigner: React.FC = () => {
         <div className="toolbar">
           <button onClick={() => setShowLibrary(!showLibrary)}>
             {showLibrary ? 'Hide' : 'Show'} Library
+          </button>
+          <button
+            onClick={() => setShowServiceComparison(!showServiceComparison)}
+            title="Compare SaaS, PaaS, IaaS"
+          >
+            Service Models
+          </button>
+          <button
+            onClick={() => setShowSecurityPanel(!showSecurityPanel)}
+            title="Cloud security concepts"
+          >
+            Security
+          </button>
+          <button
+            onClick={() => setShowElasticityVisualization(!showElasticityVisualization)}
+            title="Elasticity & multi-tenancy"
+          >
+            Elasticity
           </button>
           <button onClick={validateArchitecture}>Validate</button>
           <button onClick={handleExport}>Export</button>
@@ -528,6 +723,211 @@ export const CloudArchitectureDesigner: React.FC = () => {
                     </option>
                   ))}
               </select>
+            </div>
+          </div>
+        )}
+
+        {showServiceComparison && (
+          <div className="feature-panel service-comparison-panel">
+            <div className="panel-header">
+              <h3>Service Models Comparison</h3>
+              <button onClick={() => setShowServiceComparison(false)} className="close-btn">
+                ×
+              </button>
+            </div>
+            <div className="comparison-matrix">
+              {Object.entries(serviceModelComparison).map(([model, data]) => (
+                <div key={model} className="comparison-card">
+                  <h4>{data.name}</h4>
+                  <div className="comparison-row">
+                    <strong>Examples:</strong>
+                    <span>{data.examples.join(', ')}</span>
+                  </div>
+                  <div className="comparison-row">
+                    <strong>Management:</strong>
+                    <span>{data.management}</span>
+                  </div>
+                  <div className="comparison-row">
+                    <strong>Your Responsibility:</strong>
+                    <ul className="responsibility-list">
+                      {data.responsibility.map((r, i) => (
+                        <li key={i}>{r}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="comparison-row">
+                    <strong>Scalability:</strong>
+                    <span>{data.scalability}</span>
+                  </div>
+                  <div className="comparison-row">
+                    <strong>Cost Model:</strong>
+                    <span>{data.cost}</span>
+                  </div>
+                  <div className="comparison-row">
+                    <strong>Pros:</strong>
+                    <ul className="pros-list">
+                      {data.pros.map((p, i) => (
+                        <li key={i}>{p}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="comparison-row">
+                    <strong>Cons:</strong>
+                    <ul className="cons-list">
+                      {data.cons.map((c, i) => (
+                        <li key={i}>{c}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="connectivity-grid">
+              <h4 style={{ gridColumn: '1 / -1', marginTop: '20px' }}>
+                Cloud Connectivity Options
+              </h4>
+              {connectivityOptions.map((option) => (
+                <div key={option.name} className="connectivity-card">
+                  <div className="connectivity-icon">{option.icon}</div>
+                  <h5>{option.name}</h5>
+                  <div className="connectivity-details">
+                    <div>Bandwidth: {option.bandwidth}</div>
+                    <div>Latency: {option.latency}</div>
+                    <div>Cost: {option.cost}</div>
+                    <div>Encryption: {option.encryption}</div>
+                    <div>Best For: {option.bestFor}</div>
+                    <div>Security: {option.security}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {showSecurityPanel && (
+          <div className="feature-panel security-panel">
+            <div className="panel-header">
+              <h3>Cloud Security Basics</h3>
+              <button onClick={() => setShowSecurityPanel(false)} className="close-btn">
+                ×
+              </button>
+            </div>
+            <div className="deployment-models">
+              <h4>Deployment Models</h4>
+              <div className="deployment-grid">
+                {Object.entries(deploymentModels).map(([model, details]) => (
+                  <div key={model} className="deployment-card">
+                    <h5>{model}</h5>
+                    <p className="description">{details.description}</p>
+                    <div className="detail-section">
+                      <strong>Providers:</strong>
+                      <p>{details.providers.join(', ')}</p>
+                    </div>
+                    <div className="detail-section">
+                      <strong>Advantages:</strong>
+                      <ul>
+                        {details.advantages.map((a, i) => (
+                          <li key={i}>{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="detail-section">
+                      <strong>Use Cases:</strong>
+                      <p>{details.useCases.join(', ')}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="security-concepts">
+              <h4 style={{ marginTop: '20px' }}>Security Concepts</h4>
+              {securityConcepts.map((concept) => (
+                <div key={concept.area} className="security-card">
+                  <div className="security-icon">{concept.icon}</div>
+                  <div className="security-content">
+                    <h5>{concept.area}</h5>
+                    <div className="security-row">
+                      <strong>Key Concepts:</strong>
+                      <p>{concept.concepts.join(', ')}</p>
+                    </div>
+                    <div className="security-row">
+                      <strong>Best Practices:</strong>
+                      <ul>
+                        {concept.bestPractices.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {showElasticityVisualization && (
+          <div className="feature-panel elasticity-panel">
+            <div className="panel-header">
+              <h3>Multi-tenancy & Elasticity</h3>
+              <button onClick={() => setShowElasticityVisualization(false)} className="close-btn">
+                ×
+              </button>
+            </div>
+            <div className="multitenancy-section">
+              <h4>Multi-tenancy Patterns</h4>
+              <div className="pattern-grid">
+                {multitenancyPatterns.map((pattern) => (
+                  <div key={pattern.name} className="pattern-card">
+                    <h5>{pattern.name}</h5>
+                    <p className="pattern-description">{pattern.description}</p>
+                    <div className="pattern-detail">
+                      <strong>Isolation:</strong>
+                      <p>{pattern.isolation}</p>
+                    </div>
+                    <div className="pattern-detail">
+                      <strong>Data Complexity:</strong>
+                      <p>{pattern.dataComplexity}</p>
+                    </div>
+                    <div className="pattern-detail">
+                      <strong>Cost Efficiency:</strong>
+                      <p className={`efficiency-${pattern.costEfficiency.toLowerCase()}`}>
+                        {pattern.costEfficiency}
+                      </p>
+                    </div>
+                    <div className="pattern-detail">
+                      <strong>Security Risk:</strong>
+                      <p className={`risk-${pattern.securityRisk.toLowerCase().replace(' ', '-')}`}>
+                        {pattern.securityRisk}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="elasticity-info">
+              <h4 style={{ marginTop: '20px' }}>Elasticity Concepts</h4>
+              <div className="info-cards">
+                <div className="elasticity-card">
+                  <h5>Vertical Scaling</h5>
+                  <p>Increasing resources (CPU, RAM) on existing instances</p>
+                  <strong>Best For:</strong> Database servers, memory-intensive applications
+                </div>
+                <div className="elasticity-card">
+                  <h5>Horizontal Scaling</h5>
+                  <p>Adding more instances to distribute load</p>
+                  <strong>Best For:</strong> Stateless applications, web servers
+                </div>
+                <div className="elasticity-card">
+                  <h5>Auto-Scaling</h5>
+                  <p>Automatic adjustment based on metrics (CPU, memory, requests)</p>
+                  <strong>Best For:</strong> Variable workloads, burst scenarios
+                </div>
+                <div className="elasticity-card">
+                  <h5>Serverless</h5>
+                  <p>Pay-per-use functions without server management</p>
+                  <strong>Best For:</strong> Event-driven workloads, microservices
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -939,6 +1339,370 @@ export const CloudArchitectureDesigner: React.FC = () => {
           color: #065f46;
           border-radius: 6px;
           border-left: 4px solid #10b981;
+        }
+
+        /* Feature Panels */
+        .feature-panel {
+          position: fixed;
+          right: 0;
+          top: 60px;
+          width: 500px;
+          max-height: calc(100vh - 120px);
+          background: white;
+          border-left: 1px solid #e5e7eb;
+          overflow-y: auto;
+          padding: 20px;
+          box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+          z-index: 100;
+        }
+
+        .panel-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          border-bottom: 2px solid #3b82f6;
+          padding-bottom: 10px;
+        }
+
+        .panel-header h3 {
+          margin: 0;
+          color: #1f2937;
+        }
+
+        .close-btn {
+          background: none;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+          color: #6b7280;
+        }
+
+        .close-btn:hover {
+          color: #1f2937;
+        }
+
+        /* Service Comparison Panel */
+        .comparison-matrix {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 15px;
+          margin-bottom: 20px;
+        }
+
+        .comparison-card {
+          border: 1px solid #e5e7eb;
+          border-radius: 8px;
+          padding: 15px;
+          background: #f9fafb;
+        }
+
+        .comparison-card h4 {
+          margin: 0 0 12px 0;
+          color: #1f2937;
+          border-bottom: 2px solid #3b82f6;
+          padding-bottom: 8px;
+        }
+
+        .comparison-row {
+          margin-bottom: 10px;
+        }
+
+        .comparison-row strong {
+          display: block;
+          color: #374151;
+          font-weight: 600;
+          margin-bottom: 4px;
+        }
+
+        .responsibility-list, .pros-list, .cons-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .responsibility-list li, .pros-list li, .cons-list li {
+          padding: 4px 0 4px 20px;
+          position: relative;
+          color: #4b5563;
+          font-size: 13px;
+        }
+
+        .responsibility-list li:before, .pros-list li:before, .cons-list li:before {
+          content: '•';
+          position: absolute;
+          left: 8px;
+        }
+
+        .connectivity-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+
+        .connectivity-card {
+          border: 1px solid #e5e7eb;
+          border-radius: 6px;
+          padding: 12px;
+          text-align: center;
+          background: #f9fafb;
+        }
+
+        .connectivity-icon {
+          font-size: 28px;
+          margin-bottom: 8px;
+        }
+
+        .connectivity-card h5 {
+          margin: 8px 0;
+          color: #1f2937;
+          font-size: 13px;
+        }
+
+        .connectivity-details {
+          font-size: 11px;
+          color: #6b7280;
+          text-align: left;
+        }
+
+        .connectivity-details div {
+          padding: 4px 0;
+        }
+
+        /* Security Panel */
+        .deployment-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 15px;
+          margin-bottom: 20px;
+        }
+
+        .deployment-card {
+          border: 1px solid #e5e7eb;
+          border-radius: 8px;
+          padding: 15px;
+          background: #f9fafb;
+        }
+
+        .deployment-card h5 {
+          margin: 0 0 8px 0;
+          color: #1f2937;
+          border-bottom: 2px solid #10b981;
+          padding-bottom: 6px;
+        }
+
+        .description {
+          color: #6b7280;
+          font-size: 13px;
+          margin: 8px 0;
+        }
+
+        .detail-section {
+          margin: 8px 0;
+        }
+
+        .detail-section strong {
+          display: block;
+          color: #374151;
+          margin-bottom: 4px;
+          font-size: 13px;
+        }
+
+        .detail-section ul {
+          list-style: none;
+          padding: 0;
+          margin: 4px 0 0 0;
+          font-size: 12px;
+        }
+
+        .detail-section li {
+          padding: 3px 0 3px 16px;
+          position: relative;
+          color: #4b5563;
+        }
+
+        .detail-section li:before {
+          content: '→';
+          position: absolute;
+          left: 0;
+        }
+
+        .detail-section p {
+          color: #4b5563;
+          font-size: 12px;
+          margin: 4px 0 0 0;
+        }
+
+        .security-concepts {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .security-card {
+          display: flex;
+          gap: 12px;
+          border: 1px solid #e5e7eb;
+          border-radius: 6px;
+          padding: 12px;
+          background: #f9fafb;
+        }
+
+        .security-icon {
+          font-size: 24px;
+          flex-shrink: 0;
+        }
+
+        .security-content {
+          flex: 1;
+        }
+
+        .security-content h5 {
+          margin: 0 0 8px 0;
+          color: #1f2937;
+          font-size: 13px;
+        }
+
+        .security-row {
+          margin-bottom: 8px;
+        }
+
+        .security-row strong {
+          display: block;
+          color: #374151;
+          margin-bottom: 3px;
+          font-size: 12px;
+        }
+
+        .security-row p {
+          color: #4b5563;
+          font-size: 11px;
+          margin: 0;
+        }
+
+        .security-row ul {
+          list-style: none;
+          padding: 0;
+          margin: 3px 0 0 0;
+          font-size: 11px;
+        }
+
+        .security-row li {
+          padding: 2px 0 2px 14px;
+          position: relative;
+          color: #4b5563;
+        }
+
+        .security-row li:before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          color: #10b981;
+        }
+
+        /* Elasticity Panel */
+        .pattern-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 12px;
+          margin-bottom: 20px;
+        }
+
+        .pattern-card {
+          border: 1px solid #e5e7eb;
+          border-radius: 6px;
+          padding: 12px;
+          background: #f9fafb;
+        }
+
+        .pattern-card h5 {
+          margin: 0 0 6px 0;
+          color: #1f2937;
+          font-size: 13px;
+        }
+
+        .pattern-description {
+          color: #6b7280;
+          font-size: 12px;
+          margin: 6px 0;
+        }
+
+        .pattern-detail {
+          margin: 6px 0;
+          font-size: 11px;
+        }
+
+        .pattern-detail strong {
+          color: #374151;
+          display: block;
+          margin-bottom: 2px;
+        }
+
+        .pattern-detail p {
+          margin: 0;
+          color: #4b5563;
+        }
+
+        .efficiency-high {
+          color: #10b981;
+          font-weight: 600;
+        }
+
+        .efficiency-medium {
+          color: #f59e0b;
+          font-weight: 600;
+        }
+
+        .efficiency-low {
+          color: #ef4444;
+          font-weight: 600;
+        }
+
+        .risk-very-low {
+          color: #10b981;
+          font-weight: 600;
+        }
+
+        .risk-low {
+          color: #3b82f6;
+          font-weight: 600;
+        }
+
+        .risk-medium {
+          color: #f59e0b;
+          font-weight: 600;
+        }
+
+        .info-cards {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .elasticity-card {
+          border: 1px solid #e5e7eb;
+          border-radius: 6px;
+          padding: 12px;
+          background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        }
+
+        .elasticity-card h5 {
+          margin: 0 0 6px 0;
+          color: #1f2937;
+          font-size: 13px;
+        }
+
+        .elasticity-card p {
+          color: #6b7280;
+          font-size: 12px;
+          margin: 6px 0;
+        }
+
+        .elasticity-card strong {
+          color: #374151;
+          display: block;
+          margin-top: 6px;
+          font-size: 11px;
         }
       `}</style>
     </div>

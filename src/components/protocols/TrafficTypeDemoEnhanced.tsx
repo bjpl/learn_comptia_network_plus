@@ -93,29 +93,40 @@ const EXAM_QUESTIONS: ExamQuestion[] = [
     question: 'Which traffic type is used when a DHCP client needs to discover a DHCP server?',
     options: ['Unicast', 'Multicast', 'Broadcast', 'Anycast'],
     correctAnswer: 2,
-    explanation: 'DHCP Discovery uses broadcast (255.255.255.255) because the client doesn\'t know the server\'s address yet.',
-    examTip: 'Remember: DHCP Discovery and ARP requests both use broadcast. They need to reach all devices on the local network.',
+    explanation:
+      "DHCP Discovery uses broadcast (255.255.255.255) because the client doesn't know the server's address yet.",
+    examTip:
+      'Remember: DHCP Discovery and ARP requests both use broadcast. They need to reach all devices on the local network.',
   },
   {
     id: 'q2',
     question: 'What is the IPv4 multicast address range?',
-    options: ['192.168.0.0 - 192.168.255.255', '224.0.0.0 - 239.255.255.255', '240.0.0.0 - 255.255.255.254', '169.254.0.0 - 169.254.255.255'],
+    options: [
+      '192.168.0.0 - 192.168.255.255',
+      '224.0.0.0 - 239.255.255.255',
+      '240.0.0.0 - 255.255.255.254',
+      '169.254.0.0 - 169.254.255.255',
+    ],
     correctAnswer: 1,
-    explanation: 'Class D addresses (224.0.0.0 - 239.255.255.255) are reserved for multicast traffic.',
-    examTip: 'Critical for the exam: 224.0.0.0/4 is the multicast range. Know that 224.0.0.0/24 is reserved for local network control.',
+    explanation:
+      'Class D addresses (224.0.0.0 - 239.255.255.255) are reserved for multicast traffic.',
+    examTip:
+      'Critical for the exam: 224.0.0.0/4 is the multicast range. Know that 224.0.0.0/24 is reserved for local network control.',
   },
   {
     id: 'q3',
-    question: 'Why doesn\'t broadcast traffic cross routers?',
+    question: "Why doesn't broadcast traffic cross routers?",
     options: [
-      'Routers don\'t have enough bandwidth',
+      "Routers don't have enough bandwidth",
       'Broadcast is a Layer 2 function limited to the local segment',
       'It would be too expensive',
-      'Broadcast packets are too large'
+      'Broadcast packets are too large',
     ],
     correctAnswer: 1,
-    explanation: 'Broadcast is a Layer 2 (Data Link) function. Routers operate at Layer 3 and do not forward broadcast frames, preventing broadcast storms across networks.',
-    examTip: 'Key concept: Broadcast domain vs. collision domain. Routers separate broadcast domains; switches separate collision domains.',
+    explanation:
+      'Broadcast is a Layer 2 (Data Link) function. Routers operate at Layer 3 and do not forward broadcast frames, preventing broadcast storms across networks.',
+    examTip:
+      'Key concept: Broadcast domain vs. collision domain. Routers separate broadcast domains; switches separate collision domains.',
   },
   {
     id: 'q4',
@@ -124,32 +135,39 @@ const EXAM_QUESTIONS: ExamQuestion[] = [
       'First device alphabetically',
       'Device with highest IP address',
       'Nearest/closest device based on routing metrics',
-      'Random selection'
+      'Random selection',
     ],
     correctAnswer: 2,
-    explanation: 'Anycast routes to the nearest instance of a service based on routing protocol metrics (hops, latency, etc.).',
-    examTip: 'Anycast is commonly used for DNS root servers and CDNs. Same IP, multiple locations, automatic failover.',
+    explanation:
+      'Anycast routes to the nearest instance of a service based on routing protocol metrics (hops, latency, etc.).',
+    examTip:
+      'Anycast is commonly used for DNS root servers and CDNs. Same IP, multiple locations, automatic failover.',
   },
   {
     id: 'q5',
     question: 'What protocol manages multicast group membership in IPv4?',
     options: ['ICMP', 'IGMP', 'ARP', 'RARP'],
     correctAnswer: 1,
-    explanation: 'IGMP (Internet Group Management Protocol) allows hosts to join and leave multicast groups and routers to discover which groups have members.',
-    examTip: 'IGMP is to multicast what ARP is to unicast - it manages group membership at Layer 3.',
+    explanation:
+      'IGMP (Internet Group Management Protocol) allows hosts to join and leave multicast groups and routers to discover which groups have members.',
+    examTip:
+      'IGMP is to multicast what ARP is to unicast - it manages group membership at Layer 3.',
   },
   {
     id: 'q6',
-    question: 'What happens when a switch receives a frame with an unknown destination MAC address?',
+    question:
+      'What happens when a switch receives a frame with an unknown destination MAC address?',
     options: [
       'Drops the frame',
       'Floods the frame out all ports except the source port',
       'Sends it to the default gateway',
-      'Stores it in a queue'
+      'Stores it in a queue',
     ],
     correctAnswer: 1,
-    explanation: 'When the destination MAC is not in the MAC address table, the switch floods the frame out all ports (except source) to ensure it reaches the destination.',
-    examTip: 'This is called "flooding" - important for understanding switch behavior and potential MAC flooding attacks.',
+    explanation:
+      'When the destination MAC is not in the MAC address table, the switch floods the frame out all ports (except source) to ensure it reaches the destination.',
+    examTip:
+      'This is called "flooding" - important for understanding switch behavior and potential MAC flooding attacks.',
   },
 ];
 
@@ -162,7 +180,8 @@ const TRAFFIC_SCENARIOS = [
     protocol: 'HTTP/HTTPS',
     source: [0],
     destinations: [5],
-    explanation: 'Direct communication between client and server uses unicast. One sender, one receiver.',
+    explanation:
+      'Direct communication between client and server uses unicast. One sender, one receiver.',
   },
   {
     id: 'scenario-2',
@@ -172,7 +191,8 @@ const TRAFFIC_SCENARIOS = [
     protocol: 'RTP/UDP',
     source: [0],
     destinations: [2, 4, 6, 8],
-    explanation: 'Multicast efficiently delivers one stream to multiple subscribers. Bandwidth-efficient for live media.',
+    explanation:
+      'Multicast efficiently delivers one stream to multiple subscribers. Bandwidth-efficient for live media.',
   },
   {
     id: 'scenario-3',
@@ -182,7 +202,8 @@ const TRAFFIC_SCENARIOS = [
     protocol: 'DNS',
     source: [0],
     destinations: [3, 7, 9],
-    explanation: 'Anycast routes to nearest DNS server. Provides redundancy and improved response time.',
+    explanation:
+      'Anycast routes to nearest DNS server. Provides redundancy and improved response time.',
   },
   {
     id: 'scenario-4',
@@ -192,7 +213,8 @@ const TRAFFIC_SCENARIOS = [
     protocol: 'ARP',
     source: [0],
     destinations: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    explanation: 'ARP broadcasts to all devices on local network to find which device owns an IP address.',
+    explanation:
+      'ARP broadcasts to all devices on local network to find which device owns an IP address.',
   },
 ];
 
@@ -201,7 +223,9 @@ const TRAFFIC_SCENARIOS = [
 // =============================================================================
 
 export const TrafficTypeDemoEnhanced: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'visualizer' | 'mac-learning' | 'broadcast-storm' | 'multicast' | 'analysis' | 'exam'>('visualizer');
+  const [activeTab, setActiveTab] = useState<
+    'visualizer' | 'mac-learning' | 'broadcast-storm' | 'multicast' | 'analysis' | 'exam'
+  >('visualizer');
 
   return (
     <div className="traffic-demo-enhanced">
@@ -304,88 +328,95 @@ const TrafficVisualizer: React.FC = () => {
     return colors[type] || '#3498db';
   };
 
-  const drawNetwork = useCallback((ctx: CanvasRenderingContext2D) => {
-    // Clear canvas
-    ctx.clearRect(0, 0, 800, 600);
+  const drawNetwork = useCallback(
+    (ctx: CanvasRenderingContext2D) => {
+      // Clear canvas
+      ctx.clearRect(0, 0, 800, 600);
 
-    // Draw connections (mesh network)
-    ctx.strokeStyle = '#dfe6e9';
-    ctx.lineWidth = 1;
-    nodes.forEach((node, i) => {
-      nodes.forEach((otherNode, j) => {
-        if (i < j) {
-          ctx.beginPath();
-          ctx.moveTo(node.x, node.y);
-          ctx.lineTo(otherNode.x, otherNode.y);
-          ctx.stroke();
+      // Draw connections (mesh network)
+      ctx.strokeStyle = '#dfe6e9';
+      ctx.lineWidth = 1;
+      nodes.forEach((node, i) => {
+        nodes.forEach((otherNode, j) => {
+          if (i < j) {
+            ctx.beginPath();
+            ctx.moveTo(node.x, node.y);
+            ctx.lineTo(otherNode.x, otherNode.y);
+            ctx.stroke();
+          }
+        });
+      });
+
+      // Draw nodes
+      nodes.forEach((node) => {
+        const isSource = selectedScenario.source.includes(node.id);
+        const isDestination = selectedScenario.destinations.includes(node.id);
+
+        // Node circle
+        ctx.fillStyle = isSource ? '#e74c3c' : isDestination ? '#2ecc71' : '#3498db';
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 25, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Node border
+        ctx.strokeStyle = isSource || isDestination ? '#f39c12' : '#34495e';
+        ctx.lineWidth = isSource || isDestination ? 3 : 2;
+        ctx.stroke();
+
+        // Node label
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(node.id.toString(), node.x, node.y);
+
+        // Role label
+        if (isSource || isDestination) {
+          ctx.fillStyle = '#2c3e50';
+          ctx.font = '11px Arial';
+          ctx.fillText(isSource ? 'SOURCE' : 'DEST', node.x, node.y + 40);
         }
       });
-    });
 
-    // Draw nodes
-    nodes.forEach((node) => {
-      const isSource = selectedScenario.source.includes(node.id);
-      const isDestination = selectedScenario.destinations.includes(node.id);
+      // Draw packets
+      packets.forEach((packet) => {
+        const fromNode = nodes[packet.from];
+        const toNode = nodes[packet.to];
+        const x = fromNode.x + (toNode.x - fromNode.x) * packet.progress;
+        const y = fromNode.y + (toNode.y - fromNode.y) * packet.progress;
 
-      // Node circle
-      ctx.fillStyle = isSource ? '#e74c3c' : isDestination ? '#2ecc71' : '#3498db';
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, 25, 0, 2 * Math.PI);
-      ctx.fill();
+        // Packet circle
+        ctx.fillStyle = getTrafficColor(packet.type);
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
 
-      // Node border
-      ctx.strokeStyle = isSource || isDestination ? '#f39c12' : '#34495e';
-      ctx.lineWidth = isSource || isDestination ? 3 : 2;
-      ctx.stroke();
-
-      // Node label
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 14px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(node.id.toString(), node.x, node.y);
-
-      // Role label
-      if (isSource || isDestination) {
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = '11px Arial';
-        ctx.fillText(isSource ? 'SOURCE' : 'DEST', node.x, node.y + 40);
-      }
-    });
-
-    // Draw packets
-    packets.forEach((packet) => {
-      const fromNode = nodes[packet.from];
-      const toNode = nodes[packet.to];
-      const x = fromNode.x + (toNode.x - fromNode.x) * packet.progress;
-      const y = fromNode.y + (toNode.y - fromNode.y) * packet.progress;
-
-      // Packet circle
-      ctx.fillStyle = getTrafficColor(packet.type);
-      ctx.beginPath();
-      ctx.arc(x, y, 10, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Packet glow effect
-      const gradient = ctx.createRadialGradient(x, y, 0, x, y, 15);
-      gradient.addColorStop(0, getTrafficColor(packet.type) + '80');
-      gradient.addColorStop(1, getTrafficColor(packet.type) + '00');
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(x, y, 15, 0, 2 * Math.PI);
-      ctx.fill();
-    });
-  }, [nodes, selectedScenario, packets]);
+        // Packet glow effect
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, 15);
+        gradient.addColorStop(0, getTrafficColor(packet.type) + '80');
+        gradient.addColorStop(1, getTrafficColor(packet.type) + '00');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y, 15, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    },
+    [nodes, selectedScenario, packets]
+  );
 
   const animateTraffic = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      return;
+    }
 
     drawNetwork(ctx);
 
@@ -416,7 +447,9 @@ const TrafficVisualizer: React.FC = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
     const ctx = canvas.getContext('2d');
     if (ctx) {
       drawNetwork(ctx);
@@ -1260,11 +1293,7 @@ const BroadcastStormSimulator: React.FC = () => {
               <div
                 className="metric-value"
                 style={{
-                  color: stormActive
-                    ? '#e74c3c'
-                    : stpEnabled && hasLoop
-                      ? '#27ae60'
-                      : '#3498db',
+                  color: stormActive ? '#e74c3c' : stpEnabled && hasLoop ? '#27ae60' : '#3498db',
                 }}
               >
                 {stormActive
@@ -1281,12 +1310,11 @@ const BroadcastStormSimulator: React.FC = () => {
           <h3>How Broadcast Storms Occur:</h3>
           <ol>
             <li>
-              <strong>Redundant Links Create Loop:</strong> Two or more paths exist between
-              switches
+              <strong>Redundant Links Create Loop:</strong> Two or more paths exist between switches
             </li>
             <li>
-              <strong>Broadcast Frame Enters Loop:</strong> A broadcast frame (ARP, DHCP) is sent
-              on the network
+              <strong>Broadcast Frame Enters Loop:</strong> A broadcast frame (ARP, DHCP) is sent on
+              the network
             </li>
             <li>
               <strong>Infinite Forwarding:</strong> Switches forward broadcasts out all ports,
@@ -1393,8 +1421,13 @@ const BroadcastStormSimulator: React.FC = () => {
         }
 
         @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
         }
 
         .stp-block {
@@ -1431,8 +1464,13 @@ const BroadcastStormSimulator: React.FC = () => {
         }
 
         @keyframes flash {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.6; }
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.6;
+          }
         }
 
         .controls {
@@ -1509,8 +1547,13 @@ const BroadcastStormSimulator: React.FC = () => {
         }
 
         @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
         }
 
         .progress-bar {
@@ -1523,7 +1566,9 @@ const BroadcastStormSimulator: React.FC = () => {
 
         .progress-fill {
           height: 100%;
-          transition: width 0.3s, background-color 0.3s;
+          transition:
+            width 0.3s,
+            background-color 0.3s;
           border-radius: 5px;
         }
 
@@ -1539,7 +1584,8 @@ const BroadcastStormSimulator: React.FC = () => {
           margin: 20px 0 15px 0;
         }
 
-        .explanation-section ol, .explanation-section ul {
+        .explanation-section ol,
+        .explanation-section ul {
           line-height: 1.8;
           color: #34495e;
         }
@@ -1647,9 +1693,7 @@ const MulticastGroupsDemo: React.FC = () => {
                     className={`node-button ${isMember ? 'member' : 'non-member'}`}
                   >
                     <div className="node-id">Node {nodeId}</div>
-                    <div className="node-status">
-                      {isMember ? '✓ Subscribed' : '+ Join Group'}
-                    </div>
+                    <div className="node-status">{isMember ? '✓ Subscribed' : '+ Join Group'}</div>
                   </button>
                 );
               })}
@@ -1698,7 +1742,8 @@ const MulticastGroupsDemo: React.FC = () => {
               <li>239.0.0.0/8 - Administratively scoped (private/organization multicast)</li>
               <li>IGMP operates at Layer 3 (Network layer)</li>
               <li>
-                Common uses: IPTV, stock tickers, video conferencing, routing protocols (OSPF, EIGRP)
+                Common uses: IPTV, stock tickers, video conferencing, routing protocols (OSPF,
+                EIGRP)
               </li>
             </ul>
           </Alert>
@@ -1916,8 +1961,7 @@ const TrafficAnalysisTool: React.FC = () => {
       info: 'mDNS Service Discovery',
       type: 'Multicast',
       destMac: '01:00:5E:00:00:FB',
-      explanation:
-        'Multicast to 224.0.0.251 (mDNS). MAC starts with 01:00:5E for IPv4 multicast.',
+      explanation: 'Multicast to 224.0.0.251 (mDNS). MAC starts with 01:00:5E for IPv4 multicast.',
     },
     {
       id: 3,
@@ -1940,8 +1984,7 @@ const TrafficAnalysisTool: React.FC = () => {
       info: 'DNS Query for example.com',
       type: 'Anycast',
       destMac: '00:1A:2B:3C:4D:AA',
-      explanation:
-        '8.8.8.8 is an anycast address. Routed to nearest Google DNS server instance.',
+      explanation: '8.8.8.8 is an anycast address. Routed to nearest Google DNS server instance.',
     },
     {
       id: 5,
@@ -1968,7 +2011,7 @@ const TrafficAnalysisTool: React.FC = () => {
     },
   ];
 
-  const analyzeAddress = (packet: typeof packetCaptures[0]) => {
+  const analyzeAddress = (packet: (typeof packetCaptures)[0]) => {
     const parts: string[] = [];
 
     // Analyze destination IP
@@ -1980,7 +2023,7 @@ const TrafficAnalysisTool: React.FC = () => {
     } else if (destOctets[0] >= 224 && destOctets[0] <= 239) {
       parts.push(`Class D multicast address (${destOctets[0]}.x.x.x range)`);
       if (destOctets[0] === 224 && destOctets[1] === 0 && destOctets[2] === 0) {
-        parts.push('Reserved for local network control (don\'t route beyond subnet)');
+        parts.push("Reserved for local network control (don't route beyond subnet)");
       } else if (destOctets[0] === 239) {
         parts.push('Administratively scoped (organization/private multicast)');
       }
@@ -2037,9 +2080,7 @@ const TrafficAnalysisTool: React.FC = () => {
                   <td>{packet.protocol}</td>
                   <td>{packet.info}</td>
                   <td>
-                    <span className={`type-badge ${packet.type.toLowerCase()}`}>
-                      {packet.type}
-                    </span>
+                    <span className={`type-badge ${packet.type.toLowerCase()}`}>{packet.type}</span>
                   </td>
                 </tr>
               ))}
@@ -2421,12 +2462,16 @@ const ExamPractice: React.FC = () => {
   const question = EXAM_QUESTIONS[currentQuestion];
 
   const handleAnswerSelect = (index: number) => {
-    if (showExplanation) return;
+    if (showExplanation) {
+      return;
+    }
     setSelectedAnswer(index);
   };
 
   const submitAnswer = () => {
-    if (selectedAnswer === null) return;
+    if (selectedAnswer === null) {
+      return;
+    }
 
     setShowExplanation(true);
     if (selectedAnswer === question.correctAnswer && !answeredQuestions.has(currentQuestion)) {
@@ -2506,10 +2551,7 @@ const ExamPractice: React.FC = () => {
                   className={className}
                   disabled={showExplanation}
                 >
-                  <span className="option-letter">
-                    {String.fromCharCode(65 + index)}
-                    .
-                  </span>
+                  <span className="option-letter">{String.fromCharCode(65 + index)}.</span>
                   <span className="option-text">{option}</span>
                   {showExplanation && index === question.correctAnswer && (
                     <span className="check-mark">✓</span>
@@ -2730,7 +2772,8 @@ const ExamPractice: React.FC = () => {
           font-size: 16px;
         }
 
-        .check-mark, .x-mark {
+        .check-mark,
+        .x-mark {
           font-size: 24px;
           font-weight: bold;
         }
@@ -2763,7 +2806,8 @@ const ExamPractice: React.FC = () => {
           margin-bottom: 20px;
         }
 
-        .explanation-content, .exam-tip-content {
+        .explanation-content,
+        .exam-tip-content {
           padding: 20px;
           border-radius: 10px;
           margin-bottom: 15px;
@@ -2779,12 +2823,14 @@ const ExamPractice: React.FC = () => {
           border-left: 4px solid #ffc107;
         }
 
-        .explanation-content h4, .exam-tip-content h4 {
+        .explanation-content h4,
+        .exam-tip-content h4 {
           margin-bottom: 10px;
           color: #2c3e50;
         }
 
-        .explanation-content p, .exam-tip-content p {
+        .explanation-content p,
+        .exam-tip-content p {
           color: #34495e;
           line-height: 1.6;
           margin: 0;

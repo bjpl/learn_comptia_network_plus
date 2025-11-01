@@ -257,3 +257,12 @@ export interface RecommendationResult {
     year5: number;
   };
 }
+
+export interface TroubleshootingScenario {
+  id: string;
+  name: string;
+  description: string;
+  setup: () => { devices: SimulatedDevice[]; connections: NetworkConnection[] };
+  expectedIssue: string;
+  hint: string;
+}

@@ -77,17 +77,22 @@ const SCAN_EXPLANATIONS = {
       'Scanner sends SYN packet',
       'Target responds with SYN-ACK (open) or RST (closed)',
       'Scanner sends ACK to complete handshake',
-      'Scanner sends RST to close connection'
+      'Scanner sends RST to close connection',
     ],
     detection: 'HIGH - Logs created, IDS alerts triggered',
-    useCases: ['Reliable service detection', 'When stealth is not required', 'Troubleshooting connectivity'],
+    useCases: [
+      'Reliable service detection',
+      'When stealth is not required',
+      'Troubleshooting connectivity',
+    ],
     pros: ['Most accurate results', 'Works through most firewalls', 'Clear service identification'],
-    cons: ['Easily logged', 'IDS detection', 'Slower than SYN scan']
+    cons: ['Easily logged', 'IDS detection', 'Slower than SYN scan'],
   },
   'syn-scan': {
     name: 'SYN Scan (Stealth/Half-Open)',
     stealth: true,
-    description: 'Sends SYN, receives SYN-ACK, but sends RST instead of ACK. Never completes handshake.',
+    description:
+      'Sends SYN, receives SYN-ACK, but sends RST instead of ACK. Never completes handshake.',
     steps: [
       'Scanner sends SYN packet',
       'Target responds with SYN-ACK (open) or RST (closed)',
@@ -95,23 +100,36 @@ const SCAN_EXPLANATIONS = {
     ],
     detection: 'MEDIUM - May avoid application logs, but IDS can still detect',
     useCases: ['Default nmap scan', 'Stealth scanning', 'Fast network reconnaissance'],
-    pros: ['Faster than TCP Connect', 'Less likely to be logged', 'Good stealth/reliability balance'],
-    cons: ['Requires raw socket access (root)', 'Still detectable by IDS', 'May be blocked by stateful firewalls']
+    pros: [
+      'Faster than TCP Connect',
+      'Less likely to be logged',
+      'Good stealth/reliability balance',
+    ],
+    cons: [
+      'Requires raw socket access (root)',
+      'Still detectable by IDS',
+      'May be blocked by stateful firewalls',
+    ],
   },
   'udp-scan': {
     name: 'UDP Scan',
     stealth: true,
-    description: 'Sends UDP packets. Response interpretation is tricky due to connectionless nature.',
+    description:
+      'Sends UDP packets. Response interpretation is tricky due to connectionless nature.',
     steps: [
       'Scanner sends UDP packet to port',
       'Closed port: ICMP Port Unreachable',
       'Open port: Usually no response (or service-specific response)',
-      'Filtered: No response at all'
+      'Filtered: No response at all',
     ],
     detection: 'LOW - No connection state, harder to detect',
     useCases: ['DNS discovery', 'SNMP detection', 'DHCP server identification'],
     pros: ['Discovers UDP services', 'Very stealthy', 'Less commonly scanned'],
-    cons: ['Very slow (timeout-based)', 'Ambiguous results (open|filtered)', 'Can trigger rate limiting']
+    cons: [
+      'Very slow (timeout-based)',
+      'Ambiguous results (open|filtered)',
+      'Can trigger rate limiting',
+    ],
   },
   'ack-scan': {
     name: 'ACK Scan (Firewall Detection)',
@@ -120,28 +138,33 @@ const SCAN_EXPLANATIONS = {
     steps: [
       'Scanner sends ACK packet (unsolicited)',
       'Unfiltered port: RST response',
-      'Filtered port: No response or ICMP unreachable'
+      'Filtered port: No response or ICMP unreachable',
     ],
     detection: 'LOW - Looks like normal traffic anomaly',
-    useCases: ['Firewall rule mapping', 'Detecting stateful firewalls', 'Network security assessment'],
+    useCases: [
+      'Firewall rule mapping',
+      'Detecting stateful firewalls',
+      'Network security assessment',
+    ],
     pros: ['Maps firewall rules', 'Very stealthy', 'Bypasses some IDS'],
-    cons: ['Does not identify open ports', 'Limited practical use', 'Requires interpretation']
+    cons: ['Does not identify open ports', 'Limited practical use', 'Requires interpretation'],
   },
   'banner-grab': {
     name: 'Service Banner Grabbing',
     stealth: false,
-    description: 'Connects to service and retrieves version information for vulnerability assessment.',
+    description:
+      'Connects to service and retrieves version information for vulnerability assessment.',
     steps: [
       'Complete TCP connection to service',
       'Send protocol-specific request',
       'Capture service banner/version',
-      'Analyze for vulnerabilities'
+      'Analyze for vulnerabilities',
     ],
     detection: 'HIGH - Full connection logged',
     useCases: ['Version detection', 'Vulnerability scanning', 'OS fingerprinting'],
     pros: ['Accurate version info', 'Identifies vulnerabilities', 'OS detection possible'],
-    cons: ['Highly detectable', 'Slow process', 'May trigger alarms']
-  }
+    cons: ['Highly detectable', 'Slow process', 'May trigger alarms'],
+  },
 };
 
 // ==================== MAIN COMPONENT ====================
@@ -156,12 +179,12 @@ export const PortScannerEnhanced: React.FC = () => {
     idsEnabled: false,
     rateLimitEnabled: false,
     portKnocking: false,
-    rules: COMMON_PORTS.slice(0, 5).map(p => ({
+    rules: COMMON_PORTS.slice(0, 5).map((p) => ({
       id: `rule-${p.port}`,
       port: p.port,
       action: 'allow',
-      enabled: false
-    }))
+      enabled: false,
+    })),
   });
   const [showDisclaimer, setShowDisclaimer] = useState(true);
   const [terminalOutput, setTerminalOutput] = useState<string[]>([
@@ -173,7 +196,7 @@ export const PortScannerEnhanced: React.FC = () => {
     '⚠️  DISCLAIMER: This is an EDUCATIONAL SIMULATOR only.',
     '   Real port scanning without authorization is ILLEGAL.',
     '   Use only on networks you own or have permission to test.',
-    ''
+    '',
   ]);
 
   const terminalRef = useRef<HTMLDivElement>(null);
@@ -187,87 +210,299 @@ export const PortScannerEnhanced: React.FC = () => {
 
   const addTerminalOutput = (lines: string | string[]) => {
     const newLines = Array.isArray(lines) ? lines : [lines];
-    setTerminalOutput(prev => [...prev, ...newLines]);
+    setTerminalOutput((prev) => [...prev, ...newLines]);
   };
 
   // ==================== SCAN SIMULATION ====================
 
-  const simulatePacketExchange = (scanType: ScanType, port: number, isFiltered: boolean): PacketExchange[] => {
+  const simulatePacketExchange = (
+    scanType: ScanType,
+    port: number,
+    isFiltered: boolean
+  ): PacketExchange[] => {
     const isOpen = Math.random() > 0.5;
 
     switch (scanType) {
       case 'tcp-connect':
         if (isFiltered) {
           return [
-            { step: 1, source: 'scanner', flags: ['SYN'], type: 'SYN', description: 'Scanner initiates connection', detected: true },
-            { step: 2, source: 'target', type: 'TIMEOUT', description: 'No response (filtered by firewall)', detected: true }
+            {
+              step: 1,
+              source: 'scanner',
+              flags: ['SYN'],
+              type: 'SYN',
+              description: 'Scanner initiates connection',
+              detected: true,
+            },
+            {
+              step: 2,
+              source: 'target',
+              type: 'TIMEOUT',
+              description: 'No response (filtered by firewall)',
+              detected: true,
+            },
           ];
         }
-        return isOpen ? [
-          { step: 1, source: 'scanner', flags: ['SYN'], type: 'SYN', description: 'Scanner initiates connection', detected: true },
-          { step: 2, source: 'target', flags: ['SYN', 'ACK'], type: 'SYN-ACK', description: 'Target accepts connection', detected: true },
-          { step: 3, source: 'scanner', flags: ['ACK'], type: 'ACK', description: 'Handshake complete', detected: true },
-          { step: 4, source: 'scanner', flags: ['RST'], type: 'RST', description: 'Scanner terminates', detected: true }
-        ] : [
-          { step: 1, source: 'scanner', flags: ['SYN'], type: 'SYN', description: 'Scanner initiates connection', detected: true },
-          { step: 2, source: 'target', flags: ['RST', 'ACK'], type: 'RST-ACK', description: 'Port closed, connection refused', detected: true }
-        ];
+        return isOpen
+          ? [
+              {
+                step: 1,
+                source: 'scanner',
+                flags: ['SYN'],
+                type: 'SYN',
+                description: 'Scanner initiates connection',
+                detected: true,
+              },
+              {
+                step: 2,
+                source: 'target',
+                flags: ['SYN', 'ACK'],
+                type: 'SYN-ACK',
+                description: 'Target accepts connection',
+                detected: true,
+              },
+              {
+                step: 3,
+                source: 'scanner',
+                flags: ['ACK'],
+                type: 'ACK',
+                description: 'Handshake complete',
+                detected: true,
+              },
+              {
+                step: 4,
+                source: 'scanner',
+                flags: ['RST'],
+                type: 'RST',
+                description: 'Scanner terminates',
+                detected: true,
+              },
+            ]
+          : [
+              {
+                step: 1,
+                source: 'scanner',
+                flags: ['SYN'],
+                type: 'SYN',
+                description: 'Scanner initiates connection',
+                detected: true,
+              },
+              {
+                step: 2,
+                source: 'target',
+                flags: ['RST', 'ACK'],
+                type: 'RST-ACK',
+                description: 'Port closed, connection refused',
+                detected: true,
+              },
+            ];
 
       case 'syn-scan':
         if (isFiltered) {
           return [
-            { step: 1, source: 'scanner', flags: ['SYN'], type: 'SYN', description: 'Scanner sends stealth probe', detected: false },
-            { step: 2, source: 'target', type: 'TIMEOUT', description: 'No response (filtered)', detected: false }
+            {
+              step: 1,
+              source: 'scanner',
+              flags: ['SYN'],
+              type: 'SYN',
+              description: 'Scanner sends stealth probe',
+              detected: false,
+            },
+            {
+              step: 2,
+              source: 'target',
+              type: 'TIMEOUT',
+              description: 'No response (filtered)',
+              detected: false,
+            },
           ];
         }
-        return isOpen ? [
-          { step: 1, source: 'scanner', flags: ['SYN'], type: 'SYN', description: 'Scanner sends stealth probe', detected: false },
-          { step: 2, source: 'target', flags: ['SYN', 'ACK'], type: 'SYN-ACK', description: 'Port open, but...', detected: true },
-          { step: 3, source: 'scanner', flags: ['RST'], type: 'RST', description: 'Scanner aborts (no connection log!)', detected: true }
-        ] : [
-          { step: 1, source: 'scanner', flags: ['SYN'], type: 'SYN', description: 'Scanner sends stealth probe', detected: false },
-          { step: 2, source: 'target', flags: ['RST', 'ACK'], type: 'RST-ACK', description: 'Port closed', detected: true }
-        ];
+        return isOpen
+          ? [
+              {
+                step: 1,
+                source: 'scanner',
+                flags: ['SYN'],
+                type: 'SYN',
+                description: 'Scanner sends stealth probe',
+                detected: false,
+              },
+              {
+                step: 2,
+                source: 'target',
+                flags: ['SYN', 'ACK'],
+                type: 'SYN-ACK',
+                description: 'Port open, but...',
+                detected: true,
+              },
+              {
+                step: 3,
+                source: 'scanner',
+                flags: ['RST'],
+                type: 'RST',
+                description: 'Scanner aborts (no connection log!)',
+                detected: true,
+              },
+            ]
+          : [
+              {
+                step: 1,
+                source: 'scanner',
+                flags: ['SYN'],
+                type: 'SYN',
+                description: 'Scanner sends stealth probe',
+                detected: false,
+              },
+              {
+                step: 2,
+                source: 'target',
+                flags: ['RST', 'ACK'],
+                type: 'RST-ACK',
+                description: 'Port closed',
+                detected: true,
+              },
+            ];
 
       case 'udp-scan':
         if (isFiltered) {
           return [
-            { step: 1, source: 'scanner', type: 'UDP', description: 'Send UDP packet', detected: false },
-            { step: 2, source: 'target', type: 'TIMEOUT', description: 'No response (open|filtered)', detected: false }
+            {
+              step: 1,
+              source: 'scanner',
+              type: 'UDP',
+              description: 'Send UDP packet',
+              detected: false,
+            },
+            {
+              step: 2,
+              source: 'target',
+              type: 'TIMEOUT',
+              description: 'No response (open|filtered)',
+              detected: false,
+            },
           ];
         }
-        return isOpen ? [
-          { step: 1, source: 'scanner', type: 'UDP', description: 'Send UDP packet', detected: false },
-          { step: 2, source: 'target', type: 'TIMEOUT', description: 'No response (likely open)', detected: false }
-        ] : [
-          { step: 1, source: 'scanner', type: 'UDP', description: 'Send UDP packet', detected: false },
-          { step: 2, source: 'target', type: 'ICMP', description: 'ICMP Port Unreachable (closed)', detected: true }
-        ];
+        return isOpen
+          ? [
+              {
+                step: 1,
+                source: 'scanner',
+                type: 'UDP',
+                description: 'Send UDP packet',
+                detected: false,
+              },
+              {
+                step: 2,
+                source: 'target',
+                type: 'TIMEOUT',
+                description: 'No response (likely open)',
+                detected: false,
+              },
+            ]
+          : [
+              {
+                step: 1,
+                source: 'scanner',
+                type: 'UDP',
+                description: 'Send UDP packet',
+                detected: false,
+              },
+              {
+                step: 2,
+                source: 'target',
+                type: 'ICMP',
+                description: 'ICMP Port Unreachable (closed)',
+                detected: true,
+              },
+            ];
 
       case 'ack-scan':
         if (isFiltered) {
           return [
-            { step: 1, source: 'scanner', flags: ['ACK'], type: 'ACK', description: 'Send unsolicited ACK', detected: false },
-            { step: 2, source: 'target', type: 'TIMEOUT', description: 'No response (filtered)', detected: false }
+            {
+              step: 1,
+              source: 'scanner',
+              flags: ['ACK'],
+              type: 'ACK',
+              description: 'Send unsolicited ACK',
+              detected: false,
+            },
+            {
+              step: 2,
+              source: 'target',
+              type: 'TIMEOUT',
+              description: 'No response (filtered)',
+              detected: false,
+            },
           ];
         }
         return [
-          { step: 1, source: 'scanner', flags: ['ACK'], type: 'ACK', description: 'Send unsolicited ACK', detected: false },
-          { step: 2, source: 'target', flags: ['RST'], type: 'RST', description: 'Port unfiltered', detected: true }
+          {
+            step: 1,
+            source: 'scanner',
+            flags: ['ACK'],
+            type: 'ACK',
+            description: 'Send unsolicited ACK',
+            detected: false,
+          },
+          {
+            step: 2,
+            source: 'target',
+            flags: ['RST'],
+            type: 'RST',
+            description: 'Port unfiltered',
+            detected: true,
+          },
         ];
 
       case 'banner-grab':
         if (isFiltered || !isOpen) {
           return [
-            { step: 1, source: 'scanner', type: 'CONNECT', description: 'Attempt connection', detected: true },
-            { step: 2, source: 'target', type: 'REFUSE', description: 'Connection failed', detected: true }
+            {
+              step: 1,
+              source: 'scanner',
+              type: 'CONNECT',
+              description: 'Attempt connection',
+              detected: true,
+            },
+            {
+              step: 2,
+              source: 'target',
+              type: 'REFUSE',
+              description: 'Connection failed',
+              detected: true,
+            },
           ];
         }
         return [
-          { step: 1, source: 'scanner', type: 'CONNECT', description: 'Establish full connection', detected: true },
-          { step: 2, source: 'target', type: 'BANNER', description: 'Service sends banner', detected: true },
-          { step: 3, source: 'scanner', type: 'ANALYZE', description: 'Analyze version info', detected: true },
-          { step: 4, source: 'scanner', type: 'CLOSE', description: 'Close connection', detected: true }
+          {
+            step: 1,
+            source: 'scanner',
+            type: 'CONNECT',
+            description: 'Establish full connection',
+            detected: true,
+          },
+          {
+            step: 2,
+            source: 'target',
+            type: 'BANNER',
+            description: 'Service sends banner',
+            detected: true,
+          },
+          {
+            step: 3,
+            source: 'scanner',
+            type: 'ANALYZE',
+            description: 'Analyze version info',
+            detected: true,
+          },
+          {
+            step: 4,
+            source: 'scanner',
+            type: 'CLOSE',
+            description: 'Close connection',
+            detected: true,
+          },
         ];
 
       default:
@@ -275,7 +510,11 @@ export const PortScannerEnhanced: React.FC = () => {
     }
   };
 
-  const determinePortState = (scanType: ScanType, exchanges: PacketExchange[], isFiltered: boolean): PortState => {
+  const determinePortState = (
+    scanType: ScanType,
+    exchanges: PacketExchange[],
+    isFiltered: boolean
+  ): PortState => {
     if (isFiltered) {
       return scanType === 'udp-scan' ? 'open|filtered' : 'filtered';
     }
@@ -290,15 +529,19 @@ export const PortScannerEnhanced: React.FC = () => {
       return lastExchange.type === 'ICMP' ? 'closed' : 'open|filtered';
     }
 
-    const hasOpenIndicator = exchanges.some(e =>
-      e.type.includes('SYN-ACK') || e.type === 'BANNER'
+    const hasOpenIndicator = exchanges.some(
+      (e) => e.type.includes('SYN-ACK') || e.type === 'BANNER'
     );
-    const hasClosedIndicator = exchanges.some(e =>
-      e.type.includes('RST') && !e.type.includes('SYN-ACK')
+    const hasClosedIndicator = exchanges.some(
+      (e) => e.type.includes('RST') && !e.type.includes('SYN-ACK')
     );
 
-    if (hasOpenIndicator) return 'open';
-    if (hasClosedIndicator) return 'closed';
+    if (hasOpenIndicator) {
+      return 'open';
+    }
+    if (hasClosedIndicator) {
+      return 'closed';
+    }
 
     return 'filtered';
   };
@@ -321,28 +564,25 @@ export const PortScannerEnhanced: React.FC = () => {
       `  Rate Limit: ${defenseConfig.rateLimitEnabled ? '🟢 ENABLED' : '🔴 DISABLED'}`,
       '',
       `PORT      STATE           SERVICE         DETECTION`,
-      `════════════════════════════════════════════════════════════`
+      `════════════════════════════════════════════════════════════`,
     ]);
 
     const portsToScan = COMMON_PORTS.slice(0, 8);
     const scanResults: ScanResult[] = [];
 
     for (const portInfo of portsToScan) {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Check if port is filtered by firewall
-      const rule = defenseConfig.rules.find(r => r.port === portInfo.port);
-      const isFiltered = defenseConfig.firewallEnabled &&
-                        rule?.enabled &&
-                        rule.action === 'block';
+      const rule = defenseConfig.rules.find((r) => r.port === portInfo.port);
+      const isFiltered = defenseConfig.firewallEnabled && rule?.enabled && rule.action === 'block';
 
       const exchanges = simulatePacketExchange(selectedScanType, portInfo.port, isFiltered);
       const state = determinePortState(selectedScanType, exchanges, isFiltered);
-      const wasDetected = defenseConfig.idsEnabled && exchanges.some(e => e.detected);
+      const wasDetected = defenseConfig.idsEnabled && exchanges.some((e) => e.detected);
 
-      const banner = selectedScanType === 'banner-grab' && state === 'open'
-        ? portInfo.banner
-        : undefined;
+      const banner =
+        selectedScanType === 'banner-grab' && state === 'open' ? portInfo.banner : undefined;
 
       const result: ScanResult = {
         port: portInfo.port,
@@ -351,7 +591,7 @@ export const PortScannerEnhanced: React.FC = () => {
         banner,
         scanType: selectedScanType,
         exchanges,
-        detected: wasDetected
+        detected: wasDetected,
       };
 
       scanResults.push(result);
@@ -375,10 +615,10 @@ export const PortScannerEnhanced: React.FC = () => {
       `════════════════════════════════════════════════════════════`,
       '',
       `Scan Complete: ${scanResults.length} ports scanned`,
-      `Detection Events: ${scanResults.filter(r => r.detected).length}`,
+      `Detection Events: ${scanResults.filter((r) => r.detected).length}`,
       ``,
       `Click on any port for detailed packet analysis`,
-      ''
+      '',
     ]);
 
     setScanning(false);
@@ -392,27 +632,29 @@ export const PortScannerEnhanced: React.FC = () => {
         <h4>Packet Exchange Analysis - Port {result.port}</h4>
         <div className="exchange-timeline">
           {result.exchanges.map((exchange, idx) => (
-            <div key={idx} className={`exchange-step ${exchange.source} ${exchange.detected ? 'detected' : ''}`}>
+            <div
+              key={idx}
+              className={`exchange-step ${exchange.source} ${exchange.detected ? 'detected' : ''}`}
+            >
               <div className="step-number">Step {exchange.step}</div>
               <div className="step-content">
                 <div className="step-source">
                   {exchange.source === 'scanner' ? '📡 Scanner' : '🖥️ Target'}
-                  {exchange.flags && (
-                    <span className="flags"> [{exchange.flags.join(', ')}]</span>
-                  )}
+                  {exchange.flags && <span className="flags"> [{exchange.flags.join(', ')}]</span>}
                 </div>
                 <div className="step-type">{exchange.type}</div>
                 <div className="step-description">{exchange.description}</div>
-                {exchange.detected && (
-                  <div className="detection-badge">🚨 Logged/Detected</div>
-                )}
+                {exchange.detected && <div className="detection-badge">🚨 Logged/Detected</div>}
               </div>
             </div>
           ))}
         </div>
 
         <div className="exchange-summary">
-          <h5>Scan Result: <span className={`state-${result.state}`}>{result.state.toUpperCase()}</span></h5>
+          <h5>
+            Scan Result:{' '}
+            <span className={`state-${result.state}`}>{result.state.toUpperCase()}</span>
+          </h5>
           {result.banner && (
             <div className="banner-info">
               <strong>Banner:</strong> {result.banner}
@@ -484,10 +726,12 @@ export const PortScannerEnhanced: React.FC = () => {
             <input
               type="checkbox"
               checked={defenseConfig.firewallEnabled}
-              onChange={e => setDefenseConfig(prev => ({
-                ...prev,
-                firewallEnabled: e.target.checked
-              }))}
+              onChange={(e) =>
+                setDefenseConfig((prev) => ({
+                  ...prev,
+                  firewallEnabled: e.target.checked,
+                }))
+              }
             />
             <span>🛡️ Firewall (Port Filtering)</span>
           </label>
@@ -496,10 +740,12 @@ export const PortScannerEnhanced: React.FC = () => {
             <input
               type="checkbox"
               checked={defenseConfig.idsEnabled}
-              onChange={e => setDefenseConfig(prev => ({
-                ...prev,
-                idsEnabled: e.target.checked
-              }))}
+              onChange={(e) =>
+                setDefenseConfig((prev) => ({
+                  ...prev,
+                  idsEnabled: e.target.checked,
+                }))
+              }
             />
             <span>🚨 IDS/IPS (Intrusion Detection)</span>
           </label>
@@ -508,10 +754,12 @@ export const PortScannerEnhanced: React.FC = () => {
             <input
               type="checkbox"
               checked={defenseConfig.rateLimitEnabled}
-              onChange={e => setDefenseConfig(prev => ({
-                ...prev,
-                rateLimitEnabled: e.target.checked
-              }))}
+              onChange={(e) =>
+                setDefenseConfig((prev) => ({
+                  ...prev,
+                  rateLimitEnabled: e.target.checked,
+                }))
+              }
             />
             <span>⏱️ Rate Limiting</span>
           </label>
@@ -520,10 +768,12 @@ export const PortScannerEnhanced: React.FC = () => {
             <input
               type="checkbox"
               checked={defenseConfig.portKnocking}
-              onChange={e => setDefenseConfig(prev => ({
-                ...prev,
-                portKnocking: e.target.checked
-              }))}
+              onChange={(e) =>
+                setDefenseConfig((prev) => ({
+                  ...prev,
+                  portKnocking: e.target.checked,
+                }))
+              }
             />
             <span>🚪 Port Knocking</span>
           </label>
@@ -532,29 +782,33 @@ export const PortScannerEnhanced: React.FC = () => {
         {defenseConfig.firewallEnabled && (
           <div className="firewall-rules">
             <h4>Firewall Rules:</h4>
-            {defenseConfig.rules.map(rule => (
+            {defenseConfig.rules.map((rule) => (
               <div key={rule.id} className="firewall-rule">
                 <label>
                   <input
                     type="checkbox"
                     checked={rule.enabled}
-                    onChange={e => setDefenseConfig(prev => ({
-                      ...prev,
-                      rules: prev.rules.map(r =>
-                        r.id === rule.id ? { ...r, enabled: e.target.checked } : r
-                      )
-                    }))}
+                    onChange={(e) =>
+                      setDefenseConfig((prev) => ({
+                        ...prev,
+                        rules: prev.rules.map((r) =>
+                          r.id === rule.id ? { ...r, enabled: e.target.checked } : r
+                        ),
+                      }))
+                    }
                   />
                   Port {rule.port}
                 </label>
                 <select
                   value={rule.action}
-                  onChange={e => setDefenseConfig(prev => ({
-                    ...prev,
-                    rules: prev.rules.map(r =>
-                      r.id === rule.id ? { ...r, action: e.target.value as any } : r
-                    )
-                  }))}
+                  onChange={(e) =>
+                    setDefenseConfig((prev) => ({
+                      ...prev,
+                      rules: prev.rules.map((r) =>
+                        r.id === rule.id ? { ...r, action: e.target.value as any } : r
+                      ),
+                    }))
+                  }
                   disabled={!rule.enabled}
                 >
                   <option value="allow">Allow</option>
@@ -576,7 +830,9 @@ export const PortScannerEnhanced: React.FC = () => {
           <div className="disclaimer-content">
             <h2>⚠️ EDUCATIONAL USE ONLY</h2>
             <div className="disclaimer-text">
-              <p><strong>IMPORTANT LEGAL NOTICE:</strong></p>
+              <p>
+                <strong>IMPORTANT LEGAL NOTICE:</strong>
+              </p>
               <p>This is a SIMULATED port scanner for EDUCATIONAL purposes only.</p>
               <p>Unauthorized port scanning is ILLEGAL and may violate:</p>
               <ul>
@@ -584,7 +840,9 @@ export const PortScannerEnhanced: React.FC = () => {
                 <li>Your organization's acceptable use policy</li>
                 <li>International cybersecurity laws</li>
               </ul>
-              <p><strong>Only scan networks you OWN or have WRITTEN PERMISSION to test.</strong></p>
+              <p>
+                <strong>Only scan networks you OWN or have WRITTEN PERMISSION to test.</strong>
+              </p>
               <p>This simulator teaches Network+ concepts without performing real scans.</p>
             </div>
             <button onClick={() => setShowDisclaimer(false)} className="accept-button">
@@ -596,7 +854,9 @@ export const PortScannerEnhanced: React.FC = () => {
 
       <div className="scanner-header">
         <h1>🔍 Enhanced Port Scanner Simulator</h1>
-        <p className="subtitle">Learn network security scanning techniques - CompTIA Network+ Certification</p>
+        <p className="subtitle">
+          Learn network security scanning techniques - CompTIA Network+ Certification
+        </p>
       </div>
 
       <div className="scanner-layout">
@@ -608,7 +868,7 @@ export const PortScannerEnhanced: React.FC = () => {
               <label>Scan Type:</label>
               <select
                 value={selectedScanType}
-                onChange={e => setSelectedScanType(e.target.value as ScanType)}
+                onChange={(e) => setSelectedScanType(e.target.value as ScanType)}
                 disabled={scanning}
               >
                 <option value="tcp-connect">TCP Connect Scan (Non-Stealth)</option>
@@ -619,11 +879,7 @@ export const PortScannerEnhanced: React.FC = () => {
               </select>
             </div>
 
-            <button
-              onClick={startScan}
-              disabled={scanning}
-              className="scan-button"
-            >
+            <button onClick={startScan} disabled={scanning} className="scan-button">
               {scanning ? '⟳ Scanning...' : '🚀 Start Scan'}
             </button>
           </div>
@@ -635,7 +891,9 @@ export const PortScannerEnhanced: React.FC = () => {
         <div className="right-panel">
           <div className="terminal" ref={terminalRef}>
             {terminalOutput.map((line, idx) => (
-              <div key={idx} className="terminal-line">{line}</div>
+              <div key={idx} className="terminal-line">
+                {line}
+              </div>
             ))}
           </div>
 
@@ -643,7 +901,7 @@ export const PortScannerEnhanced: React.FC = () => {
             <div className="results-panel">
               <h3>Scan Results - Click for Details</h3>
               <div className="results-grid">
-                {results.map(result => (
+                {results.map((result) => (
                   <div
                     key={result.port}
                     className={`result-card ${selectedPort === result.port ? 'selected' : ''} state-${result.state}`}
@@ -661,7 +919,7 @@ export const PortScannerEnhanced: React.FC = () => {
 
               {selectedPort && (
                 <div className="packet-details">
-                  {renderPacketExchange(results.find(r => r.port === selectedPort)!)}
+                  {renderPacketExchange(results.find((r) => r.port === selectedPort)!)}
                 </div>
               )}
             </div>
@@ -670,11 +928,24 @@ export const PortScannerEnhanced: React.FC = () => {
           <div className="exam-tips">
             <h3>📚 CompTIA Network+ Exam Tips</h3>
             <ul>
-              <li><strong>Security Implications:</strong> Open ports are potential attack vectors</li>
-              <li><strong>Common Services:</strong> Memorize standard ports (21=FTP, 22=SSH, 80=HTTP, 443=HTTPS)</li>
-              <li><strong>Firewall vs ACL:</strong> Firewalls are stateful, ACLs are stateless</li>
-              <li><strong>Troubleshooting:</strong> Closed = service stopped, Filtered = firewall blocking</li>
-              <li><strong>Best Practices:</strong> Disable unnecessary services, use non-standard ports for security through obscurity</li>
+              <li>
+                <strong>Security Implications:</strong> Open ports are potential attack vectors
+              </li>
+              <li>
+                <strong>Common Services:</strong> Memorize standard ports (21=FTP, 22=SSH, 80=HTTP,
+                443=HTTPS)
+              </li>
+              <li>
+                <strong>Firewall vs ACL:</strong> Firewalls are stateful, ACLs are stateless
+              </li>
+              <li>
+                <strong>Troubleshooting:</strong> Closed = service stopped, Filtered = firewall
+                blocking
+              </li>
+              <li>
+                <strong>Best Practices:</strong> Disable unnecessary services, use non-standard
+                ports for security through obscurity
+              </li>
             </ul>
           </div>
         </div>

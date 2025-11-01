@@ -1,6 +1,7 @@
 /**
- * CompTIA Network+ - Component 17: Scenario-Based Subnet Designer
- * Interactive tool for designing subnet allocations using VLSM/CIDR
+ * CompTIA Network+ - Component 16: Enhanced Subnet Designer
+ * Interactive tool for designing subnet allocations with VLSM, visualization, and utilities
+ * Features: VLSM calculator, subnet visualization, practice scenarios, cheat sheet, binary converter
  */
 
 import React, { useState, useEffect } from 'react';
@@ -28,11 +29,29 @@ import {
   FormControl,
   InputLabel,
   Divider,
+  TextField,
+  LinearProgress,
+  Tooltip,
+  IconButton,
 } from '@mui/material';
-import { ExpandMore, CheckCircle, Warning, Refresh, Calculate } from '@mui/icons-material';
+import {
+  ExpandMore,
+  CheckCircle,
+  Warning,
+  Refresh,
+  Calculate,
+  ContentCopy,
+  Info,
+} from '@mui/icons-material';
 import type { SubnetScenario, SubnetAllocation, SubnetDesignResult } from './ipv4-types';
 import { subnetScenarios } from './ipv4-data';
-import { calculateVLSM, isIPInSubnet } from '../../utils/networking';
+import { calculateVLSM, isIPInSubnet, ipToInt } from '../../utils/networking';
+
+// Helper component for binary conversion
+interface BinaryConverterState {
+  ipInput: string;
+  maskInput: string;
+}
 
 const SubnetDesigner: React.FC = () => {
   const [selectedScenario, setSelectedScenario] = useState<SubnetScenario>(subnetScenarios[0]);
@@ -40,6 +59,43 @@ const SubnetDesigner: React.FC = () => {
   const [showHints, setShowHints] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
   const [designResult, setDesignResult] = useState<SubnetDesignResult | null>(null);
+  const [binaryConverter, setBinaryConverter] = useState<BinaryConverterState>({
+    ipInput: '192.168.1.0',
+    maskInput: '255.255.255.0',
+  });
+
+  // Helper: Convert IP to binary
+  const ipToBinary = (ip: string): string => {
+    try {
+      return ip
+        .split('.')
+        .map((octet) => parseInt(octet).toString(2).padStart(8, '0'))
+        .join('.');
+    } catch {
+      return 'Invalid IP';
+    }
+  };
+
+  // Helper: Get CIDR from mask
+  const maskToCidr = (mask: string): number => {
+    const maskInt = ipToInt(mask);
+    let cidr = 0;
+    for (let i = 31; i >= 0; i--) {
+      if ((maskInt & (1 << i)) !== 0) {
+        cidr++;
+      } else {
+        break;
+      }
+    }
+    return cidr;
+  };
+
+  // Helper: Copy to clipboard
+  const copyToClipboard = (text: string): void => {
+    navigator.clipboard.writeText(text).catch(() => {
+      alert('Failed to copy to clipboard');
+    });
+  };
 
   // Auto-calculate when scenario changes
   useEffect(() => {
@@ -185,6 +241,160 @@ const SubnetDesigner: React.FC = () => {
     }
   };
 
+  // Subnet Visualization Component
+  const SubnetVisualizer = ({ allocation }: { allocation: SubnetAllocation }) => {
+    const hostPercentage = (allocation.hostsNeeded / allocation.usableHosts) * 100;
+    return (
+      <Box sx={{ mb: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+          <Typography variant="caption" fontWeight="bold">
+            {allocation.name}
+          </Typography>
+          <Typography variant="caption">
+            {allocation.hostsNeeded} / {allocation.usableHosts}
+          </Typography>
+        </Box>
+        <LinearProgress variant="determinate" value={hostPercentage} sx={{ mb: 0.5 }} />
+        <Typography variant="caption" color="text.secondary">
+          Range: {allocation.firstHost} - {allocation.lastHost}
+        </Typography>
+      </Box>
+    );
+  };
+
+  // Binary Converter Component
+  const BinaryConverter = () => {
+    const ipBinary = ipToBinary(binaryConverter.ipInput);
+    const maskBinary = ipToBinary(binaryConverter.maskInput);
+    const cidr = maskToCidr(binaryConverter.maskInput);
+
+    return (
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Binary Converter
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="IP Address"
+                value={binaryConverter.ipInput}
+                onChange={(e) =>
+                  setBinaryConverter({ ...binaryConverter, ipInput: e.target.value })
+                }
+                size="small"
+                variant="outlined"
+              />
+              <Paper variant="outlined" sx={{ p: 2, mt: 2, bgcolor: '#f5f5f5' }}>
+                <Typography variant="caption" color="text.secondary">
+                  Binary:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ fontFamily: 'monospace', wordBreak: 'break-all', mt: 1 }}
+                >
+                  {ipBinary}
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Subnet Mask"
+                value={binaryConverter.maskInput}
+                onChange={(e) =>
+                  setBinaryConverter({ ...binaryConverter, maskInput: e.target.value })
+                }
+                size="small"
+                variant="outlined"
+              />
+              <Paper variant="outlined" sx={{ p: 2, mt: 2, bgcolor: '#f5f5f5' }}>
+                <Typography variant="caption" color="text.secondary">
+                  CIDR: /{cidr}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ fontFamily: 'monospace', wordBreak: 'break-all', mt: 1 }}
+                >
+                  {maskBinary}
+                </Typography>
+              </Paper>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  // Subnet Cheat Sheet Component
+  const SubnetCheatSheet = () => {
+    const cheatData = [
+      { cidr: '/30', mask: '255.255.255.252', hosts: 2, common: 'Point-to-point links' },
+      { cidr: '/25', mask: '255.255.255.128', hosts: 126, common: 'Small subnets' },
+      { cidr: '/24', mask: '255.255.255.0', hosts: 254, common: 'Class C default' },
+      { cidr: '/23', mask: '255.255.254.0', hosts: 510, common: 'Medium subnets' },
+      { cidr: '/22', mask: '255.255.252.0', hosts: 1022, common: 'Large subnets' },
+      { cidr: '/21', mask: '255.255.248.0', hosts: 2046, common: 'Very large' },
+      { cidr: '/20', mask: '255.255.240.0', hosts: 4094, common: 'Enterprise' },
+      { cidr: '/16', mask: '255.255.0.0', hosts: 65534, common: 'Class B default' },
+    ];
+
+    return (
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Subnet Cheat Sheet
+          </Typography>
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+                  <TableCell>
+                    <strong>CIDR</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Subnet Mask</strong>
+                  </TableCell>
+                  <TableCell align="right">
+                    <strong>Usable Hosts</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Common Use</strong>
+                  </TableCell>
+                  <TableCell align="center">
+                    <strong>Copy</strong>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {cheatData.map((row) => (
+                  <TableRow key={row.cidr}>
+                    <TableCell>
+                      <code>{row.cidr}</code>
+                    </TableCell>
+                    <TableCell>
+                      <code>{row.mask}</code>
+                    </TableCell>
+                    <TableCell align="right">{row.hosts}</TableCell>
+                    <TableCell>{row.common}</TableCell>
+                    <TableCell align="center">
+                      <Tooltip title="Copy mask">
+                        <IconButton size="small" onClick={() => copyToClipboard(row.mask)}>
+                          <ContentCopy fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     // @ts-expect-error - Complex MUI sx prop types
     <Box sx={{ p: 3 }}>
@@ -313,67 +523,84 @@ const SubnetDesigner: React.FC = () => {
 
       {/* Allocation Results */}
       {allocations.length > 0 && (
-        <Card sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Subnet Allocations
-            </Typography>
-            <TableContainer component={Paper} variant="outlined">
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Network</TableCell>
-                    <TableCell>CIDR</TableCell>
-                    <TableCell>Subnet Mask</TableCell>
-                    <TableCell>Usable Range</TableCell>
-                    <TableCell align="right">Usable Hosts</TableCell>
-                    <TableCell align="right">Needed</TableCell>
-                    <TableCell align="right">Wasted</TableCell>
-                    <TableCell align="right">Efficiency</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {allocations.map((alloc) => (
-                    <TableRow key={alloc.id}>
-                      <TableCell>{alloc.name}</TableCell>
-                      <TableCell>
-                        <code>{alloc.network}</code>
-                      </TableCell>
-                      <TableCell>
-                        <code>/{alloc.cidr}</code>
-                      </TableCell>
-                      <TableCell>
-                        <code>{alloc.subnetMask}</code>
-                      </TableCell>
-                      <TableCell>
-                        <code style={{ fontSize: '0.75rem' }}>
-                          {alloc.firstHost} - {alloc.lastHost}
-                        </code>
-                      </TableCell>
-                      <TableCell align="right">{alloc.usableHosts}</TableCell>
-                      <TableCell align="right">{alloc.hostsNeeded}</TableCell>
-                      <TableCell align="right">{alloc.wastedAddresses}</TableCell>
-                      <TableCell align="right">
-                        <Chip
-                          label={`${alloc.efficiency}%`}
-                          size="small"
-                          color={
-                            alloc.efficiency >= 75
-                              ? 'success'
-                              : alloc.efficiency >= 50
-                                ? 'warning'
-                                : 'error'
-                          }
-                        />
-                      </TableCell>
+        <>
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Subnet Allocations
+              </Typography>
+              <TableContainer component={Paper} variant="outlined">
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Network</TableCell>
+                      <TableCell>CIDR</TableCell>
+                      <TableCell>Subnet Mask</TableCell>
+                      <TableCell>Usable Range</TableCell>
+                      <TableCell align="right">Usable Hosts</TableCell>
+                      <TableCell align="right">Needed</TableCell>
+                      <TableCell align="right">Wasted</TableCell>
+                      <TableCell align="right">Efficiency</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
-        </Card>
+                  </TableHead>
+                  <TableBody>
+                    {allocations.map((alloc) => (
+                      <TableRow key={alloc.id}>
+                        <TableCell>{alloc.name}</TableCell>
+                        <TableCell>
+                          <code>{alloc.network}</code>
+                        </TableCell>
+                        <TableCell>
+                          <code>/{alloc.cidr}</code>
+                        </TableCell>
+                        <TableCell>
+                          <code>{alloc.subnetMask}</code>
+                        </TableCell>
+                        <TableCell>
+                          <code style={{ fontSize: '0.75rem' }}>
+                            {alloc.firstHost} - {alloc.lastHost}
+                          </code>
+                        </TableCell>
+                        <TableCell align="right">{alloc.usableHosts}</TableCell>
+                        <TableCell align="right">{alloc.hostsNeeded}</TableCell>
+                        <TableCell align="right">{alloc.wastedAddresses}</TableCell>
+                        <TableCell align="right">
+                          <Chip
+                            label={`${alloc.efficiency}%`}
+                            size="small"
+                            color={
+                              alloc.efficiency >= 75
+                                ? 'success'
+                                : alloc.efficiency >= 50
+                                  ? 'warning'
+                                  : 'error'
+                            }
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
+
+          {/* Subnet Visualization */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Host Allocation Visualization
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                Visual representation of address usage efficiency for each subnet
+              </Typography>
+              {allocations.map((alloc) => (
+                <SubnetVisualizer key={alloc.id} allocation={alloc} />
+              ))}
+            </CardContent>
+          </Card>
+        </>
       )}
 
       {/* Validation Results */}
@@ -460,6 +687,32 @@ const SubnetDesigner: React.FC = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Binary Converter Tool */}
+      <Box sx={{ mt: 3 }}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Info sx={{ mr: 1 }} />
+            <Typography variant="h6">Binary Conversion Helper</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <BinaryConverter />
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+
+      {/* Subnet Cheat Sheet */}
+      <Box sx={{ mt: 3 }}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Info sx={{ mr: 1 }} />
+            <Typography variant="h6">Subnet Reference Cheat Sheet</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <SubnetCheatSheet />
+          </AccordionDetails>
+        </Accordion>
+      </Box>
 
       {/* Educational Info */}
       <Box sx={{ mt: 3 }}>
