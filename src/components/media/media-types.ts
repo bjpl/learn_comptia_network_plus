@@ -38,6 +38,12 @@ export interface MediaOption {
   installationComplexity: 'easy' | 'moderate' | 'difficult';
   interferenceSusceptibility: 'none' | 'low' | 'medium' | 'high';
   characteristics?: CableCharacteristic[];
+  frequency?: number; // MHz for copper
+  coreSize?: string; // AWG for copper, µm for fiber
+  wavelength?: number; // nm for fiber/wireless
+  lightSource?: string; // LED/VCSEL/Laser for fiber
+  jacketColor?: string; // Fiber cable jacket color
+  emiResistance?: string; // EMI/RFI resistance description
 }
 
 export interface ScenarioRequirement {

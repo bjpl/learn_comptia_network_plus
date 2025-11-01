@@ -42,30 +42,51 @@ export const T568B_LAYOUT: PinLayout = {
 
 // Media options database
 export const MEDIA_OPTIONS: MediaOption[] = [
-  // Wireless options
+  // Wireless options - Complete 802.11 standards
   {
-    id: 'wifi-ax',
+    id: 'wifi-a',
     type: 'wireless',
-    name: '802.11ax (Wi-Fi 6)',
-    standard: '802.11ax',
-    maxDistance: 100,
-    bandwidth: 9600,
+    name: '802.11a',
+    standard: '802.11a',
+    maxDistance: 35,
+    bandwidth: 54,
     costPerMeter: 0,
     environmentalResistance: 'low',
     installationComplexity: 'easy',
-    interferenceSusceptibility: 'medium'
+    interferenceSusceptibility: 'low',
+    frequency: 5000, // 5 GHz
+    wavelength: 5000, // MHz
+    emiResistance: 'Low - Subject to interference from weather/obstacles'
   },
   {
-    id: 'wifi-ac',
+    id: 'wifi-b',
     type: 'wireless',
-    name: '802.11ac (Wi-Fi 5)',
-    standard: '802.11ac',
-    maxDistance: 100,
-    bandwidth: 3500,
+    name: '802.11b',
+    standard: '802.11b',
+    maxDistance: 45,
+    bandwidth: 11,
     costPerMeter: 0,
     environmentalResistance: 'low',
     installationComplexity: 'easy',
-    interferenceSusceptibility: 'medium'
+    interferenceSusceptibility: 'high',
+    frequency: 2400, // 2.4 GHz
+    wavelength: 2400, // MHz
+    emiResistance: 'Low - High interference from microwaves, Bluetooth'
+  },
+  {
+    id: 'wifi-g',
+    type: 'wireless',
+    name: '802.11g (Wi-Fi 3)',
+    standard: '802.11g',
+    maxDistance: 45,
+    bandwidth: 54,
+    costPerMeter: 0,
+    environmentalResistance: 'low',
+    installationComplexity: 'easy',
+    interferenceSusceptibility: 'high',
+    frequency: 2400, // 2.4 GHz
+    wavelength: 2400, // MHz
+    emiResistance: 'Low - High interference on 2.4 GHz band'
   },
   {
     id: 'wifi-n',
@@ -77,7 +98,55 @@ export const MEDIA_OPTIONS: MediaOption[] = [
     costPerMeter: 0,
     environmentalResistance: 'low',
     installationComplexity: 'easy',
-    interferenceSusceptibility: 'high'
+    interferenceSusceptibility: 'medium',
+    frequency: 2400, // 2.4/5 GHz dual-band
+    wavelength: 2400, // MHz
+    emiResistance: 'Low-Medium - Dual-band reduces some interference'
+  },
+  {
+    id: 'wifi-ac',
+    type: 'wireless',
+    name: '802.11ac (Wi-Fi 5)',
+    standard: '802.11ac',
+    maxDistance: 100,
+    bandwidth: 3500,
+    costPerMeter: 0,
+    environmentalResistance: 'low',
+    installationComplexity: 'easy',
+    interferenceSusceptibility: 'low',
+    frequency: 5000, // 5 GHz only
+    wavelength: 5000, // MHz
+    emiResistance: 'Medium - 5 GHz less congested'
+  },
+  {
+    id: 'wifi-ax',
+    type: 'wireless',
+    name: '802.11ax (Wi-Fi 6)',
+    standard: '802.11ax',
+    maxDistance: 100,
+    bandwidth: 9600,
+    costPerMeter: 0,
+    environmentalResistance: 'low',
+    installationComplexity: 'easy',
+    interferenceSusceptibility: 'low',
+    frequency: 2400, // 2.4/5/6 GHz tri-band
+    wavelength: 2400, // MHz
+    emiResistance: 'Medium - OFDMA improves efficiency in congested areas'
+  },
+  {
+    id: 'wifi-be',
+    type: 'wireless',
+    name: '802.11be (Wi-Fi 7)',
+    standard: '802.11be',
+    maxDistance: 120,
+    bandwidth: 40000,
+    costPerMeter: 0,
+    environmentalResistance: 'low',
+    installationComplexity: 'easy',
+    interferenceSusceptibility: 'low',
+    frequency: 6000, // 2.4/5/6 GHz tri-band
+    wavelength: 6000, // MHz
+    emiResistance: 'High - 320 MHz channels, MLO, advanced interference mitigation'
   },
   {
     id: '5g',
@@ -115,37 +184,11 @@ export const MEDIA_OPTIONS: MediaOption[] = [
     installationComplexity: 'difficult',
     interferenceSusceptibility: 'medium'
   },
-  // Copper options
-  {
-    id: 'cat6a',
-    type: 'copper',
-    name: 'Cat 6a (10GBASE-T)',
-    standard: '10GBASE-T',
-    maxDistance: 100,
-    bandwidth: 10000,
-    costPerMeter: 0.50,
-    environmentalResistance: 'medium',
-    installationComplexity: 'moderate',
-    interferenceSusceptibility: 'low',
-    characteristics: ['shielded', 'plenum']
-  },
-  {
-    id: 'cat6',
-    type: 'copper',
-    name: 'Cat 6 (1000BASE-T)',
-    standard: '1000BASE-T',
-    maxDistance: 100,
-    bandwidth: 1000,
-    costPerMeter: 0.30,
-    environmentalResistance: 'medium',
-    installationComplexity: 'moderate',
-    interferenceSusceptibility: 'medium',
-    characteristics: ['unshielded', 'plenum']
-  },
+  // Copper options - Complete Cat standards
   {
     id: 'cat5e',
     type: 'copper',
-    name: 'Cat 5e (1000BASE-T)',
+    name: 'Cat 5e',
     standard: '1000BASE-T',
     maxDistance: 100,
     bandwidth: 1000,
@@ -153,12 +196,79 @@ export const MEDIA_OPTIONS: MediaOption[] = [
     environmentalResistance: 'medium',
     installationComplexity: 'easy',
     interferenceSusceptibility: 'medium',
-    characteristics: ['unshielded', 'non-plenum']
+    characteristics: ['unshielded', 'non-plenum'],
+    frequency: 100, // MHz
+    coreSize: '24 AWG',
+    emiResistance: 'Low - UTP susceptible to EMI/RFI'
+  },
+  {
+    id: 'cat6',
+    type: 'copper',
+    name: 'Cat 6',
+    standard: '1000BASE-T / 10GBASE-T',
+    maxDistance: 100,
+    bandwidth: 1000, // 10000 at 55m
+    costPerMeter: 0.30,
+    environmentalResistance: 'medium',
+    installationComplexity: 'moderate',
+    interferenceSusceptibility: 'medium',
+    characteristics: ['unshielded', 'plenum'],
+    frequency: 250, // MHz
+    coreSize: '23 AWG',
+    emiResistance: 'Low-Medium - Tighter twist reduces crosstalk'
+  },
+  {
+    id: 'cat6a',
+    type: 'copper',
+    name: 'Cat 6a',
+    standard: '10GBASE-T',
+    maxDistance: 100,
+    bandwidth: 10000,
+    costPerMeter: 0.50,
+    environmentalResistance: 'high',
+    installationComplexity: 'moderate',
+    interferenceSusceptibility: 'low',
+    characteristics: ['shielded', 'plenum'],
+    frequency: 500, // MHz
+    coreSize: '23 AWG',
+    emiResistance: 'Medium - Eliminates alien crosstalk (A-NEXT)'
+  },
+  {
+    id: 'cat7',
+    type: 'copper',
+    name: 'Cat 7',
+    standard: '10GBASE-T',
+    maxDistance: 100,
+    bandwidth: 10000, // 40 Gbps at 50m
+    costPerMeter: 0.75,
+    environmentalResistance: 'high',
+    installationComplexity: 'difficult',
+    interferenceSusceptibility: 'none',
+    characteristics: ['shielded'],
+    frequency: 600, // MHz
+    coreSize: '23 AWG',
+    emiResistance: 'High - Individual pair shielding + overall shield'
+  },
+  {
+    id: 'cat8',
+    type: 'copper',
+    name: 'Cat 8',
+    standard: '25GBASE-T / 40GBASE-T',
+    maxDistance: 30,
+    bandwidth: 40000,
+    costPerMeter: 1.20,
+    environmentalResistance: 'high',
+    installationComplexity: 'difficult',
+    interferenceSusceptibility: 'none',
+    characteristics: ['shielded'],
+    frequency: 2000, // MHz
+    coreSize: '22 AWG',
+    emiResistance: 'Very High - Foil wrap per pair eliminates crosstalk'
   },
   {
     id: 'dac',
     type: 'copper',
-    name: 'DAC/Twinaxial (10G)',
+    name: 'Twinaxial (DAC)',
     standard: '10GBASE-CR',
     maxDistance: 10,
     bandwidth: 10000,
@@ -166,56 +276,130 @@ export const MEDIA_OPTIONS: MediaOption[] = [
     environmentalResistance: 'high',
     installationComplexity: 'easy',
     interferenceSusceptibility: 'none',
-    characteristics: ['shielded']
+    characteristics: ['shielded'],
+    frequency: 0, // Direct attach
+    coreSize: 'Varies',
+    emiResistance: 'Very High - Thick shielding, datacenter only'
   },
-  // Fiber options
+  // Fiber options - Complete OM and OS specifications
   {
-    id: 'smf-lr',
+    id: 'mmf-om1',
     type: 'fiber',
-    name: 'Single-mode Fiber (10GBASE-LR)',
-    standard: '10GBASE-LR',
-    maxDistance: 10000,
-    bandwidth: 10000,
-    costPerMeter: 2.00,
+    name: 'OM1 Multimode',
+    standard: '1000BASE-SX',
+    maxDistance: 300,
+    bandwidth: 1000,
+    costPerMeter: 0.60,
     environmentalResistance: 'high',
     installationComplexity: 'difficult',
-    interferenceSusceptibility: 'none'
+    interferenceSusceptibility: 'none',
+    coreSize: '62.5µm',
+    wavelength: 850, // nm
+    lightSource: 'LED',
+    jacketColor: 'Orange',
+    emiResistance: 'Immune - No electrical signal'
   },
   {
-    id: 'mmf-sr',
+    id: 'mmf-om2',
     type: 'fiber',
-    name: 'Multimode Fiber (10GBASE-SR)',
-    standard: '10GBASE-SR',
-    maxDistance: 400,
-    bandwidth: 10000,
-    costPerMeter: 1.00,
+    name: 'OM2 Multimode',
+    standard: '1000BASE-SX',
+    maxDistance: 550,
+    bandwidth: 1000,
+    costPerMeter: 0.70,
     environmentalResistance: 'high',
     installationComplexity: 'difficult',
-    interferenceSusceptibility: 'none'
+    interferenceSusceptibility: 'none',
+    coreSize: '50µm',
+    wavelength: 850, // nm
+    lightSource: 'LED',
+    jacketColor: 'Orange',
+    emiResistance: 'Immune - No electrical signal'
   },
   {
     id: 'mmf-om3',
     type: 'fiber',
-    name: 'OM3 Multimode (1000BASE-SX)',
-    standard: '1000BASE-SX',
-    maxDistance: 550,
-    bandwidth: 1000,
+    name: 'OM3 Multimode',
+    standard: '10GBASE-SR',
+    maxDistance: 300,
+    bandwidth: 10000,
     costPerMeter: 0.80,
     environmentalResistance: 'high',
     installationComplexity: 'difficult',
-    interferenceSusceptibility: 'none'
+    interferenceSusceptibility: 'none',
+    coreSize: '50µm',
+    wavelength: 850, // nm
+    lightSource: 'VCSEL',
+    jacketColor: 'Aqua',
+    emiResistance: 'Immune - No electrical signal'
   },
   {
     id: 'mmf-om4',
     type: 'fiber',
-    name: 'OM4 Multimode (10GBASE-SR)',
+    name: 'OM4 Multimode',
     standard: '10GBASE-SR',
     maxDistance: 550,
     bandwidth: 10000,
-    costPerMeter: 1.20,
+    costPerMeter: 1.00,
     environmentalResistance: 'high',
     installationComplexity: 'difficult',
-    interferenceSusceptibility: 'none'
+    interferenceSusceptibility: 'none',
+    coreSize: '50µm',
+    wavelength: 850, // nm
+    lightSource: 'VCSEL',
+    jacketColor: 'Aqua',
+    emiResistance: 'Immune - No electrical signal'
+  },
+  {
+    id: 'mmf-om5',
+    type: 'fiber',
+    name: 'OM5 Multimode (Wideband)',
+    standard: '10GBASE-SR / 40GBASE-SR4',
+    maxDistance: 550,
+    bandwidth: 40000,
+    costPerMeter: 1.30,
+    environmentalResistance: 'high',
+    installationComplexity: 'difficult',
+    interferenceSusceptibility: 'none',
+    coreSize: '50µm',
+    wavelength: 953, // nm (850-953 range)
+    lightSource: 'VCSEL',
+    jacketColor: 'Lime Green',
+    emiResistance: 'Immune - No electrical signal'
+  },
+  {
+    id: 'smf-os1',
+    type: 'fiber',
+    name: 'OS1 Single-mode',
+    standard: '10GBASE-LR',
+    maxDistance: 10000,
+    bandwidth: 10000,
+    costPerMeter: 1.80,
+    environmentalResistance: 'high',
+    installationComplexity: 'difficult',
+    interferenceSusceptibility: 'none',
+    coreSize: '9µm',
+    wavelength: 1310, // nm
+    lightSource: 'Laser',
+    jacketColor: 'Yellow',
+    emiResistance: 'Immune - No electrical signal'
+  },
+  {
+    id: 'smf-os2',
+    type: 'fiber',
+    name: 'OS2 Single-mode',
+    standard: '10GBASE-ER / 40GBASE-ER4',
+    maxDistance: 40000,
+    bandwidth: 40000,
+    costPerMeter: 2.00,
+    environmentalResistance: 'high',
+    installationComplexity: 'difficult',
+    interferenceSusceptibility: 'none',
+    coreSize: '9µm',
+    wavelength: 1550, // nm
+    lightSource: 'Laser',
+    jacketColor: 'Yellow',
+    emiResistance: 'Immune - No electrical signal'
   },
   // Coaxial options
   {

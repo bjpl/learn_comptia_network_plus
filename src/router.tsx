@@ -33,7 +33,7 @@ const CloudArchitectureDesigner = React.lazy(
 // Ports & Protocols Components
 const PortProtocolTrainer = React.lazy(() => import('./components/protocols/PortProtocolTrainer'));
 const TrafficTypeDemo = React.lazy(() => import('./components/protocols/TrafficTypeDemo'));
-const PortScanner = React.lazy(() => import('./components/protocols/PortScanner'));
+const PortScanner = React.lazy(() => import('./components/protocols/PortScannerEnhanced'));
 
 // Transmission Media Components
 const MediaSelectionMatrix = React.lazy(() => import('./components/media/MediaSelectionMatrix'));
