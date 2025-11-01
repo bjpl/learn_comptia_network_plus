@@ -5,6 +5,7 @@
 
 export { default as SubnetDesigner } from './SubnetDesigner';
 export { default as IPv4Troubleshooting } from './IPv4Troubleshooting';
+export { default as IPv4Troubleshooter } from './IPv4Troubleshooter';
 
 export * from './ipv4-types';
 export * from './ipv4-data';
@@ -38,7 +39,8 @@ export const ipv4Components = [
     id: 'component-18',
     name: 'IPv4Troubleshooting',
     title: 'IPv4 Troubleshooting Scenarios',
-    description: 'Interactive troubleshooting with 25+ scenarios, network diagrams, and diagnostic tools',
+    description:
+      'Interactive troubleshooting with 25+ scenarios, network diagrams, and diagnostic tools',
     category: 'IPv4 Troubleshooting (LO 1.7)',
     topics: [
       'APIPA Detection and Resolution',

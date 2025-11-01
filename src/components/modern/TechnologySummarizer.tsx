@@ -59,6 +59,36 @@ const TechnologySummarizer: React.FC = () => {
     },
   };
 
+  const modernTechInfo: Record<string, { name: string; features: string[] }> = {
+    'nfv-overview': {
+      name: 'Network Functions Virtualization',
+      features: [
+        'Service Function Chaining (SFC)',
+        'Virtualized Network Functions (VNFs)',
+        'Resource efficiency and consolidation',
+        'NFV MANO orchestration',
+      ],
+    },
+    'iot-networking': {
+      name: 'IoT Networking Basics',
+      features: [
+        'LPWAN and cellular protocols',
+        'CoAP and MQTT protocols',
+        'Edge computing and fog networking',
+        'Device management and updates',
+      ],
+    },
+    '5g-fundamentals': {
+      name: '5G Network Fundamentals',
+      features: [
+        'Network slicing and virtual networks',
+        'Ultra-low latency (1ms)',
+        'Massive MIMO and beamforming',
+        'Mobile edge computing (MEC)',
+      ],
+    },
+  };
+
   const handleArticleSelect = (article: TechnologyArticle) => {
     setSelectedArticle(article);
     setSummaries({});
@@ -76,9 +106,20 @@ const TechnologySummarizer: React.FC = () => {
     }
 
     const category = selectedArticle.category;
-    const summaryText = summaries[category] || '';
+    const summaryText = summaries[selectedArticle.id] || '';
     const wordCount = summaryText.trim().split(/\s+/).length;
-    const features = categoryInfo[category].features;
+
+    // Get features from appropriate info object
+    let features: string[] = [];
+    let categoryName = '';
+
+    if (categoryInfo[category]) {
+      features = categoryInfo[category].features;
+      categoryName = categoryInfo[category].name;
+    } else if (modernTechInfo[selectedArticle.id]) {
+      features = modernTechInfo[selectedArticle.id].features;
+      categoryName = modernTechInfo[selectedArticle.id].name;
+    }
 
     // Check for feature mentions
     const featuresFound = features.filter((feature) =>
@@ -110,7 +151,7 @@ const TechnologySummarizer: React.FC = () => {
     }
 
     const section: SummarySection = {
-      category: categoryInfo[category].name,
+      category: categoryName,
       features: featuresFound,
       completed: true,
       wordCount,
@@ -176,11 +217,13 @@ const TechnologySummarizer: React.FC = () => {
     <div className="mx-auto max-w-6xl rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6">
         <h2 className="mb-2 text-3xl font-bold text-gray-800">
-          Component 19: Modern Network Technology Summarizer
+          Component 18: Modern Network Technology Summarizer
         </h2>
         <p className="text-gray-600">
-          Read technical articles (1000-2000 words) and create structured summaries covering key
-          technology features. Summaries are auto-scored based on completeness and accuracy.
+          Master modern networking technologies including SDN, NFV, SD-WAN, IoT, and 5G through
+          comprehensive article summaries. Covers CompTIA Network+ LO 1.8 and beyond. Read technical
+          articles (1000-2000 words) and create structured summaries covering key technology
+          features. Summaries are auto-scored based on completeness and accuracy.
         </p>
       </div>
 
@@ -243,26 +286,32 @@ const TechnologySummarizer: React.FC = () => {
           {/* Summary Input */}
           <div className="rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
             <h3 className="mb-3 text-xl font-semibold">
-              Write Your Summary: {categoryInfo[selectedArticle.category].name}
+              Write Your Summary:{' '}
+              {categoryInfo[selectedArticle.category]?.name ||
+                modernTechInfo[selectedArticle.id]?.name ||
+                'Technology Summary'}
             </h3>
             <div className="mb-4">
               <p className="mb-2 text-sm text-gray-700">Required features to cover:</p>
               <ul className="list-inside list-disc space-y-1 text-sm text-gray-600">
-                {categoryInfo[selectedArticle.category].features.map((feature, idx) => (
+                {(
+                  categoryInfo[selectedArticle.category]?.features ||
+                  modernTechInfo[selectedArticle.id]?.features ||
+                  []
+                ).map((feature, idx) => (
                   <li key={idx}>{feature}</li>
                 ))}
               </ul>
             </div>
             <textarea
-              value={summaries[selectedArticle.category] || ''}
-              onChange={(e) => handleSummaryChange(selectedArticle.category, e.target.value)}
+              value={summaries[selectedArticle.id] || ''}
+              onChange={(e) => handleSummaryChange(selectedArticle.id, e.target.value)}
               placeholder="Write your summary here (max 200 words)..."
               className="h-48 w-full resize-none rounded-lg border-2 border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
             />
             <div className="mt-2 flex items-center justify-between">
               <span className="text-sm text-gray-600">
-                Word count: {summaries[selectedArticle.category]?.trim().split(/\s+/).length || 0} /
-                200
+                Word count: {summaries[selectedArticle.id]?.trim().split(/\s+/).length || 0} / 200
               </span>
               <button
                 onClick={evaluateSummary}
@@ -316,7 +365,11 @@ const TechnologySummarizer: React.FC = () => {
               <div className="mb-4">
                 <h4 className="mb-2 font-semibold">Features Covered:</h4>
                 <div className="flex flex-wrap gap-2">
-                  {categoryInfo[selectedArticle.category].features.map((feature) => {
+                  {(
+                    categoryInfo[selectedArticle.category]?.features ||
+                    modernTechInfo[selectedArticle.id]?.features ||
+                    []
+                  ).map((feature) => {
                     const covered = evaluationResult.sections[0].features.includes(feature);
                     return (
                       <span

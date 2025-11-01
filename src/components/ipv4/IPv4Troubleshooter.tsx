@@ -1,9 +1,9 @@
 /**
  * CompTIA Network+ - Component 18: IPv4 Troubleshooting Scenarios
- * Interactive network diagnosis and problem-solving tool
+ * Interactive network diagnosis and problem-solving tool with advanced troubleshooting features
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -32,6 +32,17 @@ import {
   ListItemText,
   Tab,
   Tabs,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   ExpandMore,
@@ -47,6 +58,10 @@ import {
   Lightbulb,
   Terminal,
   Build,
+  Settings,
+  ChecklistRtl,
+  Storage,
+  NetworkCheck,
 } from '@mui/icons-material';
 import type { TroubleshootingScenario } from './ipv4-types';
 import { troubleshootingScenarios, diagnosticCommands } from './ipv4-data';
@@ -56,6 +71,28 @@ interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+}
+
+interface RoutingTableEntry {
+  destination: string;
+  netmask: string;
+  gateway: string;
+  interface: string;
+  metric: number;
+  status: 'valid' | 'invalid' | 'warning';
+}
+
+interface ARPEntry {
+  ipAddress: string;
+  macAddress: string;
+  interface: string;
+  type: 'static' | 'dynamic' | 'invalid';
+}
+
+interface ValidationResult {
+  field: string;
+  status: 'valid' | 'invalid' | 'warning';
+  message: string;
 }
 
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => (
@@ -72,6 +109,13 @@ const IPv4Troubleshooter: React.FC = () => {
   const [showHints, setShowHints] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const [validatorOpen, setValidatorOpen] = useState(false);
+  const [validatorIP, setValidatorIP] = useState('192.168.1.100');
+  const [validatorMask, setValidatorMask] = useState('255.255.255.0');
+  const [validatorGateway, setValidatorGateway] = useState('192.168.1.1');
+  const [wizardStep, setWizardStep] = useState(0);
+  const [showRoutingTable, setShowRoutingTable] = useState(false);
+  const [showARPTable, setShowARPTable] = useState(false);
 
   // Reset when scenario changes
   const handleScenarioChange = (scenarioId: string) => {
@@ -151,6 +195,426 @@ const IPv4Troubleshooter: React.FC = () => {
     } catch {
       return 'Invalid';
     }
+  };
+
+  // IP Configuration Validator
+  const validateIPConfiguration = (): ValidationResult[] => {
+    const results: ValidationResult[] = [];
+
+    // Validate IP address
+    try {
+      parseIPAddress(validatorIP);
+      const classification = classifyIPAddress(validatorIP);
+
+      if (classification === 'Invalid') {
+        results.push({ field: 'IP Address', status: 'invalid', message: 'Invalid IP format' });
+      } else if (classification === 'Loopback (127.0.0.0/8)') {
+        results.push({
+          field: 'IP Address',
+          status: 'warning',
+          message: 'Loopback address detected - use only for testing',
+        });
+      } else if (classification === 'Multicast (224.0.0.0/4)') {
+        results.push({
+          field: 'IP Address',
+          status: 'invalid',
+          message: 'Multicast addresses cannot be assigned to hosts',
+        });
+      } else {
+        results.push({ field: 'IP Address', status: 'valid', message: `Valid ${classification}` });
+      }
+    } catch {
+      results.push({
+        field: 'IP Address',
+        status: 'invalid',
+        message: 'Invalid IP address format',
+      });
+    }
+
+    // Validate subnet mask
+    try {
+      const maskOctets = validatorMask.split('.').map(Number);
+      if (maskOctets.some((octet) => octet < 0 || octet > 255)) {
+        results.push({
+          field: 'Subnet Mask',
+          status: 'invalid',
+          message: 'Mask octets must be 0-255',
+        });
+      } else {
+        results.push({ field: 'Subnet Mask', status: 'valid', message: 'Valid subnet mask' });
+      }
+    } catch {
+      results.push({ field: 'Subnet Mask', status: 'invalid', message: 'Invalid mask format' });
+    }
+
+    // Validate gateway
+    try {
+      parseIPAddress(validatorGateway);
+      results.push({ field: 'Default Gateway', status: 'valid', message: 'Valid gateway address' });
+    } catch {
+      results.push({
+        field: 'Default Gateway',
+        status: 'invalid',
+        message: 'Invalid gateway format',
+      });
+    }
+
+    // Cross-check IP and gateway are in same subnet
+    if (validatorIP && validatorGateway && validatorMask) {
+      const ipOctets = validatorIP.split('.').map(Number);
+      const gwOctets = validatorGateway.split('.').map(Number);
+      const maskOctets = validatorMask.split('.').map(Number);
+
+      let sameSubnet = true;
+      for (let i = 0; i < 4; i++) {
+        if ((ipOctets[i] & maskOctets[i]) !== (gwOctets[i] & maskOctets[i])) {
+          sameSubnet = false;
+          break;
+        }
+      }
+
+      if (!sameSubnet) {
+        results.push({
+          field: 'Subnet Consistency',
+          status: 'invalid',
+          message: 'IP and gateway are not on the same subnet',
+        });
+      } else {
+        results.push({
+          field: 'Subnet Consistency',
+          status: 'valid',
+          message: 'IP and gateway are on the same subnet',
+        });
+      }
+    }
+
+    return results;
+  };
+
+  const validationResults = useMemo(
+    () => validateIPConfiguration(),
+    [validatorIP, validatorMask, validatorGateway]
+  );
+
+  // Generate routing table for scenario
+  const generateRoutingTable = (): RoutingTableEntry[] => {
+    return [
+      {
+        destination: '192.168.1.0',
+        netmask: '255.255.255.0',
+        gateway: '0.0.0.0',
+        interface: 'Local',
+        metric: 0,
+        status: 'valid',
+      },
+      {
+        destination: '192.168.0.0',
+        netmask: '255.255.0.0',
+        gateway: '192.168.1.1',
+        interface: 'Eth0',
+        metric: 1,
+        status: 'valid',
+      },
+      {
+        destination: '0.0.0.0',
+        netmask: '0.0.0.0',
+        gateway: '192.168.1.1',
+        interface: 'Eth0',
+        metric: 10,
+        status: 'valid',
+      },
+    ];
+  };
+
+  // Generate ARP table for scenario
+  const generateARPTable = (): ARPEntry[] => {
+    return [
+      {
+        ipAddress: '192.168.1.1',
+        macAddress: '00-1B-D4-3F-2A-1C',
+        interface: 'Eth0',
+        type: 'dynamic',
+      },
+      {
+        ipAddress: '192.168.1.10',
+        macAddress: '08-00-27-4A-BC-1F',
+        interface: 'Eth0',
+        type: 'dynamic',
+      },
+      {
+        ipAddress: '192.168.1.255',
+        macAddress: 'FF-FF-FF-FF-FF-FF',
+        interface: 'Eth0',
+        type: 'invalid',
+      },
+    ];
+  };
+
+  const routingTable = useMemo(() => generateRoutingTable(), []);
+  const arpTable = useMemo(() => generateARPTable(), []);
+
+  // Routing Table Component
+  const RoutingTableComponent: React.FC = () => (
+    <TableContainer component={Paper}>
+      <Table size="small">
+        <TableHead>
+          <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+            <TableCell>
+              <strong>Destination</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Netmask</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Gateway</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Interface</strong>
+            </TableCell>
+            <TableCell align="center">
+              <strong>Metric</strong>
+            </TableCell>
+            <TableCell align="center">
+              <strong>Status</strong>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {routingTable.map((entry, index) => (
+            <TableRow key={index} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
+              <TableCell>
+                <code>{entry.destination}</code>
+              </TableCell>
+              <TableCell>
+                <code>{entry.netmask}</code>
+              </TableCell>
+              <TableCell>
+                <code>{entry.gateway}</code>
+              </TableCell>
+              <TableCell>{entry.interface}</TableCell>
+              <TableCell align="center">{entry.metric}</TableCell>
+              <TableCell align="center">
+                <Chip
+                  label={entry.status}
+                  size="small"
+                  color={entry.status === 'valid' ? 'success' : 'error'}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+
+  // ARP Table Component
+  const ARPTableComponent: React.FC = () => (
+    <TableContainer component={Paper}>
+      <Table size="small">
+        <TableHead>
+          <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+            <TableCell>
+              <strong>IP Address</strong>
+            </TableCell>
+            <TableCell>
+              <strong>MAC Address</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Interface</strong>
+            </TableCell>
+            <TableCell align="center">
+              <strong>Type</strong>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {arpTable.map((entry, index) => (
+            <TableRow key={index} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
+              <TableCell>
+                <code>{entry.ipAddress}</code>
+              </TableCell>
+              <TableCell>
+                <code>{entry.macAddress}</code>
+              </TableCell>
+              <TableCell>{entry.interface}</TableCell>
+              <TableCell align="center">
+                <Chip
+                  label={entry.type}
+                  size="small"
+                  color={
+                    entry.type === 'invalid'
+                      ? 'error'
+                      : entry.type === 'static'
+                        ? 'primary'
+                        : 'default'
+                  }
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+
+  // IP Configuration Validator Dialog
+  const ValidatorDialog: React.FC = () => (
+    <Dialog open={validatorOpen} onClose={() => setValidatorOpen(false)} maxWidth="sm" fullWidth>
+      <DialogTitle>IP Configuration Validator</DialogTitle>
+      <DialogContent sx={{ pt: 2 }}>
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="IP Address"
+              value={validatorIP}
+              onChange={(e) => setValidatorIP(e.target.value)}
+              placeholder="192.168.1.100"
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Subnet Mask"
+              value={validatorMask}
+              onChange={(e) => setValidatorMask(e.target.value)}
+              placeholder="255.255.255.0"
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Default Gateway"
+              value={validatorGateway}
+              onChange={(e) => setValidatorGateway(e.target.value)}
+              placeholder="192.168.1.1"
+              size="small"
+            />
+          </Grid>
+        </Grid>
+
+        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+          Validation Results:
+        </Typography>
+        {validationResults.map((result, index) => (
+          <Alert
+            key={index}
+            severity={
+              result.status === 'valid'
+                ? 'success'
+                : result.status === 'warning'
+                  ? 'warning'
+                  : 'error'
+            }
+            sx={{ mb: 1 }}
+          >
+            <Typography variant="body2">
+              <strong>{result.field}:</strong> {result.message}
+            </Typography>
+          </Alert>
+        ))}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setValidatorOpen(false)}>Close</Button>
+      </DialogActions>
+    </Dialog>
+  );
+
+  // Troubleshooting Wizard
+  const TroubleshootingWizard: React.FC = () => {
+    const wizardSteps = [
+      {
+        title: 'Check Physical Connectivity',
+        description: 'Verify cable connections and link lights are active',
+        checks: [
+          'Check Ethernet cable is properly connected',
+          'Verify link light is illuminated (green)',
+          'Look for any damage to the connector',
+        ],
+      },
+      {
+        title: 'Verify IP Configuration',
+        description: 'Check if device has valid IP address assigned',
+        checks: [
+          'Run ipconfig (Windows) or ifconfig (Linux)',
+          'Verify IP is not APIPA (169.254.x.x)',
+          'Confirm subnet mask is correct',
+        ],
+      },
+      {
+        title: 'Test Gateway Connectivity',
+        description: 'Ensure default gateway is reachable',
+        checks: [
+          'Ping default gateway IP',
+          'Check ARP table for gateway MAC address',
+          'Verify gateway is on same subnet',
+        ],
+      },
+      {
+        title: 'Check Routing',
+        description: 'Verify routing table is correct',
+        checks: [
+          'Review routing table with route print (Windows) or ip route (Linux)',
+          'Confirm default route points to gateway',
+          'Look for any invalid or duplicate routes',
+        ],
+      },
+      {
+        title: 'Test DNS Resolution',
+        description: 'Verify DNS is working properly',
+        checks: [
+          'Ping known IP address to test connectivity',
+          'Use nslookup or dig to test DNS',
+          'Verify DNS servers are configured',
+        ],
+      },
+    ];
+
+    return (
+      <Box>
+        <Stepper activeStep={wizardStep} orientation="vertical">
+          {wizardSteps.map((step, index) => (
+            <Step key={index}>
+              <StepLabel>
+                <Typography variant="subtitle2">{step.title}</Typography>
+              </StepLabel>
+              <StepContent>
+                <Typography variant="body2" color="text.secondary" paragraph>
+                  {step.description}
+                </Typography>
+                <List dense>
+                  {step.checks.map((check, checkIndex) => (
+                    <ListItem key={checkIndex}>
+                      <ListItemIcon sx={{ minWidth: 32 }}>
+                        <ChecklistRtl fontSize="small" color="primary" />
+                      </ListItemIcon>
+                      <ListItemText primary={check} />
+                    </ListItem>
+                  ))}
+                </List>
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => setWizardStep(index + 1)}
+                    sx={{ mr: 1 }}
+                  >
+                    {index === wizardSteps.length - 1 ? 'Complete' : 'Next'}
+                  </Button>
+                  {index > 0 && <Button onClick={() => setWizardStep(index - 1)}>Back</Button>}
+                </Box>
+              </StepContent>
+            </Step>
+          ))}
+        </Stepper>
+        {wizardStep === wizardSteps.length && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            Troubleshooting wizard completed. All steps have been reviewed.
+          </Alert>
+        )}
+      </Box>
+    );
   };
 
   // Network diagram component
@@ -286,11 +750,20 @@ const IPv4Troubleshooter: React.FC = () => {
 
       {/* Main Content Tabs */}
       <Card sx={{ mb: 3 }}>
-        <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue as number)}>
+        <Tabs
+          value={tabValue}
+          onChange={(_, newValue) => setTabValue(newValue as number)}
+          variant="scrollable"
+          scrollButtons="auto"
+        >
           <Tab label="Problem Overview" icon={<BugReport />} iconPosition="start" />
           <Tab label="Network Diagram" icon={<Router />} iconPosition="start" />
           <Tab label="Diagnostics" icon={<Terminal />} iconPosition="start" />
           <Tab label="Solution Steps" icon={<Build />} iconPosition="start" />
+          <Tab label="Troubleshooting Wizard" icon={<ChecklistRtl />} iconPosition="start" />
+          <Tab label="Validator" icon={<Settings />} iconPosition="start" />
+          <Tab label="Routing Table" icon={<NetworkCheck />} iconPosition="start" />
+          <Tab label="ARP Table" icon={<Storage />} iconPosition="start" />
         </Tabs>
 
         {/* Tab 0: Problem Overview */}
@@ -547,6 +1020,150 @@ const IPv4Troubleshooter: React.FC = () => {
             )}
           </CardContent>
         </TabPanel>
+
+        {/* Tab 4: Troubleshooting Wizard */}
+        <TabPanel value={tabValue} index={4}>
+          <CardContent>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Step-by-Step Troubleshooting Guide
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                Follow these methodical steps to diagnose IPv4 connectivity issues
+              </Typography>
+            </Box>
+            <TroubleshootingWizard />
+          </CardContent>
+        </TabPanel>
+
+        {/* Tab 5: IP Configuration Validator */}
+        <TabPanel value={tabValue} index={5}>
+          <CardContent>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                IP Configuration Validator
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                Validate your IP configuration against common issues and best practices
+              </Typography>
+            </Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="IP Address"
+                  value={validatorIP}
+                  onChange={(e) => setValidatorIP(e.target.value)}
+                  placeholder="192.168.1.100"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Subnet Mask"
+                  value={validatorMask}
+                  onChange={(e) => setValidatorMask(e.target.value)}
+                  placeholder="255.255.255.0"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Default Gateway"
+                  value={validatorGateway}
+                  onChange={(e) => setValidatorGateway(e.target.value)}
+                  placeholder="192.168.1.1"
+                />
+              </Grid>
+            </Grid>
+
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                Validation Results:
+              </Typography>
+              {validationResults.map((result, index) => (
+                <Alert
+                  key={index}
+                  severity={
+                    result.status === 'valid'
+                      ? 'success'
+                      : result.status === 'warning'
+                        ? 'warning'
+                        : 'error'
+                  }
+                  sx={{ mb: 1 }}
+                >
+                  <Typography variant="body2">
+                    <strong>{result.field}:</strong> {result.message}
+                  </Typography>
+                </Alert>
+              ))}
+            </Box>
+          </CardContent>
+        </TabPanel>
+
+        {/* Tab 6: Routing Table */}
+        <TabPanel value={tabValue} index={6}>
+          <CardContent>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Routing Table Analysis
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                Review the current routing table for the host or network. Incorrect routing tables
+                can cause connectivity issues.
+              </Typography>
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Button
+                variant="contained"
+                onClick={() => setShowRoutingTable(!showRoutingTable)}
+                startIcon={<NetworkCheck />}
+              >
+                {showRoutingTable ? 'Hide' : 'Show'} Routing Table
+              </Button>
+            </Box>
+            {showRoutingTable && <RoutingTableComponent />}
+            <Alert severity="info" sx={{ mt: 2 }}>
+              <Typography variant="body2">
+                <strong>Tips:</strong> The default route (0.0.0.0/0) should point to your gateway.
+                All other routes should have valid gateways on the same network as the interface.
+              </Typography>
+            </Alert>
+          </CardContent>
+        </TabPanel>
+
+        {/* Tab 7: ARP Table */}
+        <TabPanel value={tabValue} index={7}>
+          <CardContent>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                ARP Table Simulator
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                Address Resolution Protocol (ARP) table maps IP addresses to MAC addresses. Invalid
+                entries can prevent communication.
+              </Typography>
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Button
+                variant="contained"
+                onClick={() => setShowARPTable(!showARPTable)}
+                startIcon={<Storage />}
+              >
+                {showARPTable ? 'Hide' : 'Show'} ARP Table
+              </Button>
+            </Box>
+            {showARPTable && <ARPTableComponent />}
+            <Alert severity="warning" sx={{ mt: 2 }}>
+              <Typography variant="body2">
+                <strong>Common ARP Issues:</strong> Incomplete entries may indicate the target is
+                unreachable. Invalid entries suggest misconfiguration. Use arp -d (Windows) or ip
+                neigh flush (Linux) to clear and rebuild the table.
+              </Typography>
+            </Alert>
+          </CardContent>
+        </TabPanel>
       </Card>
 
       {/* Educational Reference */}
@@ -639,6 +1256,9 @@ const IPv4Troubleshooter: React.FC = () => {
           </Grid>
         </AccordionDetails>
       </Accordion>
+
+      {/* Validator Dialog */}
+      <ValidatorDialog />
     </div>
   );
 };
