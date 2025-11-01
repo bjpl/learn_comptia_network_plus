@@ -259,7 +259,7 @@ function LayerPerformanceBar({ layer, stats }: { layer: OSILayerNumber; stats: L
         <span style={{ fontWeight: 'bold' }}>
           Layer {layer} - {LAYER_NAMES[layer]}
         </span>
-        <span style={{ color: '#666' }}>
+        <span className="text-gray-600 dark:text-gray-400">
           {stats.scenariosCorrect}/{stats.scenariosAttempted} ({accuracyPercent.toFixed(0)}%)
         </span>
       </div>
