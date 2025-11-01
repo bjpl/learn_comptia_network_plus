@@ -242,8 +242,8 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
       <div className="mt-6 rounded-lg bg-gray-50 p-4">
         <h4 className="mb-2 text-sm font-semibold">💡 How to use this tool:</h4>
         <ul className="list-inside list-disc space-y-1 text-sm text-gray-700">
-          <li>Answer each question based on your organization's requirements</li>
-          <li>Click "Go Back" if you want to change a previous answer</li>
+          <li>Answer each question based on your organization&apos;s requirements</li>
+          <li>Click &quot;Go Back&quot; if you want to change a previous answer</li>
           <li>The tool will recommend physical, virtual, or cloud-based appliances</li>
           <li>Recommendations include specific devices with pricing and use cases</li>
         </ul>

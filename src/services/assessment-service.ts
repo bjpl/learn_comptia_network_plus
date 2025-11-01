@@ -191,7 +191,7 @@ const mockSubmitQuiz = async (submission: QuizSubmission): Promise<QuizResult> =
 
   // Store attempt
   const attemptsStr = localStorage.getItem('quiz_attempts');
-  const attempts = attemptsStr ? JSON.parse(attemptsStr) : [];
+  const attempts: unknown[] = attemptsStr ? (JSON.parse(attemptsStr) as unknown[]) : [];
 
   attempts.push({
     id: attemptId,

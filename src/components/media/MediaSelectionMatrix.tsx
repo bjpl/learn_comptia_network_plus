@@ -92,7 +92,7 @@ export default function MediaSelectionMatrix() {
     if (score === 40) {
       return <Badge className="bg-orange-600">Works</Badge>;
     }
-    return <Badge className="bg-red-600">Won't Work</Badge>;
+    return <Badge className="bg-red-600">Won&apos;t Work</Badge>;
   };
 
   const getMediaIcon = (type: string) => {

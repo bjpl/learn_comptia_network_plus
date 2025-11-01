@@ -747,7 +747,9 @@ const IPv6Planner: React.FC = () => {
           <ol className="list-inside list-decimal space-y-2 text-gray-700">
             <li>Select a migration scenario that matches your environment</li>
             <li>Choose the most appropriate migration method (dual stack, tunneling, or NAT64)</li>
-            <li>Click "Generate Migration Plan" to create a detailed implementation plan</li>
+            <li>
+              Click &quot;Generate Migration Plan&quot; to create a detailed implementation plan
+            </li>
             <li>Review each phase, including tasks, timeline, costs, and risks</li>
             <li>Use the success metrics to measure migration progress and success</li>
           </ol>

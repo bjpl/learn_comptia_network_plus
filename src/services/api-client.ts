@@ -165,7 +165,7 @@ class ApiClient {
         }
 
         return response.data.token;
-      } catch (error) {
+      } catch {
         // Refresh failed, clear auth data
         this.clearAuthData();
         return null;
@@ -285,12 +285,12 @@ class ApiClient {
 
         // Parse response
         const contentType = response.headers.get('content-type');
-        const data = contentType?.includes('application/json')
+        const data: unknown = contentType?.includes('application/json')
           ? await response.json()
           : await response.text();
 
         const apiResponse: ApiResponse<T> = {
-          data,
+          data: data as T,
           status: response.status,
           statusText: response.statusText,
           headers: Object.fromEntries(response.headers.entries()),
@@ -301,7 +301,7 @@ class ApiClient {
           const error = {
             response: {
               status: response.status,
-              data,
+              data: data as T,
             },
           };
           throw error;
@@ -321,6 +321,7 @@ class ApiClient {
           attemptCount++;
           const delay = calculateRetryDelay(attemptCount, API_CONFIG.RETRY.RETRY_DELAY);
 
+          // eslint-disable-next-line no-console
           console.log(
             `🔄 Retrying request (attempt ${attemptCount}/${maxRetries}) after ${delay}ms...`
           );
@@ -335,6 +336,7 @@ class ApiClient {
 
     // Check network status
     if (!networkStatusManager.getStatus()) {
+      // eslint-disable-next-line no-console
       console.log('📦 Queuing request (offline)...');
       return networkStatusManager.queueRequest(() => makeRequest()) as Promise<ApiResponse<T>>;
     }
@@ -405,7 +407,7 @@ function isErrorWithConfig(error: unknown): error is ErrorWithConfig {
 }
 
 // Create singleton instance
-export const apiClient = new ApiClient(API_CONFIG.BASE_URL, API_CONFIG.TIMEOUT);
+export const apiClient = new ApiClient(String(API_CONFIG.BASE_URL), Number(API_CONFIG.TIMEOUT));
 
 // Export for testing
 export { ApiClient };

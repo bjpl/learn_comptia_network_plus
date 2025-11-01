@@ -22,10 +22,13 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     );
 
     if (label) {
+      const id = props.id || `select-${Math.random().toString(36).substring(2, 11)}`;
       return (
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-700">{label}</label>
-          {selectElement}
+          <label htmlFor={id} className="text-sm font-medium text-gray-700">
+            {label}
+          </label>
+          {React.cloneElement(selectElement, { id })}
         </div>
       );
     }
@@ -50,12 +53,20 @@ export const FormControl = React.forwardRef<HTMLDivElement, FormControlProps>(
 );
 FormControl.displayName = 'FormControl';
 
-export const InputLabel = React.forwardRef<
-  HTMLLabelElement,
-  React.LabelHTMLAttributes<HTMLLabelElement>
->(({ className, ...props }, ref) => (
-  <label ref={ref} className={`text-sm font-medium text-gray-700 ${className || ''}`} {...props} />
-));
+export interface InputLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+  htmlFor?: string;
+}
+
+export const InputLabel = React.forwardRef<HTMLLabelElement, InputLabelProps>(
+  ({ className, htmlFor, ...props }, ref) => (
+    <label
+      ref={ref}
+      htmlFor={htmlFor}
+      className={`text-sm font-medium text-gray-700 ${className || ''}`}
+      {...props}
+    />
+  )
+);
 InputLabel.displayName = 'InputLabel';
 
 export type MenuItemProps = React.OptionHTMLAttributes<HTMLOptionElement>;

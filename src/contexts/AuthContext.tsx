@@ -5,15 +5,8 @@
 
 import type { ReactNode } from 'react';
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type {
-  User,
-  AuthState,
-  LoginCredentials,
-  RegisterData,
-  AuthResponse} from '../types/auth';
-import {
-  UserRole
-} from '../types/auth';
+import type { User, AuthState, LoginCredentials, RegisterData, AuthResponse } from '../types/auth';
+import { UserRole } from '../types/auth';
 import {
   storeAuthData,
   getAuthData,
@@ -75,13 +68,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   /**
    * Mock login API call
    */
-  const mockLoginApi = async (
-    credentials: LoginCredentials
-  ): Promise<AuthResponse> => {
+  const mockLoginApi = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     await mockApiDelay();
 
     // Find user by email
-    const user = MOCK_USERS.find(u => u.email === credentials.email);
+    const user = MOCK_USERS.find((u) => u.email === credentials.email);
 
     if (!user) {
       throw new Error('Invalid email or password');
@@ -96,7 +87,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const token = generateMockToken(user.id);
 
     // Remove password from response
-    const { passwordHash, ...userWithoutPassword } = user;
+    const { passwordHash: _passwordHash, ...userWithoutPassword } = user;
 
     return {
       user: {
@@ -115,11 +106,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     await mockApiDelay();
 
     // Check if user exists
-    if (MOCK_USERS.some(u => u.email === data.email)) {
+    if (MOCK_USERS.some((u) => u.email === data.email)) {
       throw new Error('Email already registered');
     }
 
-    if (MOCK_USERS.some(u => u.username === data.username)) {
+    if (MOCK_USERS.some((u) => u.username === data.username)) {
       throw new Error('Username already taken');
     }
 
@@ -158,7 +149,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Login user
    */
   const login = useCallback(async (credentials: LoginCredentials) => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
       const response = await mockLoginApi(credentials);
@@ -173,7 +164,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         error: null,
       });
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         error: error instanceof Error ? error.message : 'Login failed',
@@ -186,7 +177,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Register new user
    */
   const register = useCallback(async (data: RegisterData) => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
       if (data.password !== data.confirmPassword) {
@@ -209,7 +200,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         error: null,
       });
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         error: error instanceof Error ? error.message : 'Registration failed',
@@ -236,8 +227,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Update user profile
    */
   const updateUser = useCallback((updates: Partial<User>) => {
-    setState(prev => {
-      if (!prev.user) {return prev;}
+    setState((prev) => {
+      if (!prev.user) {
+        return prev;
+      }
 
       const updatedUser = { ...prev.user, ...updates };
 
@@ -259,7 +252,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const authData = getAuthData();
 
     if (!authData) {
-      setState(prev => ({ ...prev, isLoading: false }));
+      setState((prev) => ({ ...prev, isLoading: false }));
       return;
     }
 
@@ -312,7 +305,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Set up activity tracking
    */
   useEffect(() => {
-    if (!state.isAuthenticated) {return;}
+    if (!state.isAuthenticated) {
+      return;
+    }
 
     const activityEvents = ['mousedown', 'keydown', 'scroll', 'touchstart'];
 
@@ -320,7 +315,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       updateLastActivity();
     };
 
-    activityEvents.forEach(event => {
+    activityEvents.forEach((event) => {
       window.addEventListener(event, handleActivity);
     });
 
@@ -332,7 +327,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, 60 * 1000);
 
     return () => {
-      activityEvents.forEach(event => {
+      activityEvents.forEach((event) => {
         window.removeEventListener(event, handleActivity);
       });
       clearInterval(inactivityCheck);
@@ -343,14 +338,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    * Set up token refresh
    */
   useEffect(() => {
-    if (!state.isAuthenticated || !state.token) {return;}
+    if (!state.isAuthenticated || !state.token) {
+      return;
+    }
 
     // Check token expiry every 5 minutes
-    const tokenCheck = setInterval(() => {
-      if (isTokenExpired(state.token!)) {
-        logout();
-      }
-    }, 5 * 60 * 1000);
+    const tokenCheck = setInterval(
+      () => {
+        if (isTokenExpired(state.token!)) {
+          logout();
+        }
+      },
+      5 * 60 * 1000
+    );
 
     return () => clearInterval(tokenCheck);
   }, [state.isAuthenticated, state.token, logout]);

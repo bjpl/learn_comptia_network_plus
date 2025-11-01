@@ -1,0 +1,62 @@
+  12:26  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  12:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  53:17  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  55:60  warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  57:9   warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  70:15  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  70:38  warning  Unexpected any. Specify a different type                                @typescript-eslint/no-explicit-any
+  70:43  warning  Unsafe member access .deviceMemory on an `any` value                    @typescript-eslint/no-unsafe-member-access
+  49:9  warning  Unsafe spread of an `any` value in an array  @typescript-eslint/no-unsafe-assignment
+  204:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  215:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  245:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  256:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  265:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  285:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  286:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  328:11  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  329:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  7:50  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  9:11  warning  Unsafe assignment of an `any` value       @typescript-eslint/no-unsafe-assignment
+  9:36  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  49:17  warning  Unsafe assignment of an `any` value                     @typescript-eslint/no-unsafe-assignment
+  49:42  warning  Unexpected any. Specify a different type                @typescript-eslint/no-explicit-any
+  49:47  warning  Unsafe member access ['onTabChange'] on an `any` value  @typescript-eslint/no-unsafe-member-access
+   8:3   warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+   9:21  warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  12:3   warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  294:11  warning  Unsafe assignment of an `any` value                                                                           @typescript-eslint/no-unsafe-assignment
+  297:5   warning  Unsafe return of a value of type `any`                                                                        @typescript-eslint/no-unsafe-return
+  299:46  warning  Unsafe argument of type `any` assigned to a parameter of type `ArrayLike<number> | { [s: string]: number; }`  @typescript-eslint/no-unsafe-argument
+  299:53  warning  Unsafe member access .domainProgress on an `any` value                                                        @typescript-eslint/no-unsafe-member-access
+  300:30  warning  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                        @typescript-eslint/no-unsafe-argument
+  300:37  warning  Unsafe member access .lastAccessed on an `any` value                                                          @typescript-eslint/no-unsafe-member-access
+  301:7   warning  Unsafe assignment of an `any` value                                                                           @typescript-eslint/no-unsafe-assignment
+  301:21  warning  Unsafe call of a(n) `any` typed value                                                                         @typescript-eslint/no-unsafe-call
+  301:28  warning  Unsafe member access .achievements on an `any` value                                                          @typescript-eslint/no-unsafe-member-access
+  301:49  warning  Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+  301:58  warning  Unsafe return of a value of type `any`                                                                        @typescript-eslint/no-unsafe-return
+  303:30  warning  Unsafe argument of type `any` assigned to a parameter of type `string | number | Date`                        @typescript-eslint/no-unsafe-argument
+  303:32  warning  Unsafe member access .earnedDate on an `any` value                                                            @typescript-eslint/no-unsafe-member-access
+  16:86  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  288:15  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  293:11  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  304:15  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  408:40  warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  194:9   warning  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  196:3   warning  Unsafe call of a(n) `any` typed value         @typescript-eslint/no-unsafe-call
+  196:12  warning  Unsafe member access .push on an `any` value  @typescript-eslint/no-unsafe-member-access
+  347:25  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  401:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  412:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  422:42  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  485:31  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  485:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  490:44  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  108:5   warning  Unsafe return of a value of type `any`  @typescript-eslint/no-unsafe-return
+  158:11  warning  Unsafe assignment of an `any` value     @typescript-eslint/no-unsafe-assignment
+  159:14  warning  Unsafe assignment of an `any` value     @typescript-eslint/no-unsafe-assignment
+  351:5   warning  Unsafe assignment of an `any` value       @typescript-eslint/no-unsafe-assignment
+  351:38  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  201:11  warning  Unsafe assignment of an `any` value     @typescript-eslint/no-unsafe-assignment
+  280:45  warning  Unsafe return of a value of type `any`  @typescript-eslint/no-unsafe-return

@@ -164,8 +164,12 @@ export const PortProtocolTrainer: React.FC = () => {
         </div>
 
         <div className="filter-controls">
-          <label>Filter by protocol:</label>
-          <select value={filterProtocol} onChange={(e) => setFilterProtocol(e.target.value)}>
+          <label htmlFor="protocol-filter">Filter by protocol:</label>
+          <select
+            id="protocol-filter"
+            value={filterProtocol}
+            onChange={(e) => setFilterProtocol(e.target.value)}
+          >
             <option value="all">All Protocols</option>
             {PROTOCOLS.map((p) => (
               <option key={p.id} value={p.id}>

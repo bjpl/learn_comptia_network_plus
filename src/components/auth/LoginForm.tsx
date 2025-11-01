@@ -56,7 +56,9 @@ export const LoginForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {return;}
+    if (!validateForm()) {
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -79,14 +81,14 @@ export const LoginForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
 
     // Clear error for this field
     if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -200,11 +202,7 @@ export const LoginForm: React.FC = () => {
             </Link>
           </div>
 
-          <button
-            type="submit"
-            className="btn-primary btn-full"
-            disabled={isSubmitting}
-          >
+          <button type="submit" className="btn-primary btn-full" disabled={isSubmitting}>
             {isSubmitting ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
@@ -234,7 +232,7 @@ export const LoginForm: React.FC = () => {
 
         <div className="auth-footer">
           <p>
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link to="/register" className="link">
               Sign up
             </Link>

@@ -50,7 +50,33 @@
     "eqeqeq": ["warn", "always"],
     "curly": "warn",
     "react/no-unescaped-entities": "warn",
-    "react/no-unknown-property": "warn",
+    "react/no-unknown-property": [
+      "warn",
+      {
+        "ignore": [
+          "position",
+          "rotation",
+          "scale",
+          "intensity",
+          "castShadow",
+          "receiveShadow",
+          "args",
+          "attach",
+          "object",
+          "geometry",
+          "material",
+          "color",
+          "roughness",
+          "metalness",
+          "transparent",
+          "opacity",
+          "angle",
+          "penumbra",
+          "decay",
+          "distance"
+        ]
+      }
+    ],
     "jsx-a11y/click-events-have-key-events": "off",
     "jsx-a11y/no-static-element-interactions": "off",
     "jsx-a11y/label-has-associated-control": "warn",

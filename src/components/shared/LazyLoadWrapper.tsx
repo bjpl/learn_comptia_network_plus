@@ -4,13 +4,13 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { LoadingSpinner } from './LoadingSpinner';
 
 interface LazyLoadWrapperProps {
-  loader: () => Promise<{ default: ComponentType<any> }>;
+  loader: () => Promise<{ default: ComponentType }>;
   fallback?: React.ReactNode;
 }
 
 export const LazyLoadWrapper: React.FC<LazyLoadWrapperProps> = ({
   loader,
-  fallback = <LoadingSpinner />
+  fallback = <LoadingSpinner />,
 }) => {
   const Component = lazy(loader);
 

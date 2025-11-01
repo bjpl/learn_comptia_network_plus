@@ -9,7 +9,7 @@ import ConnectorIdentification from '../ConnectorIdentification';
 
 // Mock the 3D viewer
 vi.mock('../Connector3DViewer', () => ({
-  default: ({ connectorType }: any) => (
+  default: ({ connectorType }: { connectorType: string }) => (
     <div data-testid="3d-viewer-mock">3D Viewer: {connectorType}</div>
   ),
 }));

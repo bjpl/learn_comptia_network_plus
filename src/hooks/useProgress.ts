@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import type { UserProgress, Achievement} from '../types';
+import type { UserProgress, Achievement } from '../types';
 import { StorageKey } from '../types';
 
 // ============================================================================
@@ -86,7 +86,9 @@ export function useProgress(options: UseProgressOptions): UseProgressReturn {
 
   // Auto-save effect
   useEffect(() => {
-    if (!autoSave) {return;}
+    if (!autoSave) {
+      return;
+    }
 
     const intervalId = setInterval(() => {
       saveProgressToStorage(progress);
@@ -106,7 +108,7 @@ export function useProgress(options: UseProgressOptions): UseProgressReturn {
 
   // Update progress
   const updateProgress = useCallback((updates: Partial<UserProgress>) => {
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
       ...updates,
       lastAccessed: new Date(),
@@ -115,7 +117,7 @@ export function useProgress(options: UseProgressOptions): UseProgressReturn {
 
   // Mark component as complete
   const markComponentComplete = useCallback((componentId: string) => {
-    setProgress(prev => {
+    setProgress((prev) => {
       if (prev.componentsCompleted.includes(componentId)) {
         return prev; // Already complete
       }
@@ -134,7 +136,7 @@ export function useProgress(options: UseProgressOptions): UseProgressReturn {
 
   // Mark domain as complete
   const markDomainComplete = useCallback((domainId: string) => {
-    setProgress(prev => {
+    setProgress((prev) => {
       if (prev.domainsCompleted.includes(domainId)) {
         return prev; // Already complete
       }
@@ -151,9 +153,9 @@ export function useProgress(options: UseProgressOptions): UseProgressReturn {
 
   // Add achievement
   const addAchievement = useCallback((achievement: Achievement) => {
-    setProgress(prev => {
+    setProgress((prev) => {
       // Check if achievement already exists
-      if (prev.achievements.some(a => a.id === achievement.id)) {
+      if (prev.achievements.some((a) => a.id === achievement.id)) {
         return prev;
       }
 
@@ -167,7 +169,7 @@ export function useProgress(options: UseProgressOptions): UseProgressReturn {
 
   // Increment streak
   const incrementStreak = useCallback(() => {
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
       streak: prev.streak + 1,
       lastAccessed: new Date(),
@@ -176,7 +178,7 @@ export function useProgress(options: UseProgressOptions): UseProgressReturn {
 
   // Reset streak
   const resetStreak = useCallback(() => {
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
       streak: 0,
       lastAccessed: new Date(),
@@ -185,7 +187,7 @@ export function useProgress(options: UseProgressOptions): UseProgressReturn {
 
   // Add time spent
   const addTimeSpent = useCallback((seconds: number) => {
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
       totalTimeSpent: prev.totalTimeSpent + seconds,
       lastAccessed: new Date(),
@@ -268,7 +270,7 @@ function saveProgressToStorage(progress: UserProgress): void {
       ...progress,
       domainProgress: Object.fromEntries(progress.domainProgress),
       lastAccessed: progress.lastAccessed.toISOString(),
-      achievements: progress.achievements.map(a => ({
+      achievements: progress.achievements.map((a) => ({
         ...a,
         earnedDate: a.earnedDate.toISOString(),
       })),
@@ -284,23 +286,70 @@ function saveProgressToStorage(progress: UserProgress): void {
 }
 
 /**
+ * Type guard to validate progress data structure
+ */
+function isValidProgressData(data: unknown): data is {
+  userId: string;
+  componentsCompleted: string[];
+  domainsCompleted: string[];
+  totalTimeSpent: number;
+  lastAccessed: string;
+  overallProgress: number;
+  domainProgress: Record<string, number>;
+  achievements: Array<{
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    earnedDate: string;
+    category: string;
+  }>;
+  streak: number;
+} {
+  if (!data || typeof data !== 'object') {
+    return false;
+  }
+  const obj = data as Record<string, unknown>;
+  return (
+    typeof obj.userId === 'string' &&
+    Array.isArray(obj.componentsCompleted) &&
+    Array.isArray(obj.domainsCompleted) &&
+    typeof obj.totalTimeSpent === 'number' &&
+    typeof obj.lastAccessed === 'string' &&
+    typeof obj.overallProgress === 'number' &&
+    typeof obj.domainProgress === 'object' &&
+    Array.isArray(obj.achievements) &&
+    typeof obj.streak === 'number'
+  );
+}
+
+/**
  * Load progress from localStorage
  */
 function loadProgressFromStorage(userId: string): UserProgress | null {
   try {
     const stored = localStorage.getItem(`${StorageKey.USER_PROGRESS}_${userId}`);
-    if (!stored) {return null;}
+    if (!stored) {
+      return null;
+    }
 
-    const parsed = JSON.parse(stored);
+    const parsed: unknown = JSON.parse(stored);
+
+    // Type guard to validate parsed data
+    if (!isValidProgressData(parsed)) {
+      console.warn('Invalid progress data in storage');
+      return null;
+    }
 
     // Convert back to proper types
     return {
       ...parsed,
       domainProgress: new Map(Object.entries(parsed.domainProgress)),
       lastAccessed: new Date(parsed.lastAccessed),
-      achievements: parsed.achievements.map((a: any) => ({
+      achievements: parsed.achievements.map((a) => ({
         ...a,
         earnedDate: new Date(a.earnedDate),
+        category: a.category as 'completion' | 'mastery' | 'streak' | 'speed' | 'perfect',
       })),
     };
   } catch (error) {
@@ -329,7 +378,7 @@ export function useSessionTime(): number {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setSessionTime(prev => prev + 1);
+      setSessionTime((prev) => prev + 1);
     }, 1000);
 
     return () => clearInterval(intervalId);
@@ -355,9 +404,7 @@ export function useStreakCheck(lastAccessed: Date): {
 
   useEffect(() => {
     const now = new Date();
-    const daysDiff = Math.floor(
-      (now.getTime() - lastAccessed.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    const daysDiff = Math.floor((now.getTime() - lastAccessed.getTime()) / (1000 * 60 * 60 * 24));
 
     setResult({
       shouldMaintain: daysDiff <= 1, // Allow 1 day gap

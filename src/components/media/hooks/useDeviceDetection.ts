@@ -20,7 +20,7 @@ export function useDeviceDetection(): DeviceCapabilities {
     isLowEnd: false,
     pixelRatio: 1,
     maxTextureSize: 2048,
-    supportsWebGL2: false
+    supportsWebGL2: false,
   });
 
   useEffect(() => {
@@ -31,9 +31,7 @@ export function useDeviceDetection(): DeviceCapabilities {
       );
 
       // Detect tablet
-      const isTablet = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(
-        navigator.userAgent
-      );
+      const isTablet = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(navigator.userAgent);
 
       // Get pixel ratio
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
@@ -50,11 +48,13 @@ export function useDeviceDetection(): DeviceCapabilities {
       if (gl) {
         const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
         if (debugInfo) {
-          const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-          // Check for low-end GPUs
-          isLowEnd = /Mali|Adreno 3|PowerVR|Tegra 3/i.test(renderer);
+          const renderer: unknown = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+          // Check for low-end GPUs - renderer may be any type from WebGL
+          const rendererStr = String(renderer);
+          isLowEnd = /Mali|Adreno 3|PowerVR|Tegra 3/i.test(rendererStr);
         }
-        maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+        const textureSize: unknown = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+        maxTextureSize = typeof textureSize === 'number' ? textureSize : 2048;
       }
 
       // Also consider low-end based on cores and memory
@@ -67,8 +67,8 @@ export function useDeviceDetection(): DeviceCapabilities {
 
       // Check memory (if available)
       if ('deviceMemory' in navigator) {
-        const memory = (navigator as any).deviceMemory;
-        if (memory <= 2) {
+        const navigatorWithMemory = navigator as Navigator & { deviceMemory?: number };
+        if (navigatorWithMemory.deviceMemory && navigatorWithMemory.deviceMemory <= 2) {
           isLowEnd = true;
         }
       }
@@ -79,7 +79,7 @@ export function useDeviceDetection(): DeviceCapabilities {
         isLowEnd,
         pixelRatio,
         maxTextureSize,
-        supportsWebGL2
+        supportsWebGL2,
       });
     };
 
@@ -115,6 +115,6 @@ export function getRenderSettings(capabilities: DeviceCapabilities) {
     targetFPS: isLowEnd ? 30 : 60,
 
     // Post-processing effects
-    postProcessing: !isMobile && !isLowEnd
+    postProcessing: !isMobile && !isLowEnd,
   };
 }

@@ -358,7 +358,7 @@ const TechnologySummarizer: React.FC = () => {
             <li>Read the article carefully (expand to view full content)</li>
             <li>Write a summary covering all required features for that technology</li>
             <li>Keep your summary under 200 words for maximum effectiveness</li>
-            <li>Click "Evaluate Summary" to see your scores and feedback</li>
+            <li>Click &quot;Evaluate Summary&quot; to see your scores and feedback</li>
             <li>Review feedback and revise your summary to improve your score</li>
           </ol>
           <div className="mt-4 border-l-4 border-yellow-400 bg-yellow-50 p-4">

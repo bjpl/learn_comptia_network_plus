@@ -71,7 +71,7 @@ export const validatePasswordStrength = (password: string): PasswordStrength => 
 
   // Common patterns check
   const commonPatterns = ['password', '12345', 'qwerty', 'admin'];
-  if (commonPatterns.some(pattern => password.toLowerCase().includes(pattern))) {
+  if (commonPatterns.some((pattern) => password.toLowerCase().includes(pattern))) {
     score = Math.max(0, score - 2);
     feedback.push('Avoid common passwords');
   }
@@ -105,7 +105,19 @@ export const generateMockToken = (userId: string): string => {
 export const decodeMockToken = (token: string): { exp: number; sub: string } | null => {
   try {
     const [, payload] = token.split('.');
-    return JSON.parse(atob(payload));
+    const decoded: unknown = JSON.parse(atob(payload));
+    // Type guard to validate the decoded token structure
+    if (
+      decoded &&
+      typeof decoded === 'object' &&
+      'exp' in decoded &&
+      'sub' in decoded &&
+      typeof (decoded as { exp: unknown }).exp === 'number' &&
+      typeof (decoded as { sub: unknown }).sub === 'string'
+    ) {
+      return decoded as { exp: number; sub: string };
+    }
+    return null;
   } catch {
     return null;
   }
@@ -116,17 +128,16 @@ export const decodeMockToken = (token: string): { exp: number; sub: string } | n
  */
 export const isTokenExpired = (token: string): boolean => {
   const decoded = decodeMockToken(token);
-  if (!decoded) {return true;}
+  if (!decoded) {
+    return true;
+  }
   return Date.now() > decoded.exp;
 };
 
 /**
  * Store auth data in localStorage or sessionStorage
  */
-export const storeAuthData = (
-  response: AuthResponse,
-  rememberMe: boolean = false
-): void => {
+export const storeAuthData = (response: AuthResponse, rememberMe: boolean = false): void => {
   const storage = rememberMe ? localStorage : sessionStorage;
 
   storage.setItem(STORAGE_KEYS.TOKEN, response.token);
@@ -144,19 +155,39 @@ export const storeAuthData = (
 };
 
 /**
+ * Type guard to validate user object structure
+ */
+const isValidUser = (obj: unknown): obj is User => {
+  if (!obj || typeof obj !== 'object') {
+    return false;
+  }
+  const user = obj as Record<string, unknown>;
+  return (
+    typeof user.id === 'string' &&
+    typeof user.email === 'string' &&
+    (typeof user.username === 'string' || user.username === undefined)
+  );
+};
+
+/**
  * Retrieve auth data from storage
  */
 export const getAuthData = (): { user: User; token: string } | null => {
-  const token = localStorage.getItem(STORAGE_KEYS.TOKEN) ||
-                sessionStorage.getItem(STORAGE_KEYS.TOKEN);
-  const userStr = localStorage.getItem(STORAGE_KEYS.USER) ||
-                  sessionStorage.getItem(STORAGE_KEYS.USER);
+  const token =
+    localStorage.getItem(STORAGE_KEYS.TOKEN) || sessionStorage.getItem(STORAGE_KEYS.TOKEN);
+  const userStr =
+    localStorage.getItem(STORAGE_KEYS.USER) || sessionStorage.getItem(STORAGE_KEYS.USER);
 
-  if (!token || !userStr) {return null;}
+  if (!token || !userStr) {
+    return null;
+  }
 
   try {
-    const user = JSON.parse(userStr);
-    return { user, token };
+    const parsed: unknown = JSON.parse(userStr);
+    if (!isValidUser(parsed)) {
+      return null;
+    }
+    return { user: parsed, token };
   } catch {
     return null;
   }
@@ -167,7 +198,7 @@ export const getAuthData = (): { user: User; token: string } | null => {
  */
 export const clearAuthData = (): void => {
   const keys = Object.values(STORAGE_KEYS);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     localStorage.removeItem(key);
     sessionStorage.removeItem(key);
   });
@@ -185,7 +216,9 @@ export const updateLastActivity = (): void => {
  */
 export const isInactive = (): boolean => {
   const lastActivity = localStorage.getItem(STORAGE_KEYS.LAST_ACTIVITY);
-  if (!lastActivity) {return false;}
+  if (!lastActivity) {
+    return false;
+  }
 
   const elapsed = Date.now() - parseInt(lastActivity, 10);
   return elapsed > SESSION_CONFIG.INACTIVITY_TIMEOUT;
@@ -200,7 +233,7 @@ export const hashPassword = async (password: string): Promise<string> => {
   const data = encoder.encode(password);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 };
 
 /**
@@ -214,7 +247,7 @@ export const generateUserId = (): string => {
  * Mock API delay
  */
 export const mockApiDelay = (ms: number = 500): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 /**

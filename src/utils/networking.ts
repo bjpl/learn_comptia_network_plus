@@ -3,14 +3,8 @@
  * Comprehensive network calculation functions for subnetting, VLSM, and more
  */
 
-import type {
-  IPAddress,
-  SubnetInfo,
-  VLSMResult,
-  PortInfo} from '../types';
-import {
-  NetworkCalculationError,
-} from '../types';
+import type { IPAddress, SubnetInfo, VLSMResult, PortInfo, NetworkProtocol } from '../types';
+import { NetworkCalculationError } from '../types';
 
 // ============================================================================
 // IP Address Utilities
@@ -32,21 +26,27 @@ import {
 export function parseIPAddress(ip: string): IPAddress {
   const octets = ip.split('.').map(Number);
 
-  if (octets.length !== 4 || octets.some(o => isNaN(o) || o < 0 || o > 255)) {
+  if (octets.length !== 4 || octets.some((o) => isNaN(o) || o < 0 || o > 255)) {
     throw new NetworkCalculationError('Invalid IPv4 address', { ip });
   }
 
-  const binary = octets.map(o => o.toString(2).padStart(8, '0')).join('.');
+  const binary = octets.map((o) => o.toString(2).padStart(8, '0')).join('.');
   const decimal = octets;
   const firstOctet = octets[0];
 
   // Determine class
   let ipClass: 'A' | 'B' | 'C' | 'D' | 'E' | undefined;
-  if (firstOctet >= 1 && firstOctet <= 126) {ipClass = 'A';}
-  else if (firstOctet >= 128 && firstOctet <= 191) {ipClass = 'B';}
-  else if (firstOctet >= 192 && firstOctet <= 223) {ipClass = 'C';}
-  else if (firstOctet >= 224 && firstOctet <= 239) {ipClass = 'D';}
-  else if (firstOctet >= 240 && firstOctet <= 255) {ipClass = 'E';}
+  if (firstOctet >= 1 && firstOctet <= 126) {
+    ipClass = 'A';
+  } else if (firstOctet >= 128 && firstOctet <= 191) {
+    ipClass = 'B';
+  } else if (firstOctet >= 192 && firstOctet <= 223) {
+    ipClass = 'C';
+  } else if (firstOctet >= 224 && firstOctet <= 239) {
+    ipClass = 'D';
+  } else if (firstOctet >= 240 && firstOctet <= 255) {
+    ipClass = 'E';
+  }
 
   // Check special address types
   const isPrivate =
@@ -88,12 +88,7 @@ export function ipToInt(ip: string): number {
  * @returns IP address string
  */
 export function intToIp(int: number): string {
-  return [
-    (int >>> 24) & 0xff,
-    (int >>> 16) & 0xff,
-    (int >>> 8) & 0xff,
-    int & 0xff,
-  ].join('.');
+  return [(int >>> 24) & 0xff, (int >>> 16) & 0xff, (int >>> 8) & 0xff, int & 0xff].join('.');
 }
 
 // ============================================================================
@@ -130,10 +125,10 @@ export function calculateSubnet(cidr: string): SubnetInfo {
   const subnetMask = intToIp(mask);
   const wildcardMask = intToIp(~mask);
   const totalHosts = Math.pow(2, 32 - prefix);
-  const usableHosts = prefix === 32 ? 1 : (prefix === 31 ? 2 : totalHosts - 2);
+  const usableHosts = prefix === 32 ? 1 : prefix === 31 ? 2 : totalHosts - 2;
 
   const firstHost = prefix === 32 ? network : network + 1;
-  const lastHost = prefix === 32 ? network : (prefix === 31 ? broadcast : broadcast - 1);
+  const lastHost = prefix === 32 ? network : prefix === 31 ? broadcast : broadcast - 1;
 
   return {
     network: intToIp(network),
@@ -146,8 +141,14 @@ export function calculateSubnet(cidr: string): SubnetInfo {
     totalHosts,
     usableHosts,
     binary: {
-      network: intToIp(network).split('.').map(o => parseInt(o).toString(2).padStart(8, '0')).join('.'),
-      mask: subnetMask.split('.').map(o => parseInt(o).toString(2).padStart(8, '0')).join('.'),
+      network: intToIp(network)
+        .split('.')
+        .map((o) => parseInt(o).toString(2).padStart(8, '0'))
+        .join('.'),
+      mask: subnetMask
+        .split('.')
+        .map((o) => parseInt(o).toString(2).padStart(8, '0'))
+        .join('.'),
     },
   };
 }
@@ -165,7 +166,7 @@ export function calculateSubnet(cidr: string): SubnetInfo {
  */
 export function subnetMaskToCIDR(mask: string): number {
   const octets = mask.split('.').map(Number);
-  const binary = octets.map(o => o.toString(2).padStart(8, '0')).join('');
+  const binary = octets.map((o) => o.toString(2).padStart(8, '0')).join('');
   return binary.split('1').length - 1;
 }
 
@@ -232,10 +233,7 @@ export function isIPInSubnet(ip: string, cidr: string): boolean {
  * });
  * ```
  */
-export function calculateVLSM(
-  baseNetwork: string,
-  requirements: number[]
-): VLSMResult {
+export function calculateVLSM(baseNetwork: string, requirements: number[]): VLSMResult {
   const [baseIp, basePrefixStr] = baseNetwork.split('/');
   const basePrefix = parseInt(basePrefixStr, 10);
   const baseSubnet = calculateSubnet(baseNetwork);
@@ -294,15 +292,12 @@ export function calculateVLSM(
  * const count = calculateSubnetCount(24, 26); // 4
  * ```
  */
-export function calculateSubnetCount(
-  originalPrefix: number,
-  newPrefix: number
-): number {
+export function calculateSubnetCount(originalPrefix: number, newPrefix: number): number {
   if (newPrefix < originalPrefix) {
-    throw new NetworkCalculationError(
-      'New prefix must be larger than original prefix',
-      { originalPrefix, newPrefix }
-    );
+    throw new NetworkCalculationError('New prefix must be larger than original prefix', {
+      originalPrefix,
+      newPrefix,
+    });
   }
 
   return Math.pow(2, newPrefix - originalPrefix);
@@ -346,14 +341,42 @@ export function getPortInfo(port: number): PortInfo {
 
   const knownPort = wellKnownPorts[port];
 
+  // Type guard to validate NetworkProtocol
+  const isValidProtocol = (value: string | undefined): value is NetworkProtocol => {
+    const validProtocols: NetworkProtocol[] = [
+      'TCP',
+      'UDP',
+      'ICMP',
+      'HTTP',
+      'HTTPS',
+      'FTP',
+      'SMTP',
+      'DNS',
+      'DHCP',
+      'SSH',
+      'SNMP',
+    ];
+    return value !== undefined && validProtocols.includes(value as NetworkProtocol);
+  };
+
+  let protocol: NetworkProtocol;
+  if (isValidProtocol(knownPort?.protocol)) {
+    protocol = knownPort.protocol;
+  } else {
+    protocol = 'TCP' as const;
+  }
+
+  const service: string = knownPort?.service ?? 'Unknown';
+
   return {
     number: port,
-    protocol: knownPort?.protocol as any || 'TCP',
-    service: knownPort?.service || 'Unknown',
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    protocol, // Type-safe via type guard above
+    service,
     isWellKnown: port >= 0 && port <= 1023,
     isRegistered: port >= 1024 && port <= 49151,
     isDynamic: port >= 49152 && port <= 65535,
-  };
+  } satisfies PortInfo;
 }
 
 // ============================================================================
@@ -395,7 +418,7 @@ export function binaryToDecimal(binary: string): number {
  */
 export function ipToBinary(ip: string): string {
   const octets = ip.split('.').map(Number);
-  return octets.map(o => decimalToBinary(o)).join('.');
+  return octets.map((o) => decimalToBinary(o)).join('.');
 }
 
 /**
@@ -446,7 +469,7 @@ export function calculateSupernet(networks: string[]): string {
     throw new NetworkCalculationError('At least one network required');
   }
 
-  const ips = networks.map(n => ipToInt(n.split('/')[0]));
+  const ips = networks.map((n) => ipToInt(n.split('/')[0]));
   const minIp = Math.min(...ips);
   const maxIp = Math.max(...ips);
 
@@ -460,7 +483,7 @@ export function calculateSupernet(networks: string[]): string {
     }
   }
 
-  const network = minIp & (~((1 << (32 - prefix)) - 1));
+  const network = minIp & ~((1 << (32 - prefix)) - 1);
   return `${intToIp(network)}/${prefix}`;
 }
 
@@ -482,10 +505,10 @@ export function splitNetwork(network: string, newPrefix: number): string[] {
   const oldPrefix = parseInt(oldPrefixStr, 10);
 
   if (newPrefix <= oldPrefix) {
-    throw new NetworkCalculationError(
-      'New prefix must be larger than current prefix',
-      { oldPrefix, newPrefix }
-    );
+    throw new NetworkCalculationError('New prefix must be larger than current prefix', {
+      oldPrefix,
+      newPrefix,
+    });
   }
 
   const subnetCount = calculateSubnetCount(oldPrefix, newPrefix);

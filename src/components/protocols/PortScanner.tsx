@@ -374,8 +374,9 @@ export const PortScanner: React.FC = () => {
 
       <div className="scanner-container">
         <div className="network-selector">
-          <label>Target Network:</label>
+          <label htmlFor="network-selector">Target Network:</label>
           <select
+            id="network-selector"
             value={selectedNetwork.id}
             onChange={(e) => {
               const network = VIRTUAL_NETWORKS.find((n) => n.id === e.target.value);

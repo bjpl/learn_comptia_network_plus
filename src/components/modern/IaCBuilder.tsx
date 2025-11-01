@@ -169,7 +169,7 @@ ${template.tasks
     } else if (selectedLanguage === 'json') {
       try {
         JSON.parse(codeEditorContent);
-      } catch (e) {
+      } catch {
         errors.push('Invalid JSON syntax');
       }
     }

@@ -198,7 +198,7 @@ export const sanitizeJson = (jsonString: string): string | null => {
   }
 
   try {
-    const parsed = JSON.parse(jsonString);
+    const parsed: unknown = JSON.parse(jsonString);
     // Re-stringify to ensure clean JSON
     return JSON.stringify(parsed);
   } catch {
@@ -277,7 +277,9 @@ export const sanitizeObject = <T extends Record<string, unknown>>(
     if (typeof value === 'string') {
       sanitized[key] = sanitizer(value);
     } else if (Array.isArray(value)) {
-      sanitized[key] = value.map((item) => (typeof item === 'string' ? sanitizer(item) : item));
+      sanitized[key] = value.map((item: unknown) =>
+        typeof item === 'string' ? sanitizer(item) : item
+      );
     } else if (value !== null && typeof value === 'object') {
       sanitized[key] = sanitizeObject(value as Record<string, unknown>, sanitizer);
     } else {

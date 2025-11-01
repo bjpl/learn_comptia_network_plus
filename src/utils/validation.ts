@@ -434,7 +434,7 @@ export function validateURL(url: string): ValidationResult {
     if (/^\d+\.\d+\.\d+\.\d+$/.test(urlObj.hostname)) {
       suggestions.push('URL uses IP address instead of domain name');
     }
-  } catch (error) {
+  } catch {
     errors.push('Invalid URL format');
   }
 

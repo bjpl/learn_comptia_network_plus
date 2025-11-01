@@ -13,13 +13,7 @@ export interface TechnologyArticle {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
 }
 
-export type TechnologyCategory =
-  | 'sdn-sdwan'
-  | 'vxlan'
-  | 'zero-trust'
-  | 'sase-sse'
-  | 'iac'
-  | 'ipv6';
+export type TechnologyCategory = 'sdn-sdwan' | 'vxlan' | 'zero-trust' | 'sase-sse' | 'iac' | 'ipv6';
 
 export interface TechnologyFeature {
   name: string;
@@ -201,7 +195,7 @@ export interface TemplateParameter {
   type: 'string' | 'number' | 'boolean' | 'list' | 'map';
   description: string;
   required: boolean;
-  default?: any;
+  default?: string | number | boolean | string[] | Record<string, unknown>;
   validation?: string;
 }
 
@@ -212,7 +206,7 @@ export interface AutomationTask {
   description: string;
   order: number;
   dependencies: string[];
-  parameters: { [key: string]: any };
+  parameters: Record<string, unknown>;
   rollback?: AutomationTask;
   validation: ValidationCheck[];
 }
@@ -242,7 +236,7 @@ export interface Playbook {
   platform: IaCPlatform;
   version: string;
   tasks: AutomationTask[];
-  variables: { [key: string]: any };
+  variables: Record<string, unknown>;
   inventory: InventoryGroup[];
   handlers: Handler[];
   tags: string[];
@@ -253,7 +247,7 @@ export interface Playbook {
 export interface InventoryGroup {
   name: string;
   hosts: HostInfo[];
-  variables: { [key: string]: any };
+  variables: Record<string, unknown>;
   children?: string[];
 }
 
@@ -262,7 +256,7 @@ export interface HostInfo {
   ipAddress: string;
   platform: string;
   credentials: string;
-  variables: { [key: string]: any };
+  variables: Record<string, unknown>;
 }
 
 export interface Handler {
@@ -282,8 +276,8 @@ export interface ConfigurationDrift {
 
 export interface DriftItem {
   parameter: string;
-  expected: any;
-  actual: any;
+  expected: unknown;
+  actual: unknown;
   category: 'configuration' | 'security' | 'performance' | 'compliance';
   impact: string;
   recommendation: string;
@@ -325,8 +319,8 @@ export interface ConfigurationChange {
   hostId: string;
   taskId: string;
   parameter: string;
-  before: any;
-  after: any;
+  before: unknown;
+  after: unknown;
   timestamp: Date;
 }
 

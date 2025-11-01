@@ -1,0 +1,33 @@
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\components\media\hooks\useDeviceDetection.ts
+  53:17  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  55:60  warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  57:9   warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+--
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\components\media\models\CoaxialConnector.tsx
+  49:9  warning  Unsafe spread of an `any` value in an array  @typescript-eslint/no-unsafe-assignment
+--
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\config\api-config.ts
+   8:3   warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+   9:21  warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+  12:3   warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+--
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\services\api-client.ts
+  288:15  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  293:11  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  304:15  warning  Unsafe assignment of an `any` value                                     @typescript-eslint/no-unsafe-assignment
+  410:40  warning  Unsafe argument of type `any` assigned to a parameter of type `string`  @typescript-eslint/no-unsafe-argument
+--
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\services\assessment-service.ts
+  194:9   warning  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  196:3   warning  Unsafe call of a(n) `any` typed value         @typescript-eslint/no-unsafe-call
+  196:12  warning  Unsafe member access .push on an `any` value  @typescript-eslint/no-unsafe-member-access
+--
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\utils\auth.ts
+  108:5  warning  Unsafe return of a value of type `any`  @typescript-eslint/no-unsafe-return
+--
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\utils\networking.ts
+  351:5  warning  Unsafe assignment of an error typed value  @typescript-eslint/no-unsafe-assignment
+--
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\utils\security\sanitizer.ts
+  201:11  warning  Unsafe assignment of an `any` value     @typescript-eslint/no-unsafe-assignment
+  280:45  warning  Unsafe return of a value of type `any`  @typescript-eslint/no-unsafe-return

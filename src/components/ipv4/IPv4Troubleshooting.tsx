@@ -516,7 +516,7 @@ const IPv4Troubleshooting: React.FC = () => {
             {completedSteps.size === selectedScenario.solution.length && (
               <Alert severity="success" sx={{ mt: 3 }}>
                 <Typography variant="subtitle1" gutterBottom>
-                  Congratulations! You've completed all troubleshooting steps.
+                  Congratulations! You&apos;ve completed all troubleshooting steps.
                 </Typography>
                 <Typography variant="body2">
                   Final Score: {score}/100 | Time: {getTimeElapsed()}

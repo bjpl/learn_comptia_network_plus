@@ -3,7 +3,7 @@
  * Animated 10-node network showing unicast, multicast, anycast, and broadcast
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { TRAFFIC_TYPES } from './protocols-data';
 import type { TrafficType, TrafficAnimationState } from './protocols-types';
 
@@ -21,7 +21,7 @@ export const TrafficTypeDemo: React.FC = () => {
   const [animationState, setAnimationState] = useState<TrafficAnimationState>({
     activeType: 'unicast',
     animating: false,
-    packets: []
+    packets: [],
   });
   const [userExplanation, setUserExplanation] = useState('');
   const [showComparison, setShowComparison] = useState(false);
@@ -33,26 +33,79 @@ export const TrafficTypeDemo: React.FC = () => {
     x: 400 + 250 * Math.cos((i * 2 * Math.PI) / 10 - Math.PI / 2),
     y: 300 + 250 * Math.sin((i * 2 * Math.PI) / 10 - Math.PI / 2),
     label: `Node ${i}`,
-    active: false
+    active: false,
   }));
 
-  useEffect(() => {
-    if (animationState.animating) {
-      animateTraffic();
-    }
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+  const getPacketColor = useCallback((typeId: string): string => {
+    const colors: Record<string, string> = {
+      unicast: '#9b59b6',
+      multicast: '#e67e22',
+      anycast: '#16a085',
+      broadcast: '#c0392b',
     };
-  }, [animationState.animating]);
+    return colors[typeId] || '#3498db';
+  }, []);
 
-  const animateTraffic = () => {
+  const drawNetwork = useCallback(
+    (ctx: CanvasRenderingContext2D) => {
+      // Draw connections between nodes
+      ctx.strokeStyle = '#dfe6e9';
+      ctx.lineWidth = 2;
+      nodes.forEach((node, i) => {
+        nodes.forEach((otherNode, j) => {
+          if (i < j) {
+            ctx.beginPath();
+            ctx.moveTo(node.x, node.y);
+            ctx.lineTo(otherNode.x, otherNode.y);
+            ctx.stroke();
+          }
+        });
+      });
+
+      // Draw nodes
+      nodes.forEach((node) => {
+        const isSource = selectedType.visual.sourceNodes.includes(node.id);
+        const isDestination = selectedType.visual.destinationNodes.includes(node.id);
+
+        // Node circle
+        ctx.fillStyle = isSource ? '#e74c3c' : isDestination ? '#2ecc71' : '#3498db';
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 25, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Node border
+        ctx.strokeStyle = isSource || isDestination ? '#f39c12' : '#2c3e50';
+        ctx.lineWidth = isSource || isDestination ? 4 : 2;
+        ctx.stroke();
+
+        // Node label
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 12px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(node.id.toString(), node.x, node.y);
+
+        // Role label
+        if (isSource || isDestination) {
+          ctx.fillStyle = '#2c3e50';
+          ctx.font = '11px Arial';
+          ctx.fillText(isSource ? 'Source' : 'Dest', node.x, node.y + 40);
+        }
+      });
+    },
+    [nodes, selectedType.visual.sourceNodes, selectedType.visual.destinationNodes]
+  );
+
+  const animateTraffic = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) {return;}
+    if (!canvas) {
+      return;
+    }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) {return;}
+    if (!ctx) {
+      return;
+    }
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -61,7 +114,7 @@ export const TrafficTypeDemo: React.FC = () => {
     drawNetwork(ctx);
 
     // Draw packets
-    animationState.packets.forEach(packet => {
+    animationState.packets.forEach((packet) => {
       const fromNode = nodes[packet.from];
       const toNode = nodes[packet.to];
 
@@ -80,98 +133,48 @@ export const TrafficTypeDemo: React.FC = () => {
 
     // Update packet positions
     const updatedPackets = animationState.packets
-      .map(p => ({ ...p, progress: p.progress + 0.02 }))
-      .filter(p => p.progress <= 1);
+      .map((p) => ({ ...p, progress: p.progress + 0.02 }))
+      .filter((p) => p.progress <= 1);
 
-    setAnimationState(prev => ({
+    setAnimationState((prev) => ({
       ...prev,
       packets: updatedPackets,
-      animating: updatedPackets.length > 0
+      animating: updatedPackets.length > 0,
     }));
 
     if (updatedPackets.length > 0) {
       animationFrameRef.current = requestAnimationFrame(animateTraffic);
     }
-  };
+  }, [animationState.packets, nodes, selectedType.id, drawNetwork, getPacketColor]);
 
-  const drawNetwork = (ctx: CanvasRenderingContext2D) => {
-    // Draw connections between nodes
-    ctx.strokeStyle = '#dfe6e9';
-    ctx.lineWidth = 2;
-    nodes.forEach((node, i) => {
-      nodes.forEach((otherNode, j) => {
-        if (i < j) {
-          ctx.beginPath();
-          ctx.moveTo(node.x, node.y);
-          ctx.lineTo(otherNode.x, otherNode.y);
-          ctx.stroke();
-        }
-      });
-    });
-
-    // Draw nodes
-    nodes.forEach(node => {
-      const isSource = selectedType.visual.sourceNodes.includes(node.id);
-      const isDestination = selectedType.visual.destinationNodes.includes(node.id);
-
-      // Node circle
-      ctx.fillStyle = isSource ? '#e74c3c' : isDestination ? '#2ecc71' : '#3498db';
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, 25, 0, 2 * Math.PI);
-      ctx.fill();
-
-      // Node border
-      ctx.strokeStyle = isSource || isDestination ? '#f39c12' : '#2c3e50';
-      ctx.lineWidth = isSource || isDestination ? 4 : 2;
-      ctx.stroke();
-
-      // Node label
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 12px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(node.id.toString(), node.x, node.y);
-
-      // Role label
-      if (isSource || isDestination) {
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = '11px Arial';
-        ctx.fillText(
-          isSource ? 'Source' : 'Dest',
-          node.x,
-          node.y + 40
-        );
+  useEffect(() => {
+    if (animationState.animating) {
+      animateTraffic();
+    }
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
-    });
-  };
-
-  const getPacketColor = (typeId: string): string => {
-    const colors: Record<string, string> = {
-      unicast: '#9b59b6',
-      multicast: '#e67e22',
-      anycast: '#16a085',
-      broadcast: '#c0392b'
     };
-    return colors[typeId] || '#3498db';
-  };
+  }, [animationState.animating, animateTraffic]);
 
   const startAnimation = () => {
     const sourceNodes = selectedType.visual.sourceNodes;
     const destNodes = selectedType.visual.destinationNodes;
 
-    const newPackets = sourceNodes.flatMap(source =>
-      destNodes.map(dest => ({
+    const newPackets = sourceNodes.flatMap((source) =>
+      destNodes.map((dest) => ({
         id: `${source}-${dest}-${Date.now()}`,
         from: source,
         to: dest,
-        progress: 0
+        progress: 0,
       }))
     );
 
     setAnimationState({
       activeType: selectedType.id,
       animating: true,
-      packets: newPackets
+      packets: newPackets,
     });
   };
 
@@ -179,7 +182,7 @@ export const TrafficTypeDemo: React.FC = () => {
     setAnimationState({
       activeType: selectedType.id,
       animating: false,
-      packets: []
+      packets: [],
     });
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -197,7 +200,7 @@ export const TrafficTypeDemo: React.FC = () => {
         <div className="traffic-selector">
           <h3>Select Traffic Type:</h3>
           <div className="traffic-buttons">
-            {TRAFFIC_TYPES.map(type => (
+            {TRAFFIC_TYPES.map((type) => (
               <button
                 key={type.id}
                 onClick={() => {
@@ -206,7 +209,7 @@ export const TrafficTypeDemo: React.FC = () => {
                 }}
                 className={`traffic-btn ${selectedType.id === type.id ? 'active' : ''}`}
                 style={{
-                  borderColor: getPacketColor(type.id)
+                  borderColor: getPacketColor(type.id),
                 }}
               >
                 {type.name}
@@ -216,12 +219,7 @@ export const TrafficTypeDemo: React.FC = () => {
         </div>
 
         <div className="network-canvas-container">
-          <canvas
-            ref={canvasRef}
-            width={800}
-            height={600}
-            className="network-canvas"
-          />
+          <canvas ref={canvasRef} width={800} height={600} className="network-canvas" />
 
           <div className="animation-controls">
             <button onClick={startAnimation} className="control-btn start">
@@ -285,15 +283,18 @@ export const TrafficTypeDemo: React.FC = () => {
             rows={5}
           />
           <div className="word-count">
-            Words: {userExplanation.trim().split(/\s+/).filter(w => w.length > 0).length}
+            Words:{' '}
+            {
+              userExplanation
+                .trim()
+                .split(/\s+/)
+                .filter((w) => w.length > 0).length
+            }
           </div>
         </div>
 
         <div className="comparison-section">
-          <button
-            onClick={() => setShowComparison(!showComparison)}
-            className="comparison-btn"
-          >
+          <button onClick={() => setShowComparison(!showComparison)} className="comparison-btn">
             {showComparison ? 'Hide' : 'Show'} Traffic Type Comparison
           </button>
 
@@ -311,32 +312,40 @@ export const TrafficTypeDemo: React.FC = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td><strong>Unicast</strong></td>
+                    <td>
+                      <strong>Unicast</strong>
+                    </td>
                     <td>One → One</td>
                     <td>Single direct path</td>
                     <td>Efficient, private, targeted</td>
-                    <td>Doesn't scale for many recipients</td>
+                    <td>Doesn&apos;t scale for many recipients</td>
                   </tr>
                   <tr>
-                    <td><strong>Multicast</strong></td>
+                    <td>
+                      <strong>Multicast</strong>
+                    </td>
                     <td>One → Many (group)</td>
                     <td>Multiple paths, one stream</td>
                     <td>Bandwidth efficient for groups</td>
                     <td>Requires group management, router support</td>
                   </tr>
                   <tr>
-                    <td><strong>Anycast</strong></td>
+                    <td>
+                      <strong>Anycast</strong>
+                    </td>
                     <td>One → Nearest</td>
                     <td>Shortest path to closest</td>
                     <td>Automatic failover, load balancing</td>
                     <td>Less control over destination</td>
                   </tr>
                   <tr>
-                    <td><strong>Broadcast</strong></td>
+                    <td>
+                      <strong>Broadcast</strong>
+                    </td>
                     <td>One → All</td>
                     <td>All paths to all nodes</td>
                     <td>Simple discovery mechanism</td>
-                    <td>Network congestion, doesn't cross routers</td>
+                    <td>Network congestion, doesn&apos;t cross routers</td>
                   </tr>
                 </tbody>
               </table>
@@ -346,19 +355,31 @@ export const TrafficTypeDemo: React.FC = () => {
                 <div className="use-grid">
                   <div className="use-card">
                     <h5>Unicast</h5>
-                    <p>Use when you need direct, private communication between two specific devices. Examples: SSH, HTTPS, email delivery.</p>
+                    <p>
+                      Use when you need direct, private communication between two specific devices.
+                      Examples: SSH, HTTPS, email delivery.
+                    </p>
                   </div>
                   <div className="use-card">
                     <h5>Multicast</h5>
-                    <p>Use when sending identical data to multiple interested parties. Examples: IPTV, stock tickers, software updates to multiple servers.</p>
+                    <p>
+                      Use when sending identical data to multiple interested parties. Examples:
+                      IPTV, stock tickers, software updates to multiple servers.
+                    </p>
                   </div>
                   <div className="use-card">
                     <h5>Anycast</h5>
-                    <p>Use when you want requests routed to nearest available service. Examples: DNS, CDN, DDoS mitigation.</p>
+                    <p>
+                      Use when you want requests routed to nearest available service. Examples: DNS,
+                      CDN, DDoS mitigation.
+                    </p>
                   </div>
                   <div className="use-card">
                     <h5>Broadcast</h5>
-                    <p>Use when you need to discover or announce to all local devices. Examples: DHCP discovery, ARP requests, network announcements.</p>
+                    <p>
+                      Use when you need to discover or announce to all local devices. Examples: DHCP
+                      discovery, ARP requests, network announcements.
+                    </p>
                   </div>
                 </div>
               </div>

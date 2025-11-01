@@ -270,10 +270,14 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
               >
                 {/* Primary Function Selector */}
                 <div className="section" style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <label
+                    htmlFor={`primary-function-${layer.number}`}
+                    style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}
+                  >
                     Primary Function:
                   </label>
                   <select
+                    id={`primary-function-${layer.number}`}
                     value={layer.primaryFunction}
                     onChange={(e) => updateLayer(layer.number, { primaryFunction: e.target.value })}
                     style={{
@@ -295,9 +299,9 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
 
                 {/* Protocol Checkbox Grid */}
                 <div className="section" style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <div style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
                     Protocols (select 2-3 correct ones):
-                  </label>
+                  </div>
                   <div
                     style={{
                       display: 'grid',
@@ -336,10 +340,14 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
 
                 {/* PDU Input */}
                 <div className="section" style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <label
+                    htmlFor={`pdu-${layer.number}`}
+                    style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}
+                  >
                     Protocol Data Unit (PDU):
                   </label>
                   <input
+                    id={`pdu-${layer.number}`}
                     type="text"
                     value={layer.pdu}
                     onChange={(e) => updateLayer(layer.number, { pdu: e.target.value })}
@@ -356,10 +364,14 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
 
                 {/* Layer Interaction Explanation */}
                 <div className="section">
-                  <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
+                  <label
+                    htmlFor={`interaction-${layer.number}`}
+                    style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}
+                  >
                     Layer Interaction Explanation (minimum 150 words):
                   </label>
                   <textarea
+                    id={`interaction-${layer.number}`}
                     value={layer.interactionExplanation}
                     onChange={(e) =>
                       updateLayer(layer.number, { interactionExplanation: e.target.value })

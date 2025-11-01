@@ -9,15 +9,17 @@ import Connector3DViewer from '../Connector3DViewer';
 
 // Mock @react-three/fiber and @react-three/drei
 vi.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: any) => <div data-testid="canvas-mock">{children}</div>,
-  useFrame: () => {}
+  Canvas: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="canvas-mock">{children}</div>
+  ),
+  useFrame: () => {},
 }));
 
 vi.mock('@react-three/drei', () => ({
   OrbitControls: () => null,
   PerspectiveCamera: () => null,
   Environment: () => null,
-  Text: () => null
+  Text: () => null,
 }));
 
 describe('Connector3DViewer', () => {
@@ -110,7 +112,11 @@ describe('Connector3DViewer', () => {
 
   it('renders different connector types', () => {
     const connectorTypes: Array<'RJ45' | 'SC' | 'LC' | 'F-type' | 'BNC'> = [
-      'RJ45', 'SC', 'LC', 'F-type', 'BNC'
+      'RJ45',
+      'SC',
+      'LC',
+      'F-type',
+      'BNC',
     ];
 
     connectorTypes.forEach((type) => {

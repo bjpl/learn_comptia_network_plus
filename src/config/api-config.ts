@@ -5,13 +5,13 @@
 
 export const API_CONFIG = {
   // Base URLs
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
-  TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT || '10000', 10),
+  BASE_URL: (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3000/api',
+  TIMEOUT: parseInt((import.meta.env.VITE_API_TIMEOUT as string | undefined) || '10000', 10),
 
   // Environment
-  ENV: import.meta.env.VITE_ENV || 'development',
-  IS_PRODUCTION: import.meta.env.PROD,
-  IS_DEVELOPMENT: import.meta.env.DEV,
+  ENV: (import.meta.env.VITE_ENV as string | undefined) || 'development',
+  IS_PRODUCTION: Boolean(import.meta.env.PROD),
+  IS_DEVELOPMENT: Boolean(import.meta.env.DEV),
 
   // Retry Policy
   RETRY: {
@@ -31,7 +31,7 @@ export const API_CONFIG = {
   REQUEST: {
     HEADERS: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
   },
 } as const;

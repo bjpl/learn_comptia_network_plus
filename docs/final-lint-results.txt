@@ -1,0 +1,14 @@
+
+> comptia-network-plus-learning-platform@1.0.0 lint
+> eslint . --ext .ts,.tsx --fix
+
+
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\components\media\hooks\useDeviceDetection.ts
+  53:17  warning  Unsafe assignment of an `any` value  @typescript-eslint/no-unsafe-assignment
+  58:15  warning  Unsafe assignment of an `any` value  @typescript-eslint/no-unsafe-assignment
+
+C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\utils\networking.ts
+  351:5  warning  Unsafe assignment of an error typed value  @typescript-eslint/no-unsafe-assignment
+
+✖ 3 problems (0 errors, 3 warnings)
+

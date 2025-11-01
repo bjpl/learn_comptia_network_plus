@@ -13,7 +13,9 @@ const NotFound = React.lazy(() => import(/* webpackChunkName: "notfound" */ './p
 const LoadingFallback = () => <LoadingSpinner />;
 
 // Wrapper for lazy loaded routes with Suspense
-const LazyRoute: React.FC<{ component: React.LazyExoticComponent<React.ComponentType<any>> }> = ({ component: Component }) => (
+const LazyRoute: React.FC<{ component: React.LazyExoticComponent<React.ComponentType> }> = ({
+  component: Component,
+}) => (
   <React.Suspense fallback={<LoadingFallback />}>
     <Component />
   </React.Suspense>

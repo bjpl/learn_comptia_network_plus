@@ -38,7 +38,7 @@ export default function ConnectorIdentification() {
 
       return {
         connectorId: connector.id,
-        options
+        options,
       };
     });
   }, []);
@@ -47,12 +47,16 @@ export default function ConnectorIdentification() {
   const currentConnector = CONNECTORS.find((c) => c.id === currentQuestion.connectorId);
 
   const handleAnswerSelect = (answer: ConnectorType) => {
-    if (showResult) {return;}
+    if (showResult) {
+      return;
+    }
     setSelectedAnswer(answer);
   };
 
   const handleSubmit = () => {
-    if (!selectedAnswer) {return;}
+    if (!selectedAnswer) {
+      return;
+    }
 
     setShowResult(true);
     if (selectedAnswer === currentQuestion.connectorId) {
@@ -106,7 +110,7 @@ export default function ConnectorIdentification() {
               <div className="text-3xl font-bold text-blue-600">
                 {score} / {answeredQuestions.size}
               </div>
-              <Progress value={progressPercentage} className="w-32 mt-2" />
+              <Progress value={progressPercentage} className="mt-2 w-32" />
             </div>
           </div>
         </CardHeader>
@@ -143,10 +147,12 @@ export default function ConnectorIdentification() {
               <CardTitle>Select Your Answer</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {currentQuestion.options.map((optionId) => {
                   const option = CONNECTORS.find((c) => c.id === optionId);
-                  if (!option) {return null;}
+                  if (!option) {
+                    return null;
+                  }
 
                   const isSelected = selectedAnswer === optionId;
                   const isCorrectAnswer = optionId === currentQuestion.connectorId;
@@ -155,29 +161,27 @@ export default function ConnectorIdentification() {
                     <Button
                       key={optionId}
                       variant={isSelected ? 'default' : 'outline'}
-                      className={`h-auto py-4 px-6 justify-start ${
+                      className={`h-auto justify-start px-6 py-4 ${
                         showResult && isCorrectAnswer
-                          ? 'bg-green-100 border-green-500 hover:bg-green-100'
+                          ? 'border-green-500 bg-green-100 hover:bg-green-100'
                           : showResult && isSelected && !isCorrectAnswer
-                            ? 'bg-red-100 border-red-500 hover:bg-red-100'
+                            ? 'border-red-500 bg-red-100 hover:bg-red-100'
                             : ''
                       }`}
                       onClick={() => handleAnswerSelect(optionId)}
                       disabled={showResult}
                     >
-                      <div className="flex items-center gap-3 w-full">
+                      <div className="flex w-full items-center gap-3">
                         {showResult && isCorrectAnswer && (
-                          <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+                          <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-green-600" />
                         )}
                         {showResult && isSelected && !isCorrectAnswer && (
-                          <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                          <XCircle className="h-5 w-5 flex-shrink-0 text-red-600" />
                         )}
-                        <div className="text-left flex-1">
+                        <div className="flex-1 text-left">
                           <div className="font-semibold">{option.name}</div>
                           {showResult && (
-                            <div className="text-sm text-gray-600 mt-1">
-                              {option.description}
-                            </div>
+                            <div className="mt-1 text-sm text-gray-600">{option.description}</div>
                           )}
                         </div>
                       </div>
@@ -186,8 +190,12 @@ export default function ConnectorIdentification() {
                 })}
               </div>
 
-              <div className="flex items-center justify-between mt-6">
-                <Button variant="outline" onClick={handlePrevious} disabled={currentQuestionIndex === 0}>
+              <div className="mt-6 flex items-center justify-between">
+                <Button
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={currentQuestionIndex === 0}
+                >
                   Previous
                 </Button>
 
@@ -196,7 +204,10 @@ export default function ConnectorIdentification() {
                     Submit Answer
                   </Button>
                 ) : (
-                  <Button onClick={handleNext} disabled={currentQuestionIndex === questions.length - 1}>
+                  <Button
+                    onClick={handleNext}
+                    disabled={currentQuestionIndex === questions.length - 1}
+                  >
                     Next Question
                   </Button>
                 )}
@@ -225,13 +236,13 @@ export default function ConnectorIdentification() {
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <div className="font-semibold text-lg mb-2">{currentConnector.name}</div>
+                    <div className="mb-2 text-lg font-semibold">{currentConnector.name}</div>
                     <p className="text-gray-700">{currentConnector.description}</p>
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium mb-2">Typical Uses:</div>
-                    <ul className="list-disc list-inside space-y-1">
+                    <div className="mb-2 text-sm font-medium">Typical Uses:</div>
+                    <ul className="list-inside list-disc space-y-1">
                       {currentConnector.typicalUse.map((use, idx) => (
                         <li key={idx} className="text-sm text-gray-700">
                           {use}
@@ -241,7 +252,7 @@ export default function ConnectorIdentification() {
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium mb-2">Key Features:</div>
+                    <div className="mb-2 text-sm font-medium">Key Features:</div>
                     <div className="flex flex-wrap gap-2">
                       {currentConnector.keyFeatures.map((feature, idx) => (
                         <Badge key={idx} variant="outline">
@@ -265,9 +276,9 @@ export default function ConnectorIdentification() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center space-y-6">
+            <div className="space-y-6 text-center">
               <div>
-                <div className="text-6xl font-bold text-blue-600 mb-2">
+                <div className="mb-2 text-6xl font-bold text-blue-600">
                   {Math.round((score / questions.length) * 100)}%
                 </div>
                 <div className="text-xl text-gray-700">
@@ -277,24 +288,24 @@ export default function ConnectorIdentification() {
 
               <div className="space-y-2">
                 {score === questions.length && (
-                  <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                    <p className="text-green-800 font-semibold">Perfect Score!</p>
+                  <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                    <p className="font-semibold text-green-800">Perfect Score!</p>
                     <p className="text-sm text-green-700">
-                      Excellent work! You've mastered connector identification.
+                      Excellent work! You&apos;ve mastered connector identification.
                     </p>
                   </div>
                 )}
                 {score >= questions.length * 0.7 && score < questions.length && (
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                    <p className="text-blue-800 font-semibold">Great Job!</p>
+                  <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                    <p className="font-semibold text-blue-800">Great Job!</p>
                     <p className="text-sm text-blue-700">
                       You have a strong understanding of network connectors.
                     </p>
                   </div>
                 )}
                 {score < questions.length * 0.7 && (
-                  <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <p className="text-yellow-800 font-semibold">Keep Practicing!</p>
+                  <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                    <p className="font-semibold text-yellow-800">Keep Practicing!</p>
                     <p className="text-sm text-yellow-700">
                       Review the connector types and try again to improve your score.
                     </p>

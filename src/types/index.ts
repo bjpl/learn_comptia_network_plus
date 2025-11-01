@@ -344,7 +344,7 @@ export interface BaseComponentProps {
  * Interactive component props
  */
 export interface InteractiveComponentProps extends BaseComponentProps {
-  onComplete?: (result: any) => void;
+  onComplete?: (result: unknown) => void;
   onProgress?: (progress: number) => void;
   disabled?: boolean;
 }
@@ -398,7 +398,7 @@ export class AppError extends Error {
   constructor(
     message: string,
     public code: string,
-    public details?: any
+    public details?: unknown
   ) {
     super(message);
     this.name = 'AppError';
@@ -409,7 +409,7 @@ export class AppError extends Error {
  * Validation error
  */
 export class ValidationError extends AppError {
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message, 'VALIDATION_ERROR', details);
     this.name = 'ValidationError';
   }
@@ -419,7 +419,7 @@ export class ValidationError extends AppError {
  * Network calculation error
  */
 export class NetworkCalculationError extends AppError {
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message, 'NETWORK_CALC_ERROR', details);
     this.name = 'NetworkCalculationError';
   }
@@ -482,9 +482,11 @@ export type RequiredKeys<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K
 /**
  * Async function type
  */
-export type AsyncFunction<T = any> = (...args: any[]) => Promise<T>;
+export type AsyncFunction<T = unknown, TArgs extends unknown[] = unknown[]> = (
+  ...args: TArgs
+) => Promise<T>;
 
 /**
  * Callback function type
  */
-export type Callback<T = void> = (...args: any[]) => T;
+export type Callback<T = void, TArgs extends unknown[] = unknown[]> = (...args: TArgs) => T;
