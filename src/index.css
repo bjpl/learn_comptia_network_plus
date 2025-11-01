@@ -147,3 +147,16 @@ p {
     display: none !important;
   }
 }
+
+/* Force lighter text in dark mode for better contrast */
+.dark .text-gray-600 {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.dark .text-gray-500 {
+  color: rgb(156 163 175) !important; /* gray-400 */
+}
+
+.dark .text-gray-400 {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
