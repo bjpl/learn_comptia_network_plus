@@ -5,14 +5,8 @@
 
 import { apiClient } from './api-client';
 import { API_ENDPOINTS, shouldUseMockAPI } from '../config/api-config';
-import type {
-  AuthResponse,
-  LoginCredentials,
-  RegisterData,
-  User} from '../types/auth';
-import {
-  UserRole,
-} from '../types/auth';
+import type { AuthResponse, LoginCredentials, RegisterData, User } from '../types/auth';
+import { UserRole } from '../types/auth';
 import {
   storeAuthData,
   clearAuthData,
@@ -86,7 +80,7 @@ const mockLogin = async (credentials: LoginCredentials): Promise<AuthResponse> =
           code: 'INVALID_CREDENTIALS',
         },
       },
-    };
+    } as const;
   }
 
   const token = generateMockToken(mockUser.user.id);
@@ -140,7 +134,7 @@ const mockRegister = async (data: RegisterData): Promise<AuthResponse> => {
           code: 'EMAIL_EXISTS',
         },
       },
-    };
+    } as const;
   }
 
   // Validate password match
@@ -155,7 +149,7 @@ const mockRegister = async (data: RegisterData): Promise<AuthResponse> => {
           },
         },
       },
-    };
+    } as const;
   }
 
   const userId = generateUserId();
@@ -276,10 +270,10 @@ const mockGetCurrentUser = async (): Promise<User> => {
           code: 'UNAUTHORIZED',
         },
       },
-    };
+    } as const;
   }
 
-  return JSON.parse(userStr);
+  return JSON.parse(userStr) as User;
 };
 
 /**
@@ -299,7 +293,7 @@ export const verifyEmail = async (token: string): Promise<void> => {
  */
 const mockVerifyEmail = async (token: string): Promise<void> => {
   await mockApiDelay(500);
-  console.log('Email verified with token:', token);
+  console.warn('Email verified with token:', token);
 };
 
 /**
@@ -319,7 +313,7 @@ export const forgotPassword = async (email: string): Promise<void> => {
  */
 const mockForgotPassword = async (email: string): Promise<void> => {
   await mockApiDelay(800);
-  console.log('Password reset email sent to:', email);
+  console.warn('Password reset email sent to:', email);
 };
 
 /**
@@ -339,14 +333,21 @@ export const resetPassword = async (token: string, newPassword: string): Promise
  */
 const mockResetPassword = async (token: string, newPassword: string): Promise<void> => {
   await mockApiDelay(800);
-  console.log('Password reset with token:', token, 'New password:', newPassword.replace(/./g, '*'));
+  console.warn(
+    'Password reset with token:',
+    token,
+    'New password:',
+    newPassword.replace(/./g, '*')
+  );
 };
 
 /**
  * Check if user has required role
  */
 export const hasRole = (user: User | null, role: UserRole): boolean => {
-  if (!user) {return false;}
+  if (!user) {
+    return false;
+  }
   return user.role === role;
 };
 
@@ -354,6 +355,8 @@ export const hasRole = (user: User | null, role: UserRole): boolean => {
  * Check if user has any of the required roles
  */
 export const hasAnyRole = (user: User | null, roles: UserRole[]): boolean => {
-  if (!user) {return false;}
+  if (!user) {
+    return false;
+  }
   return roles.includes(user.role);
 };

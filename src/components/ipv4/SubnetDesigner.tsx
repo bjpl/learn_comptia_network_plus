@@ -29,18 +29,8 @@ import {
   InputLabel,
   Divider,
 } from '@mui/material';
-import {
-  ExpandMore,
-  CheckCircle,
-  Warning,
-  Refresh,
-  Calculate,
-} from '@mui/icons-material';
-import type {
-  SubnetScenario,
-  SubnetAllocation,
-  SubnetDesignResult
-} from './ipv4-types';
+import { ExpandMore, CheckCircle, Warning, Refresh, Calculate } from '@mui/icons-material';
+import type { SubnetScenario, SubnetAllocation, SubnetDesignResult } from './ipv4-types';
 import { subnetScenarios } from './ipv4-data';
 import { calculateVLSM, isIPInSubnet } from '../../utils/networking';
 
@@ -62,7 +52,7 @@ const SubnetDesigner: React.FC = () => {
   // Calculate VLSM allocation
   const handleAutoAllocate = () => {
     try {
-      const hostsNeeded = selectedScenario.requirements.map(req => req.hostsNeeded);
+      const hostsNeeded = selectedScenario.requirements.map((req) => req.hostsNeeded);
       const vlsmResult = calculateVLSM(selectedScenario.baseNetwork, hostsNeeded);
 
       const newAllocations: SubnetAllocation[] = vlsmResult.subnets.map((subnet, index) => {
@@ -129,8 +119,10 @@ const SubnetDesigner: React.FC = () => {
     let hasOverlaps = false;
     for (let i = 0; i < allocs.length; i++) {
       for (let j = i + 1; j < allocs.length; j++) {
-        if (isIPInSubnet(allocs[i].network, `${allocs[j].network}/${allocs[j].cidr}`) ||
-            isIPInSubnet(allocs[j].network, `${allocs[i].network}/${allocs[i].cidr}`)) {
+        if (
+          isIPInSubnet(allocs[i].network, `${allocs[j].network}/${allocs[j].cidr}`) ||
+          isIPInSubnet(allocs[j].network, `${allocs[i].network}/${allocs[i].cidr}`)
+        ) {
           hasOverlaps = true;
           errors.push(`Overlap detected between ${allocs[i].name} and ${allocs[j].name}`);
         }
@@ -138,25 +130,28 @@ const SubnetDesigner: React.FC = () => {
     }
 
     // Check efficiency
-    allocs.forEach(alloc => {
+    allocs.forEach((alloc) => {
       if (alloc.efficiency < 50) {
         warnings.push(`${alloc.name} has low efficiency (${alloc.efficiency}%)`);
       }
       if (alloc.usableHosts < alloc.hostsNeeded) {
-        errors.push(`${alloc.name} subnet too small (needs ${alloc.hostsNeeded}, has ${alloc.usableHosts})`);
+        errors.push(
+          `${alloc.name} subnet too small (needs ${alloc.hostsNeeded}, has ${alloc.usableHosts})`
+        );
       }
     });
 
     // Check if all requirements are allocated
     if (allocs.length < selectedScenario.requirements.length) {
-      warnings.push(`Only ${allocs.length} of ${selectedScenario.requirements.length} requirements allocated`);
+      warnings.push(
+        `Only ${allocs.length} of ${selectedScenario.requirements.length} requirements allocated`
+      );
     }
 
     // Calculate overall efficiency
     const totalWasted = allocs.reduce((sum, a) => sum + a.wastedAddresses, 0);
-    const totalEfficiency = allocs.length > 0
-      ? (allocs.reduce((sum, a) => sum + a.efficiency, 0) / allocs.length)
-      : 0;
+    const totalEfficiency =
+      allocs.length > 0 ? allocs.reduce((sum, a) => sum + a.efficiency, 0) / allocs.length : 0;
 
     setDesignResult({
       allocations: allocs,
@@ -177,7 +172,7 @@ const SubnetDesigner: React.FC = () => {
   };
 
   // Get difficulty color
-  const getDifficultyColor = (difficulty: string) => {
+  const getDifficultyColor = (difficulty: string): 'success' | 'warning' | 'error' | 'default' => {
     switch (difficulty) {
       case 'beginner':
         return 'success';
@@ -209,12 +204,14 @@ const SubnetDesigner: React.FC = () => {
                 <Select
                   value={selectedScenario.id}
                   onChange={(e) => {
-                    const scenario = subnetScenarios.find(s => s.id === e.target.value);
-                    if (scenario) {setSelectedScenario(scenario);}
+                    const scenario = subnetScenarios.find((s) => s.id === e.target.value);
+                    if (scenario) {
+                      setSelectedScenario(scenario);
+                    }
                   }}
                   label="Scenario"
                 >
-                  {subnetScenarios.map(scenario => (
+                  {subnetScenarios.map((scenario) => (
                     <MenuItem key={scenario.id} value={scenario.id}>
                       {scenario.title} - {scenario.category}
                     </MenuItem>
@@ -225,7 +222,7 @@ const SubnetDesigner: React.FC = () => {
             <Grid item xs={12} md={4}>
               <Chip
                 label={selectedScenario.difficulty.toUpperCase()}
-                color={getDifficultyColor(selectedScenario.difficulty) as any}
+                color={getDifficultyColor(selectedScenario.difficulty)}
                 size="small"
               />
             </Grid>
@@ -260,8 +257,8 @@ const SubnetDesigner: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {selectedScenario.requirements.map(req => {
-                  const allocated = allocations.find(a => a.id === req.id);
+                {selectedScenario.requirements.map((req) => {
+                  const allocated = allocations.find((a) => a.id === req.id);
                   return (
                     <TableRow key={req.id}>
                       <TableCell>{req.name}</TableCell>
@@ -285,30 +282,16 @@ const SubnetDesigner: React.FC = () => {
 
       {/* Action Buttons */}
       <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-        <Button
-          variant="contained"
-          startIcon={<Calculate />}
-          onClick={handleAutoAllocate}
-        >
+        <Button variant="contained" startIcon={<Calculate />} onClick={handleAutoAllocate}>
           Auto-Allocate (VLSM)
         </Button>
-        <Button
-          variant="outlined"
-          startIcon={<Refresh />}
-          onClick={handleReset}
-        >
+        <Button variant="outlined" startIcon={<Refresh />} onClick={handleReset}>
           Reset
         </Button>
-        <Button
-          variant="outlined"
-          onClick={() => setShowHints(!showHints)}
-        >
+        <Button variant="outlined" onClick={() => setShowHints(!showHints)}>
           {showHints ? 'Hide' : 'Show'} Hints
         </Button>
-        <Button
-          variant="outlined"
-          onClick={() => setShowSolution(!showSolution)}
-        >
+        <Button variant="outlined" onClick={() => setShowSolution(!showSolution)}>
           {showSolution ? 'Hide' : 'Show'} Solution
         </Button>
       </Box>
@@ -350,7 +333,7 @@ const SubnetDesigner: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {allocations.map(alloc => (
+                  {allocations.map((alloc) => (
                     <TableRow key={alloc.id}>
                       <TableCell>{alloc.name}</TableCell>
                       <TableCell>
@@ -374,7 +357,13 @@ const SubnetDesigner: React.FC = () => {
                         <Chip
                           label={`${alloc.efficiency}%`}
                           size="small"
-                          color={alloc.efficiency >= 75 ? 'success' : alloc.efficiency >= 50 ? 'warning' : 'error'}
+                          color={
+                            alloc.efficiency >= 75
+                              ? 'success'
+                              : alloc.efficiency >= 50
+                                ? 'warning'
+                                : 'error'
+                          }
                         />
                       </TableCell>
                     </TableRow>
@@ -421,7 +410,10 @@ const SubnetDesigner: React.FC = () => {
                   <Typography variant="caption" color="text.secondary">
                     Overlaps
                   </Typography>
-                  <Typography variant="h4" color={designResult.hasOverlaps ? 'error' : 'success.main'}>
+                  <Typography
+                    variant="h4"
+                    color={designResult.hasOverlaps ? 'error' : 'success.main'}
+                  >
                     {designResult.hasOverlaps ? 'Yes' : 'No'}
                   </Typography>
                 </Paper>
@@ -481,9 +473,15 @@ const SubnetDesigner: React.FC = () => {
                   RFC 1918 Private Addresses:
                 </Typography>
                 <ul>
-                  <li><code>10.0.0.0/8</code> - Class A (16.7M addresses)</li>
-                  <li><code>172.16.0.0/12</code> - Class B (1M addresses)</li>
-                  <li><code>192.168.0.0/16</code> - Class C (65K addresses)</li>
+                  <li>
+                    <code>10.0.0.0/8</code> - Class A (16.7M addresses)
+                  </li>
+                  <li>
+                    <code>172.16.0.0/12</code> - Class B (1M addresses)
+                  </li>
+                  <li>
+                    <code>192.168.0.0/16</code> - Class C (65K addresses)
+                  </li>
                 </ul>
               </Grid>
               <Grid item xs={12} md={6}>
@@ -491,10 +489,18 @@ const SubnetDesigner: React.FC = () => {
                   Special Address Ranges:
                 </Typography>
                 <ul>
-                  <li><code>127.0.0.0/8</code> - Loopback</li>
-                  <li><code>169.254.0.0/16</code> - APIPA</li>
-                  <li><code>224.0.0.0/4</code> - Multicast (Class D)</li>
-                  <li><code>240.0.0.0/4</code> - Reserved (Class E)</li>
+                  <li>
+                    <code>127.0.0.0/8</code> - Loopback
+                  </li>
+                  <li>
+                    <code>169.254.0.0/16</code> - APIPA
+                  </li>
+                  <li>
+                    <code>224.0.0.0/4</code> - Multicast (Class D)
+                  </li>
+                  <li>
+                    <code>240.0.0.0/4</code> - Reserved (Class E)
+                  </li>
                 </ul>
               </Grid>
               <Grid item xs={12}>

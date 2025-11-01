@@ -152,8 +152,8 @@ const mockSubmitQuiz = async (submission: QuizSubmission): Promise<QuizResult> =
   // Get quiz to check answers
   const quiz = await mockGetQuiz(submission.quizId);
 
-  const results = submission.answers.map(answer => {
-    const question = quiz.questions.find(q => q.id === answer.questionId);
+  const results = submission.answers.map((answer) => {
+    const question = quiz.questions.find((q) => q.id === answer.questionId);
     if (!question) {
       throw new Error(`Question ${answer.questionId} not found`);
     }
@@ -169,7 +169,7 @@ const mockSubmitQuiz = async (submission: QuizSubmission): Promise<QuizResult> =
     };
   });
 
-  const correctAnswers = results.filter(r => r.isCorrect).length;
+  const correctAnswers = results.filter((r) => r.isCorrect).length;
   const totalQuestions = quiz.questions.length;
   const percentage = (correctAnswers / totalQuestions) * 100;
   const passed = percentage >= quiz.passingScore;
@@ -217,9 +217,7 @@ export const getQuizResults = async (attemptId: string): Promise<QuizResult> => 
     return mockGetQuizResults(attemptId);
   }
 
-  const response = await apiClient.get<QuizResult>(
-    API_ENDPOINTS.ASSESSMENT.GET_RESULTS(attemptId)
-  );
+  const response = await apiClient.get<QuizResult>(API_ENDPOINTS.ASSESSMENT.GET_RESULTS(attemptId));
 
   return response.data;
 };
@@ -240,10 +238,10 @@ const mockGetQuizResults = async (attemptId: string): Promise<QuizResult> => {
           message: 'Quiz results not found',
         },
       },
-    };
+    } as const;
   }
 
-  return JSON.parse(resultStr);
+  return JSON.parse(resultStr) as QuizResult;
 };
 
 /**
@@ -268,13 +266,15 @@ const mockGetQuizAttempts = async (): Promise<QuizAttempt[]> => {
   await mockApiDelay(300);
 
   const attemptsStr = localStorage.getItem('quiz_attempts');
-  return attemptsStr ? JSON.parse(attemptsStr) : [];
+  return attemptsStr ? (JSON.parse(attemptsStr) as QuizAttempt[]) : [];
 };
 
 /**
  * Get quiz statistics
  */
-export const getQuizStatistics = (attempts: QuizAttempt[]): {
+export const getQuizStatistics = (
+  attempts: QuizAttempt[]
+): {
   totalAttempts: number;
   averageScore: number;
   bestScore: number;
@@ -293,8 +293,8 @@ export const getQuizStatistics = (attempts: QuizAttempt[]): {
 
   const totalAttempts = attempts.length;
   const averageScore = attempts.reduce((sum, a) => sum + a.percentage, 0) / totalAttempts;
-  const bestScore = Math.max(...attempts.map(a => a.percentage));
-  const passed = attempts.filter(a => a.passed).length;
+  const bestScore = Math.max(...attempts.map((a) => a.percentage));
+  const passed = attempts.filter((a) => a.passed).length;
   const passRate = (passed / totalAttempts) * 100;
 
   // Get 5 most recent attempts

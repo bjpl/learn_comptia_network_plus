@@ -29,7 +29,10 @@ interface ProgressState {
   error: string | null;
 
   // Component progress actions
-  updateComponentProgress: (componentId: string, progress: Partial<ComponentProgress>) => Promise<void>;
+  updateComponentProgress: (
+    componentId: string,
+    progress: Partial<ComponentProgress>
+  ) => Promise<void>;
   getComponentProgress: (componentId: string) => ComponentProgress | undefined;
   markComponentComplete: (componentId: string, score?: number) => Promise<void>;
 
@@ -186,7 +189,7 @@ export const useProgressStore = create<ProgressState>()(
           );
 
           if (conflicts.length > 0) {
-            console.log(`Resolved ${conflicts.length} progress conflicts`);
+            console.warn(`Resolved ${conflicts.length} progress conflicts`);
           }
 
           set({
@@ -290,7 +293,7 @@ export const useProgressStore = create<ProgressState>()(
 // Setup network status listener for auto-sync
 networkStatusManager.subscribe((isOnline) => {
   if (isOnline) {
-    console.log('Network restored - syncing progress...');
+    console.warn('Network restored - syncing progress...');
     useProgressStore.getState().syncProgress();
   }
 });

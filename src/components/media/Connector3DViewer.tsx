@@ -29,7 +29,7 @@ export default function Connector3DViewer({
   showLabels = true,
   showControls = true,
   height = '400px',
-  onToggleFullscreen
+  onToggleFullscreen,
 }: Connector3DViewerProps) {
   const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
@@ -68,35 +68,72 @@ export default function Connector3DViewer({
   const renderConnector = () => {
     switch (connectorType) {
       case 'RJ45':
-        return <RJ45Connector rotation={rotation} autoRotate={autoRotate} showLabels={labels} scale={zoom} />;
+        return (
+          <RJ45Connector
+            rotation={rotation}
+            autoRotate={autoRotate}
+            showLabels={labels}
+            scale={zoom}
+          />
+        );
       case 'RJ11':
-        return <RJ45Connector rotation={rotation} autoRotate={autoRotate} showLabels={labels} scale={zoom} />;
+        return (
+          <RJ45Connector
+            rotation={rotation}
+            autoRotate={autoRotate}
+            showLabels={labels}
+            scale={zoom}
+          />
+        );
       case 'SC':
       case 'LC':
       case 'ST':
       case 'MPO':
-        return <FiberOpticConnector type={connectorType as any} rotation={rotation} autoRotate={autoRotate} showLabels={labels} scale={zoom} />;
+        return (
+          <FiberOpticConnector
+            type={connectorType}
+            rotation={rotation}
+            autoRotate={autoRotate}
+            showLabels={labels}
+            scale={zoom}
+          />
+        );
       case 'F-type':
       case 'BNC':
-        return <CoaxialConnector type={connectorType as any} rotation={rotation} autoRotate={autoRotate} showLabels={labels} scale={zoom} />;
+        return (
+          <CoaxialConnector
+            type={connectorType}
+            rotation={rotation}
+            autoRotate={autoRotate}
+            showLabels={labels}
+            scale={zoom}
+          />
+        );
       default:
-        return <RJ45Connector rotation={rotation} autoRotate={autoRotate} showLabels={labels} scale={zoom} />;
+        return (
+          <RJ45Connector
+            rotation={rotation}
+            autoRotate={autoRotate}
+            showLabels={labels}
+            scale={zoom}
+          />
+        );
     }
   };
 
   return (
     <div className="relative">
       <div
-        className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden"
+        className="overflow-hidden rounded-lg bg-gradient-to-br from-gray-900 to-gray-800"
         style={{ height }}
         role="img"
         aria-label={`3D visualization of ${connectorType} connector`}
       >
         <Suspense
           fallback={
-            <div className="w-full h-full flex items-center justify-center text-white">
+            <div className="flex h-full w-full items-center justify-center text-white">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4" />
+                <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-white" />
                 <p>Loading 3D model...</p>
               </div>
             </div>
@@ -118,7 +155,7 @@ export default function Connector3DViewer({
               dampingFactor={0.05}
               touches={{
                 ONE: 0, // TOUCH.ROTATE
-                TWO: 2  // TOUCH.DOLLY_PAN
+                TWO: 2, // TOUCH.DOLLY_PAN
               }}
             />
 
@@ -147,7 +184,7 @@ export default function Connector3DViewer({
 
       {/* Controls */}
       {showControls && (
-        <div className="flex items-center justify-between mt-4 gap-2 flex-wrap">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -155,25 +192,15 @@ export default function Connector3DViewer({
               onClick={handleRotate}
               aria-label="Rotate connector 45 degrees"
             >
-              <RotateCw className="h-4 w-4 mr-1" />
+              <RotateCw className="mr-1 h-4 w-4" />
               Rotate
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleZoomIn}
-              aria-label="Zoom in"
-            >
-              <ZoomIn className="h-4 w-4 mr-1" />
+            <Button variant="outline" size="sm" onClick={handleZoomIn} aria-label="Zoom in">
+              <ZoomIn className="mr-1 h-4 w-4" />
               Zoom In
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleZoomOut}
-              aria-label="Zoom out"
-            >
-              <ZoomOut className="h-4 w-4 mr-1" />
+            <Button variant="outline" size="sm" onClick={handleZoomOut} aria-label="Zoom out">
+              <ZoomOut className="mr-1 h-4 w-4" />
               Zoom Out
             </Button>
             <Button
@@ -182,7 +209,7 @@ export default function Connector3DViewer({
               onClick={toggleLabels}
               aria-label={labels ? 'Hide labels' : 'Show labels'}
             >
-              <Eye className="h-4 w-4 mr-1" />
+              <Eye className="mr-1 h-4 w-4" />
               {labels ? 'Hide' : 'Show'} Labels
             </Button>
             <Button variant="outline" size="sm" onClick={handleReset} aria-label="Reset view">

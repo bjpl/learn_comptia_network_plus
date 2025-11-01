@@ -11,11 +11,13 @@ import { USBConnector } from '../models/USBConnector';
 
 // Mock @react-three/fiber and @react-three/drei
 vi.mock('@react-three/fiber', () => ({
-  useFrame: vi.fn()
+  useFrame: vi.fn(),
 }));
 
 vi.mock('@react-three/drei', () => ({
-  Text: ({ children, ...props }: any) => <mesh {...props}>{children}</mesh>
+  Text: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => (
+    <mesh {...props}>{children}</mesh>
+  ),
 }));
 
 describe('3D Connector Models', () => {
@@ -67,8 +69,8 @@ describe('3D Connector Models', () => {
       expect(container).toBeInTheDocument();
     });
 
-    it('renders MTRJ connector', () => {
-      const { container } = render(<FiberOpticConnector type="MTRJ" />);
+    it('renders MPO connector', () => {
+      const { container } = render(<FiberOpticConnector type="MPO" />);
       expect(container).toBeInTheDocument();
     });
 

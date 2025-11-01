@@ -54,10 +54,10 @@ const mockGetUserProfile = async (): Promise<User> => {
         status: 401,
         data: { message: 'Not authenticated' },
       },
-    };
+    } as const;
   }
 
-  return JSON.parse(userStr);
+  return JSON.parse(userStr) as User;
 };
 
 /**
@@ -92,11 +92,11 @@ const mockUpdateUserProfile = async (data: UpdateProfileData): Promise<User> => 
         status: 401,
         data: { message: 'Not authenticated' },
       },
-    };
+    } as const;
   }
 
-  const user = JSON.parse(userStr);
-  const updatedUser = { ...user, ...data };
+  const user = JSON.parse(userStr) as User;
+  const updatedUser: User = { ...user, ...data };
 
   storage.setItem('auth_user', JSON.stringify(updatedUser));
 
@@ -132,10 +132,10 @@ const mockChangePassword = async (data: ChangePasswordData): Promise<void> => {
           },
         },
       },
-    };
+    } as const;
   }
 
-  console.log('Password changed successfully');
+  console.warn('Password changed successfully');
 };
 
 /**
@@ -164,7 +164,7 @@ export const uploadAvatar = async (file: File): Promise<string> => {
   const userStr = storage.getItem('auth_user');
 
   if (userStr) {
-    const user = JSON.parse(userStr);
+    const user = JSON.parse(userStr) as User;
     user.avatar = response.data.avatarUrl;
     storage.setItem('auth_user', JSON.stringify(user));
   }
@@ -187,7 +187,7 @@ const mockUploadAvatar = async (file: File): Promise<string> => {
           message: 'File must be an image',
         },
       },
-    };
+    } as const;
   }
 
   // Validate file size (max 2MB)
@@ -199,7 +199,7 @@ const mockUploadAvatar = async (file: File): Promise<string> => {
           message: 'File size must be less than 2MB',
         },
       },
-    };
+    } as const;
   }
 
   // Create mock avatar URL
@@ -210,7 +210,7 @@ const mockUploadAvatar = async (file: File): Promise<string> => {
   const userStr = storage.getItem('auth_user');
 
   if (userStr) {
-    const user = JSON.parse(userStr);
+    const user = JSON.parse(userStr) as User;
     user.avatar = avatarUrl;
     storage.setItem('auth_user', JSON.stringify(user));
   }
@@ -239,7 +239,7 @@ const mockGetUserSettings = async (): Promise<UserSettings> => {
   const settingsStr = localStorage.getItem('user_settings');
 
   if (settingsStr) {
-    return JSON.parse(settingsStr);
+    return JSON.parse(settingsStr) as UserSettings;
   }
 
   // Default settings
@@ -260,7 +260,9 @@ const mockGetUserSettings = async (): Promise<UserSettings> => {
 /**
  * Update user settings
  */
-export const updateUserSettings = async (settings: Partial<UserSettings>): Promise<UserSettings> => {
+export const updateUserSettings = async (
+  settings: Partial<UserSettings>
+): Promise<UserSettings> => {
   if (shouldUseMockAPI()) {
     return mockUpdateUserSettings(settings);
   }
@@ -276,11 +278,11 @@ const mockUpdateUserSettings = async (settings: Partial<UserSettings>): Promise<
   await mockApiDelay(400);
 
   const settingsStr = localStorage.getItem('user_settings');
-  const currentSettings = settingsStr
-    ? JSON.parse(settingsStr)
+  const currentSettings: UserSettings = settingsStr
+    ? (JSON.parse(settingsStr) as UserSettings)
     : await mockGetUserSettings();
 
-  const updatedSettings = { ...currentSettings, ...settings };
+  const updatedSettings: UserSettings = { ...currentSettings, ...settings };
   localStorage.setItem('user_settings', JSON.stringify(updatedSettings));
 
   return updatedSettings;
@@ -314,12 +316,12 @@ const mockDeleteAccount = async (password: string): Promise<void> => {
           message: 'Password required',
         },
       },
-    };
+    } as const;
   }
 
   // Clear all user data
   localStorage.clear();
   sessionStorage.clear();
 
-  console.log('Account deleted successfully');
+  console.warn('Account deleted successfully');
 };

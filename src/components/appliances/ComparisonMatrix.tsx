@@ -51,8 +51,8 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
     const devices = [...selectedDevices];
 
     devices.sort((a, b) => {
-      let aVal: any;
-      let bVal: any;
+      let aVal: string | number;
+      let bVal: string | number;
 
       switch (sortField) {
         case 'name':
@@ -151,7 +151,9 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
             <select
               className="rounded border px-3 py-2"
               value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value as any)}
+              onChange={(e) =>
+                setFilterCategory(e.target.value as 'all' | 'physical' | 'virtual' | 'cloud')
+              }
             >
               <option value="all">All Categories</option>
               <option value="physical">Physical</option>

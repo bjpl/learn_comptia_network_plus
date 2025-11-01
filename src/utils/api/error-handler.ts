@@ -87,11 +87,13 @@ export const parseApiError = (error: unknown): ApiError => {
     switch (statusCode) {
       case 401:
         return {
-          code: data?.code === 'TOKEN_EXPIRED' ? ApiErrorCode.TOKEN_EXPIRED : ApiErrorCode.UNAUTHORIZED,
+          code:
+            data?.code === 'TOKEN_EXPIRED' ? ApiErrorCode.TOKEN_EXPIRED : ApiErrorCode.UNAUTHORIZED,
           message: data?.message || 'Unauthorized',
-          userMessage: data?.code === 'TOKEN_EXPIRED'
-            ? 'Your session has expired. Please log in again.'
-            : 'Invalid credentials. Please check your email and password.',
+          userMessage:
+            data?.code === 'TOKEN_EXPIRED'
+              ? 'Your session has expired. Please log in again.'
+              : 'Invalid credentials. Please check your email and password.',
           statusCode,
           timestamp,
           retryable: false,
@@ -205,8 +207,24 @@ interface ErrorResponseData {
   errors?: unknown;
 }
 
-function isAxiosError(error: unknown): error is { response?: { status?: number; data?: ErrorResponseData } } {
+function isAxiosError(
+  error: unknown
+): error is { response?: { status?: number; data?: ErrorResponseData } } {
   return typeof error === 'object' && error !== null && 'response' in error;
+}
+
+/**
+ * Type guard for validation error
+ */
+function isValidationError(error: unknown): error is ValidationError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'field' in error &&
+    'message' in error &&
+    typeof (error as ValidationError).field === 'string' &&
+    typeof (error as ValidationError).message === 'string'
+  );
 }
 
 /**
@@ -221,8 +239,8 @@ export const formatValidationErrors = (errors: unknown): Record<string, string> 
 
   if (Array.isArray(errors)) {
     // Array of validation errors
-    errors.forEach((error: ValidationError) => {
-      if (error.field && error.message) {
+    errors.forEach((error: unknown) => {
+      if (isValidationError(error)) {
         formatted[error.field] = error.message;
       }
     });
@@ -231,7 +249,7 @@ export const formatValidationErrors = (errors: unknown): Record<string, string> 
     Object.entries(errors).forEach(([field, message]) => {
       if (typeof message === 'string') {
         formatted[field] = message;
-      } else if (Array.isArray(message) && message.length > 0) {
+      } else if (Array.isArray(message) && message.length > 0 && typeof message[0] === 'string') {
         formatted[field] = message[0];
       }
     });
@@ -263,26 +281,25 @@ export const calculateRetryDelay = (attemptCount: number, baseDelay: number = 10
  */
 export const logError = (error: ApiError, context?: string): void => {
   if (import.meta.env.DEV) {
-    console.group(`🔴 API Error ${context ? `(${context})` : ''}`);
-    console.error('Code:', error.code);
-    console.error('Message:', error.message);
-    console.error('User Message:', error.userMessage);
-    if (error.statusCode) {
-      console.error('Status Code:', error.statusCode);
-    }
-    if (error.details) {
-      console.error('Details:', error.details);
-    }
-    console.error('Timestamp:', error.timestamp);
-    console.error('Retryable:', error.retryable);
-    console.groupEnd();
+    console.error(`🔴 API Error ${context ? `(${context})` : ''}`, {
+      code: error.code,
+      message: error.message,
+      userMessage: error.userMessage,
+      statusCode: error.statusCode,
+      details: error.details,
+      timestamp: error.timestamp,
+      retryable: error.retryable,
+    });
   }
 };
 
 /**
  * Create user-friendly error message
  */
-export const getUserFriendlyMessage = (error: unknown, fallback: string = 'An error occurred'): string => {
+export const getUserFriendlyMessage = (
+  error: unknown,
+  fallback: string = 'An error occurred'
+): string => {
   const apiError = parseApiError(error);
   return apiError.userMessage || fallback;
 };

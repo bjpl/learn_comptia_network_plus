@@ -3,7 +3,7 @@
  * Helper functions for creating smooth animations and visualizations
  */
 
-import type { ParticleConfig, PacketAnimation } from '../types';
+import type { ParticleConfig, PacketAnimation, NetworkProtocol } from '../types';
 
 // ============================================================================
 // Easing Functions
@@ -18,40 +18,40 @@ export const easingFunctions = {
 
   easeInQuad: (t: number): number => t * t,
   easeOutQuad: (t: number): number => t * (2 - t),
-  easeInOutQuad: (t: number): number =>
-    t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
+  easeInOutQuad: (t: number): number => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
 
   easeInCubic: (t: number): number => t * t * t,
-  easeOutCubic: (t: number): number => (--t) * t * t + 1,
+  easeOutCubic: (t: number): number => --t * t * t + 1,
   easeInOutCubic: (t: number): number =>
     t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
 
   easeInQuart: (t: number): number => t * t * t * t,
-  easeOutQuart: (t: number): number => 1 - (--t) * t * t * t,
-  easeInOutQuart: (t: number): number =>
-    t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t,
+  easeOutQuart: (t: number): number => 1 - --t * t * t * t,
+  easeInOutQuart: (t: number): number => (t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t),
 
   easeInQuint: (t: number): number => t * t * t * t * t,
-  easeOutQuint: (t: number): number => 1 + (--t) * t * t * t * t,
+  easeOutQuint: (t: number): number => 1 + --t * t * t * t * t,
   easeInOutQuint: (t: number): number =>
-    t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t,
+    t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t,
 
   easeInSine: (t: number): number => 1 - Math.cos((t * Math.PI) / 2),
   easeOutSine: (t: number): number => Math.sin((t * Math.PI) / 2),
   easeInOutSine: (t: number): number => -(Math.cos(Math.PI * t) - 1) / 2,
 
-  easeInExpo: (t: number): number => t === 0 ? 0 : Math.pow(2, 10 * t - 10),
-  easeOutExpo: (t: number): number => t === 1 ? 1 : 1 - Math.pow(2, -10 * t),
+  easeInExpo: (t: number): number => (t === 0 ? 0 : Math.pow(2, 10 * t - 10)),
+  easeOutExpo: (t: number): number => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
   easeInOutExpo: (t: number): number => {
-    if (t === 0) {return 0;}
-    if (t === 1) {return 1;}
-    return t < 0.5
-      ? Math.pow(2, 20 * t - 10) / 2
-      : (2 - Math.pow(2, -20 * t + 10)) / 2;
+    if (t === 0) {
+      return 0;
+    }
+    if (t === 1) {
+      return 1;
+    }
+    return t < 0.5 ? Math.pow(2, 20 * t - 10) / 2 : (2 - Math.pow(2, -20 * t + 10)) / 2;
   },
 
   easeInCirc: (t: number): number => 1 - Math.sqrt(1 - t * t),
-  easeOutCirc: (t: number): number => Math.sqrt(1 - (--t) * t),
+  easeOutCirc: (t: number): number => Math.sqrt(1 - --t * t),
   easeInOutCirc: (t: number): number =>
     t < 0.5
       ? (1 - Math.sqrt(1 - 4 * t * t)) / 2
@@ -67,8 +67,12 @@ export const easingFunctions = {
   },
   easeInOutElastic: (t: number): number => {
     const c5 = (2 * Math.PI) / 4.5;
-    if (t === 0) {return 0;}
-    if (t === 1) {return 1;}
+    if (t === 0) {
+      return 0;
+    }
+    if (t === 1) {
+      return 1;
+    }
     return t < 0.5
       ? -(Math.pow(2, 20 * t - 10) * Math.sin((20 * t - 11.125) * c5)) / 2
       : (Math.pow(2, -20 * t + 10) * Math.sin((20 * t - 11.125) * c5)) / 2 + 1;
@@ -192,6 +196,22 @@ export function bezierInterpolate(
 // ============================================================================
 
 /**
+ * Particle object type
+ */
+export interface Particle {
+  id: string;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  color: string;
+  lifetime: number;
+  age: number;
+  opacity: number;
+}
+
+/**
  * Create particle system for effects
  *
  * @param config - Particle configuration
@@ -208,13 +228,14 @@ export function bezierInterpolate(
  * });
  * ```
  */
-export function createParticles(config: ParticleConfig) {
-  const particles = [];
+export function createParticles(config: ParticleConfig): Particle[] {
+  const particles: Particle[] = [];
   const colors = Array.isArray(config.color) ? config.color : [config.color];
 
   for (let i = 0; i < config.count; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const velocity = config.velocity.min + Math.random() * (config.velocity.max - config.velocity.min);
+    const velocity =
+      config.velocity.min + Math.random() * (config.velocity.max - config.velocity.min);
     const size = config.size.min + Math.random() * (config.size.max - config.size.min);
 
     particles.push({
@@ -244,13 +265,13 @@ export function createParticles(config: ParticleConfig) {
  * @returns Updated particles array (filters out dead particles)
  */
 export function updateParticles(
-  particles: any[],
+  particles: Particle[],
   deltaTime: number,
   gravity: number = 0,
   friction: number = 0.99
-) {
+): Particle[] {
   return particles
-    .map(particle => {
+    .map((particle) => {
       const newParticle = { ...particle };
 
       // Update physics
@@ -263,11 +284,11 @@ export function updateParticles(
 
       // Update lifetime
       newParticle.age += deltaTime;
-      newParticle.opacity = 1 - (newParticle.age / newParticle.lifetime);
+      newParticle.opacity = 1 - newParticle.age / newParticle.lifetime;
 
       return newParticle;
     })
-    .filter(p => p.age < p.lifetime);
+    .filter((p) => p.age < p.lifetime);
 }
 
 // ============================================================================
@@ -286,14 +307,14 @@ export function updateParticles(
 export function createPacketAnimation(
   source: { x: number; y: number },
   destination: { x: number; y: number },
-  protocol: string,
+  protocol: NetworkProtocol,
   data: string = ''
 ): PacketAnimation {
   return {
     id: `packet-${Date.now()}-${Math.random()}`,
     source,
     destination,
-    protocol: protocol as any,
+    protocol,
     data,
     progress: 0,
     status: 'pending',
@@ -342,12 +363,7 @@ export function getPacketPosition(
   packet: PacketAnimation,
   easing: keyof typeof easingFunctions = 'easeInOutQuad'
 ): { x: number; y: number } {
-  return interpolatePoint(
-    packet.source,
-    packet.destination,
-    packet.progress,
-    easing
-  );
+  return interpolatePoint(packet.source, packet.destination, packet.progress, easing);
 }
 
 // ============================================================================
@@ -355,13 +371,23 @@ export function getPacketPosition(
 // ============================================================================
 
 /**
+ * Extended window type with vendor-prefixed methods
+ */
+interface ExtendedWindow extends Window {
+  webkitRequestAnimationFrame?: (callback: FrameRequestCallback) => number;
+  mozRequestAnimationFrame?: (callback: FrameRequestCallback) => number;
+  webkitCancelAnimationFrame?: (handle: number) => void;
+  mozCancelAnimationFrame?: (handle: number) => void;
+}
+
+/**
  * Request animation frame with fallback
  */
 export const requestAnimFrame =
   typeof window !== 'undefined'
     ? window.requestAnimationFrame ||
-      (window as any).webkitRequestAnimationFrame ||
-      (window as any).mozRequestAnimationFrame ||
+      (window as ExtendedWindow).webkitRequestAnimationFrame ||
+      (window as ExtendedWindow).mozRequestAnimationFrame ||
       ((callback: FrameRequestCallback) => window.setTimeout(callback, 1000 / 60))
     : (callback: FrameRequestCallback) => setTimeout(callback, 1000 / 60);
 
@@ -371,8 +397,8 @@ export const requestAnimFrame =
 export const cancelAnimFrame =
   typeof window !== 'undefined'
     ? window.cancelAnimationFrame ||
-      (window as any).webkitCancelAnimationFrame ||
-      (window as any).mozCancelAnimationFrame ||
+      (window as ExtendedWindow).webkitCancelAnimationFrame ||
+      (window as ExtendedWindow).mozCancelAnimationFrame ||
       clearTimeout
     : clearTimeout;
 
@@ -391,15 +417,15 @@ export const cancelAnimFrame =
  * });
  * ```
  */
-export function createAnimationLoop(
-  callback: (deltaTime: number) => void
-): () => void {
+export function createAnimationLoop(callback: (deltaTime: number) => void): () => void {
   let lastTime = performance.now();
   let animationId: number;
   let running = true;
 
   function animate(currentTime: number) {
-    if (!running) {return;}
+    if (!running) {
+      return;
+    }
 
     const deltaTime = currentTime - lastTime;
     lastTime = currentTime;
@@ -424,20 +450,14 @@ export function createAnimationLoop(
 /**
  * Calculate distance between two points
  */
-export function distance(
-  p1: { x: number; y: number },
-  p2: { x: number; y: number }
-): number {
+export function distance(p1: { x: number; y: number }, p2: { x: number; y: number }): number {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
 /**
  * Calculate angle between two points (in radians)
  */
-export function angle(
-  p1: { x: number; y: number },
-  p2: { x: number; y: number }
-): number {
+export function angle(p1: { x: number; y: number }, p2: { x: number; y: number }): number {
   return Math.atan2(p2.y - p1.y, p2.x - p1.x);
 }
 

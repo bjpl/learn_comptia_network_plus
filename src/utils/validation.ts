@@ -60,16 +60,15 @@ export function validateIPv4(ip: string): ValidationResult {
   if (octets[0] === 255) {
     errors.push('Invalid address (first octet cannot be 255)');
   }
-  if (octets.every(o => o === 255)) {
+  if (octets.every((o) => o === 255)) {
     warnings.push('Broadcast address (255.255.255.255)');
   }
 
   // Private address ranges
-  const isPrivate = (
+  const isPrivate =
     octets[0] === 10 ||
     (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31) ||
-    (octets[0] === 192 && octets[1] === 168)
-  );
+    (octets[0] === 192 && octets[1] === 168);
 
   if (isPrivate) {
     suggestions.push('This is a private IP address (RFC 1918)');
@@ -101,7 +100,8 @@ export function validateIPv6(ip: string): ValidationResult {
   const suggestions: string[] = [];
 
   // IPv6 regex pattern (simplified)
-  const ipv6Pattern = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
+  const ipv6Pattern =
+    /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
 
   if (!ipv6Pattern.test(ip)) {
     errors.push('Invalid IPv6 format');
@@ -225,7 +225,7 @@ export function validateSubnetMask(mask: string): ValidationResult {
 
   // Convert to binary and check for contiguous 1s
   const octets = mask.split('.').map(Number);
-  const binary = octets.map(o => o.toString(2).padStart(8, '0')).join('');
+  const binary = octets.map((o) => o.toString(2).padStart(8, '0')).join('');
 
   // Check if it's a valid subnet mask (contiguous 1s followed by 0s)
   const validPattern = /^1*0*$/;
@@ -349,7 +349,9 @@ export function validateMACAddress(mac: string): ValidationResult {
   const noSeparator = /^[0-9A-Fa-f]{12}$/;
 
   if (!colonFormat.test(mac) && !dashFormat.test(mac) && !noSeparator.test(mac)) {
-    errors.push('Invalid MAC address format. Expected: XX:XX:XX:XX:XX:XX, XX-XX-XX-XX-XX-XX, or XXXXXXXXXXXX');
+    errors.push(
+      'Invalid MAC address format. Expected: XX:XX:XX:XX:XX:XX, XX-XX-XX-XX-XX-XX, or XXXXXXXXXXXX'
+    );
     return { isValid: false, errors };
   }
 
@@ -432,7 +434,6 @@ export function validateURL(url: string): ValidationResult {
     if (/^\d+\.\d+\.\d+\.\d+$/.test(urlObj.hostname)) {
       suggestions.push('URL uses IP address instead of domain name');
     }
-
   } catch (error) {
     errors.push('Invalid URL format');
   }
@@ -466,7 +467,7 @@ export function validateURL(url: string): ValidationResult {
  * ```
  */
 export function validateInput(
-  value: any,
+  value: unknown,
   constraints: ValidationConstraints
 ): ValidationResult {
   const errors: string[] = [];

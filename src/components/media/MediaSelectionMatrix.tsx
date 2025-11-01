@@ -19,7 +19,7 @@ import {
   Box,
 } from 'lucide-react';
 import { MEDIA_OPTIONS, SCENARIOS, calculateMediaScore } from './media-data';
-// Types are indirectly used through MEDIA_OPTIONS and SCENARIOS data
+import type { ConnectorType } from './media-types';
 
 // Lazy load 3D viewer for performance
 const Connector3DViewer = lazy(() => import('./Connector3DViewer'));
@@ -111,7 +111,7 @@ export default function MediaSelectionMatrix() {
 
   const completionPercentage = (completedScenarios.size / SCENARIOS.length) * 100;
 
-  const getConnectorTypeForMedia = (mediaId: string): string | null => {
+  const getConnectorTypeForMedia = (mediaId: string): ConnectorType | null => {
     const media = MEDIA_OPTIONS.find((m) => m.id === mediaId);
     if (!media) {
       return null;
@@ -335,14 +335,17 @@ export default function MediaSelectionMatrix() {
                   </div>
                 }
               >
-                {getConnectorTypeForMedia(previewConnector) && (
-                  <Connector3DViewer
-                    connectorType={getConnectorTypeForMedia(previewConnector) as any}
-                    autoRotate
-                    showLabels={true}
-                    height="400px"
-                  />
-                )}
+                {(() => {
+                  const connectorType = getConnectorTypeForMedia(previewConnector);
+                  return connectorType ? (
+                    <Connector3DViewer
+                      connectorType={connectorType}
+                      autoRotate
+                      showLabels={true}
+                      height="400px"
+                    />
+                  ) : null;
+                })()}
               </Suspense>
             </div>
           )}

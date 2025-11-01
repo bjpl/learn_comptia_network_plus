@@ -1,14 +1,47 @@
 // Web Worker for heavy computations
 // This offloads CPU-intensive tasks from the main thread
 
+// Worker message data types
+export interface SubnetData {
+  ip: string;
+  cidr: number;
+}
+
+export interface BinaryData {
+  decimal: number;
+}
+
+export interface ProcessData {
+  items: unknown[];
+}
+
+export type WorkerMessageData = SubnetData | BinaryData | ProcessData;
+
 export interface WorkerMessage {
   type: string;
-  data: any;
+  data: WorkerMessageData;
 }
+
+// Worker result types
+export interface SubnetResult {
+  network: string;
+  broadcast: string;
+  mask: string;
+  hosts: number;
+  cidr: number;
+}
+
+export type ProcessedItem = Record<string, unknown> & {
+  processed: boolean;
+  index: number;
+  timestamp: number;
+};
+
+export type WorkerResultData = SubnetResult | string | ProcessedItem[] | null;
 
 export interface WorkerResponse {
   type: string;
-  result: any;
+  result: WorkerResultData;
   error?: string;
 }
 
@@ -58,9 +91,9 @@ const calculateBinary = (decimal: number): string => {
 };
 
 // Complex data processing
-const processLargeDataset = (data: any[]) => {
+const processLargeDataset = (data: unknown[]): ProcessedItem[] => {
   return data.map((item, index) => ({
-    ...item,
+    ...(typeof item === 'object' && item !== null ? item : {}),
     processed: true,
     index,
     timestamp: Date.now(),
@@ -71,19 +104,19 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
   const { type, data } = e.data;
 
   try {
-    let result: any;
+    let result: WorkerResultData;
 
     switch (type) {
       case 'CALCULATE_SUBNET':
-        result = calculateSubnet(data.ip, data.cidr);
+        result = calculateSubnet((data as SubnetData).ip, (data as SubnetData).cidr);
         break;
 
       case 'CALCULATE_BINARY':
-        result = calculateBinary(data.decimal);
+        result = calculateBinary((data as BinaryData).decimal);
         break;
 
       case 'PROCESS_DATA':
-        result = processLargeDataset(data.items);
+        result = processLargeDataset((data as ProcessData).items);
         break;
 
       default:

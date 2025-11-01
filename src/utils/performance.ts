@@ -38,7 +38,7 @@ const handleMetric = (metric: Metric) => {
 
   // Log to console in development
   if (import.meta.env.DEV) {
-    console.log(`[Performance] ${metric.name}:`, metric.value);
+    console.warn(`[Performance] ${metric.name}:`, metric.value);
   }
 
   // Send to analytics in production
@@ -65,9 +65,9 @@ export const getMetrics = (): PerformanceMetrics => {
 export const logPerformanceMetrics = () => {
   const currentMetrics = getMetrics();
 
-  console.group('Performance Metrics');
-  console.table(currentMetrics);
-  console.groupEnd();
+  if (import.meta.env.DEV) {
+    console.warn('Performance Metrics:', currentMetrics);
+  }
 
   return currentMetrics;
 };
@@ -90,7 +90,7 @@ export const measurePerformance = (name: string, startMark: string, endMark?: st
 
       const measure = performance.getEntriesByName(name, 'measure')[0];
       if (import.meta.env.DEV) {
-        console.log(`[Performance] ${name}: ${measure.duration.toFixed(2)}ms`);
+        console.warn(`[Performance] ${name}: ${measure.duration.toFixed(2)}ms`);
       }
 
       return measure.duration;

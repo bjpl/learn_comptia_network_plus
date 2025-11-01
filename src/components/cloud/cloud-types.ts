@@ -93,7 +93,7 @@ export interface ArchitectureComponent {
   height: number;
   color: string;
   icon: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   connections: string[]; // IDs of connected components
 }
 
@@ -157,7 +157,7 @@ export interface ComponentProperty {
   label: string;
   type: 'text' | 'select' | 'number' | 'boolean' | 'multiselect';
   options?: string[];
-  default?: any;
+  default?: unknown;
   required?: boolean;
 }
 

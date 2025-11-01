@@ -298,7 +298,7 @@ export interface ValidationConstraints {
   min?: number;
   max?: number;
   pattern?: RegExp;
-  customValidator?: (value: any) => boolean;
+  customValidator?: (value: unknown) => boolean;
 }
 
 // ============================================================================

@@ -4,7 +4,12 @@
  */
 
 import { API_CONFIG } from '../config/api-config';
-import { parseApiError, logError, shouldRetry, calculateRetryDelay } from '../utils/api/error-handler';
+import {
+  parseApiError,
+  logError,
+  shouldRetry,
+  calculateRetryDelay,
+} from '../utils/api/error-handler';
 import { networkStatusManager } from '../utils/api/network-status';
 import { STORAGE_KEYS } from '../utils/auth';
 
@@ -26,7 +31,9 @@ export interface ApiResponse<T = unknown> {
 }
 
 type RequestInterceptor = (config: RequestConfig) => RequestConfig | Promise<RequestConfig>;
-type ResponseInterceptor = <T>(response: ApiResponse<T>) => ApiResponse<T> | Promise<ApiResponse<T>>;
+type ResponseInterceptor = <T>(
+  response: ApiResponse<T>
+) => ApiResponse<T> | Promise<ApiResponse<T>>;
 type ErrorInterceptor = (error: unknown) => unknown;
 
 class ApiClient {
@@ -54,7 +61,7 @@ class ApiClient {
         if (token) {
           config.headers = {
             ...config.headers,
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           };
         }
       }
@@ -75,10 +82,9 @@ class ApiClient {
         const newToken = await this.handleTokenRefresh();
         if (newToken) {
           // Retry the original request with new token
-          const originalRequest = (error as any).config;
-          if (originalRequest) {
-            originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-            return this.request(originalRequest.url, originalRequest);
+          if (isErrorWithConfig(error) && error.config) {
+            error.config.headers['Authorization'] = `Bearer ${newToken}`;
+            return this.request(error.config.url, error.config);
           }
         }
       }
@@ -112,16 +118,17 @@ class ApiClient {
    * Get access token from storage
    */
   private getAccessToken(): string | null {
-    return localStorage.getItem(STORAGE_KEYS.TOKEN) ||
-           sessionStorage.getItem(STORAGE_KEYS.TOKEN);
+    return localStorage.getItem(STORAGE_KEYS.TOKEN) || sessionStorage.getItem(STORAGE_KEYS.TOKEN);
   }
 
   /**
    * Get refresh token from storage
    */
   private getRefreshToken(): string | null {
-    return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ||
-           sessionStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+    return (
+      localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) ||
+      sessionStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN)
+    );
   }
 
   /**
@@ -140,12 +147,18 @@ class ApiClient {
 
     this.refreshingToken = (async () => {
       try {
-        const response = await this.post<{ token: string; refreshToken: string }>('/auth/refresh', {
-          refreshToken,
-        }, { skipAuth: true, skipRetry: true });
+        const response = await this.post<{ token: string; refreshToken: string }>(
+          '/auth/refresh',
+          {
+            refreshToken,
+          },
+          { skipAuth: true, skipRetry: true }
+        );
 
         // Store new tokens
-        const storage = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) ? localStorage : sessionStorage;
+        const storage = localStorage.getItem(STORAGE_KEYS.REMEMBER_ME)
+          ? localStorage
+          : sessionStorage;
         storage.setItem(STORAGE_KEYS.TOKEN, response.data.token);
         if (response.data.refreshToken) {
           storage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.data.refreshToken);
@@ -169,7 +182,7 @@ class ApiClient {
    */
   private clearAuthData(): void {
     const keys = Object.values(STORAGE_KEYS);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       localStorage.removeItem(key);
       sessionStorage.removeItem(key);
     });
@@ -308,9 +321,11 @@ class ApiClient {
           attemptCount++;
           const delay = calculateRetryDelay(attemptCount, API_CONFIG.RETRY.RETRY_DELAY);
 
-          console.log(`🔄 Retrying request (attempt ${attemptCount}/${maxRetries}) after ${delay}ms...`);
+          console.log(
+            `🔄 Retrying request (attempt ${attemptCount}/${maxRetries}) after ${delay}ms...`
+          );
 
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
           return makeRequest();
         }
 
@@ -337,21 +352,33 @@ class ApiClient {
   /**
    * POST request
    */
-  public post<T = unknown>(endpoint: string, body?: unknown, config?: RequestConfig): Promise<ApiResponse<T>> {
+  public post<T = unknown>(
+    endpoint: string,
+    body?: unknown,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...config, method: 'POST', body });
   }
 
   /**
    * PUT request
    */
-  public put<T = unknown>(endpoint: string, body?: unknown, config?: RequestConfig): Promise<ApiResponse<T>> {
+  public put<T = unknown>(
+    endpoint: string,
+    body?: unknown,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...config, method: 'PUT', body });
   }
 
   /**
    * PATCH request
    */
-  public patch<T = unknown>(endpoint: string, body?: unknown, config?: RequestConfig): Promise<ApiResponse<T>> {
+  public patch<T = unknown>(
+    endpoint: string,
+    body?: unknown,
+    config?: RequestConfig
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...config, method: 'PATCH', body });
   }
 
@@ -361,6 +388,20 @@ class ApiClient {
   public delete<T = unknown>(endpoint: string, config?: RequestConfig): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...config, method: 'DELETE' });
   }
+}
+
+/**
+ * Type guard for error with config
+ */
+interface ErrorWithConfig {
+  config?: {
+    url: string;
+    headers: Record<string, string>;
+  };
+}
+
+function isErrorWithConfig(error: unknown): error is ErrorWithConfig {
+  return typeof error === 'object' && error !== null && 'config' in error;
 }
 
 // Create singleton instance

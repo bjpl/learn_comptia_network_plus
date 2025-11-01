@@ -267,11 +267,11 @@ export const sanitizeAssessmentAnswer = (answer: string): string => {
  * Batch sanitization for objects
  * Sanitizes all string values in an object
  */
-export const sanitizeObject = <T extends Record<string, any>>(
+export const sanitizeObject = <T extends Record<string, unknown>>(
   obj: T,
   sanitizer: (value: string) => string = sanitizeInput
 ): T => {
-  const sanitized: any = {};
+  const sanitized: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
@@ -279,7 +279,7 @@ export const sanitizeObject = <T extends Record<string, any>>(
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map((item) => (typeof item === 'string' ? sanitizer(item) : item));
     } else if (value !== null && typeof value === 'object') {
-      sanitized[key] = sanitizeObject(value, sanitizer);
+      sanitized[key] = sanitizeObject(value as Record<string, unknown>, sanitizer);
     } else {
       sanitized[key] = value;
     }

@@ -77,7 +77,7 @@ const IPv4Troubleshooting: React.FC = () => {
   }, [selectedScenario]);
 
   // Get difficulty color
-  const getDifficultyColor = (difficulty: string) => {
+  const getDifficultyColor = (difficulty: string): 'success' | 'warning' | 'error' | 'default' => {
     switch (difficulty) {
       case 'beginner':
         return 'success';
@@ -205,7 +205,7 @@ const IPv4Troubleshooting: React.FC = () => {
             <Grid item xs={6} md={3}>
               <Chip
                 label={selectedScenario.difficulty.toUpperCase()}
-                color={getDifficultyColor(selectedScenario.difficulty) as any}
+                color={getDifficultyColor(selectedScenario.difficulty)}
                 size="small"
               />
             </Grid>

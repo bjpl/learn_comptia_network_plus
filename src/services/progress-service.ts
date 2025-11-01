@@ -51,6 +51,12 @@ export const getAllProgress = async (): Promise<Record<string, ComponentProgress
   return response.data.progress;
 };
 
+interface StoredProgressData {
+  state?: {
+    componentProgress?: Record<string, ComponentProgress>;
+  };
+}
+
 /**
  * Mock get all progress
  */
@@ -63,7 +69,7 @@ const mockGetAllProgress = async (): Promise<Record<string, ComponentProgress>> 
   }
 
   try {
-    const data = JSON.parse(progressStr);
+    const data = JSON.parse(progressStr) as StoredProgressData;
     return data.state?.componentProgress || {};
   } catch {
     return {};
@@ -73,7 +79,9 @@ const mockGetAllProgress = async (): Promise<Record<string, ComponentProgress>> 
 /**
  * Get component progress
  */
-export const getComponentProgress = async (componentId: string): Promise<ComponentProgress | null> => {
+export const getComponentProgress = async (
+  componentId: string
+): Promise<ComponentProgress | null> => {
   if (shouldUseMockAPI()) {
     return mockGetComponentProgress(componentId);
   }
@@ -124,9 +132,18 @@ const mockUpdateComponentProgress = async (
   await mockApiDelay(300);
 
   const progressStr = localStorage.getItem('comptia-network-plus-progress');
-  const data = progressStr ? JSON.parse(progressStr) : { state: { componentProgress: {} } };
+  const data: StoredProgressData = progressStr
+    ? (JSON.parse(progressStr) as StoredProgressData)
+    : { state: { componentProgress: {} } };
 
-  const existing = data.state.componentProgress[componentId] || {
+  if (!data.state) {
+    data.state = { componentProgress: {} };
+  }
+  if (!data.state.componentProgress) {
+    data.state.componentProgress = {};
+  }
+
+  const existing: ComponentProgress = data.state.componentProgress[componentId] || {
     componentId,
     completed: false,
     timeSpent: 0,
@@ -134,7 +151,7 @@ const mockUpdateComponentProgress = async (
     lastVisited: new Date().toISOString(),
   };
 
-  const updated = {
+  const updated: ComponentProgress = {
     ...existing,
     ...progress,
     lastVisited: new Date().toISOString(),
@@ -156,10 +173,9 @@ export const syncProgress = async (
     return mockSyncProgress(localProgress);
   }
 
-  const response = await apiClient.post<ProgressSyncData>(
-    API_ENDPOINTS.PROGRESS.SYNC,
-    { progress: localProgress }
-  );
+  const response = await apiClient.post<ProgressSyncData>(API_ENDPOINTS.PROGRESS.SYNC, {
+    progress: localProgress,
+  });
 
   return response.data;
 };
@@ -200,7 +216,7 @@ export const resolveConflicts = (
   // Get all unique component IDs
   const allIds = new Set([...Object.keys(local), ...Object.keys(remote)]);
 
-  allIds.forEach(componentId => {
+  allIds.forEach((componentId) => {
     const localProgress = local[componentId];
     const remoteProgress = remote[componentId];
 
@@ -258,6 +274,12 @@ export const resolveConflicts = (
   return { resolved, conflicts };
 };
 
+interface QueuedProgressUpdate {
+  componentId: string;
+  progress: Partial<ComponentProgress>;
+  timestamp: string;
+}
+
 /**
  * Queue progress update for offline sync
  */
@@ -266,7 +288,9 @@ export const queueProgressUpdate = (
   progress: Partial<ComponentProgress>
 ): void => {
   const queueStr = localStorage.getItem('progress_queue');
-  const queue = queueStr ? JSON.parse(queueStr) : [];
+  const queue: QueuedProgressUpdate[] = queueStr
+    ? (JSON.parse(queueStr) as QueuedProgressUpdate[])
+    : [];
 
   queue.push({
     componentId,
@@ -282,12 +306,16 @@ export const queueProgressUpdate = (
  */
 export const processProgressQueue = async (): Promise<void> => {
   const queueStr = localStorage.getItem('progress_queue');
-  if (!queueStr) {return;}
+  if (!queueStr) {
+    return;
+  }
 
-  const queue = JSON.parse(queueStr);
-  if (queue.length === 0) {return;}
+  const queue = JSON.parse(queueStr) as QueuedProgressUpdate[];
+  if (queue.length === 0) {
+    return;
+  }
 
-  console.log(`Processing ${queue.length} queued progress updates...`);
+  console.warn(`Processing ${queue.length} queued progress updates...`);
 
   for (const item of queue) {
     try {
@@ -301,7 +329,7 @@ export const processProgressQueue = async (): Promise<void> => {
 
   // Clear queue on success
   localStorage.removeItem('progress_queue');
-  console.log('Progress queue processed successfully');
+  console.warn('Progress queue processed successfully');
 };
 
 /**
@@ -324,9 +352,11 @@ const mockResetProgress = async (): Promise<void> => {
 
   const progressStr = localStorage.getItem('comptia-network-plus-progress');
   if (progressStr) {
-    const data = JSON.parse(progressStr);
-    data.state.componentProgress = {};
-    localStorage.setItem('comptia-network-plus-progress', JSON.stringify(data));
+    const data = JSON.parse(progressStr) as StoredProgressData;
+    if (data.state) {
+      data.state.componentProgress = {};
+      localStorage.setItem('comptia-network-plus-progress', JSON.stringify(data));
+    }
   }
 };
 
@@ -337,13 +367,13 @@ export const getCategoryProgress = (
   allProgress: Record<string, ComponentProgress>,
   categoryId: string
 ): CategoryProgress => {
-  const categoryComponents = Object.values(allProgress).filter(p =>
+  const categoryComponents = Object.values(allProgress).filter((p) =>
     p.componentId.startsWith(categoryId)
   );
 
-  const completed = categoryComponents.filter(p => p.completed).length;
+  const completed = categoryComponents.filter((p) => p.completed).length;
   const totalTimeSpent = categoryComponents.reduce((sum, p) => sum + p.timeSpent, 0);
-  const scores = categoryComponents.filter(p => p.score !== undefined).map(p => p.score!);
+  const scores = categoryComponents.filter((p) => p.score !== undefined).map((p) => p.score!);
   const averageScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
 
   return {
@@ -368,8 +398,8 @@ export const getOverallProgress = (
   averageScore: number;
 } => {
   const allProgressArray = Object.values(allProgress);
-  const completed = allProgressArray.filter(p => p.completed).length;
-  const scores = allProgressArray.filter(p => p.score !== undefined).map(p => p.score!);
+  const completed = allProgressArray.filter((p) => p.completed).length;
+  const scores = allProgressArray.filter((p) => p.score !== undefined).map((p) => p.score!);
   const averageScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
 
   return {

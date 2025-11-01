@@ -42,6 +42,6 @@ markPerformance('react-render-end');
 reportWebVitals((metric) => {
   // You can send metrics to analytics service here
   if (import.meta.env.DEV) {
-    console.log(`[Web Vitals] ${metric.name}:`, metric.value);
+    console.warn(`[Web Vitals] ${metric.name}:`, metric.value);
   }
 });

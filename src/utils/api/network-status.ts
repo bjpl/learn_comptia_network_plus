@@ -37,7 +37,7 @@ class NetworkStatusManager {
    * Handle online event
    */
   private handleOnline = (): void => {
-    console.log('🟢 Network connection restored');
+    console.warn('🟢 Network connection restored');
     this.isOnline = true;
     // Reconnect logic reset would go here
     this.notifyCallbacks(true);
@@ -48,7 +48,7 @@ class NetworkStatusManager {
    * Handle offline event
    */
   private handleOffline = (): void => {
-    console.log('🔴 Network connection lost');
+    console.warn('🔴 Network connection lost');
     this.isOnline = false;
     this.notifyCallbacks(false);
   };
@@ -152,7 +152,7 @@ class NetworkStatusManager {
       if (this.isOnline) {
         this.processQueue();
       } else {
-        console.log(`📦 Request queued (offline): ${id}`);
+        console.warn(`📦 Request queued (offline): ${id}`);
       }
     });
   }
@@ -165,7 +165,7 @@ class NetworkStatusManager {
       return;
     }
 
-    console.log(`📤 Processing ${this.requestQueue.length} queued requests`);
+    console.warn(`📤 Processing ${this.requestQueue.length} queued requests`);
 
     const queue = [...this.requestQueue];
     this.requestQueue = [];
@@ -174,7 +174,7 @@ class NetworkStatusManager {
       try {
         const result = await item.request();
         item.resolve(result);
-        console.log(`✅ Queued request completed: ${item.id}`);
+        console.warn(`✅ Queued request completed: ${item.id}`);
       } catch (error) {
         // Re-queue if still offline
         if (!this.isOnline) {
@@ -205,7 +205,7 @@ class NetworkStatusManager {
 
     const removed = before - this.requestQueue.length;
     if (removed > 0) {
-      console.log(`🧹 Cleared ${removed} expired requests`);
+      console.warn(`🧹 Cleared ${removed} expired requests`);
     }
   }
 

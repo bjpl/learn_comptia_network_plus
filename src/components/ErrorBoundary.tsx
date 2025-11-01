@@ -6,14 +6,16 @@ export const ErrorBoundary: React.FC = () => {
 
   // Extract error message from various error types
   const getErrorMessage = (): string => {
-    if (!error) {return 'Unknown error';}
+    if (!error) {
+      return 'Unknown error';
+    }
 
     if (error instanceof Error) {
       return error.message || 'Unknown error';
     }
 
     if (typeof error === 'object' && error !== null && 'message' in error) {
-      return String((error as any).message) || 'Unknown error';
+      return String((error as { message: unknown }).message) || 'Unknown error';
     }
 
     if (typeof error === 'string') {
@@ -26,11 +28,11 @@ export const ErrorBoundary: React.FC = () => {
   const errorMessage = getErrorMessage();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
-        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg dark:bg-gray-800">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
           <svg
-            className="w-8 h-8 text-red-600 dark:text-red-400"
+            className="h-8 w-8 text-red-600 dark:text-red-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -45,31 +47,29 @@ export const ErrorBoundary: React.FC = () => {
           </svg>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
           Oops! Something went wrong
         </h1>
 
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
           We encountered an error while loading this page.
         </p>
 
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 text-left">
-          <p className="text-sm text-red-800 dark:text-red-200 font-mono">
-            {errorMessage}
-          </p>
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-left dark:border-red-800 dark:bg-red-900/20">
+          <p className="font-mono text-sm text-red-800 dark:text-red-200">{errorMessage}</p>
         </div>
 
         <div className="space-y-3">
           <Link
             to="/"
-            className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+            className="block w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700"
           >
             Go to Home Page
           </Link>
 
           <button
             onClick={() => window.location.reload()}
-            className="block w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+            className="block w-full rounded-lg bg-gray-200 px-4 py-2 font-semibold text-gray-900 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
           >
             Reload Page
           </button>
