@@ -512,3 +512,5 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
     </div>
   );
 };
+
+export default PacketJourneySimulator;

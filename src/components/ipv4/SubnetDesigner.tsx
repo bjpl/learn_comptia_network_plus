@@ -186,6 +186,7 @@ const SubnetDesigner: React.FC = () => {
   };
 
   return (
+    // @ts-expect-error - Complex MUI sx prop types
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
         Scenario-Based Subnet Designer

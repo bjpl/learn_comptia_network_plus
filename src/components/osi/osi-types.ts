@@ -26,6 +26,9 @@ export interface Protocol {
   name: string;
   layer: OSILayerNumber;
   description: string;
+  port?: number | string; // Port number or range
+  transport?: 'TCP' | 'UDP' | 'Both';
+  examImportance?: 'critical' | 'high' | 'medium' | 'low';
 }
 
 export interface PDU {

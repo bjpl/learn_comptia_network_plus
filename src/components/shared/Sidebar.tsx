@@ -12,44 +12,193 @@ interface NavItem {
 }
 
 const navigationItems: NavItem[] = [
-  { id: 'home', label: 'Dashboard', path: '/', icon: '🏠' },
+  { id: 'dashboard', label: 'Dashboard', path: '/', icon: '🏠' },
 
-  // OSI Model
-  { id: 'osi-intro', label: 'OSI Introduction', path: '/osi/introduction', icon: '📚', category: 'OSI Model' },
-  { id: 'osi-practice', label: 'OSI Practice', path: '/osi/practice', icon: '🎯', category: 'OSI Model' },
+  // OSI Model (LO 1.0)
+  {
+    id: 'osi-enhanced',
+    label: 'OSI Master Class ⭐',
+    path: '/osi/enhanced',
+    icon: '🎓',
+    category: 'OSI Model (LO 1.0)',
+  },
+  {
+    id: 'layer-builder',
+    label: 'Layer Explanation Builder',
+    path: '/osi/layer-builder',
+    icon: '📚',
+    category: 'OSI Model (LO 1.0)',
+  },
+  {
+    id: 'packet-journey',
+    label: 'Packet Journey Simulator',
+    path: '/osi/packet-journey',
+    icon: '🔄',
+    category: 'OSI Model (LO 1.0)',
+  },
+  {
+    id: 'troubleshooting',
+    label: 'Troubleshooting Scenarios',
+    path: '/osi/troubleshooting',
+    icon: '🔧',
+    category: 'OSI Model (LO 1.0)',
+  },
 
-  // Cloud
-  { id: 'cloud-intro', label: 'Cloud Introduction', path: '/cloud/introduction', icon: '☁️', category: 'Cloud' },
-  { id: 'cloud-practice', label: 'Cloud Practice', path: '/cloud/practice', icon: '🎮', category: 'Cloud' },
+  // Networking Appliances (LO 1.1)
+  {
+    id: 'comparison',
+    label: 'Appliance Comparison',
+    path: '/appliances/comparison',
+    icon: '⚖️',
+    category: 'Networking Appliances (LO 1.1)',
+  },
+  {
+    id: 'decision-tree',
+    label: 'Device Decision Tree',
+    path: '/appliances/decision-tree',
+    icon: '🌳',
+    category: 'Networking Appliances (LO 1.1)',
+  },
+  {
+    id: 'simulator',
+    label: 'Network Simulator',
+    path: '/appliances/simulator',
+    icon: '🖥️',
+    category: 'Networking Appliances (LO 1.1)',
+  },
 
-  // Protocols
-  { id: 'protocols-intro', label: 'Protocols Introduction', path: '/protocols/introduction', icon: '🔌', category: 'Protocols' },
-  { id: 'protocols-practice', label: 'Protocols Practice', path: '/protocols/practice', icon: '⚡', category: 'Protocols' },
+  // Cloud Concepts (LO 1.2)
+  {
+    id: 'summary-builder',
+    label: 'Cloud Summary Builder',
+    path: '/cloud/summary-builder',
+    icon: '☁️',
+    category: 'Cloud Concepts (LO 1.2)',
+  },
+  {
+    id: 'architecture',
+    label: 'Cloud Architecture Designer',
+    path: '/cloud/architecture',
+    icon: '🏗️',
+    category: 'Cloud Concepts (LO 1.2)',
+  },
 
-  // Physical Media
-  { id: 'media-intro', label: 'Media Introduction', path: '/media/introduction', icon: '🔗', category: 'Physical Media' },
-  { id: 'media-practice', label: 'Media Practice', path: '/media/practice', icon: '🎲', category: 'Physical Media' },
+  // Ports & Protocols (LO 1.3)
+  {
+    id: 'trainer',
+    label: 'Port/Protocol Trainer',
+    path: '/ports/trainer',
+    icon: '🔌',
+    category: 'Ports & Protocols (LO 1.3)',
+  },
+  {
+    id: 'traffic-demo',
+    label: 'Traffic Type Demo',
+    path: '/ports/traffic-demo',
+    icon: '📡',
+    category: 'Ports & Protocols (LO 1.3)',
+  },
+  {
+    id: 'scanner',
+    label: 'Port Scanner',
+    path: '/ports/scanner',
+    icon: '🔍',
+    category: 'Ports & Protocols (LO 1.3)',
+  },
 
-  // Topologies
-  { id: 'topologies-intro', label: 'Topologies Introduction', path: '/topologies/introduction', icon: '🕸️', category: 'Topologies' },
-  { id: 'topologies-practice', label: 'Topologies Practice', path: '/topologies/practice', icon: '🎪', category: 'Topologies' },
+  // Transmission Media (LO 1.4)
+  {
+    id: 'media-selection',
+    label: 'Media Selection Matrix',
+    path: '/transmission/media-selection',
+    icon: '📊',
+    category: 'Transmission Media (LO 1.4)',
+  },
+  {
+    id: 'connector-lab',
+    label: 'Connector Lab',
+    path: '/transmission/connector-lab',
+    icon: '🔗',
+    category: 'Transmission Media (LO 1.4)',
+  },
+  {
+    id: 'transceiver',
+    label: 'Transceiver Matching',
+    path: '/transmission/transceiver',
+    icon: '📟',
+    category: 'Transmission Media (LO 1.4)',
+  },
 
-  // IPv4
-  { id: 'ipv4-intro', label: 'IPv4 Introduction', path: '/ipv4/introduction', icon: '🌐', category: 'IPv4' },
-  { id: 'ipv4-subnetting', label: 'Subnetting Basics', path: '/ipv4/subnetting', icon: '🔢', category: 'IPv4' },
-  { id: 'ipv4-advanced', label: 'Advanced Subnetting', path: '/ipv4/advanced', icon: '🧮', category: 'IPv4' },
-  { id: 'ipv4-practice', label: 'IPv4 Practice', path: '/ipv4/practice', icon: '🎯', category: 'IPv4' },
+  // Network Topologies (LO 1.5)
+  {
+    id: 'analyzer',
+    label: 'Topology Analyzer',
+    path: '/topologies/analyzer',
+    icon: '🕸️',
+    category: 'Network Topologies (LO 1.5)',
+  },
+  {
+    id: 'transformer',
+    label: 'Topology Transformer',
+    path: '/topologies/transformer',
+    icon: '🔄',
+    category: 'Network Topologies (LO 1.5)',
+  },
 
-  // Modern
-  { id: 'modern-intro', label: 'Modern Topics Introduction', path: '/modern/introduction', icon: '🚀', category: 'Modern Topics' },
-  { id: 'modern-practice', label: 'Modern Practice', path: '/modern/practice', icon: '🎨', category: 'Modern Topics' },
+  // IPv4 Addressing (LO 1.7)
+  {
+    id: 'subnet-designer',
+    label: 'Subnet Designer',
+    path: '/ipv4/subnet-designer',
+    icon: '🌐',
+    category: 'IPv4 Addressing (LO 1.7)',
+  },
+  {
+    id: 'troubleshooter',
+    label: 'IPv4 Troubleshooter',
+    path: '/ipv4/troubleshooter',
+    icon: '🛠️',
+    category: 'IPv4 Addressing (LO 1.7)',
+  },
+
+  // Modern Networking (LO 1.8)
+  {
+    id: 'technology',
+    label: 'Technology Summarizer',
+    path: '/modern/technology',
+    icon: '🚀',
+    category: 'Modern Networking (LO 1.8)',
+  },
+  {
+    id: 'ipv6',
+    label: 'IPv6 Planner',
+    path: '/modern/ipv6',
+    icon: '🌍',
+    category: 'Modern Networking (LO 1.8)',
+  },
+  {
+    id: 'iac',
+    label: 'IaC Builder',
+    path: '/modern/iac',
+    icon: '⚙️',
+    category: 'Modern Networking (LO 1.8)',
+  },
 
   // Assessment
-  { id: 'assessment-intro', label: 'Assessment Introduction', path: '/assessment/introduction', icon: '📝', category: 'Assessment' },
-  { id: 'assessment-practice', label: 'Practice Exam', path: '/assessment/practice', icon: '✅', category: 'Assessment' },
-  { id: 'assessment-flashcards', label: 'Flashcards', path: '/assessment/flashcards', icon: '🗂️', category: 'Assessment' },
-  { id: 'assessment-final', label: 'Final Exam', path: '/assessment/final', icon: '🏆', category: 'Assessment' },
-  { id: 'assessment-results', label: 'Results Dashboard', path: '/assessment/results', icon: '📊', category: 'Assessment' },
+  {
+    id: 'simulator-assess',
+    label: 'Integrated Simulator',
+    path: '/assessment/simulator',
+    icon: '🎮',
+    category: 'Assessment',
+  },
+  {
+    id: 'dashboard-progress',
+    label: 'Progress Dashboard',
+    path: '/assessment/dashboard',
+    icon: '📊',
+    category: 'Assessment',
+  },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -57,23 +206,26 @@ export const Sidebar: React.FC = () => {
   const setSidebarOpen = useAppStore((state) => state.setSidebarOpen);
   const getComponentProgress = useProgressStore((state) => state.getComponentProgress);
 
-  const groupedItems = navigationItems.reduce((acc, item) => {
-    if (!item.category) {
-      acc['General'] = acc['General'] || [];
-      acc['General'].push(item);
-    } else {
-      acc[item.category] = acc[item.category] || [];
-      acc[item.category].push(item);
-    }
-    return acc;
-  }, {} as Record<string, NavItem[]>);
+  const groupedItems = navigationItems.reduce(
+    (acc, item) => {
+      if (!item.category) {
+        acc['General'] = acc['General'] || [];
+        acc['General'].push(item);
+      } else {
+        acc[item.category] = acc[item.category] || [];
+        acc[item.category].push(item);
+      }
+      return acc;
+    },
+    {} as Record<string, NavItem[]>
+  );
 
   return (
     <>
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -81,18 +233,13 @@ export const Sidebar: React.FC = () => {
 
       {/* Sidebar */}
       <aside
-        className={`
-          fixed top-16 left-0 z-30 h-[calc(100vh-4rem)] w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700
-          transform transition-transform duration-300 ease-in-out overflow-y-auto
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0
-        `}
+        className={`fixed left-0 top-16 z-30 h-[calc(100vh-4rem)] w-64 transform overflow-y-auto border-r border-gray-200 bg-white transition-transform duration-300 ease-in-out dark:border-gray-700 dark:bg-gray-800 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
         aria-label="Sidebar navigation"
       >
-        <nav className="p-4 space-y-6">
+        <nav className="space-y-6 p-4">
           {Object.entries(groupedItems).map(([category, items]) => (
             <div key={category}>
-              <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 {category}
               </h3>
               <ul className="space-y-1">
@@ -105,10 +252,10 @@ export const Sidebar: React.FC = () => {
                       <NavLink
                         to={item.path}
                         className={({ isActive }) =>
-                          `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                          `flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
                             isActive
-                              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-medium'
-                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                              ? 'bg-blue-50 font-medium text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+                              : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
                           }`
                         }
                         onClick={() => {
@@ -123,7 +270,7 @@ export const Sidebar: React.FC = () => {
                         <span className="flex-1 text-sm">{item.label}</span>
                         {isCompleted && (
                           <svg
-                            className="w-5 h-5 text-green-500"
+                            className="h-5 w-5 text-green-500"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                             aria-label="Completed"

@@ -5,10 +5,7 @@ import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
 import { SkipLink } from '../accessibility/SkipLink';
 import { useAppStore } from '../../stores/appStore';
-// import { breadcrumbMap } from '../../router'; // Temporarily disabled
-
-// Mock breadcrumbMap for now
-const breadcrumbMap: Record<string, { title: string; parent?: string }> = {};
+import { breadcrumbMap } from '../../router';
 
 export const Layout: React.FC = () => {
   const sidebarOpen = useAppStore((state) => state.sidebarOpen);
@@ -45,27 +42,24 @@ export const Layout: React.FC = () => {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen flex-col bg-gray-50 dark:bg-gray-900">
       {/* Skip to main content link for accessibility - WCAG 2.4.1 */}
       <SkipLink />
 
       <Header />
 
-      <div className="flex flex-1 relative">
+      <div className="relative flex flex-1">
         <Sidebar />
 
         <main
           id="main-content"
-          className={`
-            flex-1 transition-all duration-300 ease-in-out
-            ${sidebarOpen ? 'lg:ml-64' : 'ml-0'}
-          `}
+          className={`flex-1 transition-all duration-300 ease-in-out ${sidebarOpen ? 'lg:ml-64' : 'ml-0'} `}
           role="main"
         >
           {/* Breadcrumb navigation */}
           {breadcrumbs.length > 1 && (
             <nav
-              className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-8 py-3"
+              className="border-b border-gray-200 bg-white px-4 py-3 sm:px-6 lg:px-8 dark:border-gray-700 dark:bg-gray-800"
               aria-label="Breadcrumb"
             >
               <ol className="flex items-center space-x-2 text-sm">
@@ -73,7 +67,7 @@ export const Layout: React.FC = () => {
                   <li key={crumb.path} className="flex items-center">
                     {index > 0 && (
                       <svg
-                        className="w-4 h-4 text-gray-400 mx-2"
+                        className="mx-2 h-4 w-4 text-gray-400"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         aria-hidden="true"
@@ -86,13 +80,16 @@ export const Layout: React.FC = () => {
                       </svg>
                     )}
                     {index === breadcrumbs.length - 1 ? (
-                      <span className="text-gray-900 dark:text-white font-medium" aria-current="page">
+                      <span
+                        className="font-medium text-gray-900 dark:text-white"
+                        aria-current="page"
+                      >
                         {crumb.label}
                       </span>
                     ) : (
                       <Link
                         to={crumb.path}
-                        className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        className="text-gray-600 transition-colors hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
                       >
                         {crumb.label}
                       </Link>

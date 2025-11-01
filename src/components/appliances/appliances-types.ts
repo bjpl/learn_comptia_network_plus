@@ -2,13 +2,80 @@
  * TypeScript types for networking appliances components
  */
 
+export type DeviceType =
+  // Layer 1
+  | 'hub'
+  | 'repeater'
+  | 'media-converter'
+  // Layer 2
+  | 'switch'
+  | 'bridge'
+  | 'poe-switch'
+  | 'wireless-ap-autonomous'
+  | 'wireless-ap-controller'
+  | 'poe-injector'
+  // Layer 3
+  | 'router'
+  | 'layer3-switch'
+  // Security
+  | 'firewall-stateless'
+  | 'firewall-stateful'
+  | 'firewall-ngfw'
+  | 'ids'
+  | 'ips'
+  | 'proxy'
+  | 'content-filter'
+  | 'utm'
+  // Application Delivery
+  | 'load-balancer'
+  | 'vpn-concentrator'
+  | 'voip-gateway'
+  // WAN
+  | 'modem'
+  | 'csu-dsu'
+  // Controller
+  | 'wireless-controller';
+
 export interface NetworkDevice {
   id: string;
   name: string;
-  type: 'router' | 'switch' | 'firewall' | 'load-balancer' | 'ids-ips' | 'wireless-controller' | 'proxy' | 'vpn-concentrator';
+  type: DeviceType;
   category: 'physical' | 'virtual' | 'cloud';
   manufacturer?: string;
   model?: string;
+}
+
+export interface PoESpecs {
+  standard: '802.3af' | '802.3at' | '802.3bt';
+  powerPerPort: number;
+  totalPoeBudget?: number;
+  poePortCount?: number;
+}
+
+export interface WirelessSpecs {
+  standard: '802.11ac' | '802.11ax' | '802.11be';
+  maxClients: number;
+  range: string;
+  architecture: 'autonomous' | 'controller-based';
+}
+
+export interface SecuritySpecs {
+  inspectionType: 'stateless' | 'stateful' | 'deep-packet';
+  deploymentMode: 'inline' | 'out-of-band' | 'transparent' | 'routed';
+  threatsPerSecond?: number;
+}
+
+export interface LoadBalancerSpecs {
+  algorithms: string[];
+  sessionPersistence: boolean;
+  sslOffload: boolean;
+  healthChecks: boolean;
+}
+
+export interface VpnSpecs {
+  types: ('ipsec' | 'ssl' | 'l2tp')[];
+  maxTunnels: number;
+  throughputEncrypted: string;
 }
 
 export interface DeviceSpecs {
@@ -21,6 +88,11 @@ export interface DeviceSpecs {
   storageGB?: number;
   redundancy: boolean;
   hotSwappable: boolean;
+  poeSupport?: PoESpecs;
+  wirelessSpecs?: WirelessSpecs;
+  securitySpecs?: SecuritySpecs;
+  loadBalancerSpecs?: LoadBalancerSpecs;
+  vpnSpecs?: VpnSpecs;
 }
 
 export interface DeviceFeatures {
@@ -45,13 +117,54 @@ export interface DevicePricing {
   totalCost5Years: number;
 }
 
+export interface Scenario {
+  title: string;
+  description: string;
+  requirements: string[];
+  whyThisDevice: string;
+  alternatives?: string[];
+}
+
 export interface ComparisonDevice extends NetworkDevice {
+  // OSI Layer Information (optional for backward compatibility)
+  osiLayers?: number[];
+  primaryOsiLayer?: number;
+  osiLayerDescription?: string;
+
+  // Domain Analysis (optional for backward compatibility)
+  collisionDomains?: 'single' | 'per-port' | 'none';
+  broadcastDomains?: 'single' | 'per-port' | 'per-vlan' | 'none';
+  domainNotes?: string;
+
   specs: DeviceSpecs;
   features: DeviceFeatures;
   pricing: DevicePricing;
+
+  // Educational Content (optional for backward compatibility)
+  examFocus?: string[];
+  commonMisconceptions?: string[];
+  realWorldScenarios?: Scenario[];
+  whenToUse?: string[];
+  whenNotToUse?: string[];
+
   useCase: string[];
   pros: string[];
   cons: string[];
+}
+
+export interface ExamQuestion {
+  id: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  category: string;
+  question: string;
+  options: {
+    id: string;
+    text: string;
+    correct: boolean;
+  }[];
+  explanation: string;
+  relatedDevices: string[];
+  examTip: string;
 }
 
 export interface DecisionNode {

@@ -30,7 +30,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
   const deviceTypeOptions: Array<{ value: SimulatedDevice['type']; label: string }> = [
     { value: 'router', label: 'Router' },
     { value: 'switch', label: 'Switch' },
-    { value: 'firewall', label: 'Firewall' },
+    { value: 'firewall-stateful', label: 'Firewall' },
     { value: 'load-balancer', label: 'Load Balancer' },
     { value: 'wireless-controller', label: 'Wireless Controller' },
   ];

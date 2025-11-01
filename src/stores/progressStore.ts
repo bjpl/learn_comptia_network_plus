@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import * as progressService from '../services/progress-service';
 import { parseApiError, logError } from '../utils/api/error-handler';
 import { networkStatusManager } from '../utils/api/network-status';
+import { shouldUseMockAPI } from '../config/api-config';
 
 interface ComponentProgress {
   componentId: string;
@@ -281,8 +282,8 @@ export const useProgressStore = create<ProgressState>()(
     {
       name: 'comptia-network-plus-progress',
       onRehydrateStorage: () => (state) => {
-        // Sync progress after hydration if online
-        if (state && networkStatusManager.getStatus()) {
+        // Sync progress after hydration if online and not using mock API
+        if (state && networkStatusManager.getStatus() && !shouldUseMockAPI()) {
           state.syncProgress();
         }
       },
@@ -290,9 +291,9 @@ export const useProgressStore = create<ProgressState>()(
   )
 );
 
-// Setup network status listener for auto-sync
+// Setup network status listener for auto-sync (only when not using mock API)
 networkStatusManager.subscribe((isOnline) => {
-  if (isOnline) {
+  if (isOnline && !shouldUseMockAPI()) {
     console.warn('Network restored - syncing progress...');
     useProgressStore.getState().syncProgress();
   }

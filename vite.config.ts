@@ -33,7 +33,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: 5174,
     open: true,
     host: true,
   },
@@ -56,7 +56,12 @@ export default defineConfig({
           'ui-vendor': ['framer-motion', 'lucide-react', 'clsx', 'tailwind-merge'],
           'state-vendor': ['zustand'],
           'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
-          'mui-vendor': ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
+          'mui-vendor': [
+            '@mui/material',
+            '@mui/icons-material',
+            '@emotion/react',
+            '@emotion/styled',
+          ],
 
           // Feature chunks - OSI Module
           'osi-features': [

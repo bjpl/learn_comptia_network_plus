@@ -207,7 +207,6 @@ const IPv4Troubleshooter: React.FC = () => {
 
       {/* Connection indicators */}
       {scenario.connections.length > 0 && (
-        // @ts-expect-error - Complex union type from multiple sx props
         <Box sx={{ mt: 2 }}>
           <Typography variant="caption" color="text.secondary">
             Connections:

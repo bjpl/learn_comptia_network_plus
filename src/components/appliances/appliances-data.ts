@@ -60,7 +60,7 @@ export const networkDevices: ComparisonDevice[] = [
   {
     id: 'pfsense-virtual',
     name: 'pfSense Virtual Firewall',
-    type: 'firewall',
+    type: 'firewall-stateful',
     category: 'virtual',
     manufacturer: 'Netgate',
     model: 'pfSense CE',
@@ -112,7 +112,7 @@ export const networkDevices: ComparisonDevice[] = [
   {
     id: 'fortinet-fg-100f',
     name: 'FortiGate 100F',
-    type: 'firewall',
+    type: 'firewall-stateful',
     category: 'physical',
     manufacturer: 'Fortinet',
     model: 'FG-100F',
@@ -257,16 +257,12 @@ export const networkDevices: ComparisonDevice[] = [
       'Cloud-native deployment',
       'Extensive protocol support',
     ],
-    cons: [
-      'Expensive licensing',
-      'Steep learning curve',
-      'Can be resource-intensive',
-    ],
+    cons: ['Expensive licensing', 'Steep learning curve', 'Can be resource-intensive'],
   },
   {
     id: 'palo-alto-vm-series',
     name: 'Palo Alto VM-Series',
-    type: 'firewall',
+    type: 'firewall-ngfw',
     category: 'virtual',
     manufacturer: 'Palo Alto',
     model: 'VM-50',

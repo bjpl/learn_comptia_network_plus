@@ -676,3 +676,5 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
     </div>
   );
 };
+
+export default TroubleshootingScenarios;

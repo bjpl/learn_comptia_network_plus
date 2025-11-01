@@ -439,3 +439,5 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
     </div>
   );
 };
+
+export default LayerExplanationBuilder;
