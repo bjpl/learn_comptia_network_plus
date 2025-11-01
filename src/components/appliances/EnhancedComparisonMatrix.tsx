@@ -106,16 +106,16 @@ const EnhancedComparisonMatrix: React.FC = () => {
             appliances
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+            <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-900 dark:bg-blue-900 dark:text-blue-100">
               25+ Devices
             </span>
-            <span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-800">
+            <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-900 dark:bg-green-900 dark:text-green-100">
               All OSI Layers
             </span>
-            <span className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800">
+            <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-900 dark:bg-purple-900 dark:text-purple-100">
               20+ Exam Questions
             </span>
-            <span className="rounded-full bg-orange-100 px-3 py-1 text-sm text-orange-800">
+            <span className="rounded-full bg-orange-100 px-3 py-1 text-sm font-medium text-orange-900 dark:bg-orange-900 dark:text-orange-100">
               Decision Helper
             </span>
           </div>
@@ -162,7 +162,7 @@ const EnhancedComparisonMatrix: React.FC = () => {
                     placeholder="Search by name, type, or function..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
                   />
                 </div>
 
@@ -180,16 +180,22 @@ const EnhancedComparisonMatrix: React.FC = () => {
                   </h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Total Devices:</span>
-                      <span className="font-semibold">{enhancedNetworkDevices.length}</span>
+                      <span className="text-gray-700 dark:text-gray-300">Total Devices:</span>
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">
+                        {enhancedNetworkDevices.length}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Filtered:</span>
-                      <span className="font-semibold">{filteredDevices.length}</span>
+                      <span className="text-gray-700 dark:text-gray-300">Filtered:</span>
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">
+                        {filteredDevices.length}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600 dark:text-gray-400">Comparing:</span>
-                      <span className="font-semibold">{selectedDeviceIds.length} / 5</span>
+                      <span className="text-gray-700 dark:text-gray-300">Comparing:</span>
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">
+                        {selectedDeviceIds.length} / 5
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -224,7 +230,7 @@ const EnhancedComparisonMatrix: React.FC = () => {
                       ))}
                   </div>
                   {selectedDeviceIds.length >= 5 && (
-                    <div className="mt-3 rounded bg-yellow-50 p-2 text-sm text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                    <div className="mt-3 rounded bg-yellow-50 p-2 text-sm font-medium text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100">
                       Maximum 5 devices can be compared at once. Remove a device to add another.
                     </div>
                   )}
@@ -250,10 +256,10 @@ const EnhancedComparisonMatrix: React.FC = () => {
                                     <div className="font-bold text-gray-900 dark:text-gray-100">
                                       {device.name}
                                     </div>
-                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                    <div className="text-xs text-gray-600 dark:text-gray-400">
                                       {device.manufacturer}
                                     </div>
-                                    <span className="mt-1 inline-block rounded bg-blue-100 px-2 py-1 text-xs text-blue-800">
+                                    <span className="mt-1 inline-block rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-900 dark:bg-blue-900 dark:text-blue-100">
                                       Layer {device.primaryOsiLayer}
                                     </span>
                                   </div>
@@ -402,7 +408,7 @@ const EnhancedComparisonMatrix: React.FC = () => {
                                     ))}
                                   </ul>
                                 ) : (
-                                  <span className="text-sm text-gray-400 dark:text-gray-500">
+                                  <span className="text-sm text-gray-500 dark:text-gray-400">
                                     N/A
                                   </span>
                                 )}
