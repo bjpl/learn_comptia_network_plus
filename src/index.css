@@ -13,7 +13,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 dark:bg-gray-600 rounded;
+  @apply rounded bg-gray-400 dark:bg-gray-600;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -78,6 +78,45 @@ button {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Accessibility - Dark Mode Text Contrast Fixes */
+/* Ensure WCAG AA compliance (4.5:1 contrast ratio) */
+.dark .text-gray-700 {
+  @apply text-gray-300;
+}
+
+.dark .text-gray-800 {
+  @apply text-gray-200;
+}
+
+.dark .text-gray-900 {
+  @apply text-gray-100;
+}
+
+/* Ensure headings are readable in dark mode */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  @apply text-gray-100;
+}
+
+/* Ensure paragraphs are readable in dark mode */
+.dark p {
+  @apply text-gray-300;
+}
+
+/* Ensure list items are readable */
+.dark li {
+  @apply text-gray-300;
+}
+
+/* Ensure labels are readable */
+.dark label {
+  @apply text-gray-300;
 }
 
 .animate-spin {
