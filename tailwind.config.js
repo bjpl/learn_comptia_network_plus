@@ -72,5 +72,19 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function({ addUtilities }) {
+      addUtilities({
+        '.dark .text-gray-600': {
+          'color': 'rgb(209 213 219) !important',
+        },
+        '.dark .text-gray-500': {
+          'color': 'rgb(156 163 175) !important',
+        },
+        '.dark .text-gray-400': {
+          'color': 'rgb(209 213 219) !important',
+        },
+      });
+    },
+  ],
 };
