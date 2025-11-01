@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import * as progressService from '../services/progress-service';
 import { parseApiError, logError } from '../utils/api/error-handler';
 import { networkStatusManager } from '../utils/api/network-status';
-import { shouldUseMockAPI } from '../config/api-config';
+import { shouldUseMockAPI, FEATURE_FLAGS } from '../config/api-config';
 
 interface ComponentProgress {
   componentId: string;
@@ -177,6 +177,11 @@ export const useProgressStore = create<ProgressState>()(
        * Sync progress with backend
        */
       syncProgress: async () => {
+        // Skip network calls for static deployment
+        if (FEATURE_FLAGS.DISABLE_NETWORK_CALLS) {
+          return;
+        }
+
         set({ isSyncing: true, error: null });
 
         try {

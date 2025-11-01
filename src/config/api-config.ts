@@ -94,6 +94,8 @@ export const FEATURE_FLAGS = {
   ENABLE_OFFLINE_MODE: true,
   ENABLE_REQUEST_LOGGING: API_CONFIG.IS_DEVELOPMENT,
   ENABLE_PERFORMANCE_TRACKING: true,
+  // Disable network calls for static GitHub Pages deployment
+  DISABLE_NETWORK_CALLS: import.meta.env.PROD || import.meta.env.VITE_STATIC_DEPLOY === 'true',
 } as const;
 
 /**
