@@ -53,7 +53,7 @@ export const Header: React.FC = () => {
             aria-label="Toggle sidebar"
           >
             <svg
-              className="h-6 w-6 text-gray-600 dark:text-gray-300"
+              className="h-6 w-6 text-gray-600 dark:text-gray-200 dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -106,7 +106,7 @@ export const Header: React.FC = () => {
               Search through learning topics, networking concepts, and protocols
             </span>
             <svg
-              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400 dark:text-gray-200 dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -142,10 +142,10 @@ export const Header: React.FC = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200 dark:text-gray-300">
               {overallProgress.totalCompleted}/{overallProgress.totalComponents}
             </span>
-            <span className="text-xs text-gray-600 dark:text-gray-300">
+            <span className="text-xs text-gray-600 dark:text-gray-200 dark:text-gray-300">
               ({overallProgress.percentage.toFixed(0)}%)
             </span>
           </div>
@@ -183,7 +183,7 @@ export const Header: React.FC = () => {
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500">
                   <span className="text-sm font-medium text-white">{getUserInitials(user)}</span>
                 </div>
-                <span className="hidden text-sm font-medium text-gray-700 sm:block dark:text-gray-300">
+                <span className="hidden text-sm font-medium text-gray-700 sm:block dark:text-gray-200 dark:text-gray-300">
                   {getUserDisplayName(user)}
                 </span>
                 <svg
@@ -210,7 +210,7 @@ export const Header: React.FC = () => {
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                       {getUserDisplayName(user)}
                     </p>
-                    <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                    <p className="truncate text-xs text-gray-500 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
                       {user.email}
                     </p>
                     <span className="mt-1 inline-block rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-200">

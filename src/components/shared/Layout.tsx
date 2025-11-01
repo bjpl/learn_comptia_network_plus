@@ -67,7 +67,7 @@ export const Layout: React.FC = () => {
                   <li key={crumb.path} className="flex items-center">
                     {index > 0 && (
                       <svg
-                        className="mx-2 h-4 w-4 text-gray-400"
+                        className="mx-2 h-4 w-4 text-gray-400 dark:text-gray-200 dark:text-gray-300"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         aria-hidden="true"

@@ -131,7 +131,7 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
         ✓
       </span>
     ) : (
-      <span className="text-gray-300" title="Not supported">
+      <span className="text-gray-300 dark:text-gray-200" title="Not supported">
         ✗
       </span>
     );
@@ -208,7 +208,9 @@ const ComparisonMatrix: React.FC<ComparisonMatrixProps> = ({ initialDevices = []
                       <div className="font-bold text-gray-900 dark:text-gray-100">
                         {device.name}
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">{device.model}</div>
+                      <div className="text-xs text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+                        {device.model}
+                      </div>
                       <span
                         className={`mt-1 inline-block rounded px-2 py-1 text-xs ${getCategoryBadgeColor(device.category)}`}
                       >
