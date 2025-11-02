@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -72,19 +73,5 @@ export default {
       },
     },
   },
-  plugins: [
-    function({ addUtilities }) {
-      addUtilities({
-        '.dark .text-gray-600': {
-          'color': 'rgb(209 213 219) !important',
-        },
-        '.dark .text-gray-500': {
-          'color': 'rgb(156 163 175) !important',
-        },
-        '.dark .text-gray-400': {
-          'color': 'rgb(209 213 219) !important',
-        },
-      });
-    },
-  ],
+  plugins: [],
 };
