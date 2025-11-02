@@ -406,10 +406,10 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
 
         {/* Stats Bar */}
         <div style={{ display: 'flex', gap: '20px', marginTop: '15px', flexWrap: 'wrap' }}>
-          <div style={{ padding: '10px 15px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+          <div className="bg-gray-100 dark:bg-gray-800" style={{ padding: '10px 15px', borderRadius: '4px' }}>
             Hints Used: {hintsUsed}/3
           </div>
-          <div style={{ padding: '10px 15px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+          <div className="bg-gray-100 dark:bg-gray-800" style={{ padding: '10px 15px', borderRadius: '4px' }}>
             Current Score: {score}%
           </div>
           <button
@@ -472,8 +472,8 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
 
               {expandedLayer === layer.number && (
                 <div
-                  className="layer-content"
-                  style={{ padding: '20px', backgroundColor: '#f9f9f9' }}
+                  className="layer-content bg-gray-50 dark:bg-gray-900"
+                  style={{ padding: '20px' }}
                 >
                   {/* Primary Function Selector */}
                   <div className="section" style={{ marginBottom: '20px' }}>
@@ -606,7 +606,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                       150
                       {layer.interactionExplanation.split(' ').filter((w) => w.length > 0).length >=
                         150 && (
-                        <span style={{ color: '#4CAF50', marginLeft: '10px' }}>
+                        <span className="text-green-600 dark:text-green-400" style={{ marginLeft: '10px' }}>
                           ✓ Meets requirement
                         </span>
                       )}
@@ -673,7 +673,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                     backgroundColor: `${LAYER_COLORS[layer]}15`,
                   }}
                 >
-                  <h4 style={{ color: LAYER_COLORS[layer], marginBottom: '10px' }}>
+                  <h4 className="text-gray-800 dark:text-gray-200" style={{ marginBottom: '10px' }}>
                     Layer {layer}: {LAYER_NAMES[layer]}
                   </h4>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -717,11 +717,12 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
               <button
                 key={idx}
                 onClick={() => setSelectedExample(idx)}
+                className={selectedExample !== idx ? 'text-gray-800 dark:text-gray-200' : ''}
                 style={{
                   padding: '12px',
                   backgroundColor:
                     selectedExample === idx ? LAYER_COLORS[example.layer] : '#f0f0f0',
-                  color: selectedExample === idx ? 'white' : '#333',
+                  color: selectedExample === idx ? 'white' : undefined,
                   border: 'none',
                   borderRadius: '4px',
                   cursor: 'pointer',
@@ -742,7 +743,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                 backgroundColor: `${LAYER_COLORS[currentExample.layer]}10`,
               }}
             >
-              <h4 style={{ color: LAYER_COLORS[currentExample.layer], marginBottom: '10px' }}>
+              <h4 className="text-gray-800 dark:text-gray-200" style={{ marginBottom: '10px' }}>
                 Layer {currentExample.layer}: {currentExample.title}
               </h4>
               <p style={{ marginBottom: '15px', lineHeight: '1.6' }}>{currentExample.scenario}</p>
@@ -785,7 +786,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                   backgroundColor: '#fafafa',
                 }}
               >
-                <p style={{ fontWeight: 'bold', marginBottom: '12px', color: '#333' }}>
+                <p className="text-gray-800 dark:text-gray-200" style={{ fontWeight: 'bold', marginBottom: '12px' }}>
                   {question.question}
                 </p>
                 <div
@@ -907,7 +908,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                     backgroundColor: `${LAYER_COLORS[layer.number]}20`,
                   }}
                 >
-                  <div style={{ fontWeight: 'bold', color: LAYER_COLORS[layer.number] }}>
+                  <div className="text-gray-800 dark:text-gray-200" style={{ fontWeight: 'bold' }}>
                     Layer {layer.number}: {layer.name}
                   </div>
                   <div

@@ -543,7 +543,7 @@ export const TroubleshootingScenariosEnhanced: React.FC<TroubleshootingScenarios
             }}
           >
             <h3 style={{ marginTop: 0 }}>Network Diagnostic Tools</h3>
-            <p style={{ color: '#666', marginBottom: '20px' }}>
+            <p className="text-gray-600 dark:text-gray-400" style={{ marginBottom: '20px' }}>
               Practice using network troubleshooting tools with the current scenario:
               <strong> {currentScenario.title}</strong>
             </p>
@@ -556,7 +556,7 @@ export const TroubleshootingScenariosEnhanced: React.FC<TroubleshootingScenarios
 
         {/* Methodology View */}
         {viewMode === 'methodology' && (
-          <div style={{ backgroundColor: '#fff', borderRadius: '12px', height: '700px' }}>
+          <div className="text-white dark:text-white" style={{ backgroundColor: '#fff', borderRadius: '12px', height: '700px' }}>
             <MethodologyWizard
               scenario={currentScenario}
               onComplete={handleMethodologyComplete}
@@ -570,7 +570,7 @@ export const TroubleshootingScenariosEnhanced: React.FC<TroubleshootingScenarios
 
         {/* Reference View */}
         {viewMode === 'reference' && (
-          <div style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '20px' }}>
+          <div className="text-white dark:text-white" style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '20px' }}>
             <SymptomLayerMapping />
           </div>
         )}
@@ -592,7 +592,7 @@ function StatCard({ title, value, color }: { title: string; value: string; color
       }}
     >
       <div style={{ fontSize: '24px', fontWeight: 'bold', color }}>{value}</div>
-      <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>{title}</div>
+      <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px', marginTop: '4px' }}>{title}</div>
     </div>
   );
 }
@@ -759,7 +759,8 @@ function ExplanationInput({ value, onChange }: { value: string; onChange: (v: st
         }}
       />
       <div
-        style={{ marginTop: '5px', fontSize: '12px', color: wordCount >= 100 ? '#4CAF50' : '#666' }}
+        className={wordCount >= 100 ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}
+        style={{ marginTop: '5px', fontSize: '12px' }}
       >
         Word count: {wordCount} / 100
         {wordCount >= 100 && <span style={{ marginLeft: '10px' }}>✓ Meets requirement</span>}
@@ -794,7 +795,8 @@ function SolutionInput({ value, onChange }: { value: string; onChange: (v: strin
         }}
       />
       <div
-        style={{ marginTop: '5px', fontSize: '12px', color: wordCount >= 50 ? '#4CAF50' : '#666' }}
+        className={wordCount >= 50 ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}
+        style={{ marginTop: '5px', fontSize: '12px' }}
       >
         Word count: {wordCount} / 50
         {wordCount >= 50 && <span style={{ marginLeft: '10px' }}>✓ Meets requirement</span>}

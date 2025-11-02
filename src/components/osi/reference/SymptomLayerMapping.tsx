@@ -260,7 +260,7 @@ export const SymptomLayerMapping: React.FC<SymptomLayerMappingProps> = ({ onSymp
     <div style={{ padding: '20px' }}>
       <h2 style={{ marginTop: 0 }}>Common Network Symptoms → OSI Layers</h2>
 
-      <p style={{ fontSize: '15px', color: '#666', lineHeight: '1.6' }}>
+      <p style={{ fontSize: '15px', lineHeight: '1.6' }} className="text-gray-600 dark:text-gray-400">
         Use this quick reference to identify which OSI layer is likely causing specific network
         symptoms. This helps you choose the right troubleshooting approach and diagnostic tools.
       </p>
@@ -369,7 +369,7 @@ export const SymptomLayerMapping: React.FC<SymptomLayerMappingProps> = ({ onSymp
           }}
         >
           <thead>
-            <tr style={{ backgroundColor: '#f5f5f5' }}>
+            <tr className="bg-gray-100 dark:bg-gray-800">
               <th style={tableHeaderStyle}>Symptom</th>
               <th style={tableHeaderStyle}>Likely Layer(s)</th>
               <th style={tableHeaderStyle}>Certainty</th>
@@ -428,7 +428,7 @@ export const SymptomLayerMapping: React.FC<SymptomLayerMappingProps> = ({ onSymp
                   </div>
                 </td>
                 <td style={tableCellStyle}>
-                  <div style={{ fontSize: '13px', color: '#555', lineHeight: '1.5' }}>
+                  <div style={{ fontSize: '13px', lineHeight: '1.5' }} className="text-gray-700 dark:text-gray-300">
                     {symptom.explanation}
                   </div>
                 </td>
@@ -456,14 +456,14 @@ export const SymptomLayerMapping: React.FC<SymptomLayerMappingProps> = ({ onSymp
         style={{
           marginTop: '24px',
           padding: '16px',
-          backgroundColor: '#f5f5f5',
           borderRadius: '8px',
         }}
+        className="bg-gray-100 dark:bg-gray-800"
       >
         <div style={{ fontWeight: 'bold', marginBottom: '12px', fontSize: '14px' }}>
           💡 How to Use This Reference:
         </div>
-        <div style={{ fontSize: '13px', lineHeight: '1.8', color: '#555' }}>
+        <div style={{ fontSize: '13px', lineHeight: '1.8' }} className="text-gray-700 dark:text-gray-300">
           1. Identify the symptom you're experiencing
           <br />
           2. Check which layer(s) are likely involved

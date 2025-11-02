@@ -207,7 +207,7 @@ export const MethodologyWizard: React.FC<MethodologyWizardProps> = ({
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
           <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Step {currentStep} of 7</span>
-          <span style={{ fontSize: '14px', color: '#666' }}>{completedCount} completed</span>
+          <span className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>{completedCount} completed</span>
         </div>
         <div
           style={{
@@ -299,11 +299,11 @@ export const MethodologyWizard: React.FC<MethodologyWizardProps> = ({
             margin: '0 auto',
           }}
         >
-          <h2 style={{ marginTop: 0, color: '#2196F3' }}>
+          <h2 className="text-blue-500 dark:text-blue-400" style={{ marginTop: 0 }}>
             Step {currentStep}: {currentStepData.title}
           </h2>
 
-          <p style={{ fontSize: '15px', color: '#666', lineHeight: '1.6' }}>
+          <p className="text-gray-600 dark:text-gray-400" style={{ fontSize: '15px', lineHeight: '1.6' }}>
             {currentStepData.description}
           </p>
 
@@ -320,7 +320,7 @@ export const MethodologyWizard: React.FC<MethodologyWizardProps> = ({
             <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
               Scenario: {scenario.title}
             </div>
-            <div style={{ fontSize: '14px', color: '#666' }}>{scenario.description}</div>
+            <div className="text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>{scenario.description}</div>
           </div>
 
           {/* Checklist */}

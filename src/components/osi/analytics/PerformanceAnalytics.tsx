@@ -113,8 +113,8 @@ export const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({ data
               borderRadius: '4px',
             }}
           >
-            <h4 style={{ margin: '0 0 12px 0', color: '#856404' }}>⚠️ Focus Areas</h4>
-            <div style={{ fontSize: '14px', color: '#856404' }}>
+            <h4 style={{ margin: '0 0 12px 0' }} className="text-yellow-700 dark:text-yellow-400">⚠️ Focus Areas</h4>
+            <div style={{ fontSize: '14px' }} className="text-yellow-700 dark:text-yellow-400">
               You should practice more scenarios for:
               {analytics.weakLayers.map((layer) => (
                 <div key={layer} style={{ marginTop: '8px', fontWeight: 'bold' }}>
@@ -170,10 +170,10 @@ export const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({ data
                 <div style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '4px' }}>
                   {stats.attempted > 0 ? ((stats.correct / stats.attempted) * 100).toFixed(0) : 0}%
                 </div>
-                <div style={{ fontSize: '14px', color: '#666' }}>
+                <div style={{ fontSize: '14px' }} className="text-gray-600 dark:text-gray-400">
                   {stats.correct}/{stats.attempted} correct
                 </div>
-                <div style={{ fontSize: '13px', color: '#888', marginTop: '4px' }}>
+                <div style={{ fontSize: '13px', marginTop: '4px' }} className="text-gray-500 dark:text-gray-500">
                   Avg: {stats.avgScore.toFixed(0)}/100
                 </div>
               </div>
@@ -191,7 +191,7 @@ export const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({ data
           border: '2px solid #2196F3',
         }}
       >
-        <h3 style={{ marginTop: 0, color: '#1976D2' }}>📚 Study Recommendations</h3>
+        <h3 style={{ marginTop: 0 }} className="text-blue-600 dark:text-blue-400">📚 Study Recommendations</h3>
         <div style={{ fontSize: '15px', lineHeight: '1.8' }}>{getRecommendations(analytics)}</div>
       </div>
     </div>
@@ -233,11 +233,11 @@ function StatCard({
       >
         {icon}
       </div>
-      <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>{title}</div>
+      <div style={{ fontSize: '14px', marginBottom: '8px' }} className="text-gray-600 dark:text-gray-400">{title}</div>
       <div style={{ fontSize: '36px', fontWeight: 'bold', color, marginBottom: '4px' }}>
         {value}
       </div>
-      {subtitle && <div style={{ fontSize: '13px', color: '#888' }}>{subtitle}</div>}
+      {subtitle && <div style={{ fontSize: '13px' }} className="text-gray-500 dark:text-gray-500">{subtitle}</div>}
     </div>
   );
 }
@@ -285,7 +285,7 @@ function LayerPerformanceBar({ layer, stats }: { layer: OSILayerNumber; stats: L
           }}
         >
           {accuracyPercent > 15 && (
-            <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#fff' }}>
+            <span style={{ fontSize: '12px', fontWeight: 'bold' }} className="text-white">
               {accuracyPercent.toFixed(0)}%
             </span>
           )}
@@ -295,8 +295,8 @@ function LayerPerformanceBar({ layer, stats }: { layer: OSILayerNumber; stats: L
         style={{
           marginTop: '4px',
           fontSize: '12px',
-          color: '#888',
         }}
+        className="text-gray-500 dark:text-gray-500"
       >
         Avg Score: {stats.averageScore.toFixed(0)}/100
       </div>
@@ -482,7 +482,7 @@ function getRecommendations(analytics: ReturnType<typeof calculateAnalytics>): R
     );
   } else if (analytics.examReadinessScore >= 85) {
     recommendations.push(
-      <div key="ready" style={{ color: '#4CAF50', fontWeight: 'bold' }}>
+      <div key="ready" style={{ fontWeight: 'bold' }} className="text-green-600 dark:text-green-400">
         ✓ You're ready for the CompTIA Network+ exam! Your performance is excellent.
       </div>
     );
@@ -531,7 +531,7 @@ function getRecommendations(analytics: ReturnType<typeof calculateAnalytics>): R
 
   if (recommendations.length === 0) {
     recommendations.push(
-      <div key="great" style={{ color: '#4CAF50' }}>
+      <div key="great" className="text-green-600 dark:text-green-400">
         ✓ Great work! Keep practicing to maintain your skills.
       </div>
     );
