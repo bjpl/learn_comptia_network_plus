@@ -650,18 +650,18 @@ const IPv4Troubleshooter: React.FC = () => {
                 />
               </Box>
               <Divider sx={{ my: 1 }} />
-              <Typography variant="caption" display="block">
+              <Typography variant="caption" display="block" className="text-gray-800 dark:text-gray-200">
                 <strong>IP:</strong> <code>{device.ipAddress}</code>
               </Typography>
-              <Typography variant="caption" display="block">
+              <Typography variant="caption" display="block" className="text-gray-800 dark:text-gray-200">
                 <strong>Mask:</strong> <code>{device.subnetMask}</code>
               </Typography>
               {device.gateway && (
-                <Typography variant="caption" display="block">
+                <Typography variant="caption" display="block" className="text-gray-800 dark:text-gray-200">
                   <strong>Gateway:</strong> <code>{device.gateway}</code>
                 </Typography>
               )}
-              <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+              <Typography variant="caption" display="block" sx={{ mt: 1 }} className="text-gray-800 dark:text-gray-200">
                 <strong>Type:</strong> {classifyIPAddress(device.ipAddress)}
               </Typography>
             </Paper>
@@ -672,7 +672,7 @@ const IPv4Troubleshooter: React.FC = () => {
       {/* Connection indicators */}
       {scenario.connections.length > 0 && (
         <Box sx={{ mt: 2 }}>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
             Connections:
           </Typography>
           {scenario.connections.map((conn, index) => (
@@ -697,10 +697,10 @@ const IPv4Troubleshooter: React.FC = () => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom className="text-gray-900 dark:text-white">
         IPv4 Troubleshooting Scenarios
       </Typography>
-      <Typography variant="body1" color="text.secondary" paragraph>
+      <Typography variant="body1" className="text-gray-700 dark:text-gray-300" paragraph>
         Diagnose and resolve common IPv4 networking problems
       </Typography>
 
@@ -740,8 +740,8 @@ const IPv4Troubleshooter: React.FC = () => {
           </Grid>
 
           <Box sx={{ mt: 2 }}>
-            <Typography variant="h6">{selectedScenario.title}</Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="h6" className="text-gray-900 dark:text-white">{selectedScenario.title}</Typography>
+            <Typography variant="body2" className="text-gray-700 dark:text-gray-300">
               {selectedScenario.description}
             </Typography>
           </Box>
@@ -775,7 +775,7 @@ const IPv4Troubleshooter: React.FC = () => {
                   <Typography variant="subtitle2" gutterBottom color="success.main">
                     Expected Behavior:
                   </Typography>
-                  <Typography variant="body2">{selectedScenario.expectedBehavior}</Typography>
+                  <Typography variant="body2" className="text-gray-800 dark:text-gray-200">{selectedScenario.expectedBehavior}</Typography>
                 </Paper>
               </Grid>
               <Grid item xs={12} md={6}>
@@ -783,7 +783,7 @@ const IPv4Troubleshooter: React.FC = () => {
                   <Typography variant="subtitle2" gutterBottom color="error.main">
                     Actual Behavior:
                   </Typography>
-                  <Typography variant="body2">{selectedScenario.actualBehavior}</Typography>
+                  <Typography variant="body2" className="text-gray-800 dark:text-gray-200">{selectedScenario.actualBehavior}</Typography>
                 </Paper>
               </Grid>
               <Grid item xs={12}>
@@ -853,7 +853,7 @@ const IPv4Troubleshooter: React.FC = () => {
                         <Typography variant="subtitle2">
                           <code>{diagnostic.command}</code>
                         </Typography>
-                        <Typography variant="caption" color="text.secondary" sx={{ ml: 'auto' }}>
+                        <Typography variant="caption" className="text-gray-700 dark:text-gray-300" sx={{ ml: 'auto' }}>
                           {new Date(diagnostic.timestamp).toLocaleString()}
                         </Typography>
                       </Box>
@@ -887,7 +887,7 @@ const IPv4Troubleshooter: React.FC = () => {
                 <AccordionDetails>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={4}>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                         Windows:
                       </Typography>
                       <List dense>
@@ -899,7 +899,7 @@ const IPv4Troubleshooter: React.FC = () => {
                       </List>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                         Linux:
                       </Typography>
                       <List dense>
@@ -911,7 +911,7 @@ const IPv4Troubleshooter: React.FC = () => {
                       </List>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                         Cisco IOS:
                       </Typography>
                       <List dense>
@@ -972,7 +972,7 @@ const IPv4Troubleshooter: React.FC = () => {
                         </Alert>
                         {step.diagnostic && (
                           <Box sx={{ mt: 2 }}>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                               Related Diagnostic:
                             </Typography>
                             <Paper
@@ -1025,10 +1025,10 @@ const IPv4Troubleshooter: React.FC = () => {
         <TabPanel value={tabValue} index={4}>
           <CardContent>
             <Box sx={{ mb: 2 }}>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom className="text-gray-900 dark:text-white">
                 Step-by-Step Troubleshooting Guide
               </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
+              <Typography variant="body2" className="text-gray-700 dark:text-gray-300" paragraph>
                 Follow these methodical steps to diagnose IPv4 connectivity issues
               </Typography>
             </Box>
@@ -1040,10 +1040,10 @@ const IPv4Troubleshooter: React.FC = () => {
         <TabPanel value={tabValue} index={5}>
           <CardContent>
             <Box sx={{ mb: 2 }}>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom className="text-gray-900 dark:text-white">
                 IP Configuration Validator
               </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
+              <Typography variant="body2" className="text-gray-700 dark:text-gray-300" paragraph>
                 Validate your IP configuration against common issues and best practices
               </Typography>
             </Box>
@@ -1106,10 +1106,10 @@ const IPv4Troubleshooter: React.FC = () => {
         <TabPanel value={tabValue} index={6}>
           <CardContent>
             <Box sx={{ mb: 2 }}>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom className="text-gray-900 dark:text-white">
                 Routing Table Analysis
               </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
+              <Typography variant="body2" className="text-gray-700 dark:text-gray-300" paragraph>
                 Review the current routing table for the host or network. Incorrect routing tables
                 can cause connectivity issues.
               </Typography>
@@ -1137,10 +1137,10 @@ const IPv4Troubleshooter: React.FC = () => {
         <TabPanel value={tabValue} index={7}>
           <CardContent>
             <Box sx={{ mb: 2 }}>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom className="text-gray-900 dark:text-white">
                 ARP Table Simulator
               </Typography>
-              <Typography variant="body2" color="text.secondary" paragraph>
+              <Typography variant="body2" className="text-gray-700 dark:text-gray-300" paragraph>
                 Address Resolution Protocol (ARP) table maps IP addresses to MAC addresses. Invalid
                 entries can prevent communication.
               </Typography>

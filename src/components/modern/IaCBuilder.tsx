@@ -196,7 +196,7 @@ ${template.tasks
         <h2 className="mb-2 text-3xl font-bold text-gray-800 dark:text-gray-100">
           Component 20: Infrastructure as Code (IaC) Builder
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-gray-700 dark:text-gray-300">
           Master network automation with IaC tools: learn Terraform, Ansible, and Puppet. Manage
           configuration drift, build CI/CD pipelines, and implement version control for
           infrastructure.
@@ -213,7 +213,7 @@ ${template.tasks
               className={`whitespace-nowrap px-6 py-3 font-semibold transition-all ${
                 activeTab === tab
                   ? 'border-b-4 border-blue-600 text-blue-600'
-                  : 'text-gray-600 hover:text-blue-500 dark:text-gray-400'
+                  : 'text-gray-800 hover:text-blue-500 dark:text-gray-200'
               }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -229,7 +229,7 @@ ${template.tasks
             <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
               Infrastructure as Code Fundamentals
             </h3>
-            <p className="mb-4 text-gray-700 dark:text-gray-400">
+            <p className="mb-4 text-gray-700 dark:text-gray-300">
               Core concepts and principles for managing infrastructure through code
             </p>
           </div>
@@ -394,7 +394,7 @@ ${template.tasks
             <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
               IaC Template Library
             </h3>
-            <p className="mb-4 text-gray-700 dark:text-gray-400">
+            <p className="mb-4 text-gray-700 dark:text-gray-300">
               Pre-built templates for common network automation tasks
             </p>
           </div>
@@ -420,7 +420,7 @@ ${template.tasks
                     {template.platform}
                   </span>
                 </div>
-                <p className="mb-3 text-sm text-gray-700 dark:text-gray-400">
+                <p className="mb-3 text-sm text-gray-700 dark:text-gray-300">
                   {template.description}
                 </p>
                 <div className="flex gap-2 text-xs">
@@ -454,11 +454,11 @@ ${template.tasks
                           <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                             {param.name}
                           </span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                          <span className="text-xs text-gray-800 dark:text-gray-200">
                             {param.type}
                           </span>
                         </div>
-                        <p className="mt-1 text-xs text-gray-700 dark:text-gray-400">
+                        <p className="mt-1 text-xs text-gray-700 dark:text-gray-300">
                           {param.description}
                         </p>
                         {param.required && <span className="text-xs text-red-600">* Required</span>}
@@ -475,7 +475,7 @@ ${template.tasks
                         <div className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">
                           {task.name}
                         </div>
-                        <p className="text-xs text-gray-700 dark:text-gray-400">
+                        <p className="text-xs text-gray-700 dark:text-gray-300">
                           {task.description}
                         </p>
                         <div className="mt-2 flex gap-2 text-xs">
@@ -515,7 +515,7 @@ ${template.tasks
             <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-gray-100">
               Code Editor
             </h3>
-            <p className="mb-4 text-gray-700 dark:text-gray-400">
+            <p className="mb-4 text-gray-700 dark:text-gray-300">
               Write and validate IaC configurations with syntax highlighting
             </p>
           </div>
@@ -587,7 +587,7 @@ ${template.tasks
                       {check.type}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-600">
+                  <div className="text-xs text-gray-700 dark:text-gray-300">
                     <div>
                       Command: <code className="bg-gray-100 px-1">{check.command}</code>
                     </div>
@@ -604,8 +604,8 @@ ${template.tasks
       {activeTab === 'drift' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold">Configuration Drift Detection</h3>
-            <p className="mb-4 text-gray-700">
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">Configuration Drift Detection</h3>
+            <p className="mb-4 text-gray-700 dark:text-gray-300">
               Identify unauthorized changes and maintain configuration compliance
             </p>
           </div>
@@ -697,8 +697,8 @@ ${template.tasks
       {activeTab === 'pipeline' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold">NetOps CI/CD Pipeline</h3>
-            <p className="mb-4 text-gray-700">
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">NetOps CI/CD Pipeline</h3>
+            <p className="mb-4 text-gray-700 dark:text-gray-300">
               Automated workflow for network configuration deployment
             </p>
           </div>
@@ -706,7 +706,7 @@ ${template.tasks
           {/* Pipeline Visualization */}
           <div className="rounded-lg border-2 border-gray-300 bg-gray-50 p-6">
             <div className="mb-6 flex items-center justify-between">
-              <h4 className="text-lg font-semibold">Pipeline Stages</h4>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Pipeline Stages</h4>
               <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
                 Active
               </span>
@@ -768,10 +768,10 @@ ${template.tasks
                   <div className="flex-1 rounded-lg border-2 border-gray-200 bg-white p-4">
                     <div className="flex items-start justify-between">
                       <div>
-                        <div className="text-lg font-semibold">{stage.name}</div>
-                        <p className="text-sm text-gray-700">{stage.description}</p>
+                        <div className="text-lg font-semibold text-gray-900 dark:text-white">{stage.name}</div>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">{stage.description}</p>
                       </div>
-                      <span className="text-sm text-gray-700">{stage.duration}</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">{stage.duration}</span>
                     </div>
                   </div>
                   {idx < 4 && <div className="ml-6 h-8 w-px bg-gray-300"></div>}
@@ -783,7 +783,7 @@ ${template.tasks
           {/* Pipeline Configuration */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
-              <h4 className="mb-3 text-lg font-semibold">Triggers</h4>
+              <h4 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">Triggers</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-blue-600"></span>
@@ -805,7 +805,7 @@ ${template.tasks
             </div>
 
             <div className="rounded-lg border-2 border-green-200 bg-green-50 p-6">
-              <h4 className="mb-3 text-lg font-semibold">Notifications</h4>
+              <h4 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">Notifications</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-green-600"></span>
@@ -833,8 +833,8 @@ ${template.tasks
       {activeTab === 'tools' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold">IaC Tools Comparison</h3>
-            <p className="mb-4 text-gray-700">
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">IaC Tools Comparison</h3>
+            <p className="mb-4 text-gray-700 dark:text-gray-300">
               Understand the differences between popular IaC tools and their network automation
               capabilities
             </p>
@@ -845,19 +845,19 @@ ${template.tasks
             <table className="w-full text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold">
+                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white">
                     Tool
                   </th>
-                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold">
+                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white">
                     Type
                   </th>
-                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold">
+                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white">
                     Language
                   </th>
-                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold">
+                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white">
                     Agent-based
                   </th>
-                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold">
+                  <th className="border-b border-gray-200 px-4 py-3 text-left font-semibold text-gray-900 dark:text-white">
                     Best For
                   </th>
                 </tr>
@@ -865,38 +865,38 @@ ${template.tasks
               <tbody>
                 <tr className="border-b border-gray-100 hover:bg-blue-50">
                   <td className="px-4 py-3 font-semibold text-red-600">Ansible</td>
-                  <td className="px-4 py-3">Imperative/Procedural</td>
-                  <td className="px-4 py-3">YAML</td>
-                  <td className="px-4 py-3">Agentless (SSH)</td>
-                  <td className="px-4 py-3">Multi-vendor network automation</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Procedural</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">YAML</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agentless (SSH)</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Multi-vendor network automation</td>
                 </tr>
                 <tr className="border-b border-gray-100 hover:bg-purple-50">
                   <td className="px-4 py-3 font-semibold text-purple-600">Terraform</td>
-                  <td className="px-4 py-3">Declarative</td>
-                  <td className="px-4 py-3">HCL</td>
-                  <td className="px-4 py-3">No (cloud-based)</td>
-                  <td className="px-4 py-3">Infrastructure provisioning</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Declarative</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">HCL</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">No (cloud-based)</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Infrastructure provisioning</td>
                 </tr>
                 <tr className="border-b border-gray-100 hover:bg-orange-50">
                   <td className="px-4 py-3 font-semibold text-orange-600">Puppet</td>
-                  <td className="px-4 py-3">Declarative</td>
-                  <td className="px-4 py-3">Puppet DSL</td>
-                  <td className="px-4 py-3">Agent-based</td>
-                  <td className="px-4 py-3">Enterprise configuration management</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Declarative</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Puppet DSL</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agent-based</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Enterprise configuration management</td>
                 </tr>
                 <tr className="border-b border-gray-100 hover:bg-blue-50">
                   <td className="px-4 py-3 font-semibold text-blue-600">Chef</td>
-                  <td className="px-4 py-3">Imperative/Declarative</td>
-                  <td className="px-4 py-3">Ruby</td>
-                  <td className="px-4 py-3">Agent-based</td>
-                  <td className="px-4 py-3">Application and infrastructure</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Declarative</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Ruby</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agent-based</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Application and infrastructure</td>
                 </tr>
                 <tr className="hover:bg-teal-50">
                   <td className="px-4 py-3 font-semibold text-teal-600">SaltStack</td>
-                  <td className="px-4 py-3">Imperative/Declarative</td>
-                  <td className="px-4 py-3">YAML</td>
-                  <td className="px-4 py-3">Agent-based (minion)</td>
-                  <td className="px-4 py-3">Event-driven automation</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Declarative</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">YAML</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agent-based (minion)</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Event-driven automation</td>
                 </tr>
               </tbody>
             </table>
@@ -910,7 +910,7 @@ ${template.tasks
                 <div className="h-3 w-3 rounded-full bg-red-600"></div>
                 <h5 className="text-lg font-semibold text-red-900">Ansible</h5>
               </div>
-              <div className="space-y-2 text-xs text-gray-700">
+              <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
                 <div>
                   <p className="font-semibold">Strengths:</p>
                   <ul className="ml-3 list-disc space-y-1">
@@ -933,7 +933,7 @@ ${template.tasks
                 <div className="h-3 w-3 rounded-full bg-purple-600"></div>
                 <h5 className="text-lg font-semibold text-purple-900">Terraform</h5>
               </div>
-              <div className="space-y-2 text-xs text-gray-700">
+              <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
                 <div>
                   <p className="font-semibold">Strengths:</p>
                   <ul className="ml-3 list-disc space-y-1">
@@ -956,7 +956,7 @@ ${template.tasks
                 <div className="h-3 w-3 rounded-full bg-orange-600"></div>
                 <h5 className="text-lg font-semibold text-orange-900">Puppet</h5>
               </div>
-              <div className="space-y-2 text-xs text-gray-700">
+              <div className="space-y-2 text-xs text-gray-700 dark:text-gray-300">
                 <div>
                   <p className="font-semibold">Strengths:</p>
                   <ul className="ml-3 list-disc space-y-1">
@@ -1029,28 +1029,28 @@ ${template.tasks
                 <span className="font-bold text-yellow-700">Q:</span>
                 <div>
                   <p className="font-semibold">Managing network devices?</p>
-                  <p className="text-gray-700">Consider Ansible for agentless automation</p>
+                  <p className="text-gray-700 dark:text-gray-300">Consider Ansible for agentless automation</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="font-bold text-yellow-700">Q:</span>
                 <div>
                   <p className="font-semibold">Provisioning cloud infrastructure?</p>
-                  <p className="text-gray-700">Terraform excels at multi-cloud orchestration</p>
+                  <p className="text-gray-700 dark:text-gray-300">Terraform excels at multi-cloud orchestration</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="font-bold text-yellow-700">Q:</span>
                 <div>
                   <p className="font-semibold">Enterprise-scale operations?</p>
-                  <p className="text-gray-700">Puppet provides mature management at scale</p>
+                  <p className="text-gray-700 dark:text-gray-300">Puppet provides mature management at scale</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="font-bold text-yellow-700">Q:</span>
                 <div>
                   <p className="font-semibold">Event-driven automation needs?</p>
-                  <p className="text-gray-700">SaltStack's real-time capabilities shine</p>
+                  <p className="text-gray-700 dark:text-gray-300">SaltStack's real-time capabilities shine</p>
                 </div>
               </div>
             </div>
@@ -1060,11 +1060,11 @@ ${template.tasks
 
       {/* Instructions */}
       <div className="mt-6 rounded-lg border-2 border-gray-200 bg-gray-50 p-6">
-        <h3 className="mb-3 text-lg font-semibold">Infrastructure as Code Best Practices:</h3>
+        <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">Infrastructure as Code Best Practices:</h3>
         <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
           <div>
-            <h4 className="mb-2 font-semibold">Core Principles:</h4>
-            <ul className="list-inside list-disc space-y-1 text-gray-800">
+            <h4 className="mb-2 font-semibold text-gray-900 dark:text-white">Core Principles:</h4>
+            <ul className="list-inside list-disc space-y-1 text-gray-900 dark:text-gray-100">
               <li>Version control all infrastructure definitions</li>
               <li>Treat code and infrastructure the same</li>
               <li>Implement code reviews and testing</li>
@@ -1073,8 +1073,8 @@ ${template.tasks
             </ul>
           </div>
           <div>
-            <h4 className="mb-2 font-semibold">Implementation Strategy:</h4>
-            <ul className="list-inside list-disc space-y-1 text-gray-800">
+            <h4 className="mb-2 font-semibold text-gray-900 dark:text-white">Implementation Strategy:</h4>
+            <ul className="list-inside list-disc space-y-1 text-gray-900 dark:text-gray-100">
               <li>Start with non-production environments</li>
               <li>Build reusable templates and modules</li>
               <li>Implement CI/CD pipelines for deployment</li>

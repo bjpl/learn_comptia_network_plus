@@ -170,10 +170,10 @@ const IPv4Troubleshooting: React.FC = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom className="text-gray-900 dark:text-white">
         IPv4 Troubleshooting Scenarios
       </Typography>
-      <Typography variant="body1" color="text.secondary" paragraph>
+      <Typography variant="body1" className="text-gray-700 dark:text-gray-300" paragraph>
         Diagnose and resolve IPv4 networking issues using systematic troubleshooting methods
       </Typography>
 
@@ -220,8 +220,8 @@ const IPv4Troubleshooting: React.FC = () => {
           </Grid>
 
           <Box sx={{ mt: 2 }}>
-            <Typography variant="h6">{selectedScenario.title}</Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="h6" className="text-gray-900 dark:text-white">{selectedScenario.title}</Typography>
+            <Typography variant="body2" className="text-gray-700 dark:text-gray-300">
               {selectedScenario.description}
             </Typography>
           </Box>
@@ -232,7 +232,7 @@ const IPv4Troubleshooting: React.FC = () => {
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={4}>
           <Paper sx={{ p: 2 }}>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
               Score
             </Typography>
             <Typography variant="h3" color="primary">
@@ -243,7 +243,7 @@ const IPv4Troubleshooting: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <Paper sx={{ p: 2 }}>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
               Progress
             </Typography>
             <Typography variant="h3" color="success.main">
@@ -259,7 +259,7 @@ const IPv4Troubleshooting: React.FC = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <Paper sx={{ p: 2 }}>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
               Time Elapsed
             </Typography>
             <Typography variant="h3" color="warning.main">
@@ -358,13 +358,13 @@ const IPv4Troubleshooting: React.FC = () => {
               <Typography variant="subtitle2" color="success.main" gutterBottom>
                 Expected Behavior:
               </Typography>
-              <Typography variant="body2">{selectedScenario.expectedBehavior}</Typography>
+              <Typography variant="body2" className="text-gray-800 dark:text-gray-200">{selectedScenario.expectedBehavior}</Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="subtitle2" color="error.main" gutterBottom>
                 Actual Behavior:
               </Typography>
-              <Typography variant="body2">{selectedScenario.actualBehavior}</Typography>
+              <Typography variant="body2" className="text-gray-800 dark:text-gray-200">{selectedScenario.actualBehavior}</Typography>
             </Grid>
           </Grid>
         </CardContent>
@@ -390,7 +390,7 @@ const IPv4Troubleshooting: React.FC = () => {
                       {diagnostic.command}
                     </Typography>
                   </Box>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                     Click to view output
                   </Typography>
                 </Paper>
@@ -648,7 +648,7 @@ const IPv4Troubleshooting: React.FC = () => {
             {selectedDiagnostic?.output}
           </Paper>
           {selectedDiagnostic?.timestamp && (
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+            <Typography variant="caption" className="text-gray-700 dark:text-gray-300" sx={{ mt: 1, display: 'block' }}>
               Timestamp: {new Date(selectedDiagnostic.timestamp).toLocaleString()}
             </Typography>
           )}

@@ -376,7 +376,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
       {/* Enhanced Header */}
       <div style={{ marginBottom: '30px' }}>
         <h2 style={{ marginBottom: '15px' }}>OSI Layer Explanation Builder</h2>
-        <p className="text-gray-600 dark:text-gray-400" style={{ marginBottom: '20px' }}>
+        <p className="text-gray-700 dark:text-gray-300" style={{ marginBottom: '20px' }}>
           Master the OSI model through interactive learning. Choose your preferred learning mode
           below.
         </p>
@@ -598,7 +598,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                       }}
                     />
                     <div
-                      className="text-gray-600 dark:text-gray-400"
+                      className="text-gray-800 dark:text-gray-200"
                       style={{ marginTop: '5px', fontSize: '12px' }}
                     >
                       Word count:{' '}
@@ -911,7 +911,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                     Layer {layer.number}: {layer.name}
                   </div>
                   <div
-                    className="text-gray-600 dark:text-gray-400"
+                    className="text-gray-800 dark:text-gray-200"
                     style={{ fontSize: '12px', marginTop: '8px' }}
                   >
                     Status:{' '}
@@ -923,7 +923,7 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                   </div>
                   {layer.primaryFunction && (
                     <div
-                      className="text-gray-600 dark:text-gray-400"
+                      className="text-gray-800 dark:text-gray-200"
                       style={{ fontSize: '12px', marginTop: '4px' }}
                     >
                       Function: {layer.primaryFunction.substring(0, 30)}...

@@ -197,7 +197,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {stats.attempted}/{TROUBLESHOOTING_SCENARIOS.length}
             </div>
-            <div style={{ fontSize: '14px' }} className="text-gray-600 dark:text-gray-400">
+            <div style={{ fontSize: '14px' }} className="text-gray-800 dark:text-gray-200">
               Scenarios Attempted
             </div>
           </div>
@@ -216,7 +216,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {stats.correct}
             </div>
-            <div style={{ fontSize: '14px' }} className="text-gray-600 dark:text-gray-400">
+            <div style={{ fontSize: '14px' }} className="text-gray-800 dark:text-gray-200">
               Correct Layer IDs
             </div>
           </div>
@@ -235,7 +235,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {Math.round(stats.avgScore)}%
             </div>
-            <div style={{ fontSize: '14px' }} className="text-gray-600 dark:text-gray-400">
+            <div style={{ fontSize: '14px' }} className="text-gray-800 dark:text-gray-200">
               Average Score
             </div>
           </div>
@@ -460,7 +460,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               }}
             />
             <div
-              className="text-gray-600 dark:text-gray-400"
+              className="text-gray-800 dark:text-gray-200"
               style={{ marginTop: '5px', fontSize: '12px' }}
             >
               Word count:{' '}
@@ -508,7 +508,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               }}
             />
             <div
-              className="text-gray-600 dark:text-gray-400"
+              className="text-gray-800 dark:text-gray-200"
               style={{ marginTop: '5px', fontSize: '12px' }}
             >
               Word count:{' '}

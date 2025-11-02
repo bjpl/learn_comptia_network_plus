@@ -1005,7 +1005,13 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .header p {
-          color: #6b7280;
+          color: #1f2937;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .header p {
+            color: #e5e7eb;
+          }
         }
 
         .scenario-selector {
@@ -1082,9 +1088,15 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         .scenario-requirements li {
           padding: 6px 0;
-          color: #4b5563;
+          color: #111827;
           position: relative;
           padding-left: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .scenario-requirements li {
+            color: #f3f4f6;
+          }
         }
 
         .scenario-requirements li:before {
@@ -1116,7 +1128,13 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         .target {
           font-size: 14px;
-          color: #6b7280;
+          color: #1f2937;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .target {
+            color: #e5e7eb;
+          }
         }
 
         .summary-form {
@@ -1245,9 +1263,15 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         .feedback li {
           padding: 6px 0;
-          color: #4b5563;
+          color: #111827;
           position: relative;
           padding-left: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .feedback li {
+            color: #f3f4f6;
+          }
         }
 
         .feedback li:first-child {
@@ -1304,11 +1328,17 @@ export const CloudSummaryBuilder: React.FC = () => {
           background: none;
           border: none;
           border-bottom: 3px solid transparent;
-          color: #6b7280;
+          color: #1f2937;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
           white-space: nowrap;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .tab-button {
+            color: #e5e7eb;
+          }
         }
 
         .tab-button.active {
@@ -1379,9 +1409,15 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .term-card p {
-          color: #6b7280;
+          color: #1f2937;
           line-height: 1.6;
           font-size: 14px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .term-card p {
+            color: #e5e7eb;
+          }
         }
 
         /* Service Comparison Styles */
@@ -1472,9 +1508,15 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         .usecase-item .label {
           font-weight: 600;
-          color: #6b7280;
+          color: #1f2937;
           font-size: 12px;
           text-transform: uppercase;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .usecase-item .label {
+            color: #e5e7eb;
+          }
         }
 
         .usecase-item .value {
@@ -1549,7 +1591,13 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .cost-label {
-          color: #6b7280;
+          color: #1f2937;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .cost-label {
+            color: #e5e7eb;
+          }
         }
 
         .cost-value {

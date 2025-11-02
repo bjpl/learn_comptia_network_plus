@@ -298,7 +298,7 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
         </div>
 
         <div
-          className="text-gray-600 dark:text-gray-400"
+          className="text-gray-800 dark:text-gray-200"
           style={{ marginTop: '10px', fontSize: '14px' }}
         >
           <strong>Current Layer:</strong> Layer {packetState.currentLayer} (
@@ -393,7 +393,7 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
           </div>
 
           <div
-            className="text-gray-600 dark:text-gray-400"
+            className="text-gray-800 dark:text-gray-200"
             style={{ marginTop: '15px', fontSize: '12px', textAlign: 'center' }}
           >
             Click any layer to inspect its contents
@@ -477,7 +477,7 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
                 }}
               >
                 <div
-                  className="text-gray-600 dark:text-gray-400"
+                  className="text-gray-800 dark:text-gray-200"
                   style={{ fontSize: '12px', marginBottom: '5px' }}
                 >
                   {key}

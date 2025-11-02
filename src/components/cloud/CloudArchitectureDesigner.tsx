@@ -1716,9 +1716,15 @@ export const CloudArchitectureDesigner: React.FC = () => {
 
         .subtitle {
           margin: 0;
-          color: #6b7280;
+          color: #1f2937;
           font-size: 14px;
           font-weight: 400;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .subtitle {
+            color: #e5e7eb;
+          }
         }
 
         .design-name-wrapper {
@@ -1754,7 +1760,13 @@ export const CloudArchitectureDesigner: React.FC = () => {
           gap: 8px;
           align-items: center;
           font-size: 12px;
-          color: #6b7280;
+          color: #1f2937;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .metadata {
+            color: #e5e7eb;
+          }
         }
 
         .metadata-item {
@@ -1917,8 +1929,14 @@ export const CloudArchitectureDesigner: React.FC = () => {
 
         .library-subtitle {
           margin: 0;
-          color: #6b7280;
+          color: #1f2937;
           font-size: 13px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .library-subtitle {
+            color: #e5e7eb;
+          }
         }
 
         .category-tabs {
@@ -1942,8 +1960,14 @@ export const CloudArchitectureDesigner: React.FC = () => {
           cursor: pointer;
           font-size: 11px;
           font-weight: 600;
-          color: #6b7280;
+          color: #1f2937;
           transition: all 0.2s;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .category-tab {
+            color: #e5e7eb;
+          }
         }
 
         .category-tab:hover {
@@ -2018,8 +2042,14 @@ export const CloudArchitectureDesigner: React.FC = () => {
 
         .item-description {
           font-size: 11px;
-          color: #6b7280;
+          color: #1f2937;
           line-height: 1.4;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .item-description {
+            color: #e5e7eb;
+          }
         }
 
         .canvas-container {

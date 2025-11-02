@@ -287,7 +287,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
           }
         >
           <CardHeader>
-            <CardTitle className="flex items-center justify-between dark:text-gray-100">
+            <CardTitle className="flex items-center justify-between dark:text-white">
               <span>Exam Results</span>
               <Badge
                 className={
@@ -317,7 +317,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
             {/* By Phase Analysis */}
             <div>
-              <h4 className="mb-3 flex items-center gap-2 font-semibold dark:text-gray-100">
+              <h4 className="mb-3 flex items-center gap-2 font-semibold dark:text-white">
                 <BarChart3 className="h-4 w-4" />
                 Performance by Phase
               </h4>
@@ -333,7 +333,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                       <div className="mx-4 flex-1">
                         <Progress value={percentage} />
                       </div>
-                      <span className="w-24 text-right text-sm text-gray-600 dark:text-gray-400">
+                      <span className="w-24 text-right text-sm text-gray-800 dark:text-gray-200">
                         {phase.score}/{phase.maxScore}
                       </span>
                     </div>
@@ -456,10 +456,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="mb-2 text-lg font-semibold dark:text-gray-100">
+                    <h3 className="mb-2 text-lg font-semibold dark:text-white">
                       {scenario.title}
                     </h3>
-                    <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mb-3 text-sm text-gray-700 dark:text-gray-300">
                       {scenario.description}
                     </p>
                   </div>
@@ -471,26 +471,26 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <span className="dark:text-gray-200">{scenario.estimatedTime} min</span>
+                    <span className="text-gray-900 dark:text-gray-100">{scenario.estimatedTime} min</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Target className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <span className="dark:text-gray-200">{scenario.phases.length} phases</span>
+                    <span className="text-gray-900 dark:text-gray-100">{scenario.phases.length} phases</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Award className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <span className="dark:text-gray-200">{scenario.totalPoints} pts</span>
+                    <span className="text-gray-900 dark:text-gray-100">{scenario.totalPoints} pts</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <span className="dark:text-gray-200">
+                    <span className="text-gray-900 dark:text-gray-100">
                       {scenario.learningObjectives.length} LOs
                     </span>
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  <p className="mb-2 text-xs text-gray-700 dark:text-gray-300">
                     Learning Objectives:
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -520,7 +520,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
         <CardContent className="pt-6">
           <div className="mb-4 flex items-start justify-between">
             <div>
-              <h2 className="mb-2 text-2xl font-bold dark:text-gray-100">
+              <h2 className="mb-2 text-2xl font-bold dark:text-white">
                 {selectedScenario.title}
               </h2>
               <div className="flex items-center gap-2">
@@ -547,7 +547,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
           </div>
 
           <Progress value={progressPercentage} className="mb-2" />
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             Phase {currentPhaseIndex + 1} of {selectedScenario.phases.length} •{totalAnswered} of{' '}
             {totalQuestions} questions answered
           </p>
@@ -562,7 +562,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <h4 className="mb-2 font-semibold dark:text-gray-100">Company Profile</h4>
+              <h4 className="mb-2 font-semibold dark:text-white">Company Profile</h4>
               <ul className="space-y-1 text-sm dark:text-gray-300">
                 <li>
                   <strong>Name:</strong> {selectedScenario.context.company}
@@ -576,13 +576,13 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
               </ul>
             </div>
             <div>
-              <h4 className="mb-2 font-semibold dark:text-gray-100">Requirements</h4>
+              <h4 className="mb-2 font-semibold dark:text-white">Requirements</h4>
               <ul className="space-y-1 text-sm dark:text-gray-300">
                 {selectedScenario.context.requirements.slice(0, 3).map((req, i) => (
                   <li key={i}>• {req}</li>
                 ))}
                 {selectedScenario.context.requirements.length > 3 && (
-                  <li className="text-gray-500 dark:text-gray-400">
+                  <li className="text-gray-700 dark:text-gray-300">
                     +{selectedScenario.context.requirements.length - 3} more...
                   </li>
                 )}
@@ -596,7 +596,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
       {examMode === 'timed' && !examStarted && currentPhaseIndex === 0 && !scored && (
         <Card className="border-blue-300 bg-blue-50 dark:border-blue-800 dark:bg-blue-950">
           <CardHeader>
-            <CardTitle className="dark:text-gray-100">Ready to Start?</CardTitle>
+            <CardTitle className="dark:text-white">Ready to Start?</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -669,11 +669,11 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                           >
                             LO {ap.loCode}
                           </Badge>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
                             {ap.maxScore} points
                           </span>
                         </div>
-                        <h4 className="font-semibold dark:text-gray-100">{ap.description}</h4>
+                        <h4 className="font-semibold dark:text-white">{ap.description}</h4>
                       </div>
                       {existingAnswer && (
                         <Badge
@@ -687,7 +687,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                     </div>
 
                     <div className="mb-3">
-                      <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                      <p className="mb-2 text-sm text-gray-700 dark:text-gray-300">
                         Assessment Criteria:
                       </p>
                       <ul className="space-y-1 text-sm dark:text-gray-300">

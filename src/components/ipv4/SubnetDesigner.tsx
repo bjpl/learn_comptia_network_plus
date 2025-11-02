@@ -255,7 +255,7 @@ const SubnetDesigner: React.FC = () => {
           </Typography>
         </Box>
         <LinearProgress variant="determinate" value={hostPercentage} sx={{ mb: 0.5 }} />
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
           Range: {allocation.firstHost} - {allocation.lastHost}
         </Typography>
       </Box>
@@ -287,7 +287,7 @@ const SubnetDesigner: React.FC = () => {
                 variant="outlined"
               />
               <Paper variant="outlined" sx={{ p: 2, mt: 2, bgcolor: '#f5f5f5' }}>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                   Binary:
                 </Typography>
                 <Typography
@@ -310,7 +310,7 @@ const SubnetDesigner: React.FC = () => {
                 variant="outlined"
               />
               <Paper variant="outlined" sx={{ p: 2, mt: 2, bgcolor: '#f5f5f5' }}>
-                <Typography variant="caption" color="text.secondary">
+                <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                   CIDR: /{cidr}
                 </Typography>
                 <Typography
@@ -398,10 +398,10 @@ const SubnetDesigner: React.FC = () => {
   return (
     // @ts-expect-error - Complex MUI sx prop types
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom className="text-gray-900 dark:text-white">
         Scenario-Based Subnet Designer
       </Typography>
-      <Typography variant="body1" color="text.secondary" paragraph>
+      <Typography variant="body1" className="text-gray-700 dark:text-gray-300" paragraph>
         Design optimal subnet allocations using VLSM and CIDR for real-world scenarios
       </Typography>
 
@@ -440,8 +440,8 @@ const SubnetDesigner: React.FC = () => {
           </Grid>
 
           <Box sx={{ mt: 2 }}>
-            <Typography variant="h6">{selectedScenario.title}</Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="h6" className="text-gray-900 dark:text-white">{selectedScenario.title}</Typography>
+            <Typography variant="body2" className="text-gray-700 dark:text-gray-300">
               {selectedScenario.description}
             </Typography>
             <Typography variant="body2" sx={{ mt: 1 }}>
@@ -615,7 +615,7 @@ const SubnetDesigner: React.FC = () => {
             <Grid container spacing={2} sx={{ mb: 2 }}>
               <Grid item xs={12} sm={4}>
                 <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                     Overall Efficiency
                   </Typography>
                   <Typography variant="h4" color="primary">
@@ -625,7 +625,7 @@ const SubnetDesigner: React.FC = () => {
               </Grid>
               <Grid item xs={12} sm={4}>
                 <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                     Total Wasted
                   </Typography>
                   <Typography variant="h4" color="warning.main">
@@ -635,7 +635,7 @@ const SubnetDesigner: React.FC = () => {
               </Grid>
               <Grid item xs={12} sm={4}>
                 <Paper variant="outlined" sx={{ p: 2, textAlign: 'center' }}>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                     Overlaps
                   </Typography>
                   <Typography

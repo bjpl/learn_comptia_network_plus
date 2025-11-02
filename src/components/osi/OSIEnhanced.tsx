@@ -247,7 +247,7 @@ export const OSIEnhanced: React.FC = () => {
                         {layer}
                       </div>
                       {LAYER_NAMES[layer]} Layer
-                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                      <span className="text-sm text-gray-800 dark:text-gray-200">
                         ({protocols.length} protocols)
                       </span>
                     </h3>
@@ -645,7 +645,7 @@ export const OSIEnhanced: React.FC = () => {
                         {scenario.icon}
                       </div>
                       <div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                        <div className="text-sm text-gray-700 dark:text-gray-300">
                           Layer {layer} - {LAYER_NAMES[layer]}
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">

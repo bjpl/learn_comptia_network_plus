@@ -359,7 +359,13 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
         }
 
         .header p {
-          color: #6b7280;
+          color: #1f2937;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .header p {
+            color: #e5e7eb;
+          }
         }
 
         .tab-nav {
@@ -375,11 +381,17 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
           background: none;
           border: none;
           border-bottom: 3px solid transparent;
-          color: #6b7280;
+          color: #1f2937;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
           white-space: nowrap;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .tab-btn {
+            color: #e5e7eb;
+          }
         }
 
         .tab-btn.active {
@@ -450,9 +462,15 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
         }
 
         .term-box p {
-          color: #6b7280;
+          color: #1f2937;
           line-height: 1.5;
           font-size: 14px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .term-box p {
+            color: #e5e7eb;
+          }
         }
 
         /* Comparison */
@@ -523,9 +541,15 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
 
         .label {
           font-weight: 600;
-          color: #6b7280;
+          color: #1f2937;
           font-size: 12px;
           text-transform: uppercase;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .label {
+            color: #e5e7eb;
+          }
         }
 
         .value {
