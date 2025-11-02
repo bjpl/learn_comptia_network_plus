@@ -49,11 +49,11 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleSidebar}
-            className="rounded-lg p-2 transition-colors hover:bg-gray-100 lg:hidden dark:hover:bg-gray-700"
+            className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden"
             aria-label="Toggle sidebar"
           >
             <svg
-              className="h-6 w-6 text-gray-600 dark:text-gray-200 dark:text-gray-300"
+              className="h-6 w-6 text-gray-600 dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -83,7 +83,7 @@ export const Header: React.FC = () => {
             >
               <span className="text-sm font-bold text-white">N+</span>
             </div>
-            <span className="hidden text-xl font-bold text-gray-900 sm:block dark:text-white">
+            <span className="hidden text-xl font-bold text-gray-900 dark:text-white sm:block">
               CompTIA Network+
             </span>
           </Link>
@@ -106,7 +106,7 @@ export const Header: React.FC = () => {
               Search through learning topics, networking concepts, and protocols
             </span>
             <svg
-              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400 dark:text-gray-200 dark:text-gray-300"
+              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400 dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -125,7 +125,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Progress indicator */}
           <div
-            className="hidden items-center gap-2 rounded-lg bg-gray-100 px-3 py-1.5 sm:flex dark:bg-gray-700"
+            className="hidden items-center gap-2 rounded-lg bg-gray-100 px-3 py-1.5 dark:bg-gray-700 sm:flex"
             role="status"
             aria-label={`Overall progress: ${overallProgress.percentage.toFixed(0)}% complete`}
           >
@@ -142,10 +142,10 @@ export const Header: React.FC = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200 dark:text-gray-300">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
               {overallProgress.totalCompleted}/{overallProgress.totalComponents}
             </span>
-            <span className="text-xs text-gray-600 dark:text-gray-200 dark:text-gray-300">
+            <span className="text-xs text-gray-600 dark:text-gray-300">
               ({overallProgress.percentage.toFixed(0)}%)
             </span>
           </div>
@@ -183,7 +183,7 @@ export const Header: React.FC = () => {
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500">
                   <span className="text-sm font-medium text-white">{getUserInitials(user)}</span>
                 </div>
-                <span className="hidden text-sm font-medium text-gray-700 sm:block dark:text-gray-200 dark:text-gray-300">
+                <span className="hidden text-sm font-medium text-gray-700 dark:text-gray-200 sm:block">
                   {getUserDisplayName(user)}
                 </span>
                 <svg
@@ -210,7 +210,7 @@ export const Header: React.FC = () => {
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                       {getUserDisplayName(user)}
                     </p>
-                    <p className="truncate text-xs text-gray-500 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+                    <p className="truncate text-xs text-gray-500 dark:text-gray-400">
                       {user.email}
                     </p>
                     <span className="mt-1 inline-block rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-200">
@@ -273,7 +273,7 @@ export const Header: React.FC = () => {
             <div className="flex items-center gap-2">
               <Link
                 to="/login"
-                className="px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:text-blue-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-blue-400 dark:hover:text-white"
+                className="px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
               >
                 Sign In
               </Link>

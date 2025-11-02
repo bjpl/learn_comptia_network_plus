@@ -157,7 +157,7 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
         <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
           Network Device Decision Tree
         </h2>
-        <p className="text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+        <p className="text-gray-600 dark:text-gray-300">
           Answer targeted questions to get personalized device recommendations with cost analysis
           and exam scenarios.
         </p>
@@ -166,21 +166,19 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
       {/* Progress & Breadcrumb */}
       <div className="space-y-2">
         <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-200 dark:text-gray-300">
-            Progress:
-          </span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Progress:</span>
           <div className="h-2 flex-1 rounded-full bg-gray-200">
             <div
               className="h-2 rounded-full bg-blue-500 transition-all duration-300"
               style={{ width: `${(history.length / 5) * 100}%` }}
             />
           </div>
-          <span className="text-sm text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+          <span className="text-sm text-gray-600 dark:text-gray-400">
             {history.length} / ~5 steps
           </span>
         </div>
 
-        <div className="flex items-center space-x-2 overflow-x-auto text-xs text-gray-500 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+        <div className="flex items-center space-x-2 overflow-x-auto text-xs text-gray-500 dark:text-gray-400">
           {history.map((nodeId, index) => {
             const node = decisionTreeData.get(nodeId);
             return (
@@ -241,10 +239,8 @@ const DecisionTree: React.FC<DecisionTreeProps> = ({ onRecommendation }) => {
 
       {/* Help */}
       <div className="rounded-lg bg-gray-50 p-4 text-sm dark:bg-gray-800">
-        <p className="font-semibold text-gray-700 dark:text-gray-200 dark:text-gray-300">
-          How to use:
-        </p>
-        <ul className="mt-2 list-inside list-disc space-y-1 text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+        <p className="font-semibold text-gray-700 dark:text-gray-200">How to use:</p>
+        <ul className="mt-2 list-inside list-disc space-y-1 text-gray-600 dark:text-gray-400">
           <li>Answer each question about your infrastructure needs</li>
           <li>Get personalized device recommendations with detailed specs</li>
           <li>Compare similar devices by cost, throughput, and features</li>
@@ -316,9 +312,7 @@ const RecommendationView: React.FC<RecommendationViewProps> = ({
         <h3 className="mb-2 text-xl font-bold text-gray-800 dark:text-gray-100">
           Recommendation: {currentNode.text}
         </h3>
-        <p className="text-gray-700 dark:text-gray-200 dark:text-gray-300">
-          {currentNode.rationale}
-        </p>
+        <p className="text-gray-700 dark:text-gray-300">{currentNode.rationale}</p>
       </div>
     </div>
 
@@ -374,11 +368,11 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device }) => (
       </span>
     </div>
 
-    <p className="mb-3 text-xs text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+    <p className="mb-3 text-xs text-gray-600 dark:text-gray-400">
       {device.manufacturer} - {device.model}
     </p>
 
-    <div className="mb-3 space-y-2 text-xs text-gray-700 dark:text-gray-200 dark:text-gray-300">
+    <div className="mb-3 space-y-2 text-xs text-gray-700 dark:text-gray-200">
       <div>
         <span className="font-medium">Throughput:</span> {device.specs.throughput}
       </div>
@@ -392,10 +386,8 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ device }) => (
       </div>
     </div>
 
-    <div className="text-xs text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
-      <p className="mb-1 font-medium text-gray-700 dark:text-gray-200 dark:text-gray-300">
-        Best for:
-      </p>
+    <div className="text-xs text-gray-600 dark:text-gray-400">
+      <p className="mb-1 font-medium text-gray-700 dark:text-gray-200">Best for:</p>
       <ul className="list-inside list-disc space-y-0.5">
         {device.useCase.slice(0, 2).map((use, idx) => (
           <li key={idx}>{use}</li>
@@ -448,13 +440,11 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ data, onClose }) => (
             <td className="px-2 py-2 font-medium text-gray-800 dark:text-gray-100">
               {device.name}
             </td>
-            <td className="px-2 py-2 text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
-              {device.category}
-            </td>
-            <td className="px-2 py-2 text-right text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+            <td className="px-2 py-2 text-gray-600 dark:text-gray-400">{device.category}</td>
+            <td className="px-2 py-2 text-right text-gray-600 dark:text-gray-400">
               ${device.pricing.totalCostYear1.toLocaleString()}
             </td>
-            <td className="px-2 py-2 text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+            <td className="px-2 py-2 text-gray-600 dark:text-gray-400">
               {device.specs.throughput}
             </td>
           </tr>
@@ -463,7 +453,7 @@ const ComparisonView: React.FC<ComparisonViewProps> = ({ data, onClose }) => (
     </table>
 
     <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
-      <p className="whitespace-pre-line text-sm text-gray-700 dark:text-gray-200 dark:text-gray-300">
+      <p className="whitespace-pre-line text-sm text-gray-700 dark:text-gray-200">
         {data.comparison}
       </p>
     </div>
@@ -498,17 +488,13 @@ const ExamScenarioView: React.FC<ExamScenarioViewProps> = ({ scenario, onClose, 
 
       <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
         <h4 className="mb-2 font-semibold text-gray-800 dark:text-gray-100">{scenario.title}</h4>
-        <p className="text-sm text-gray-700 dark:text-gray-200 dark:text-gray-300">
-          {scenario.description}
-        </p>
+        <p className="text-sm text-gray-700 dark:text-gray-300">{scenario.description}</p>
       </div>
 
       <div className="rounded-lg bg-white p-4 dark:bg-gray-800">
         <p className="mb-2 font-semibold text-gray-800 dark:text-gray-100">Correct Answer:</p>
         <p className="mb-2 font-medium text-green-700 dark:text-green-400">{device?.name}</p>
-        <p className="text-sm text-gray-700 dark:text-gray-200 dark:text-gray-300">
-          {scenario.reasoning}
-        </p>
+        <p className="text-sm text-gray-700 dark:text-gray-300">{scenario.reasoning}</p>
       </div>
 
       <button

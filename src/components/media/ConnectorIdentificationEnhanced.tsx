@@ -1004,9 +1004,7 @@ export default function ConnectorIdentificationEnhanced() {
                   <h3 className="mb-2 text-lg font-bold">PC (Physical Contact)</h3>
                   <div className="mb-3 flex h-40 items-center justify-center rounded bg-gray-100">
                     <div className="text-center">
-                      <div className="text-4xl font-bold text-gray-400 dark:text-gray-200 dark:text-gray-300">
-                        PC
-                      </div>
+                      <div className="text-4xl font-bold text-gray-400 dark:text-gray-200">PC</div>
                       <div className="text-xs text-gray-500">Flat Polish</div>
                     </div>
                   </div>

@@ -59,7 +59,7 @@ export const Layout: React.FC = () => {
           {/* Breadcrumb navigation */}
           {breadcrumbs.length > 1 && (
             <nav
-              className="border-b border-gray-200 bg-white px-4 py-3 sm:px-6 lg:px-8 dark:border-gray-700 dark:bg-gray-800"
+              className="border-b border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800 sm:px-6 lg:px-8"
               aria-label="Breadcrumb"
             >
               <ol className="flex items-center space-x-2 text-sm">
@@ -67,7 +67,7 @@ export const Layout: React.FC = () => {
                   <li key={crumb.path} className="flex items-center">
                     {index > 0 && (
                       <svg
-                        className="mx-2 h-4 w-4 text-gray-400 dark:text-gray-200 dark:text-gray-300"
+                        className="mx-2 h-4 w-4 text-gray-400 dark:text-gray-300"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                         aria-hidden="true"

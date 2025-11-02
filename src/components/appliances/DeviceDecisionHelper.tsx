@@ -203,7 +203,7 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-gray-700 dark:text-gray-200 dark:text-gray-300">
+            <p className="text-gray-700 dark:text-gray-200">
               Based on your requirements, we recommend the following devices:
             </p>
 
@@ -217,7 +217,7 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
                     <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       {device.name}
                     </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {device.manufacturer}
                     </p>
                   </div>
@@ -226,16 +226,16 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
                   </span>
                 </div>
 
-                <p className="mb-3 text-sm text-gray-700 dark:text-gray-200 dark:text-gray-300">
+                <p className="mb-3 text-sm text-gray-700 dark:text-gray-300">
                   {device.osiLayerDescription}
                 </p>
 
                 {device.whenToUse && device.whenToUse.length > 0 && (
                   <div className="mb-3">
-                    <strong className="text-sm text-gray-700 dark:text-gray-200 dark:text-gray-300">
+                    <strong className="text-sm text-gray-700 dark:text-gray-200">
                       When to use:
                     </strong>
-                    <ul className="mt-1 list-inside list-disc text-sm text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+                    <ul className="mt-1 list-inside list-disc text-sm text-gray-600 dark:text-gray-400">
                       {device.whenToUse.slice(0, 3).map((use, idx) => (
                         <li key={idx}>{use}</li>
                       ))}
@@ -285,7 +285,7 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
         <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">
           Which Device Should I Use?
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Answer a few questions to get personalized device recommendations.
         </p>
       </div>
@@ -293,9 +293,7 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
       {/* Progress indicator */}
       <div className="mb-6">
         <div className="flex items-center gap-2">
-          <div className="text-sm text-gray-600 dark:text-gray-200 dark:text-gray-300 dark:text-gray-400">
-            Progress:
-          </div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Progress:</div>
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
@@ -321,7 +319,7 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
               <div className="flex items-center justify-between">
                 <span className="font-medium text-gray-900 dark:text-gray-100">{option.label}</span>
                 <svg
-                  className="h-5 w-5 text-gray-400 dark:text-gray-200 dark:text-gray-300"
+                  className="h-5 w-5 text-gray-400 dark:text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
