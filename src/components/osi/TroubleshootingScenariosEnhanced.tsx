@@ -428,8 +428,8 @@ export const TroubleshootingScenariosEnhanced: React.FC<TroubleshootingScenarios
 
             {/* Scenario Card */}
             <div
+              className="bg-white dark:bg-gray-800"
               style={{
-                backgroundColor: '#fff',
                 borderRadius: '12px',
                 padding: '30px',
                 boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
@@ -535,8 +535,8 @@ export const TroubleshootingScenariosEnhanced: React.FC<TroubleshootingScenarios
         {/* Tools View */}
         {viewMode === 'tools' && (
           <div
+            className="bg-white dark:bg-gray-800"
             style={{
-              backgroundColor: '#fff',
               borderRadius: '12px',
               padding: '20px',
               height: '600px',
@@ -933,10 +933,10 @@ function ScenarioNavigationGrid({
 }) {
   return (
     <div
+      className="bg-white dark:bg-gray-800"
       style={{
         marginTop: '30px',
         padding: '20px',
-        backgroundColor: '#fff',
         borderRadius: '8px',
         border: '1px solid #ddd',
       }}

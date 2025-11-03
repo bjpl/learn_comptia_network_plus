@@ -669,9 +669,9 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
       {viewMode === 'tcp-flags' && (
         <div className="tcp-flags-view" style={{ marginTop: '30px' }}>
           <div
+            className="bg-white dark:bg-gray-800"
             style={{
               padding: '20px',
-              backgroundColor: '#fff',
               borderRadius: '8px',
               border: '1px solid #ddd',
             }}
@@ -790,9 +790,9 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
                   {TCP_HANDSHAKE.establishment.map((step, idx) => (
                     <div
                       key={idx}
+                      className="bg-white dark:bg-gray-800"
                       style={{
                         padding: '15px',
-                        backgroundColor: '#fff',
                         borderRadius: '4px',
                         border: '1px solid #ddd',
                       }}
@@ -871,9 +871,9 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
       {viewMode === 'mtu' && (
         <div className="mtu-view" style={{ marginTop: '30px' }}>
           <div
+            className="bg-white dark:bg-gray-800"
             style={{
               padding: '20px',
-              backgroundColor: '#fff',
               borderRadius: '8px',
               border: '1px solid #ddd',
             }}
@@ -997,10 +997,10 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
 
               {fragmentationInfo.needsFragmentation && (
                 <div
+                  className="bg-white dark:bg-gray-800"
                   style={{
                     marginTop: '20px',
                     padding: '15px',
-                    backgroundColor: '#fff',
                     borderRadius: '4px',
                   }}
                 >
@@ -1047,9 +1047,9 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
       {viewMode === 'headers' && (
         <div className="headers-view" style={{ marginTop: '30px' }}>
           <div
+            className="bg-white dark:bg-gray-800"
             style={{
               padding: '20px',
-              backgroundColor: '#fff',
               borderRadius: '8px',
               border: '1px solid #ddd',
             }}
@@ -1109,9 +1109,9 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
       {viewMode === 'hexdump' && (
         <div className="hexdump-view" style={{ marginTop: '30px' }}>
           <div
+            className="bg-white dark:bg-gray-800"
             style={{
               padding: '20px',
-              backgroundColor: '#fff',
               borderRadius: '8px',
               border: '1px solid #ddd',
             }}
@@ -1155,9 +1155,9 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
       {viewMode === 'scenarios' && (
         <div className="scenarios-view" style={{ marginTop: '30px' }}>
           <div
+            className="bg-white dark:bg-gray-800"
             style={{
               padding: '20px',
-              backgroundColor: '#fff',
               borderRadius: '8px',
               border: '1px solid #ddd',
             }}
@@ -1233,10 +1233,10 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
       {/* Inspection Panel */}
       {inspectedLayer !== null && viewMode === 'journey' && (
         <div
+          className="bg-white dark:bg-gray-800"
           style={{
             marginTop: '30px',
             padding: '20px',
-            backgroundColor: '#fff',
             borderRadius: '8px',
             border: `3px solid ${LAYER_COLORS[inspectedLayer]}`,
             boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
@@ -1305,10 +1305,10 @@ export const PacketJourneySimulatorEnhanced: React.FC<PacketJourneySimulatorProp
 
       {/* Legend */}
       <div
+        className="bg-white dark:bg-gray-800"
         style={{
           marginTop: '30px',
           padding: '15px',
-          backgroundColor: '#fff',
           borderRadius: '8px',
           border: '1px solid #ddd',
         }}

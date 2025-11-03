@@ -305,9 +305,8 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
       </div>
 
       <div
-        className="scenario-card"
+        className="scenario-card bg-white dark:bg-gray-800"
         style={{
-          backgroundColor: '#fff',
           borderRadius: '12px',
           padding: '30px',
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
@@ -523,11 +522,10 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
 
           {/* Hints Section */}
           <div
-            className="hints-section"
+            className="hints-section bg-yellow-50 dark:bg-yellow-950"
             style={{
               marginBottom: '25px',
               padding: '15px',
-              backgroundColor: '#fff3cd',
               borderRadius: '8px',
               border: '1px solid #ffc107',
             }}
@@ -559,9 +557,9 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
                 {currentScenario.hints.map((hint, index) => (
                   <div
                     key={index}
+                    className="bg-white dark:bg-gray-800"
                     style={{
                       padding: '10px',
-                      backgroundColor: '#fff',
                       borderRadius: '4px',
                       marginTop: '8px',
                       fontSize: '14px',
@@ -667,10 +665,10 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
 
       {/* Scenario Navigation */}
       <div
+        className="bg-white dark:bg-gray-800"
         style={{
           marginTop: '30px',
           padding: '20px',
-          backgroundColor: '#fff',
           borderRadius: '8px',
           border: '1px solid #ddd',
         }}
