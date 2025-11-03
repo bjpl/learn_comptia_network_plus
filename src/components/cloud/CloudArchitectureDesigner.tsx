@@ -1716,14 +1716,14 @@ export const CloudArchitectureDesigner: React.FC = () => {
 
         .subtitle {
           margin: 0;
-          color: #1f2937;
+          color: #374151;
           font-size: 14px;
           font-weight: 400;
         }
 
         @media (prefers-color-scheme: dark) {
           .subtitle {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
@@ -1760,12 +1760,12 @@ export const CloudArchitectureDesigner: React.FC = () => {
           gap: 8px;
           align-items: center;
           font-size: 12px;
-          color: #1f2937;
+          color: #4b5563;
         }
 
         @media (prefers-color-scheme: dark) {
           .metadata {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
@@ -1929,13 +1929,13 @@ export const CloudArchitectureDesigner: React.FC = () => {
 
         .library-subtitle {
           margin: 0;
-          color: #1f2937;
+          color: #374151;
           font-size: 13px;
         }
 
         @media (prefers-color-scheme: dark) {
           .library-subtitle {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
@@ -2042,13 +2042,13 @@ export const CloudArchitectureDesigner: React.FC = () => {
 
         .item-description {
           font-size: 11px;
-          color: #1f2937;
+          color: #4b5563;
           line-height: 1.4;
         }
 
         @media (prefers-color-scheme: dark) {
           .item-description {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
