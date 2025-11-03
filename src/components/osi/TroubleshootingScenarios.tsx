@@ -197,7 +197,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {stats.attempted}/{TROUBLESHOOTING_SCENARIOS.length}
             </div>
-            <div style={{ fontSize: '14px' }} className="text-gray-800 dark:text-gray-200">
+            <div style={{ fontSize: '14px' }} className="text-gray-900 dark:text-gray-100">
               Scenarios Attempted
             </div>
           </div>
@@ -216,7 +216,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {stats.correct}
             </div>
-            <div style={{ fontSize: '14px' }} className="text-gray-800 dark:text-gray-200">
+            <div style={{ fontSize: '14px' }} className="text-gray-900 dark:text-gray-100">
               Correct Layer IDs
             </div>
           </div>
@@ -235,7 +235,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
             >
               {Math.round(stats.avgScore)}%
             </div>
-            <div style={{ fontSize: '14px' }} className="text-gray-800 dark:text-gray-200">
+            <div style={{ fontSize: '14px' }} className="text-gray-900 dark:text-gray-100">
               Average Score
             </div>
           </div>
@@ -359,10 +359,9 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           </div>
 
           <div
-            className="text-gray-700 dark:text-gray-300"
+            className="bg-gray-50 text-gray-900 dark:bg-gray-800 dark:text-gray-100"
             style={{
               padding: '15px',
-              backgroundColor: '#f5f5f5',
               borderRadius: '8px',
               fontSize: '14px',
               lineHeight: '1.6',
@@ -417,7 +416,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
                     Layer {layer}
                   </div>
                   <div
-                    className="text-gray-700 dark:text-gray-300"
+                    className="text-gray-900 dark:text-gray-100"
                     style={{ fontSize: '12px', marginTop: '5px' }}
                   >
                     {LAYER_NAMES[layer as OSILayerNumber]}
@@ -460,7 +459,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               }}
             />
             <div
-              className="text-gray-800 dark:text-gray-200"
+              className="text-gray-900 dark:text-gray-100"
               style={{ marginTop: '5px', fontSize: '12px' }}
             >
               Word count:{' '}
@@ -508,7 +507,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
               }}
             />
             <div
-              className="text-gray-800 dark:text-gray-200"
+              className="text-gray-900 dark:text-gray-100"
               style={{ marginTop: '5px', fontSize: '12px' }}
             >
               Word count:{' '}
