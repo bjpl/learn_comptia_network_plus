@@ -153,7 +153,7 @@ export const Header: React.FC = () => {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="flex hidden min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
             {theme === 'light' ? (
