@@ -76,7 +76,11 @@ export const Header: React.FC = () => {
             </svg>
           </button>
 
-          <Link to="/" className="flex items-center gap-2" aria-label="CompTIA Network+ Home">
+          <Link
+            to="/"
+            className="flex items-center gap-2"
+            aria-label="Network+ Study Platform Home"
+          >
             <div
               className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600"
               aria-hidden="true"
@@ -84,7 +88,7 @@ export const Header: React.FC = () => {
               <span className="text-sm font-bold text-white">N+</span>
             </div>
             <span className="hidden text-xl font-bold text-gray-900 dark:text-white sm:block">
-              CompTIA Network+
+              Network+ Study
             </span>
           </Link>
         </div>
