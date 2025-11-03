@@ -1,7 +1,7 @@
 import { useState, useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid } from '@react-three/drei';
-import type * as THREE from 'three';
+import * as THREE from 'three';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,13 +17,34 @@ interface Connector3DProps {
   rotation: number;
 }
 
-function Connector3D({ connectorId, rotation }: Connector3DProps) {
+function Connector3D({ connectorId, xrayMode, rotation }: Connector3DProps) {
   const groupRef = useRef<THREE.Group>(null);
   const geometry = CONNECTOR_GEOMETRIES[connectorId];
 
   useFrame(() => {
     if (groupRef.current) {
       groupRef.current.rotation.y = rotation;
+
+      // Apply X-Ray effect to all meshes in the group
+      groupRef.current.traverse((child) => {
+        if (child instanceof THREE.Mesh && child.material) {
+          const material = child.material as THREE.MeshStandardMaterial;
+          if (xrayMode) {
+            material.transparent = true;
+            material.opacity = 0.3;
+            material.wireframe = true;
+            material.emissive.setHex(0x00ff00);
+            material.emissiveIntensity = 0.2;
+          } else {
+            material.transparent = false;
+            material.opacity = 1;
+            material.wireframe = false;
+            material.emissive.setHex(0x000000);
+            material.emissiveIntensity = 0;
+          }
+          material.needsUpdate = true;
+        }
+      });
     }
   });
 
@@ -102,7 +123,10 @@ export default function ConnectorLab() {
                   <Button
                     variant={viewMode === 'normal' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setViewMode('normal')}
+                    onClick={() => {
+                      setViewMode('normal');
+                      setXrayMode(false);
+                    }}
                   >
                     <Eye className="mr-1 h-4 w-4" />
                     Normal
@@ -121,7 +145,10 @@ export default function ConnectorLab() {
                   <Button
                     variant={viewMode === 'comparison' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setViewMode('comparison')}
+                    onClick={() => {
+                      setViewMode('comparison');
+                      setXrayMode(false);
+                    }}
                   >
                     <Split className="mr-1 h-4 w-4" />
                     Compare
