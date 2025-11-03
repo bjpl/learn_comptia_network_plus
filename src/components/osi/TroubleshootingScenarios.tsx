@@ -184,7 +184,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           }}
         >
           <div
-            className="bg-blue-50 dark:bg-blue-900/20"
+            className="bg-blue-50 dark:bg-blue-950"
             style={{
               padding: '15px',
               borderRadius: '8px',
@@ -203,7 +203,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           </div>
 
           <div
-            className="bg-green-50 dark:bg-green-900/20"
+            className="bg-green-50 dark:bg-green-950"
             style={{
               padding: '15px',
               borderRadius: '8px',
@@ -222,7 +222,7 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
           </div>
 
           <div
-            className="bg-orange-50 dark:bg-orange-900/20"
+            className="bg-orange-50 dark:bg-orange-950"
             style={{
               padding: '15px',
               borderRadius: '8px',
