@@ -427,15 +427,15 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             <div className="mb-6 grid grid-cols-3 gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-yellow-500" />
-                <span className="dark:text-gray-200">20+ Scenarios</span>
+                <span className="text-gray-700 dark:text-gray-200">20+ Scenarios</span>
               </div>
               <div className="flex items-center gap-2">
                 <Flag className="h-4 w-4 text-red-500" />
-                <span className="dark:text-gray-200">Timed Mode</span>
+                <span className="text-gray-700 dark:text-gray-200">Timed Mode</span>
               </div>
               <div className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4 text-blue-500" />
-                <span className="dark:text-gray-200">Detailed Analysis</span>
+                <span className="text-gray-700 dark:text-gray-200">Detailed Analysis</span>
               </div>
             </div>
           </CardContent>
