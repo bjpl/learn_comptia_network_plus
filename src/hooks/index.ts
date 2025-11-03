@@ -35,3 +35,13 @@ export {
   parseTimeString,
 } from './useTimer';
 export { default as timerHook } from './useTimer';
+
+// Export mobile detection hooks
+export {
+  useMobileDetection,
+  useMinimumWidth,
+  useOrientation,
+  type DeviceType,
+  type MobileDetectionState,
+} from './useMobileDetection';
+export { default as mobileDetectionHook } from './useMobileDetection';

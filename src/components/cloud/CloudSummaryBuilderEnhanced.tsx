@@ -354,17 +354,23 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
         }
 
         .header h2 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 10px;
         }
 
+        @media (prefers-color-scheme: dark) {
+          .header h2 {
+            color: #f9fafb;
+          }
+        }
+
         .header p {
-          color: #1f2937;
+          color: #374151;
         }
 
         @media (prefers-color-scheme: dark) {
           .header p {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
@@ -407,8 +413,14 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
         }
 
         .tab-section h3 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .tab-section h3 {
+            color: #f9fafb;
+          }
         }
 
         /* Terminology */
@@ -456,20 +468,26 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
         }
 
         .term-box h4 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 10px;
           font-size: 15px;
         }
 
+        @media (prefers-color-scheme: dark) {
+          .term-box h4 {
+            color: #f9fafb;
+          }
+        }
+
         .term-box p {
-          color: #1f2937;
+          color: #374151;
           line-height: 1.5;
           font-size: 14px;
         }
 
         @media (prefers-color-scheme: dark) {
           .term-box p {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
@@ -520,11 +538,17 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
         }
 
         .scenario {
-          color: #374151;
+          color: #1f2937;
           margin-bottom: 15px;
           font-style: italic;
           padding-bottom: 15px;
           border-bottom: 1px solid #e5e7eb;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .scenario {
+            color: #e5e7eb;
+          }
         }
 
         .usecase-details {
@@ -541,14 +565,14 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
 
         .label {
           font-weight: 600;
-          color: #1f2937;
+          color: #111827;
           font-size: 12px;
           text-transform: uppercase;
         }
 
         @media (prefers-color-scheme: dark) {
           .label {
-            color: #e5e7eb;
+            color: #f3f4f6;
           }
         }
 
@@ -636,10 +660,16 @@ export const CloudSummaryBuilderEnhanced: React.FC = () => {
         }
 
         .exam-box h4 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 15px;
           font-size: 15px;
           line-height: 1.6;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .exam-box h4 {
+            color: #f9fafb;
+          }
         }
 
         .options {

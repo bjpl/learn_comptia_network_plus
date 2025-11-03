@@ -1000,17 +1000,23 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .header h2 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 10px;
         }
 
+        @media (prefers-color-scheme: dark) {
+          .header h2 {
+            color: #f9fafb;
+          }
+        }
+
         .header p {
-          color: #1f2937;
+          color: #374151;
         }
 
         @media (prefers-color-scheme: dark) {
           .header p {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
@@ -1045,8 +1051,14 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .scenario-panel h3 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 10px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .scenario-panel h3 {
+            color: #f9fafb;
+          }
         }
 
         .scenario-metadata {
@@ -1078,7 +1090,13 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         .scenario-requirements h4 {
           margin-bottom: 10px;
-          color: #1f2937;
+          color: #111827;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .scenario-requirements h4 {
+            color: #f9fafb;
+          }
         }
 
         .scenario-requirements ul {
@@ -1128,12 +1146,12 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         .target {
           font-size: 14px;
-          color: #1f2937;
+          color: #374151;
         }
 
         @media (prefers-color-scheme: dark) {
           .target {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
@@ -1253,7 +1271,13 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         .feedback h4 {
           margin-bottom: 10px;
-          color: #1f2937;
+          color: #111827;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .feedback h4 {
+            color: #f9fafb;
+          }
         }
 
         .feedback ul {
@@ -1403,20 +1427,26 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .term-card h3 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 12px;
           font-size: 16px;
         }
 
+        @media (prefers-color-scheme: dark) {
+          .term-card h3 {
+            color: #f9fafb;
+          }
+        }
+
         .term-card p {
-          color: #1f2937;
+          color: #374151;
           line-height: 1.6;
           font-size: 14px;
         }
 
         @media (prefers-color-scheme: dark) {
           .term-card p {
-            color: #e5e7eb;
+            color: #d1d5db;
           }
         }
 
@@ -1481,17 +1511,29 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .usecase-card h4 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 10px;
           font-size: 14px;
         }
 
+        @media (prefers-color-scheme: dark) {
+          .usecase-card h4 {
+            color: #f9fafb;
+          }
+        }
+
         .scenario-text {
-          color: #374151;
+          color: #1f2937;
           margin-bottom: 15px;
           font-style: italic;
           padding-bottom: 15px;
           border-bottom: 1px solid #e5e7eb;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .scenario-text {
+            color: #e5e7eb;
+          }
         }
 
         .usecase-info {
@@ -1508,14 +1550,14 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         .usecase-item .label {
           font-weight: 600;
-          color: #1f2937;
+          color: #111827;
           font-size: 12px;
           text-transform: uppercase;
         }
 
         @media (prefers-color-scheme: dark) {
           .usecase-item .label {
-            color: #e5e7eb;
+            color: #f3f4f6;
           }
         }
 
@@ -1531,9 +1573,15 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .cost-calculator h3 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 25px;
           text-align: center;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .cost-calculator h3 {
+            color: #f9fafb;
+          }
         }
 
         .cost-profile-selector {
@@ -1591,12 +1639,12 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .cost-label {
-          color: #1f2937;
+          color: #111827;
         }
 
         @media (prefers-color-scheme: dark) {
           .cost-label {
-            color: #e5e7eb;
+            color: #f3f4f6;
           }
         }
 
@@ -1626,9 +1674,15 @@ export const CloudSummaryBuilder: React.FC = () => {
 
         /* Exam Practice Styles */
         .exam-practice h3 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 25px;
           text-align: center;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .exam-practice h3 {
+            color: #f9fafb;
+          }
         }
 
         .exam-questions {
@@ -1656,10 +1710,16 @@ export const CloudSummaryBuilder: React.FC = () => {
         }
 
         .exam-question h4 {
-          color: #1f2937;
+          color: #111827;
           margin-bottom: 15px;
           font-size: 15px;
           line-height: 1.6;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .exam-question h4 {
+            color: #f9fafb;
+          }
         }
 
         .exam-options {

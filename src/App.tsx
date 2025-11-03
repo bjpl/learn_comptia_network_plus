@@ -4,6 +4,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { ProgressProvider } from './contexts/ProgressContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { router } from './router';
+import MobileWarningModal from './components/shared/MobileWarningModal';
 import './index.css';
 
 const App: React.FC = () => {
@@ -12,6 +13,7 @@ const App: React.FC = () => {
       <ThemeProvider>
         <AuthProvider>
           <ProgressProvider>
+            <MobileWarningModal allowContinue={true} />
             <RouterProvider router={router} />
           </ProgressProvider>
         </AuthProvider>
