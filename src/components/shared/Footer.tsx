@@ -12,8 +12,8 @@ export const Footer: React.FC = () => {
           <div>
             <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">About</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Interactive learning platform for CompTIA Network+ certification preparation with
-              hands-on practice and assessments.
+              An independent, unofficial study platform designed to help students prepare for the
+              Network+ certification exam through interactive learning and hands-on practice.
             </p>
           </div>
 
@@ -120,12 +120,15 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-8 dark:border-gray-700">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="flex flex-col items-center gap-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              © {currentYear} CompTIA Network+ Learning Platform. All rights reserved.
+              © {currentYear} Network+ Study Platform. All rights reserved.
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-500">
-              CompTIA® and Network+™ are registered trademarks of CompTIA, Inc.
+            <p className="max-w-3xl text-center text-xs leading-relaxed text-gray-500 dark:text-gray-500">
+              This is an independent educational resource and is not affiliated with, endorsed by,
+              or sponsored by CompTIA, Inc. CompTIA® and Network+™ are registered trademarks of
+              CompTIA, Inc. This platform is designed for educational purposes to help students
+              prepare for the Network+ certification exam.
             </p>
           </div>
         </div>
