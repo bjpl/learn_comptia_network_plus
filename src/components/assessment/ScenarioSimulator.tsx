@@ -412,7 +412,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
               <BookOpen className="h-5 w-5" />
               Scenario Simulator - Real-World Network Practice
             </CardTitle>
@@ -456,9 +456,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="mb-2 text-lg font-semibold dark:text-white">
-                      {scenario.title}
-                    </h3>
+                    <h3 className="mb-2 text-lg font-semibold dark:text-white">{scenario.title}</h3>
                     <p className="mb-3 text-sm text-gray-700 dark:text-gray-300">
                       {scenario.description}
                     </p>
@@ -471,15 +469,21 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <span className="text-gray-900 dark:text-gray-100">{scenario.estimatedTime} min</span>
+                    <span className="text-gray-900 dark:text-gray-100">
+                      {scenario.estimatedTime} min
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Target className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <span className="text-gray-900 dark:text-gray-100">{scenario.phases.length} phases</span>
+                    <span className="text-gray-900 dark:text-gray-100">
+                      {scenario.phases.length} phases
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Award className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                    <span className="text-gray-900 dark:text-gray-100">{scenario.totalPoints} pts</span>
+                    <span className="text-gray-900 dark:text-gray-100">
+                      {scenario.totalPoints} pts
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-gray-500 dark:text-gray-400" />
@@ -520,9 +524,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
         <CardContent className="pt-6">
           <div className="mb-4 flex items-start justify-between">
             <div>
-              <h2 className="mb-2 text-2xl font-bold dark:text-white">
-                {selectedScenario.title}
-              </h2>
+              <h2 className="mb-2 text-2xl font-bold dark:text-white">{selectedScenario.title}</h2>
               <div className="flex items-center gap-2">
                 <Badge className={getDifficultyColor(selectedScenario.difficulty)}>
                   {selectedScenario.difficulty}
@@ -557,27 +559,32 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
       {/* Scenario Context */}
       <Card>
         <CardHeader>
-          <CardTitle>Scenario Context</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-gray-100">Scenario Context</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <h4 className="mb-2 font-semibold dark:text-white">Company Profile</h4>
-              <ul className="space-y-1 text-sm dark:text-gray-300">
+              <h4 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Company Profile
+              </h4>
+              <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                 <li>
-                  <strong>Name:</strong> {selectedScenario.context.company}
+                  <strong className="text-gray-900 dark:text-gray-100">Name:</strong>{' '}
+                  {selectedScenario.context.company}
                 </li>
                 <li>
-                  <strong>Locations:</strong> {selectedScenario.context.locations}
+                  <strong className="text-gray-900 dark:text-gray-100">Locations:</strong>{' '}
+                  {selectedScenario.context.locations}
                 </li>
                 <li>
-                  <strong>Users:</strong> {selectedScenario.context.users}
+                  <strong className="text-gray-900 dark:text-gray-100">Users:</strong>{' '}
+                  {selectedScenario.context.users}
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="mb-2 font-semibold dark:text-white">Requirements</h4>
-              <ul className="space-y-1 text-sm dark:text-gray-300">
+              <h4 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Requirements</h4>
+              <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                 {selectedScenario.context.requirements.slice(0, 3).map((req, i) => (
                   <li key={i}>• {req}</li>
                 ))}
@@ -602,12 +609,14 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             <div className="space-y-2">
               <p className="text-gray-700 dark:text-gray-300">
                 This is a timed exam. You will have{' '}
-                <strong>{getTimeDisplay(timeLimit || selectedScenario.estimatedTime * 60)}</strong>{' '}
+                <strong className="text-gray-900 dark:text-gray-100">
+                  {getTimeDisplay(timeLimit || selectedScenario.estimatedTime * 60)}
+                </strong>{' '}
                 to complete all questions.
               </p>
               <Alert className="dark:border-gray-600">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription className="dark:text-gray-300">
+                <AlertDescription className="text-gray-700 dark:text-gray-300">
                   Once you start, the timer will begin. You cannot pause or resume the exam. Answer
                   all questions to the best of your ability.
                 </AlertDescription>
@@ -628,7 +637,9 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>{currentPhase.title}</CardTitle>
+              <CardTitle className="text-gray-900 dark:text-gray-100">
+                {currentPhase.title}
+              </CardTitle>
               <Button variant="ghost" size="sm" onClick={() => setShowHints(!showHints)}>
                 <Lightbulb className={`mr-2 h-4 w-4 ${showHints ? 'text-yellow-500' : ''}`} />
                 {showHints ? 'Hide' : 'Show'} Hints
@@ -659,7 +670,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 );
 
                 return (
-                  <div key={ap.loId} className="rounded-lg border p-4">
+                  <div key={ap.loId} className="rounded-lg border p-4 dark:border-gray-700">
                     <div className="mb-3 flex items-start justify-between">
                       <div>
                         <div className="mb-1 flex items-center gap-2">
@@ -673,7 +684,9 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                             {ap.maxScore} points
                           </span>
                         </div>
-                        <h4 className="font-semibold dark:text-white">{ap.description}</h4>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                          {ap.description}
+                        </h4>
                       </div>
                       {existingAnswer && (
                         <Badge
@@ -690,10 +703,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                       <p className="mb-2 text-sm text-gray-700 dark:text-gray-300">
                         Assessment Criteria:
                       </p>
-                      <ul className="space-y-1 text-sm dark:text-gray-300">
+                      <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                         {ap.criteria.map((criterion, i) => (
                           <li key={i} className="flex items-start gap-2">
-                            <Circle className="mt-1 h-3 w-3 flex-shrink-0" />
+                            <Circle className="mt-1 h-3 w-3 flex-shrink-0 text-gray-500 dark:text-gray-400" />
                             <span>{criterion}</span>
                           </li>
                         ))}
@@ -706,7 +719,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                       onChange={(e) => handleAnswerChange(ap.loId, e.target.value)}
                       rows={6}
                       disabled={scored}
-                      className="mb-2"
+                      className="mb-2 text-gray-900 dark:text-gray-100"
                     />
 
                     {existingAnswer?.feedback && scored && (
@@ -718,8 +731,8 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                         }
                       >
                         <AlertCircle className="h-4 w-4" />
-                        <AlertDescription className="dark:text-gray-300">
-                          <pre className="whitespace-pre-wrap font-sans text-sm">
+                        <AlertDescription className="text-gray-700 dark:text-gray-300">
+                          <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 dark:text-gray-300">
                             {existingAnswer.feedback}
                           </pre>
                         </AlertDescription>
