@@ -1,10 +1,12 @@
 name: Lighthouse Performance
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # Temporarily disabled to prevent email spam
+  # push:
+  workflow_dispatch:
+    # branches: [main]
+  # pull_request:
+    # branches: [main]
   schedule:
     - cron: '0 0 * * 0'  # Run weekly on Sunday
 

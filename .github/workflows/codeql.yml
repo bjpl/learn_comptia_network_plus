@@ -1,10 +1,12 @@
 name: "CodeQL Analysis"
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
+  # Temporarily disabled to prevent email spam
+  # push:
+  workflow_dispatch:
+    # branches: [main, develop]
+  # pull_request:
+    # branches: [main]
   schedule:
     - cron: '0 6 * * 1'  # Run every Monday at 6 AM UTC
 
