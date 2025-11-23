@@ -1,8 +1,9 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [ main ]
+  # Temporarily disabled to prevent email spam
+  # push:
+    # branches: [ main ]
   workflow_dispatch:
 
 permissions:
