@@ -1,7 +1,13 @@
 import { Pool, PoolConfig } from 'pg';
 import dotenv from 'dotenv';
+import { logger } from './logger';
 
 dotenv.config();
+
+// Validate required database configuration
+if (!process.env.DB_PASSWORD) {
+  throw new Error('DB_PASSWORD environment variable is required');
+}
 
 const poolConfig: PoolConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -9,20 +15,23 @@ const poolConfig: PoolConfig = {
   database: process.env.DB_NAME || 'comptia_network_plus',
   user: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  max: parseInt(process.env.DB_POOL_MAX || '20'),
+  min: parseInt(process.env.DB_POOL_MIN || '2'),
+  idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT_MS || '30000'),
+  connectionTimeoutMillis: parseInt(process.env.DB_CONNECTION_TIMEOUT_MS || '2000'),
+  // Security: Enable SSL in production
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false,
 };
 
 export const pool = new Pool(poolConfig);
 
 // Test database connection
 pool.on('connect', () => {
-  console.log('Database connected successfully');
+  logger.info('Database connected successfully');
 });
 
 pool.on('error', (err) => {
-  console.error('Unexpected database error:', err);
+  logger.error('Unexpected database error:', err);
   process.exit(-1);
 });
 
@@ -117,10 +126,10 @@ export const initializeDatabase = async (): Promise<void> => {
     await client.query('CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens(token)');
 
     await client.query('COMMIT');
-    console.log('Database tables created successfully');
+    logger.info('Database tables created successfully');
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Database initialization error:', error);
+    logger.error('Database initialization error:', error);
     throw error;
   } finally {
     client.release();

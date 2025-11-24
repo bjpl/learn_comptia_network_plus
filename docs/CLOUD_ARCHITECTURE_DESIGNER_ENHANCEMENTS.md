@@ -39,6 +39,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 ### 1. UI Improvements
 
 #### Enhanced Visual Hierarchy
+
 - **Improved spacing and padding** throughout all panels
 - **Better color contrast** with WCAG AA compliance
 - **Consistent design language** across all new components
@@ -47,6 +48,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 - **Enhanced shadows** for depth perception
 
 #### Hover States & Transitions
+
 - All interactive elements have hover effects
 - Smooth transform animations (translateY, scale)
 - Color transitions for better feedback
@@ -54,6 +56,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 - Cursor changes for better UX
 
 #### Mobile Responsiveness
+
 - Flexible grid layouts using CSS Grid
 - Responsive width adjustments (max-width, min-width)
 - Touch-friendly button sizes (minimum 36x36px)
@@ -63,18 +66,21 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 ### 2. Interaction Enhancements
 
 #### Drag-and-Drop (Already Implemented)
+
 - Library items can be dragged onto canvas
 - Visual feedback with drop-zone highlighting
 - Snap-to-grid functionality
 - Real-time positioning
 
 #### Undo/Redo (Already Implemented)
+
 - Full history management
 - Keyboard shortcuts (Ctrl+Z, Ctrl+Y)
 - Visual disabled states when unavailable
 - State preservation across operations
 
 #### Keyboard Shortcuts (Already Implemented)
+
 - **Ctrl+Z**: Undo last action
 - **Ctrl+Shift+Z / Ctrl+Y**: Redo action
 - **Delete**: Remove selected component
@@ -82,6 +88,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 - **Ctrl+D**: Duplicate selected component
 
 #### Real-Time Validation
+
 - Immediate feedback on architectural errors
 - Color-coded severity levels (critical, warning, info)
 - Specific suggestions for remediation
@@ -90,6 +97,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 ### 3. Learning Opportunities
 
 #### Contextual Help Tooltips
+
 - **35+ comprehensive tooltips** covering all component types
 - Each tooltip includes:
   - Title and description
@@ -101,6 +109,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 - Color-coded sections (blue for examples, green for best practices)
 
 #### Architecture Templates
+
 - **5 pre-built templates** covering common patterns:
   1. **3-Tier Web Application** (Beginner)
      - Load balancer, web servers, database
@@ -133,6 +142,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 - One-click template application
 
 #### Cost Estimation Feedback
+
 - **Automatic cost calculation** based on components
 - Monthly cost range ($min - $max)
 - **Detailed breakdown** by component type
@@ -144,6 +154,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
   - Budget alert recommendations
 
 #### Security Consideration Hints
+
 - **Automatic security analysis** on validation
 - **4 severity levels**: Critical, Warning, Info
 - **Security checks include**:
@@ -160,6 +171,7 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 - Color-coded cards (red for critical, yellow for warning, blue for info)
 
 #### Guided Tutorial Mode
+
 - **7-step interactive tutorial** for beginners
 - **Progress bar** showing completion
 - Each step includes:
@@ -173,12 +185,14 @@ This document outlines the comprehensive enhancements made to the Cloud Architec
 ### 4. Enhanced Validation
 
 #### Improved Error Messages
+
 - **Clear, actionable descriptions**
 - **Severity indicators** (error vs. warning)
 - **Specific suggestions** for resolution
 - **Component-level targeting**
 
 #### Visual Feedback
+
 - Color-coded validation panel (green for success, red for errors)
 - Percentage score calculation
 - Grouped errors and warnings
@@ -201,7 +215,11 @@ import {
   TutorialGuide,
   HelpIcon,
 } from './CloudArchitectureEnhancements';
-import { cloudTooltips, estimateArchitectureCost, analyzeSecurityHints } from './cloud-learning-utils';
+import {
+  cloudTooltips,
+  estimateArchitectureCost,
+  analyzeSecurityHints,
+} from './cloud-learning-utils';
 import type { Tooltip } from './cloud-learning-utils';
 ```
 
@@ -215,7 +233,10 @@ const [showCostEstimation, setShowCostEstimation] = useState(false);
 const [showSecurityHints, setShowSecurityHints] = useState(false);
 const [showTutorial, setShowTutorial] = useState(false);
 const [tutorialStep, setTutorialStep] = useState(0);
-const [activeTooltip, setActiveTooltip] = useState<{ tooltip: Tooltip; position: { x: number; y: number } } | null>(null);
+const [activeTooltip, setActiveTooltip] = useState<{
+  tooltip: Tooltip;
+  position: { x: number; y: number };
+} | null>(null);
 ```
 
 ### Step 3: Add Toolbar Buttons
@@ -300,73 +321,78 @@ Modify the library items rendering to include help icons:
 Add these panels before the closing tag of the main component:
 
 ```tsx
-{/* Enhancement Panels */}
-{showTemplates && (
-  <TemplatesPanel
-    onSelectTemplate={(template) => {
-      // Apply template to canvas
-      const newComponents = template.components.map((comp, idx) => ({
-        ...comp,
-        id: `component-${Date.now()}-${idx}`,
-        name: comp.name || `${comp.subtype} ${idx + 1}`,
-        type: comp.type,
-        subtype: comp.subtype,
-        x: comp.x || 100,
-        y: comp.y || 100,
-        width: comp.width || 200,
-        height: comp.height || 100,
-        color: componentLibrary.find(
-          (item) => item.type === comp.type && item.subtype === comp.subtype
-        )?.color || '#3b82f6',
-        icon: componentLibrary.find(
-          (item) => item.type === comp.type && item.subtype === comp.subtype
-        )?.icon || '📦',
-        properties: comp.properties || {},
-        connections: [],
-      })) as ArchitectureComponent[];
+{
+  /* Enhancement Panels */
+}
+{
+  showTemplates && (
+    <TemplatesPanel
+      onSelectTemplate={(template) => {
+        // Apply template to canvas
+        const newComponents = template.components.map((comp, idx) => ({
+          ...comp,
+          id: `component-${Date.now()}-${idx}`,
+          name: comp.name || `${comp.subtype} ${idx + 1}`,
+          type: comp.type,
+          subtype: comp.subtype,
+          x: comp.x || 100,
+          y: comp.y || 100,
+          width: comp.width || 200,
+          height: comp.height || 100,
+          color:
+            componentLibrary.find(
+              (item) => item.type === comp.type && item.subtype === comp.subtype
+            )?.color || '#3b82f6',
+          icon:
+            componentLibrary.find(
+              (item) => item.type === comp.type && item.subtype === comp.subtype
+            )?.icon || '📦',
+          properties: comp.properties || {},
+          connections: [],
+        })) as ArchitectureComponent[];
 
-      setDesign({
-        ...design,
-        name: template.name,
-        description: template.description,
-        components: newComponents,
-        connections: [],
-      });
-      setShowTemplates(false);
-    }}
-    onClose={() => setShowTemplates(false)}
-  />
-)}
+        setDesign({
+          ...design,
+          name: template.name,
+          description: template.description,
+          components: newComponents,
+          connections: [],
+        });
+        setShowTemplates(false);
+      }}
+      onClose={() => setShowTemplates(false)}
+    />
+  );
+}
 
-{showCostEstimation && (
-  <CostEstimationPanel
-    design={design}
-    onClose={() => setShowCostEstimation(false)}
-  />
-)}
+{
+  showCostEstimation && (
+    <CostEstimationPanel design={design} onClose={() => setShowCostEstimation(false)} />
+  );
+}
 
-{showSecurityHints && (
-  <SecurityHintsPanel
-    design={design}
-    onClose={() => setShowSecurityHints(false)}
-  />
-)}
+{
+  showSecurityHints && (
+    <SecurityHintsPanel design={design} onClose={() => setShowSecurityHints(false)} />
+  );
+}
 
-{showTutorial && (
-  <TutorialGuide
-    currentStep={tutorialStep}
-    onNext={() => setTutorialStep((prev) => Math.min(prev + 1, 6))}
-    onPrev={() => setTutorialStep((prev) => Math.max(prev - 1, 0))}
-    onClose={() => setShowTutorial(false)}
-  />
-)}
+{
+  showTutorial && (
+    <TutorialGuide
+      currentStep={tutorialStep}
+      onNext={() => setTutorialStep((prev) => Math.min(prev + 1, 6))}
+      onPrev={() => setTutorialStep((prev) => Math.max(prev - 1, 0))}
+      onClose={() => setShowTutorial(false)}
+    />
+  );
+}
 
-{activeTooltip && (
-  <TooltipPopup
-    tooltip={activeTooltip.tooltip}
-    position={activeTooltip.position}
-  />
-)}
+{
+  activeTooltip && (
+    <TooltipPopup tooltip={activeTooltip.tooltip} position={activeTooltip.position} />
+  );
+}
 ```
 
 ### Step 6: Handle Tooltip Dismissal
@@ -450,6 +476,7 @@ const handleCanvasClick = (e: React.MouseEvent) => {
 ### Why These Specific Templates?
 
 The five templates were chosen to cover:
+
 - Different difficulty levels (Beginner → Advanced)
 - Various use cases (Web, Data, Enterprise, Serverless, Hybrid)
 - Common real-world scenarios
@@ -459,6 +486,7 @@ The five templates were chosen to cover:
 ### Why Automatic Cost Estimation?
 
 Cost awareness is crucial for cloud architects. The estimation:
+
 - Uses realistic AWS pricing as baseline
 - Shows ranges to account for usage variation
 - Educates users on cost factors
@@ -467,6 +495,7 @@ Cost awareness is crucial for cloud architects. The estimation:
 ### Why Security Hints?
 
 Security is often overlooked by learners. Automatic analysis:
+
 - Catches common mistakes early
 - Explains security concepts contextually
 - Provides actionable remediation steps
@@ -477,23 +506,27 @@ Security is often overlooked by learners. Automatic analysis:
 ## Accessibility Considerations
 
 ### Keyboard Navigation
+
 - All interactive elements are keyboard accessible
 - Tab order is logical
 - Focus indicators are visible
 - Keyboard shortcuts don't conflict with browser defaults
 
 ### Screen Readers
+
 - Semantic HTML structure
 - ARIA labels on all buttons
 - Alt text for icons (where applicable)
 - Descriptive button text
 
 ### Color Contrast
+
 - All text meets WCAG AA standards (4.5:1 minimum)
 - Critical information not conveyed by color alone
 - Severity indicators use icons + color + text
 
 ### Motion Sensitivity
+
 - Animations are subtle and quick (0.2-0.3s)
 - Can be disabled via CSS prefers-reduced-motion
 - No auto-playing animations
@@ -503,16 +536,19 @@ Security is often overlooked by learners. Automatic analysis:
 ## Performance Optimizations
 
 ### Lazy Loading
+
 - Enhancement panels only render when visible
 - Tooltip calculation is deferred until needed
 - Templates load on demand
 
 ### Memoization Opportunities
+
 - Cost estimation can be memoized based on component count
 - Security analysis can be cached until components change
 - Template filtering can use useMemo
 
 ### Bundle Size
+
 - Utilities separated from components
 - Enhancement components are code-splittable
 - No heavy dependencies added
@@ -542,6 +578,7 @@ Security is often overlooked by learners. Automatic analysis:
    - Test tutorial completion flow
 
 ### Accessibility Tests
+
 - Run axe-core on all new components
 - Test keyboard navigation paths
 - Verify ARIA labels
@@ -552,6 +589,7 @@ Security is often overlooked by learners. Automatic analysis:
 ## Future Enhancements
 
 ### Phase 2 (Potential)
+
 - **Export to Terraform/CloudFormation**: Generate IaC code from designs
 - **Collaborative Editing**: Multiple users on same architecture
 - **Version History**: Save and restore previous versions
@@ -563,6 +601,7 @@ Security is often overlooked by learners. Automatic analysis:
 - **Integration with Real Cloud**: Deploy directly to AWS/Azure/GCP
 
 ### Phase 3 (Advanced)
+
 - **VR/AR Visualization**: 3D architecture exploration
 - **Voice Commands**: Hands-free design
 - **Multi-Cloud Comparison**: Side-by-side cost/feature comparison
@@ -589,6 +628,7 @@ The modular design ensures easy maintenance and future extensibility while maint
 ## Quick Reference
 
 ### New State Variables
+
 ```typescript
 showTemplates: boolean
 showCostEstimation: boolean
@@ -599,6 +639,7 @@ activeTooltip: { tooltip: Tooltip; position: { x: number; y: number } } | null
 ```
 
 ### New Functions
+
 ```typescript
 estimateArchitectureCost(design): CostEstimate
 analyzeSecurityHints(design): SecurityHint[]
@@ -608,6 +649,7 @@ tutorialSteps: TutorialStep[]
 ```
 
 ### New Components
+
 ```typescript
 <TooltipPopup />
 <TemplatesPanel />
@@ -618,6 +660,7 @@ tutorialSteps: TutorialStep[]
 ```
 
 ### File Locations
+
 ```
 src/components/cloud/
 ├── CloudArchitectureDesigner.tsx (original)

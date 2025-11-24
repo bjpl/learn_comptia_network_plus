@@ -9,6 +9,7 @@
 ## Overview
 
 Deploy on your own server or VPS using:
+
 - **Server**: Ubuntu 22.04 LTS (or any Linux distribution)
 - **Web Server**: Nginx
 - **Process Manager**: PM2
@@ -19,6 +20,7 @@ Deploy on your own server or VPS using:
 ### Why Self-Hosted?
 
 **Pros:**
+
 - Complete control over infrastructure
 - Lowest cost (if you have hardware)
 - No platform limitations
@@ -26,6 +28,7 @@ Deploy on your own server or VPS using:
 - Data ownership
 
 **Cons:**
+
 - You're responsible for everything
 - Requires Linux/server knowledge
 - Manual scaling
@@ -48,6 +51,7 @@ Deploy on your own server or VPS using:
 ### Option A: Own Hardware
 
 **Minimum specifications:**
+
 - 2GB RAM (4GB recommended)
 - 2 CPU cores
 - 20GB SSD storage
@@ -58,14 +62,15 @@ Deploy on your own server or VPS using:
 
 **Recommended providers:**
 
-| Provider | Cost/Month | RAM | CPU | Storage | Bandwidth |
-|----------|-----------|-----|-----|---------|-----------|
-| Hetzner CX21 | €4.90 | 4GB | 2 | 40GB | 20TB |
-| Vultr | $6.00 | 2GB | 1 | 55GB | 2TB |
-| Linode | $5.00 | 1GB | 1 | 25GB | 1TB |
-| Contabo VPS S | €4.99 | 8GB | 4 | 200GB | 32TB |
+| Provider      | Cost/Month | RAM | CPU | Storage | Bandwidth |
+| ------------- | ---------- | --- | --- | ------- | --------- |
+| Hetzner CX21  | €4.90      | 4GB | 2   | 40GB    | 20TB      |
+| Vultr         | $6.00      | 2GB | 1   | 55GB    | 2TB       |
+| Linode        | $5.00      | 1GB | 1   | 25GB    | 1TB       |
+| Contabo VPS S | €4.99      | 8GB | 4   | 200GB   | 32TB      |
 
 **Create VPS:**
+
 ```bash
 # Example: Hetzner Cloud CLI
 hcloud server create --name comptia-network-prod \
@@ -522,6 +527,7 @@ A       api     YOUR_SERVER_IP          3600
 Wait 5-60 minutes for DNS propagation.
 
 **Verify DNS:**
+
 ```bash
 # Check DNS resolution
 dig yourdomain.com +short
@@ -868,11 +874,13 @@ sudo nano /etc/logrotate.d/comptia-network
 ### Uptime Monitoring
 
 Use external service:
+
 - [UptimeRobot](https://uptimerobot.com) (Free)
 - [Pingdom](https://pingdom.com)
 - [StatusCake](https://statuscake.com)
 
 Monitor:
+
 - `https://yourdomain.com`
 - `https://api.yourdomain.com/health`
 
@@ -1207,11 +1215,13 @@ sudo certbot renew --force-renewal
 ## Cost Analysis
 
 **VPS Options:**
+
 - **Budget**: Contabo VPS S (€4.99/month) - 8GB RAM, 4 cores
 - **Recommended**: Hetzner CX21 (€4.90/month) - 4GB RAM, 2 cores
 - **Performance**: Hetzner CX41 (€15.90/month) - 16GB RAM, 4 cores
 
 **Additional Costs:**
+
 - Domain: $10-15/year
 - Backup storage (optional): $5-10/month
 - Monitoring (optional): Free - $20/month

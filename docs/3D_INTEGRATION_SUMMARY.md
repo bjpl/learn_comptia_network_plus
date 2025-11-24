@@ -9,6 +9,7 @@ Successfully integrated comprehensive 3D visualization capabilities into the Com
 ### 1. Dependencies Installed
 
 **React 18 Compatible Versions:**
+
 - `@react-three/fiber@^8.17.0` - React renderer for Three.js (React 18 compatible)
 - `@react-three/drei@^9.114.0` - Useful helpers and abstractions for R3F
 - `three@^0.169.0` - Three.js core 3D library
@@ -20,24 +21,28 @@ Successfully integrated comprehensive 3D visualization capabilities into the Com
 Location: `C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_network+\src\components\media\models\`
 
 #### **RJ45Connector.tsx**
+
 - Enhanced Ethernet connector model
 - 8 colored pins (T568B standard)
 - Transparent housing with latch mechanism
 - Configurable labels, rotation, and auto-rotate
 
 #### **FiberOpticConnector.tsx**
+
 - Multiple fiber connector types: SC, LC, ST, MTRJ
 - Accurate ferrule representations
 - Distinct latch/coupling mechanisms for each type
 - Color-coded bodies for easy identification
 
 #### **CoaxialConnector.tsx**
+
 - F-type connector with threaded coupling
 - BNC connector with bayonet mechanism
 - Center pin and shield representations
 - Metallic materials with proper lighting
 
 #### **USBConnector.tsx**
+
 - USB-A and USB-C models
 - Accurate form factors
 - Pin representations
@@ -46,7 +51,9 @@ Location: `C:\Users\brand\Development\Project_Workspace\active-development\learn
 ### 3. Core Components
 
 #### **Connector3DViewer.tsx**
+
 Reusable 3D viewer component with:
+
 - **Accessibility:** Full ARIA labels, keyboard navigation hints
 - **Controls:** Rotate, zoom in/out, reset view, toggle labels
 - **Lazy Loading:** Suspense-based loading for performance
@@ -55,7 +62,9 @@ Reusable 3D viewer component with:
 - **Performance:** Reduced lighting and effects on low-end devices
 
 #### **ConnectorIdentification.tsx**
+
 Interactive quiz component featuring:
+
 - 3D connector identification challenges
 - Multiple choice questions with visual feedback
 - Score tracking and progress bar
@@ -66,7 +75,9 @@ Interactive quiz component featuring:
 ### 4. Integration into Existing Components
 
 #### **MediaSelectionMatrix.tsx**
+
 Enhanced with:
+
 - 3D preview toggle button
 - Eye icon for previewing specific connector types
 - Lazy-loaded 3D viewer panel
@@ -75,18 +86,22 @@ Enhanced with:
 ### 5. Performance Optimizations
 
 #### **Device Detection Hook** (`hooks/useDeviceDetection.ts`)
+
 Automatically detects:
+
 - Mobile vs desktop devices
 - Low-end hardware (GPU, CPU cores, memory)
 - WebGL2 support
 - Maximum texture size
 
 **Adaptive Rendering Settings:**
+
 - **Low-end devices:** Reduced pixel ratio, simplified lighting, no shadows
 - **Mobile devices:** Touch-optimized controls, reduced polygon counts
 - **Desktop:** Full quality with shadows, anti-aliasing, post-processing
 
 #### **Lazy Loading**
+
 - 3D components loaded only when needed
 - Suspense boundaries with loading indicators
 - Reduced initial bundle size
@@ -104,6 +119,7 @@ Automatically detects:
 Created comprehensive test suites:
 
 #### **Connector3DViewer.test.tsx**
+
 - Rendering tests
 - Control interaction tests
 - Zoom and rotation functionality
@@ -112,6 +128,7 @@ Created comprehensive test suites:
 - Mobile responsiveness
 
 #### **ConnectorIdentification.test.tsx**
+
 - Quiz flow testing
 - Answer selection and submission
 - Score tracking
@@ -120,6 +137,7 @@ Created comprehensive test suites:
 - Progress tracking
 
 #### **3DModels.test.tsx**
+
 - Individual connector model rendering
 - Props validation (scale, rotation, labels)
 - All connector types (RJ45, SC, LC, ST, F-type, BNC, USB-A, USB-C)
@@ -127,6 +145,7 @@ Created comprehensive test suites:
 ### 8. Mobile Optimization
 
 **Responsive Features:**
+
 - Reduced initial zoom (0.8x) for mobile
 - Disabled pan gesture on mobile (to prevent conflicts)
 - Touch-friendly pinch-to-zoom
@@ -137,6 +156,7 @@ Created comprehensive test suites:
   - Auto-rotate speed reduced on low-end (1 vs. 2)
 
 **Mobile Indicators:**
+
 - "Mobile optimized mode active" badge
 - Touch control hints instead of mouse controls
 
@@ -166,11 +186,13 @@ src/components/media/
 ### 10. Known Issues and Solutions
 
 #### **React Version Compatibility**
+
 **Issue:** @react-three/fiber v9.4.0 requires React 19
 **Solution:** Installed v8.17.0 which is fully compatible with React 18.3.1
 **Impact:** No feature loss, full functionality maintained
 
 #### **TypeScript Warnings**
+
 Several unused import warnings in tests - these are benign and don't affect functionality.
 
 ## Usage Examples
@@ -216,15 +238,18 @@ import { RJ45Connector, FiberOpticConnector } from '@/components/media/models';
 ## Performance Metrics
 
 **Initial Load:**
+
 - 3D components lazy-loaded (not in initial bundle)
 - Suspense boundaries prevent blocking
 
 **Runtime Performance:**
+
 - Desktop: 60 FPS target
 - Mobile: 30 FPS target (low-end devices)
 - Automatic quality adjustment based on device
 
 **Bundle Size Impact:**
+
 - @react-three/fiber: ~110KB (gzipped)
 - @react-three/drei: ~85KB (gzipped)
 - three: ~580KB (gzipped)
@@ -233,12 +258,14 @@ import { RJ45Connector, FiberOpticConnector } from '@/components/media/models';
 ## Browser Compatibility
 
 **Supported:**
+
 - Chrome 90+
 - Firefox 88+
 - Safari 14+
 - Edge 90+
 
 **Requires:**
+
 - WebGL 1.0 (WebGL 2.0 preferred)
 - ES6 support
 
@@ -268,11 +295,13 @@ import { RJ45Connector, FiberOpticConnector } from '@/components/media/models';
 ## Maintenance Notes
 
 **Updating Three.js:**
+
 - Always check @react-three/fiber compatibility
 - Test on mobile devices after updates
 - Verify WebGL features still work
 
 **Adding New Models:**
+
 1. Create component in `models/` directory
 2. Follow existing naming conventions
 3. Add to `models/index.ts` exports

@@ -9,12 +9,14 @@
 ## Overview
 
 This guide deploys:
+
 - **Frontend** → Vercel (React SPA with CDN)
 - **Backend + Database** → Railway (Node.js API + PostgreSQL)
 
 ### Why This Stack?
 
 **Pros:**
+
 - Fastest deployment method
 - Automatic SSL certificates
 - Zero-config deployments
@@ -24,6 +26,7 @@ This guide deploys:
 - Excellent documentation
 
 **Cons:**
+
 - More expensive at scale ($50+/month for high traffic)
 - Limited backend customization
 - Platform vendor lock-in
@@ -54,6 +57,7 @@ This guide deploys:
 6. Copy the `DATABASE_URL` (format: `postgresql://user:pass@host:port/db`)
 
 **Note the connection details:**
+
 ```
 DATABASE_URL=postgresql://postgres:xxxxx@containers-us-west-1.railway.app:5432/railway
 ```
@@ -119,6 +123,7 @@ BCRYPT_ROUNDS=12
 ```
 
 **Generate secrets:**
+
 ```bash
 # Run this locally
 node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(32).toString('base64'))"
@@ -146,6 +151,7 @@ railway run npm run seed
 1. In Railway dashboard → Backend service
 2. Click "Shell" tab
 3. Run commands:
+
 ```bash
 npm run migrate
 npm run seed  # optional
@@ -160,6 +166,7 @@ npm run seed  # optional
 5. Note this URL for Vercel configuration
 
 **Test backend:**
+
 ```bash
 curl https://backend-production-xxxx.railway.app/health
 
@@ -211,9 +218,11 @@ Replace `backend-production-xxxx.railway.app` with your Railway backend URL from
 
 1. Go back to Railway → Backend service
 2. Update environment variable:
+
 ```env
 CORS_ORIGIN=https://your-app.vercel.app
 ```
+
 3. Railway auto-redeploys (1-2 minutes)
 
 ### Step 7: Test Application
@@ -236,12 +245,14 @@ CORS_ORIGIN=https://your-app.vercel.app
 Add these records at your DNS provider:
 
 **Option A: Using Vercel DNS (Recommended)**
+
 ```
 A     @      76.76.21.21
 CNAME www    cname.vercel-dns.com
 ```
 
 **Option B: Using Cloudflare**
+
 ```
 CNAME @      cname.vercel-dns.com
 CNAME www    cname.vercel-dns.com
@@ -296,8 +307,8 @@ name: Database Backup
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM UTC
-  workflow_dispatch:      # Manual trigger
+    - cron: '0 2 * * *' # Daily at 2 AM UTC
+  workflow_dispatch: # Manual trigger
 
 jobs:
   backup:
@@ -351,6 +362,7 @@ import { Analytics } from '@vercel/analytics/react';
 ### External Monitoring
 
 **Uptime monitoring:**
+
 1. Sign up at [uptimerobot.com](https://uptimerobot.com) (free)
 2. Add monitors:
    - Frontend: `https://your-app.vercel.app`
@@ -375,10 +387,12 @@ git push origin main
 ### Preview Deployments
 
 **Vercel:**
+
 - Automatically creates preview for each PR
 - Unique URL: `your-app-git-branch-user.vercel.app`
 
 **Railway:**
+
 - Create PR environments:
   1. Railway dashboard → Settings
   2. Enable "PR Environments"
@@ -389,12 +403,14 @@ git push origin main
 ### Backend Deployment Fails
 
 **Check logs:**
+
 1. Railway dashboard → Backend service
 2. Click "Deployments" tab
 3. Click failed deployment
 4. View build logs
 
 **Common issues:**
+
 - Missing build script: Add `"build": "tsc"` to `backend/package.json`
 - Wrong root directory: Set to `backend` in Railway settings
 - Missing dependencies: Ensure `package.json` is complete
@@ -402,11 +418,13 @@ git push origin main
 ### Database Connection Errors
 
 **Verify DATABASE_URL:**
+
 1. Railway → PostgreSQL service → Variables
 2. Copy `DATABASE_URL`
 3. Paste into backend environment variables as `${{Postgres.DATABASE_URL}}`
 
 **Enable SSL:**
+
 ```env
 DB_SSL=true
 ```
@@ -414,12 +432,14 @@ DB_SSL=true
 ### CORS Errors
 
 **Update backend CORS_ORIGIN:**
+
 ```env
 # In Railway backend variables
 CORS_ORIGIN=https://your-app.vercel.app,https://yourdomain.com
 ```
 
 **Verify in backend logs:**
+
 ```bash
 railway logs
 # Look for CORS errors
@@ -428,11 +448,13 @@ railway logs
 ### Frontend Build Fails
 
 **Check Vercel build logs:**
+
 1. Vercel dashboard → Project → Deployments
 2. Click failed deployment
 3. View build logs
 
 **Common issues:**
+
 - Missing environment variables: Check `VITE_API_URL`
 - TypeScript errors: Run `npm run typecheck` locally
 - Dependency issues: Delete `node_modules` and `package-lock.json`, reinstall
@@ -440,12 +462,14 @@ railway logs
 ### Slow Performance
 
 **Enable Railway's caching:**
+
 1. Add Redis to Railway:
    - New Service → Provision Redis
    - Copy `REDIS_URL`
    - Add to backend variables
 
 **Enable Vercel Edge caching:**
+
 ```typescript
 // Add to vite.config.ts
 export default {
@@ -454,11 +478,11 @@ export default {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-        }
-      }
-    }
-  }
-}
+        },
+      },
+    },
+  },
+};
 ```
 
 ## Cost Optimization
@@ -466,16 +490,19 @@ export default {
 ### Railway Pricing
 
 **Hobby Plan (Default):**
+
 - $5/month credit (500 hours)
 - Postgres: $5-10/month
 - Backend: $0-5/month (depends on usage)
 
 **Pro Plan:**
+
 - $20/month credit (1000 hours)
 - Better performance
 - Priority support
 
 **Optimize costs:**
+
 ```bash
 # Railway dashboard → Settings → Sleep Mode
 # Enable "Sleep after 1 hour of inactivity" (not recommended for production)
@@ -494,19 +521,22 @@ export default {
 ### Vercel Pricing
 
 **Hobby Plan (Free):**
+
 - 100GB bandwidth/month
 - 100 deployments/day
 - Suitable for low-medium traffic
 
 **Pro Plan ($20/month):**
+
 - 1TB bandwidth
 - Unlimited deployments
 - Better performance
 - Analytics included
 
 **Upgrade triggers:**
-- >100GB bandwidth/month
-- >100 deployments/day
+
+- > 100GB bandwidth/month
+- > 100 deployments/day
 - Need commercial license
 
 ## Scaling
@@ -514,21 +544,25 @@ export default {
 ### Scale Backend (Railway)
 
 **Horizontal scaling:**
+
 1. Railway → Backend service → Settings
 2. Increase "Replicas" (Pro plan required)
 
 **Vertical scaling:**
+
 1. Railway auto-scales based on usage
 2. Upgrade to Pro plan for more resources
 
 ### Scale Database (Railway)
 
 **Railway Postgres limitations:**
+
 - Single instance (no replicas)
 - Max 8GB RAM, 32GB storage on Hobby
 - Max 32GB RAM, 256GB storage on Pro
 
 **For larger scale, migrate to:**
+
 - Railway Pro with larger instance
 - External managed database (AWS RDS, DigitalOcean Managed Postgres)
 
@@ -541,12 +575,14 @@ Vercel auto-scales globally. No configuration needed.
 1. **Enable environment variable encryption** (enabled by default)
 2. **Use Railway's variable references** for database connection
 3. **Rotate secrets regularly:**
+
    ```bash
    # Generate new secrets
    node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
    # Update in Railway and Vercel
    ```
+
 4. **Enable Vercel's security headers:**
    ```javascript
    // vercel.json

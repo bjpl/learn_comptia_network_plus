@@ -22,29 +22,33 @@ A comprehensive mobile detection system that alerts users when accessing the pla
 ### Mobile Detection Hook (`useMobileDetection`)
 
 **Detection Methods:**
+
 - User agent string analysis (iOS, Android, mobile browsers)
 - Screen width measurement (responsive breakpoints)
 - Touch capability detection
 - Real-time window resize monitoring
 
 **Breakpoints:**
+
 - Mobile: < 768px
 - Tablet: 768px - 1023px
 - Desktop: >= 1024px
 
 **Return Values:**
+
 ```typescript
 interface MobileDetectionState {
-  isMobile: boolean;        // Phone-sized devices
-  isTablet: boolean;        // Tablet-sized devices
-  isDesktop: boolean;       // Desktop-sized devices
-  deviceType: DeviceType;   // 'mobile' | 'tablet' | 'desktop'
-  screenWidth: number;      // Current screen width in pixels
-  isTouchDevice: boolean;   // Touch capability detection
+  isMobile: boolean; // Phone-sized devices
+  isTablet: boolean; // Tablet-sized devices
+  isDesktop: boolean; // Desktop-sized devices
+  deviceType: DeviceType; // 'mobile' | 'tablet' | 'desktop'
+  screenWidth: number; // Current screen width in pixels
+  isTouchDevice: boolean; // Touch capability detection
 }
 ```
 
 **Performance:**
+
 - Throttled resize handler (150ms delay)
 - Efficient user agent detection (runs once on mount)
 - Minimal re-renders with proper state management
@@ -52,6 +56,7 @@ interface MobileDetectionState {
 ### Mobile Warning Modal
 
 **User Experience:**
+
 - Appears automatically on mobile/tablet devices
 - Elegant gradient design matching existing color scheme
 - Clear messaging about desktop-optimized features
@@ -59,12 +64,14 @@ interface MobileDetectionState {
 - Accessible keyboard navigation (ESC to dismiss)
 
 **Accessibility Features:**
+
 - ARIA roles: `alertdialog`
 - Focus trap on modal open
 - Keyboard navigation support
 - Screen reader friendly
 
 **Design Elements:**
+
 - Gradient header (blue-600 to purple-600)
 - Desktop icon with glassmorphism effect
 - Feature highlights in info box
@@ -74,19 +81,23 @@ interface MobileDetectionState {
 ## Mobile Breakpoint Strategy
 
 ### Phone (< 768px)
+
 **Behavior:** Modal shows with "Understand" button only
 **Rationale:** Interactive features require desktop interaction patterns
 
 ### Tablet (768px - 1023px)
+
 **Behavior:** Modal shows with "Continue Anyway" option
 **Rationale:** Some features may work with limited functionality
 
 **User Choice Persistence:**
+
 - Choice saved to localStorage
 - Key: `'network-plus-mobile-dismissed'`
 - Respected across sessions
 
 ### Desktop (>= 1024px)
+
 **Behavior:** Modal never appears
 **Rationale:** Full feature set available
 
@@ -173,10 +184,10 @@ const ResponsiveComponent = () => {
 
 ```typescript
 interface MobileWarningModalProps {
-  forceShow?: boolean;        // Override auto-detection
-  onDismiss?: () => void;     // Callback on dismiss
-  allowContinue?: boolean;    // Show "Continue Anyway" button (default: true)
-  customMessage?: string;     // Override default message
+  forceShow?: boolean; // Override auto-detection
+  onDismiss?: () => void; // Callback on dismiss
+  allowContinue?: boolean; // Show "Continue Anyway" button (default: true)
+  customMessage?: string; // Override default message
 }
 ```
 
@@ -235,6 +246,7 @@ const CustomMobileHandler = () => {
 ### localStorage Testing
 
 Clear the persistence flag:
+
 ```javascript
 // In browser console
 localStorage.removeItem('network-plus-mobile-dismissed');
@@ -244,12 +256,14 @@ localStorage.removeItem('network-plus-mobile-dismissed');
 ## Performance Considerations
 
 **Optimizations Implemented:**
+
 - Throttled resize handler (150ms delay prevents excessive updates)
 - User agent detection runs once on mount
 - Screen width cached in state
 - Minimal re-renders with React.memo patterns
 
 **Bundle Size Impact:**
+
 - Hook: ~2KB
 - Modal: ~4KB
 - Total: ~6KB (minimal impact)
@@ -257,6 +271,7 @@ localStorage.removeItem('network-plus-mobile-dismissed');
 ## Browser Compatibility
 
 **Supported Browsers:**
+
 - Chrome/Edge 90+
 - Firefox 88+
 - Safari 14+
@@ -264,6 +279,7 @@ localStorage.removeItem('network-plus-mobile-dismissed');
 - Android Chrome 90+
 
 **Feature Detection:**
+
 - User agent string (all browsers)
 - Touch events (95%+ support)
 - localStorage (98%+ support with fallback)
@@ -272,6 +288,7 @@ localStorage.removeItem('network-plus-mobile-dismissed');
 ## Future Enhancements
 
 **Potential Improvements:**
+
 1. Add analytics tracking for modal interactions
 2. Support for progressive web app (PWA) detection
 3. Landscape mode guidance for tablets
@@ -284,27 +301,31 @@ localStorage.removeItem('network-plus-mobile-dismissed');
 ### Modal Not Showing
 
 **Check:**
+
 1. localStorage key `'network-plus-mobile-dismissed'` - may be set to `'true'`
 2. Screen width > 1024px (modal won't show on desktop)
 3. User agent string not detected as mobile
 
 **Solution:**
+
 ```javascript
 // Clear localStorage
 localStorage.removeItem('network-plus-mobile-dismissed');
 
 // Force show for testing
-<MobileWarningModal forceShow={true} />
+<MobileWarningModal forceShow={true} />;
 ```
 
 ### Modal Shows on Desktop
 
 **Possible Causes:**
+
 1. Browser zoom level affecting screen width calculation
 2. Developer tools device emulation enabled
 3. Custom user agent string
 
 **Solution:**
+
 - Check `window.innerWidth` in console
 - Disable device emulation
 - Reset browser zoom to 100%
@@ -312,6 +333,7 @@ localStorage.removeItem('network-plus-mobile-dismissed');
 ### TypeScript Errors
 
 **Common Issues:**
+
 ```typescript
 // ❌ Wrong
 import useMobileDetection from '../../hooks/useMobileDetection';
@@ -323,6 +345,7 @@ import { useMobileDetection } from '../../hooks/useMobileDetection';
 ## Support
 
 For issues or questions:
+
 1. Check this documentation
 2. Review source code comments
 3. Test with browser DevTools

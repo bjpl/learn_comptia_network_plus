@@ -34,16 +34,19 @@ Complete REST API backend for the CompTIA Network+ learning platform with JWT au
 ## Installation
 
 1. **Clone and navigate to backend directory**:
+
    ```bash
    cd backend
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Set up PostgreSQL database**:
+
    ```sql
    CREATE DATABASE comptia_network_plus;
    CREATE USER your_user WITH PASSWORD 'your_password';
@@ -51,11 +54,13 @@ Complete REST API backend for the CompTIA Network+ learning platform with JWT au
    ```
 
 4. **Configure environment variables**:
+
    ```bash
    cp .env.example .env
    ```
 
    Edit `.env` with your configuration:
+
    ```
    DB_HOST=localhost
    DB_PORT=5432
@@ -74,23 +79,28 @@ Complete REST API backend for the CompTIA Network+ learning platform with JWT au
 ## Usage
 
 ### Development Mode
+
 ```bash
 npm run dev
 ```
+
 Server runs on http://localhost:3001 with hot-reload
 
 ### Production Build
+
 ```bash
 npm run build
 npm start
 ```
 
 ### Run Tests
+
 ```bash
 npm test
 ```
 
 ### Run Tests with Coverage
+
 ```bash
 npm test -- --coverage
 ```
@@ -100,6 +110,7 @@ npm test -- --coverage
 ### Authentication
 
 #### Register User
+
 ```http
 POST /api/auth/register
 Content-Type: application/json
@@ -111,6 +122,7 @@ Content-Type: application/json
 ```
 
 **Response** (201):
+
 ```json
 {
   "success": true,
@@ -127,6 +139,7 @@ Content-Type: application/json
 ```
 
 #### Login
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -138,6 +151,7 @@ Content-Type: application/json
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -154,6 +168,7 @@ Content-Type: application/json
 ```
 
 #### Refresh Token
+
 ```http
 POST /api/auth/refresh
 Content-Type: application/json
@@ -164,6 +179,7 @@ Content-Type: application/json
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -175,12 +191,14 @@ Content-Type: application/json
 ```
 
 #### Get Current User
+
 ```http
 GET /api/auth/me
 Authorization: Bearer {accessToken}
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -195,6 +213,7 @@ Authorization: Bearer {accessToken}
 ```
 
 #### Logout
+
 ```http
 POST /api/auth/logout
 Authorization: Bearer {accessToken}
@@ -206,6 +225,7 @@ Content-Type: application/json
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -216,12 +236,14 @@ Content-Type: application/json
 ### User Profile
 
 #### Get Profile
+
 ```http
 GET /api/users/profile
 Authorization: Bearer {accessToken}
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -242,6 +264,7 @@ Authorization: Bearer {accessToken}
 ```
 
 #### Update Profile
+
 ```http
 PUT /api/users/profile
 Authorization: Bearer {accessToken}
@@ -256,6 +279,7 @@ Content-Type: application/json
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -273,12 +297,14 @@ Content-Type: application/json
 ### Progress Tracking
 
 #### Get Progress
+
 ```http
 GET /api/progress
 Authorization: Bearer {accessToken}
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -300,12 +326,14 @@ Authorization: Bearer {accessToken}
 ```
 
 #### Get Progress for Specific Component
+
 ```http
 GET /api/progress?component_id=networking-fundamentals
 Authorization: Bearer {accessToken}
 ```
 
 #### Save Progress
+
 ```http
 POST /api/progress
 Authorization: Bearer {accessToken}
@@ -322,6 +350,7 @@ Content-Type: application/json
 ```
 
 **Response** (201):
+
 ```json
 {
   "success": true,
@@ -342,12 +371,14 @@ Content-Type: application/json
 ### Assessments
 
 #### Get Assessments
+
 ```http
 GET /api/assessments
 Authorization: Bearer {accessToken}
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -367,12 +398,14 @@ Authorization: Bearer {accessToken}
 ```
 
 #### Get Assessments by Type
+
 ```http
 GET /api/assessments?assessment_type=final-exam
 Authorization: Bearer {accessToken}
 ```
 
 #### Save Assessment
+
 ```http
 POST /api/assessments
 Authorization: Bearer {accessToken}
@@ -391,6 +424,7 @@ Content-Type: application/json
 ```
 
 **Response** (201):
+
 ```json
 {
   "success": true,
@@ -408,12 +442,14 @@ Content-Type: application/json
 ```
 
 #### Get Assessment Statistics
+
 ```http
 GET /api/assessments/statistics
 Authorization: Bearer {accessToken}
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -438,6 +474,7 @@ Authorization: Bearer {accessToken}
 ## Database Schema
 
 ### users
+
 - id (SERIAL PRIMARY KEY)
 - email (VARCHAR UNIQUE NOT NULL)
 - password_hash (VARCHAR NOT NULL)
@@ -447,6 +484,7 @@ Authorization: Bearer {accessToken}
 - updated_at (TIMESTAMP)
 
 ### user_profiles
+
 - id (SERIAL PRIMARY KEY)
 - user_id (INTEGER UNIQUE FK)
 - first_name (VARCHAR)
@@ -457,6 +495,7 @@ Authorization: Bearer {accessToken}
 - updated_at (TIMESTAMP)
 
 ### user_progress
+
 - id (SERIAL PRIMARY KEY)
 - user_id (INTEGER FK)
 - component_id (VARCHAR)
@@ -465,6 +504,7 @@ Authorization: Bearer {accessToken}
 - UNIQUE(user_id, component_id)
 
 ### assessment_results
+
 - id (SERIAL PRIMARY KEY)
 - user_id (INTEGER FK)
 - assessment_type (VARCHAR)
@@ -475,6 +515,7 @@ Authorization: Bearer {accessToken}
 - completed_at (TIMESTAMP)
 
 ### learning_sessions
+
 - id (SERIAL PRIMARY KEY)
 - user_id (INTEGER FK)
 - component_id (VARCHAR)
@@ -483,6 +524,7 @@ Authorization: Bearer {accessToken}
 - completed_at (TIMESTAMP)
 
 ### refresh_tokens
+
 - id (SERIAL PRIMARY KEY)
 - user_id (INTEGER FK)
 - token (TEXT UNIQUE)
@@ -520,6 +562,7 @@ Authorization: Bearer {accessToken}
 All API responses follow a consistent format:
 
 **Success Response**:
+
 ```json
 {
   "success": true,
@@ -528,6 +571,7 @@ All API responses follow a consistent format:
 ```
 
 **Error Response**:
+
 ```json
 {
   "success": false,
@@ -557,11 +601,13 @@ The backend includes comprehensive test suites:
 - **Assessment Tests**: Save and retrieve assessment results
 
 Run tests:
+
 ```bash
 npm test
 ```
 
 View coverage report:
+
 ```bash
 npm test -- --coverage
 open coverage/lcov-report/index.html
@@ -578,6 +624,7 @@ The API uses Winston for logging:
 ## Environment Variables
 
 Required:
+
 - `DB_HOST`: PostgreSQL host
 - `DB_PORT`: PostgreSQL port
 - `DB_NAME`: Database name
@@ -587,6 +634,7 @@ Required:
 - `REFRESH_TOKEN_SECRET`: Secret for refresh tokens
 
 Optional:
+
 - `NODE_ENV`: development/production (default: development)
 - `PORT`: Server port (default: 3001)
 - `API_PREFIX`: API route prefix (default: /api)

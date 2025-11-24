@@ -525,6 +525,7 @@ docker system prune -a --volumes
 ## Summary
 
 **What's Included:**
+
 - ✅ Multi-stage Docker builds
 - ✅ Development & production configs
 - ✅ Database backup/restore scripts
@@ -534,6 +535,7 @@ docker system prune -a --volumes
 - ✅ Comprehensive documentation
 
 **Quick Commands:**
+
 ```bash
 # Development
 cd backend && ./scripts/docker-dev.sh
@@ -549,6 +551,7 @@ docker-compose up -d
 ```
 
 **Access:**
+
 - Frontend: http://localhost
 - Backend: http://localhost:3001
 - Database: localhost:5432

@@ -5,15 +5,18 @@
 The **ULTIMATE Port/Protocol Trainer** is a comprehensive, gamified learning system designed specifically for CompTIA Network+ N10-008 exam preparation. This component transforms port and protocol memorization from rote learning into an engaging, scientifically-backed educational experience.
 
 ## Implementation Date
+
 November 1, 2025
 
 ## Location
+
 `/ports/trainer` route
 File: `src/components/protocols/PortProtocolTrainer.tsx`
 
 ## Key Features
 
 ### 1. Spaced Repetition Algorithm (Leitner System)
+
 - **5-Box Leitner System**: Cards progress through boxes based on mastery
 - **Intelligent Scheduling**:
   - Box 1: Review immediately
@@ -26,9 +29,11 @@ File: `src/components/protocols/PortProtocolTrainer.tsx`
 - **Accuracy Tracking**: Per-card accuracy percentage
 
 ### 2. Memory Palace with Visual Mnemonics
+
 Organized by port ranges for spatial memory reinforcement:
 
 #### Port Range Rooms
+
 - **20-30**: FTP, SSH, Telnet, SMTP (foundation protocols)
 - **50-100**: DNS, DHCP, TFTP, HTTP (core services)
 - **100-200**: POP3, NTP, IMAP, SNMP (email and management)
@@ -36,6 +41,7 @@ Organized by port ranges for spatial memory reinforcement:
 - **500+**: SMTP submission, LDAPS, secure protocols, RDP, SIP
 
 #### Mnemonic Examples
+
 - **Port 22 (SSH)**: "22 pairs of secure locks"
 - **Port 23 (Telnet)**: "Michael Jordan #23 - obsolete like Telnet"
 - **Port 80 (HTTP)**: "80 miles per hour on the information highway"
@@ -43,6 +49,7 @@ Organized by port ranges for spatial memory reinforcement:
 - **Port 3389 (RDP)**: "3389 - remote desktop connection"
 
 ### 3. Flashcard Mode with Progressive Difficulty
+
 - **Smart Card Display**: Shows only port number initially
 - **Reveal System**: Click to see protocol, service, description
 - **Color-Coded Security**: Visual indicators for secure/insecure/optional
@@ -51,6 +58,7 @@ Organized by port ranges for spatial memory reinforcement:
 - **Self-Assessment**: Correct/Incorrect buttons for honest review
 
 ### 4. Timed Exam Simulation Mode
+
 - **10-Question Quizzes**: Random selection from exam-critical ports
 - **Question Types**:
   1. Port to Protocol: "What protocol uses port 80?"
@@ -64,6 +72,7 @@ Organized by port ranges for spatial memory reinforcement:
 - **Quiz History**: Tracks all quiz scores over time
 
 ### 5. Performance Tracking & Analytics Dashboard
+
 - **Level System**: XP-based progression (Level = √(XP/100) + 1)
 - **XP Rewards**:
   - Correct answer: 10 XP × (Box + 1)
@@ -80,25 +89,29 @@ Organized by port ranges for spatial memory reinforcement:
 ### 6. Gamification Elements
 
 #### Achievements System
-| Achievement | Requirement | Icon |
-|------------|------------|------|
-| First Steps | Review first flashcard | 🎯 |
-| Getting Started | Review 10 cards | 📚 |
-| Expert Level | Master 10 cards (Box 4) | 🏆 |
-| Perfect Score | Score 100% on a quiz | 💯 |
-| Dedicated Learner | Study 7 days in a row | 🔥 |
-| Security Expert | Master all secure protocol ports | 🔒 |
-| Speed Demon | Complete quiz under 2 minutes | ⚡ |
-| Port Master | Master all exam-critical ports | 👑 |
+
+| Achievement       | Requirement                      | Icon |
+| ----------------- | -------------------------------- | ---- |
+| First Steps       | Review first flashcard           | 🎯   |
+| Getting Started   | Review 10 cards                  | 📚   |
+| Expert Level      | Master 10 cards (Box 4)          | 🏆   |
+| Perfect Score     | Score 100% on a quiz             | 💯   |
+| Dedicated Learner | Study 7 days in a row            | 🔥   |
+| Security Expert   | Master all secure protocol ports | 🔒   |
+| Speed Demon       | Complete quiz under 2 minutes    | ⚡   |
+| Port Master       | Master all exam-critical ports   | 👑   |
 
 #### Visual Feedback
+
 - **Level Progress Bar**: Shows XP progress to next level
 - **Streak Counter**: Fire emoji with consecutive days
 - **Unlocked Achievements**: Gold highlighting and timestamps
 - **Card Animations**: Hover effects and transitions
 
 ### 7. LocalStorage Persistence
+
 All progress is automatically saved:
+
 - **Card Progress**: Box number, accuracy, review dates
 - **Statistics**: XP, level, streak, total reviews
 - **Achievements**: Unlock status and timestamps
@@ -108,7 +121,9 @@ All progress is automatically saved:
 ## Exam-Critical Ports Coverage
 
 ### Well-Known Ports (0-1023)
+
 ✅ **Essential for Exam**:
+
 - 20/21 - FTP (Data/Control)
 - 22 - SSH/SFTP
 - 23 - Telnet
@@ -131,7 +146,9 @@ All progress is automatically saved:
 - 995 - POP3S
 
 ### Registered Ports (1024-49151)
+
 ✅ **Exam Critical**:
+
 - 1433 - SQL Server
 - 3389 - RDP
 - 5060/5061 - SIP (Unsecure/Secure)
@@ -142,6 +159,7 @@ All progress is automatically saved:
 ## Technical Architecture
 
 ### State Management
+
 ```typescript
 interface TrainingStats {
   totalCards: number;
@@ -168,6 +186,7 @@ interface CardProgress {
 ```
 
 ### Training Modes
+
 1. **Flashcards**: Spaced repetition review
 2. **Quiz**: Timed exam simulation
 3. **Memory Palace**: Visual mnemonics reference
@@ -176,6 +195,7 @@ interface CardProgress {
 ### Algorithms
 
 #### Leitner Spacing Intervals
+
 ```typescript
 const calculateNextReview = (box: number): number => {
   const intervals = [0, 1, 3, 7, 14]; // days
@@ -185,6 +205,7 @@ const calculateNextReview = (box: number): number => {
 ```
 
 #### Level Calculation
+
 ```typescript
 const calculateLevel = (xp: number): number => {
   return Math.floor(Math.sqrt(xp / 100)) + 1;
@@ -192,10 +213,11 @@ const calculateLevel = (xp: number): number => {
 ```
 
 #### XP Rewards
+
 ```typescript
 const calculateXPForReview = (correct: boolean, box: number): number => {
   const baseXP = 10;
-  const multiplier = correct ? (box + 1) : 0.5;
+  const multiplier = correct ? box + 1 : 0.5;
   return Math.floor(baseXP * multiplier);
 };
 ```
@@ -203,6 +225,7 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 ## User Experience Flow
 
 ### First-Time User
+
 1. Sees all 29 cards as "due" in Box 1
 2. Reviews cards, marking correct/incorrect
 3. Cards advance or stay based on performance
@@ -210,6 +233,7 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 5. Earns initial XP and levels up
 
 ### Returning User
+
 1. Sees only due cards based on schedule
 2. Higher-box cards appear less frequently
 3. Study streak increments daily
@@ -217,6 +241,7 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 5. Tracks progress in analytics dashboard
 
 ### Power User
+
 1. Masters all cards (Box 5)
 2. Unlocks all achievements
 3. Maintains long study streaks
@@ -226,22 +251,26 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 ## Learning Science Applied
 
 ### Spaced Repetition
+
 - **Forgetting Curve**: Reviews timed to prevent forgetting
 - **Active Recall**: Tests knowledge before showing answer
 - **Difficulty Adjustment**: Cards move based on performance
 
 ### Memory Techniques
+
 - **Visual Mnemonics**: Story-based associations
 - **Spatial Memory**: Port range grouping
 - **Multiple Encoding**: Visual, verbal, and conceptual
 
 ### Motivation Psychology
+
 - **Clear Goals**: Levels and achievements
 - **Progress Visualization**: XP bars and statistics
 - **Immediate Feedback**: Quiz results and explanations
 - **Streak Motivation**: Daily study encouragement
 
 ## Accessibility Features
+
 - **Keyboard Navigation**: Full keyboard support
 - **High Contrast**: Clear color distinctions
 - **Responsive Design**: Mobile-friendly layout
@@ -249,6 +278,7 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 - **Screen Reader Friendly**: Semantic HTML
 
 ## Performance Optimizations
+
 - **useMemo Hooks**: Memoized calculations
 - **Conditional Rendering**: Only renders active mode
 - **LocalStorage Batching**: Efficient state persistence
@@ -257,6 +287,7 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 ## Future Enhancements
 
 ### Potential Additions
+
 1. **Export Progress**: Download study data as CSV
 2. **Custom Quiz**: User-selected port ranges
 3. **Collaborative Mode**: Study with friends
@@ -271,11 +302,13 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 ## Research Sources
 
 ### Academic Research
+
 - Leitner, S. (1972). "So lernt man lernen" (How to Learn to Learn)
 - Ebbinghaus, H. (1885). "Memory: A Contribution to Experimental Psychology"
 - Karpicke & Roediger (2008). "The Critical Importance of Retrieval for Learning"
 
 ### CompTIA Resources
+
 - CompTIA Network+ N10-008 Exam Objectives (v3.0)
 - Official CompTIA Study Materials
 - Professor Messer Network+ Course
@@ -283,6 +316,7 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 - PassEmAll Certification Guides
 
 ### Memorization Techniques
+
 - Memory Palace (Method of Loci)
 - Mnemonic Devices for Technical Content
 - WyzGuys Cybersecurity Port Mnemonics
@@ -291,10 +325,11 @@ const calculateXPForReview = (correct: boolean, box: number): number => {
 ## Testing Recommendations
 
 ### Unit Tests
+
 ```typescript
 // Test Leitner algorithm
 test('Card advances to next box on correct answer', () => {
-  const progress = { box: 1, /* ... */ };
+  const progress = { box: 1 /* ... */ };
   const newProgress = handleCardReview(true, progress);
   expect(newProgress.box).toBe(2);
 });
@@ -314,12 +349,14 @@ test('Perfect quiz unlocks achievement', () => {
 ```
 
 ### Integration Tests
+
 - localStorage persistence works correctly
 - Quiz generation creates diverse questions
 - Study streak calculates properly across days
 - Level progression matches XP correctly
 
 ### User Acceptance Tests
+
 - Complete flashcard review session
 - Take quiz and review results
 - Check analytics dashboard accuracy
@@ -329,11 +366,13 @@ test('Perfect quiz unlocks achievement', () => {
 ## Metrics for Success
 
 ### Learning Outcomes
+
 - **Retention Rate**: 80%+ accuracy on mastered cards
 - **Exam Readiness**: 90%+ average quiz scores
 - **Long-term Retention**: Cards stay in Box 4-5
 
 ### Engagement Metrics
+
 - **Daily Active Users**: Study streak participation
 - **Session Length**: Average 10-15 minutes
 - **Completion Rate**: 70%+ of users master 20+ cards
@@ -344,6 +383,7 @@ test('Perfect quiz unlocks achievement', () => {
 The ULTIMATE Port/Protocol Trainer represents a comprehensive, research-backed approach to mastering networking ports for the CompTIA Network+ exam. By combining spaced repetition, visual mnemonics, gamification, and detailed analytics, it transforms a challenging memorization task into an engaging learning journey.
 
 **Key Differentiators**:
+
 - ✅ Scientific spaced repetition algorithm
 - ✅ Creative mnemonics for all exam ports
 - ✅ Exam-realistic quiz simulation
@@ -357,9 +397,11 @@ This component is production-ready and provides genuine value to Network+ candid
 ---
 
 **Files Modified**:
+
 - `src/components/protocols/PortProtocolTrainer.tsx` (Complete rewrite - 1,942 lines)
 
 **Files Created**:
+
 - `docs/enhancements/COMPONENT_06_PORT_TRAINER.md` (This document)
 
 **Dependencies**: None (pure React with TypeScript)

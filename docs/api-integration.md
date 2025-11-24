@@ -60,6 +60,7 @@ This document describes the API integration architecture for the CompTIA Network
 The base HTTP client built on Fetch API with advanced features:
 
 **Features:**
+
 - Request/Response interceptors
 - Automatic token injection
 - Token refresh on 401 errors
@@ -69,6 +70,7 @@ The base HTTP client built on Fetch API with advanced features:
 - Offline request queuing
 
 **Usage:**
+
 ```typescript
 import { apiClient } from './services/api-client';
 
@@ -78,14 +80,14 @@ const response = await apiClient.get('/users/profile');
 // POST request
 const response = await apiClient.post('/auth/login', {
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 });
 
 // With custom config
 const response = await apiClient.get('/data', {
   timeout: 5000,
   skipAuth: true,
-  skipRetry: true
+  skipRetry: true,
 });
 ```
 
@@ -94,6 +96,7 @@ const response = await apiClient.get('/data', {
 Abstraction layer for API operations:
 
 #### Authentication Service (`src/services/auth-service.ts`)
+
 ```typescript
 import * as authService from './services/auth-service';
 
@@ -101,7 +104,7 @@ import * as authService from './services/auth-service';
 const authResponse = await authService.login({
   email: 'user@example.com',
   password: 'password123',
-  rememberMe: true
+  rememberMe: true,
 });
 
 // Register
@@ -112,7 +115,7 @@ const authResponse = await authService.register({
   confirmPassword: 'SecurePass123!',
   firstName: 'John',
   lastName: 'Doe',
-  acceptTerms: true
+  acceptTerms: true,
 });
 
 // Logout
@@ -123,20 +126,21 @@ const user = await authService.getCurrentUser();
 ```
 
 #### User Service (`src/services/user-service.ts`)
+
 ```typescript
 import * as userService from './services/user-service';
 
 // Update profile
 const user = await userService.updateUserProfile({
   firstName: 'John',
-  lastName: 'Smith'
+  lastName: 'Smith',
 });
 
 // Change password
 await userService.changePassword({
   currentPassword: 'old123',
   newPassword: 'new456',
-  confirmPassword: 'new456'
+  confirmPassword: 'new456',
 });
 
 // Upload avatar
@@ -146,11 +150,12 @@ const avatarUrl = await userService.uploadAvatar(fileObject);
 const settings = await userService.getUserSettings();
 await userService.updateUserSettings({
   theme: 'dark',
-  emailNotifications: false
+  emailNotifications: false,
 });
 ```
 
 #### Progress Service (`src/services/progress-service.ts`)
+
 ```typescript
 import * as progressService from './services/progress-service';
 
@@ -158,7 +163,7 @@ import * as progressService from './services/progress-service';
 await progressService.updateComponentProgress('component-id', {
   timeSpent: 300,
   completed: true,
-  score: 85
+  score: 85,
 });
 
 // Sync with backend
@@ -170,6 +175,7 @@ const allProgress = await progressService.getAllProgress();
 ```
 
 #### Assessment Service (`src/services/assessment-service.ts`)
+
 ```typescript
 import * as assessmentService from './services/assessment-service';
 
@@ -191,6 +197,7 @@ const attempts = await assessmentService.getQuizAttempts();
 ### 3. State Management (Zustand Stores)
 
 #### Auth Store (`src/stores/authStore.ts`)
+
 ```typescript
 import { useAuthStore } from './stores/authStore';
 
@@ -208,12 +215,14 @@ function LoginComponent() {
 ```
 
 **Features:**
+
 - Automatic session restoration
 - Token refresh management
 - Error handling
 - Loading states
 
 #### User Store (`src/stores/userStore.ts`)
+
 ```typescript
 import { useUserStore } from './stores/userStore';
 
@@ -232,6 +241,7 @@ function ProfileComponent() {
 ```
 
 #### Progress Store (`src/stores/progressStore.ts`)
+
 ```typescript
 import { useProgressStore } from './stores/progressStore';
 
@@ -250,6 +260,7 @@ function LearningComponent() {
 ```
 
 **Features:**
+
 - Automatic API sync
 - Offline support with queuing
 - Conflict resolution
@@ -281,6 +292,7 @@ try {
 ```
 
 **Error Types:**
+
 - `NETWORK_ERROR` - Network connectivity issues
 - `TIMEOUT` - Request timeout
 - `UNAUTHORIZED` - Authentication required
@@ -325,6 +337,7 @@ const isOnline = await networkStatusManager.waitForOnline(30000);
 ```
 
 **Features:**
+
 - Online/offline detection
 - Automatic reconnection
 - Request queuing when offline
@@ -344,8 +357,8 @@ export const API_CONFIG = {
   RETRY: {
     MAX_RETRIES: 3,
     RETRY_DELAY: 1000,
-    RETRY_STATUS_CODES: [408, 429, 500, 502, 503, 504]
-  }
+    RETRY_STATUS_CODES: [408, 429, 500, 502, 503, 504],
+  },
 };
 
 export const API_ENDPOINTS = {
@@ -353,17 +366,17 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
     LOGOUT: '/auth/logout',
-    REFRESH: '/auth/refresh'
+    REFRESH: '/auth/refresh',
   },
   USER: {
     PROFILE: '/users/profile',
-    SETTINGS: '/users/settings'
+    SETTINGS: '/users/settings',
   },
   PROGRESS: {
     GET_ALL: '/progress',
     UPDATE_COMPONENT: (id) => `/progress/component/${id}`,
-    SYNC: '/progress/sync'
-  }
+    SYNC: '/progress/sync',
+  },
 };
 ```
 
@@ -388,12 +401,14 @@ VITE_USE_MOCK_API=true  # Use mock API for development
 The system supports both mock and real API modes:
 
 **Mock API Mode** (VITE_USE_MOCK_API=true):
+
 - Uses in-memory data
 - Simulates API delays
 - Perfect for development and testing
 - No backend required
 
 **Real API Mode** (VITE_USE_MOCK_API=false):
+
 - Connects to actual backend
 - Full authentication and data persistence
 - Production mode
@@ -447,6 +462,7 @@ npm run test:coverage
 ```
 
 **Test Coverage:**
+
 - API client functionality
 - Service layer operations
 - Authentication flows
@@ -462,7 +478,7 @@ describe('Authentication Service', () => {
     const credentials = {
       email: 'demo@comptia.test',
       password: 'demo123',
-      rememberMe: false
+      rememberMe: false,
     };
 
     const result = await authService.login(credentials);
@@ -534,21 +550,25 @@ Migrate components one by one:
 ### Common Issues
 
 **401 Unauthorized**
+
 - Check if token is expired
 - Verify token is being sent
 - Check backend authentication
 
 **Network Errors**
+
 - Verify API URL is correct
 - Check CORS configuration
 - Ensure backend is running
 
 **Validation Errors**
+
 - Check request payload format
 - Verify required fields
 - Check data types
 
 **Performance Issues**
+
 - Enable request caching
 - Optimize payload size
 - Use pagination
@@ -560,6 +580,7 @@ For complete API endpoint documentation, refer to the backend API documentation.
 ## Support
 
 For issues or questions:
+
 1. Check this documentation
 2. Review backend API docs
 3. Check console for errors

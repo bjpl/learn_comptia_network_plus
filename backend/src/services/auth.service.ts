@@ -3,9 +3,20 @@ import jwt from 'jsonwebtoken';
 import { pool } from '../config/database';
 import { logger } from '../config/logger';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret';
+// Require JWT secrets - fail fast if not configured
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+if (!process.env.REFRESH_TOKEN_SECRET) {
+  throw new Error('REFRESH_TOKEN_SECRET environment variable is required');
+}
+if (process.env.JWT_SECRET === process.env.REFRESH_TOKEN_SECRET) {
+  throw new Error('JWT_SECRET and REFRESH_TOKEN_SECRET must be different');
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
-const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'default_refresh_secret';
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || '7d';
 
 export interface User {

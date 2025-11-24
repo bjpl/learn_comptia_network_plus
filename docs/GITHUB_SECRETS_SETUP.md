@@ -8,52 +8,52 @@ GitHub Secrets are encrypted environment variables used in CI/CD workflows. This
 
 ### 🔐 Authentication Secrets
 
-| Secret Name | Description | Example |
-|------------|-------------|---------|
-| `JWT_SECRET` | JWT signing key (32+ chars) | `abc123...` |
-| `REFRESH_TOKEN_SECRET` | Refresh token signing key | `xyz789...` |
-| `SESSION_SECRET` | Session signing key (64 chars) | `def456...` |
-| `COOKIE_SECRET` | Cookie signing key | `ghi789...` |
+| Secret Name            | Description                    | Example     |
+| ---------------------- | ------------------------------ | ----------- |
+| `JWT_SECRET`           | JWT signing key (32+ chars)    | `abc123...` |
+| `REFRESH_TOKEN_SECRET` | Refresh token signing key      | `xyz789...` |
+| `SESSION_SECRET`       | Session signing key (64 chars) | `def456...` |
+| `COOKIE_SECRET`        | Cookie signing key             | `ghi789...` |
 
 ### 🗄️ Database Secrets
 
-| Secret Name | Description | Example |
-|------------|-------------|---------|
+| Secret Name    | Description                       | Example                               |
+| -------------- | --------------------------------- | ------------------------------------- |
 | `DATABASE_URL` | Full PostgreSQL connection string | `postgresql://user:pass@host:5432/db` |
-| `DB_PASSWORD` | Database password only | `secure_password` |
+| `DB_PASSWORD`  | Database password only            | `secure_password`                     |
 
 ### 🚀 Deployment Secrets
 
-| Secret Name | Description | Example |
-|------------|-------------|---------|
-| `DOCKER_USERNAME` | Docker Hub username | `yourcompany` |
-| `DOCKER_PASSWORD` | Docker Hub access token | `dckr_pat_...` |
-| `DEPLOY_KEY` | SSH private key for deployment | `-----BEGIN RSA PRIVATE KEY-----` |
-| `DEPLOY_HOST` | Deployment server hostname | `deploy.yourdomain.com` |
-| `DEPLOY_USER` | Deployment server username | `deployer` |
+| Secret Name       | Description                    | Example                           |
+| ----------------- | ------------------------------ | --------------------------------- |
+| `DOCKER_USERNAME` | Docker Hub username            | `yourcompany`                     |
+| `DOCKER_PASSWORD` | Docker Hub access token        | `dckr_pat_...`                    |
+| `DEPLOY_KEY`      | SSH private key for deployment | `-----BEGIN RSA PRIVATE KEY-----` |
+| `DEPLOY_HOST`     | Deployment server hostname     | `deploy.yourdomain.com`           |
+| `DEPLOY_USER`     | Deployment server username     | `deployer`                        |
 
 ### ☁️ Cloud Provider Secrets (Optional)
 
-| Secret Name | Description | Example |
-|------------|-------------|---------|
-| `AWS_ACCESS_KEY_ID` | AWS access key | `AKIA...` |
-| `AWS_SECRET_ACCESS_KEY` | AWS secret key | `wJal...` |
-| `S3_BUCKET_NAME` | S3 bucket for storage | `comptia-network-prod` |
+| Secret Name             | Description           | Example                |
+| ----------------------- | --------------------- | ---------------------- |
+| `AWS_ACCESS_KEY_ID`     | AWS access key        | `AKIA...`              |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret key        | `wJal...`              |
+| `S3_BUCKET_NAME`        | S3 bucket for storage | `comptia-network-prod` |
 
 ### 📊 Monitoring Secrets (Optional)
 
-| Secret Name | Description | Example |
-|------------|-------------|---------|
-| `SENTRY_DSN` | Sentry error tracking DSN | `https://...@sentry.io/...` |
-| `SENTRY_AUTH_TOKEN` | Sentry deployment token | `sntrys_...` |
-| `CODECOV_TOKEN` | Code coverage reporting | `abc123...` |
+| Secret Name         | Description               | Example                     |
+| ------------------- | ------------------------- | --------------------------- |
+| `SENTRY_DSN`        | Sentry error tracking DSN | `https://...@sentry.io/...` |
+| `SENTRY_AUTH_TOKEN` | Sentry deployment token   | `sntrys_...`                |
+| `CODECOV_TOKEN`     | Code coverage reporting   | `abc123...`                 |
 
 ### 📧 Email Service Secrets (Optional)
 
-| Secret Name | Description | Example |
-|------------|-------------|---------|
-| `SENDGRID_API_KEY` | SendGrid API key | `SG.abc...` |
-| `SMTP_PASSWORD` | SMTP service password | `secure_smtp_pass` |
+| Secret Name        | Description           | Example            |
+| ------------------ | --------------------- | ------------------ |
+| `SENDGRID_API_KEY` | SendGrid API key      | `SG.abc...`        |
+| `SMTP_PASSWORD`    | SMTP service password | `secure_smtp_pass` |
 
 ## How to Add Secrets to GitHub
 
@@ -127,6 +127,7 @@ echo "✅ All secrets imported successfully!"
 ```
 
 Usage:
+
 ```bash
 chmod +x scripts/import-github-secrets.sh
 ./scripts/import-github-secrets.sh secrets-production.txt
@@ -145,6 +146,7 @@ STAGING_API_KEY
 ```
 
 Then use in workflows:
+
 ```yaml
 - name: Deploy to Staging
   env:
@@ -208,23 +210,27 @@ jobs:
 ## Security Best Practices
 
 ### 1. Secret Generation
+
 - Use cryptographically secure random generation
 - Minimum 32 characters for most secrets
 - Use different secrets for each environment
 
 ### 2. Secret Management
+
 - Never log secret values
 - Don't echo secrets in workflows
 - Use secret scanning tools
 - Rotate secrets regularly (every 90 days)
 
 ### 3. Access Control
+
 - Limit repository access
 - Use environment protection rules
 - Enable audit logging
 - Review access logs regularly
 
 ### 4. Monitoring
+
 - Enable GitHub secret scanning
 - Set up alerts for exposed secrets
 - Monitor Actions workflow logs
@@ -237,6 +243,7 @@ jobs:
 **Problem:** Secret shows as empty in workflow
 
 **Solutions:**
+
 1. Check secret name matches exactly (case-sensitive)
 2. Verify secret exists in correct scope (repo/environment)
 3. Check workflow has permission to access environment
@@ -247,6 +254,7 @@ jobs:
 **Problem:** `gh secret set` fails
 
 **Solutions:**
+
 ```bash
 # Ensure you're authenticated
 gh auth status
@@ -261,6 +269,7 @@ gh api /repos/owner/repo | jq .permissions
 ### Secret Rotation Without Downtime
 
 **Strategy:**
+
 1. Add new secret with temporary name (`JWT_SECRET_NEW`)
 2. Update workflow to use both secrets
 3. Deploy and verify
@@ -271,12 +280,12 @@ gh api /repos/owner/repo | jq .permissions
 
 Create a rotation schedule:
 
-| Secret | Rotation Period | Last Rotated | Next Rotation |
-|--------|----------------|--------------|---------------|
-| JWT_SECRET | 90 days | 2024-01-15 | 2024-04-15 |
-| DATABASE_URL | 180 days | 2024-01-01 | 2024-07-01 |
-| API_KEY | 90 days | 2024-01-20 | 2024-04-20 |
-| DEPLOY_KEY | 365 days | 2024-01-01 | 2025-01-01 |
+| Secret       | Rotation Period | Last Rotated | Next Rotation |
+| ------------ | --------------- | ------------ | ------------- |
+| JWT_SECRET   | 90 days         | 2024-01-15   | 2024-04-15    |
+| DATABASE_URL | 180 days        | 2024-01-01   | 2024-07-01    |
+| API_KEY      | 90 days         | 2024-01-20   | 2024-04-20    |
+| DEPLOY_KEY   | 365 days        | 2024-01-01   | 2025-01-01    |
 
 ## Audit Checklist
 
@@ -296,6 +305,7 @@ Create a rotation schedule:
 ### If Secret is Compromised
 
 1. **Immediate Actions**
+
    ```bash
    # Generate new secret
    NEW_SECRET=$(openssl rand -base64 32)

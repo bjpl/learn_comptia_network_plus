@@ -2,14 +2,15 @@
 
 **Project:** CompTIA Network+ Learning Platform
 **Environment:** [ ] Staging [ ] Production
-**Date:** ___________
-**Completed By:** ___________
+**Date:** \***\*\_\_\_\*\***
+**Completed By:** \***\*\_\_\_\*\***
 
 ---
 
 ## 🔐 Secrets & Configuration Management
 
 ### Secret Generation
+
 - [ ] All secrets generated using cryptographically secure methods (`openssl rand`)
 - [ ] Secrets are minimum 32 characters (JWT, API keys)
 - [ ] Secrets are minimum 64 characters (Session, Encryption)
@@ -19,6 +20,7 @@
 - [ ] Secrets file securely deleted after transfer (`shred -vfz -n 10`)
 
 ### Environment Configuration
+
 - [ ] `.env.production` configured with all required variables
 - [ ] `.env.staging` configured with different secrets
 - [ ] `.env.example` updated but contains no real secrets
@@ -27,6 +29,7 @@
 - [ ] Environment variables validated before deployment
 
 ### Repository Security
+
 - [ ] No hardcoded secrets in codebase (grep for sensitive patterns)
 - [ ] No secrets in git history (`git log -p` review)
 - [ ] No secrets in comments or documentation
@@ -35,6 +38,7 @@
 - [ ] Pre-commit hooks prevent secret commits
 
 ### Hosting Platform
+
 - [ ] All secrets configured in hosting platform (Vercel/Railway/etc.)
 - [ ] Environment variables match `.env.production` template
 - [ ] Secret values verified (no copy-paste errors)
@@ -42,6 +46,7 @@
 - [ ] Access to hosting platform restricted to authorized personnel
 
 ### CI/CD Secrets
+
 - [ ] GitHub Secrets configured for all required variables
 - [ ] GitHub Environments set up for staging and production
 - [ ] Environment protection rules enabled (reviewers, branch rules)
@@ -53,6 +58,7 @@
 ## 🛡️ Security Hardening
 
 ### HTTPS/TLS Configuration
+
 - [ ] Valid SSL/TLS certificate from trusted CA (Let's Encrypt, etc.)
 - [ ] Certificate not self-signed or expired
 - [ ] Certificate covers all domains (www, api, admin)
@@ -63,6 +69,7 @@
 - [ ] SSL Labs test grade A or higher
 
 ### Security Headers
+
 - [ ] Content-Security-Policy (CSP) configured
 - [ ] X-Frame-Options set to DENY or SAMEORIGIN
 - [ ] X-Content-Type-Options set to nosniff
@@ -73,6 +80,7 @@
 - [ ] Security headers verified with securityheaders.com
 
 ### CORS Configuration
+
 - [ ] CORS origins whitelist configured (no wildcards in production)
 - [ ] Credentials allowed only for trusted origins
 - [ ] Preflight requests handled correctly
@@ -80,6 +88,7 @@
 - [ ] OPTIONS requests return correct headers
 
 ### Rate Limiting
+
 - [ ] Rate limiting enabled on all API endpoints
 - [ ] Login endpoints have stricter limits (5 attempts per 15 min)
 - [ ] Registration endpoints rate limited
@@ -89,6 +98,7 @@
 - [ ] IP-based and user-based rate limiting implemented
 
 ### Input Validation & Sanitization
+
 - [ ] All user inputs validated on server side
 - [ ] SQL injection prevention verified (parameterized queries)
 - [ ] XSS prevention tested (output encoding)
@@ -103,6 +113,7 @@
 ## 🗄️ Database Security
 
 ### Access Control
+
 - [ ] Database SSL/TLS encryption enabled
 - [ ] Strong database password set (32+ characters)
 - [ ] Database user has minimal required permissions (principle of least privilege)
@@ -113,6 +124,7 @@
 - [ ] Connection timeout configured
 
 ### Backup & Recovery
+
 - [ ] Automated database backups configured (daily minimum)
 - [ ] Backup encryption enabled
 - [ ] Backups stored in separate location from primary database
@@ -123,6 +135,7 @@
 - [ ] Recovery Point Objective (RPO) documented
 
 ### Database Security
+
 - [ ] Database firewall rules configured (whitelist application IPs only)
 - [ ] Database port not exposed to public internet
 - [ ] Prepared statements used for all queries
@@ -137,6 +150,7 @@
 ## 🔑 Authentication & Authorization
 
 ### JWT Configuration
+
 - [ ] JWT secret is strong and unique (32+ characters)
 - [ ] Access token expiration appropriate (15 minutes recommended)
 - [ ] Refresh token expiration appropriate (7 days recommended)
@@ -147,6 +161,7 @@
 - [ ] Invalid tokens rejected properly
 
 ### Password Security
+
 - [ ] Bcrypt rounds set to 12 or higher
 - [ ] Minimum password length enforced (8+ characters)
 - [ ] Password complexity requirements enforced
@@ -157,6 +172,7 @@
 - [ ] Password hashing tested and verified
 
 ### Account Security
+
 - [ ] Account lockout after failed login attempts (5 attempts)
 - [ ] Lockout duration configured (30 minutes)
 - [ ] Session timeout configured (24 hours max)
@@ -166,6 +182,7 @@
 - [ ] "Remember me" functionality secure (if implemented)
 
 ### Authorization
+
 - [ ] Role-based access control (RBAC) implemented
 - [ ] User permissions verified on every protected route
 - [ ] Admin routes protected with admin role check
@@ -179,6 +196,7 @@
 ## 📊 Monitoring & Logging
 
 ### Application Logging
+
 - [ ] Application logging configured (Winston, Pino, etc.)
 - [ ] Log level appropriate for environment (info for production)
 - [ ] Sensitive data excluded from logs (passwords, tokens, etc.)
@@ -188,6 +206,7 @@
 - [ ] Log retention policy defined (30-90 days)
 
 ### Error Tracking
+
 - [ ] Error tracking service configured (Sentry, Rollbar, etc.)
 - [ ] Error tracking tested with sample errors
 - [ ] Source maps uploaded for better stack traces
@@ -197,6 +216,7 @@
 - [ ] Error grouping and deduplication working
 
 ### Security Event Logging
+
 - [ ] Failed login attempts logged
 - [ ] Successful login events logged
 - [ ] Password changes logged
@@ -206,6 +226,7 @@
 - [ ] Suspicious activities logged (brute force, etc.)
 
 ### Monitoring & Alerts
+
 - [ ] Application performance monitoring (APM) configured
 - [ ] Uptime monitoring configured (Pingdom, UptimeRobot, etc.)
 - [ ] Health check endpoint implemented (`/health`)
@@ -220,6 +241,7 @@
 ## 🚀 Deployment & Infrastructure
 
 ### Docker Security
+
 - [ ] Docker images scanned for vulnerabilities (Trivy, Snyk)
 - [ ] Base images from official sources only
 - [ ] Images use specific version tags (not `latest`)
@@ -230,6 +252,7 @@
 - [ ] Security context configured for containers
 
 ### Dependency Security
+
 - [ ] `npm audit` run with no high/critical vulnerabilities
 - [ ] Dependencies up to date with security patches
 - [ ] Automated dependency updates configured (Dependabot)
@@ -239,6 +262,7 @@
 - [ ] Private packages properly authenticated
 
 ### CI/CD Pipeline
+
 - [ ] CI/CD pipeline tested end-to-end
 - [ ] Pipeline runs automated tests before deployment
 - [ ] Pipeline runs security scans
@@ -248,6 +272,7 @@
 - [ ] Pipeline logs reviewed for sensitive data exposure
 
 ### Deployment Strategy
+
 - [ ] Staging environment mirrors production configuration
 - [ ] Zero-downtime deployment strategy implemented
 - [ ] Database migrations tested in staging
@@ -261,6 +286,7 @@
 ## 🧪 Testing & Validation
 
 ### Security Testing
+
 - [ ] All security tests passing
 - [ ] Penetration testing completed
 - [ ] OWASP ZAP scan performed (grade B or higher)
@@ -271,6 +297,7 @@
 - [ ] Authentication bypass tests passed
 
 ### Functional Testing
+
 - [ ] All unit tests passing (80%+ coverage)
 - [ ] All integration tests passing
 - [ ] All E2E tests passing
@@ -280,6 +307,7 @@
 - [ ] Browser compatibility tested (Chrome, Firefox, Safari, Edge)
 
 ### Performance Testing
+
 - [ ] Page load time under 3 seconds
 - [ ] API response time under 200ms for most endpoints
 - [ ] Database query performance optimized (no N+1 queries)
@@ -293,6 +321,7 @@
 ## 📚 Documentation
 
 ### Technical Documentation
+
 - [ ] Deployment guide complete and tested
 - [ ] Environment setup guide documented
 - [ ] API documentation up to date (Swagger/OpenAPI)
@@ -302,6 +331,7 @@
 - [ ] Runbook created for common operations
 
 ### Security Documentation
+
 - [ ] Security policies documented
 - [ ] Incident response plan created
 - [ ] Disaster recovery plan created
@@ -311,6 +341,7 @@
 - [ ] GDPR compliance verified (if applicable)
 
 ### Operational Documentation
+
 - [ ] Monitoring runbook created
 - [ ] Alert response procedures documented
 - [ ] Escalation procedures defined
@@ -323,6 +354,7 @@
 ## ✅ Final Pre-Deployment Checks
 
 ### Environment Verification
+
 - [ ] All environment variables set correctly
 - [ ] All secrets verified working (test API calls)
 - [ ] Database connection successful
@@ -332,6 +364,7 @@
 - [ ] External API integrations working
 
 ### Infrastructure
+
 - [ ] DNS records configured correctly (A, AAAA, CNAME)
 - [ ] SSL certificate valid and not expiring within 30 days
 - [ ] Load balancer configured (if using)
@@ -342,6 +375,7 @@
 - [ ] Geographic routing configured (if needed)
 
 ### Health & Status
+
 - [ ] `/health` endpoint returns 200 OK
 - [ ] `/health` includes all service dependencies
 - [ ] Database migrations applied successfully
@@ -352,6 +386,7 @@
 - [ ] No errors in system logs
 
 ### Team Readiness
+
 - [ ] Deployment team briefed on launch plan
 - [ ] Support team trained on application
 - [ ] On-call schedule activated
@@ -383,20 +418,20 @@ All items below must be checked before going live:
 
 ### Checklist Completion
 
-| Role | Name | Signature | Date |
-|------|------|-----------|------|
-| Backend Developer | __________ | __________ | __________ |
-| DevOps Engineer | __________ | __________ | __________ |
-| Security Lead | __________ | __________ | __________ |
-| QA Engineer | __________ | __________ | __________ |
-| Product Owner | __________ | __________ | __________ |
+| Role              | Name             | Signature        | Date             |
+| ----------------- | ---------------- | ---------------- | ---------------- |
+| Backend Developer | \***\*\_\_\*\*** | \***\*\_\_\*\*** | \***\*\_\_\*\*** |
+| DevOps Engineer   | \***\*\_\_\*\*** | \***\*\_\_\*\*** | \***\*\_\_\*\*** |
+| Security Lead     | \***\*\_\_\*\*** | \***\*\_\_\*\*** | \***\*\_\_\*\*** |
+| QA Engineer       | \***\*\_\_\*\*** | \***\*\_\_\*\*** | \***\*\_\_\*\*** |
+| Product Owner     | \***\*\_\_\*\*** | \***\*\_\_\*\*** | \***\*\_\_\*\*** |
 
 ### Deployment Approval
 
 **Environment:** [ ] Staging [ ] Production
-**Approved By:** __________
-**Date:** __________
-**Deployment Window:** __________ to __________
+**Approved By:** \***\*\_\_\*\***
+**Date:** \***\*\_\_\*\***
+**Deployment Window:** \***\*\_\_\*\*** to \***\*\_\_\*\***
 
 ### Post-Deployment Verification
 
@@ -407,15 +442,16 @@ All items below must be checked before going live:
 - [ ] Performance metrics acceptable
 - [ ] Monitoring confirmed working
 
-**Verified By:** __________
-**Date:** __________
-**Time:** __________
+**Verified By:** \***\*\_\_\*\***
+**Date:** \***\*\_\_\*\***
+**Time:** \***\*\_\_\*\***
 
 ---
 
 ## 🔄 Post-Deployment
 
 ### Immediate Actions (First 2 Hours)
+
 - [ ] Monitor error rates
 - [ ] Monitor response times
 - [ ] Check all critical user flows
@@ -424,6 +460,7 @@ All items below must be checked before going live:
 - [ ] Review application logs
 
 ### 24-Hour Actions
+
 - [ ] Review all monitoring dashboards
 - [ ] Analyze error reports
 - [ ] Check user feedback
@@ -432,6 +469,7 @@ All items below must be checked before going live:
 - [ ] Document any issues encountered
 
 ### 7-Day Actions
+
 - [ ] Security scan of production environment
 - [ ] Performance optimization review
 - [ ] Cost analysis

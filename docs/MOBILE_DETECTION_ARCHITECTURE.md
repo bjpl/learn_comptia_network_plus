@@ -455,20 +455,21 @@ localStorage
 
 ### Edge Case Matrix
 
-| Scenario | Detection | Behavior |
-|----------|-----------|----------|
-| Desktop browser zoomed in | Width < 1024px | Shows modal (correct) |
-| Tablet in landscape | Width ≥ 1024px | No modal (desired) |
-| Large phone (iPhone Pro Max) | Width < 768px | Shows modal (correct) |
-| localStorage disabled | Read fails | Shows modal every time (graceful) |
-| User agent spoofed | Regex fails | Falls back to width (resilient) |
-| Window resize across breakpoint | Hook updates | Modal re-evaluates (reactive) |
-| Dev tools device emulation | Detects correctly | Shows modal (correct) |
-| Foldable device (unfolded) | Width based | Depends on dimensions |
+| Scenario                        | Detection         | Behavior                          |
+| ------------------------------- | ----------------- | --------------------------------- |
+| Desktop browser zoomed in       | Width < 1024px    | Shows modal (correct)             |
+| Tablet in landscape             | Width ≥ 1024px    | No modal (desired)                |
+| Large phone (iPhone Pro Max)    | Width < 768px     | Shows modal (correct)             |
+| localStorage disabled           | Read fails        | Shows modal every time (graceful) |
+| User agent spoofed              | Regex fails       | Falls back to width (resilient)   |
+| Window resize across breakpoint | Hook updates      | Modal re-evaluates (reactive)     |
+| Dev tools device emulation      | Detects correctly | Shows modal (correct)             |
+| Foldable device (unfolded)      | Width based       | Depends on dimensions             |
 
 ## Performance Characteristics
 
 ### Bundle Size Impact
+
 ```
 Component                  Size (KB)    Gzip (KB)
 ────────────────────────────────────────────────
@@ -480,6 +481,7 @@ Impact: Negligible (~0.3% of total bundle)
 ```
 
 ### Runtime Performance
+
 ```
 Operation                  Time         Frequency
 ──────────────────────────────────────────────────
@@ -513,17 +515,20 @@ Total impact: Negligible
 ### Easy to Add
 
 1. **New Breakpoints**
+
    ```typescript
    const LARGE_DESKTOP = 1920;
    const ULTRAWIDE = 2560;
    ```
 
 2. **New Detection Methods**
+
    ```typescript
    const isFoldableDevice = detectFoldable();
    ```
 
 3. **Analytics Integration**
+
    ```typescript
    onDismiss={() => {
      analytics.track('mobile_warning_dismissed');

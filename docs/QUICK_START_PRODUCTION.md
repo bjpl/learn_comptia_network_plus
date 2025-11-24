@@ -65,6 +65,7 @@ gh secret set CSRF_SECRET
 ```
 
 **Or bulk import:**
+
 ```bash
 # Create temp file
 cat > /tmp/secrets.env <<EOF
@@ -112,6 +113,7 @@ railway logs
 ## Step 5: Configure Domain (5 minutes)
 
 **In Railway Dashboard:**
+
 1. Settings → Domains → Custom Domain
 2. Enter: api.yourdomain.com
 3. Add CNAME to your DNS:
@@ -152,12 +154,14 @@ curl -X POST https://api.yourdomain.com/api/auth/register \
 Open and complete: `docs/PRE_PRODUCTION_CHECKLIST.md`
 
 **Critical sections:**
+
 - [ ] Secrets & Configuration (should be done)
 - [ ] Security Hardening
 - [ ] Database Security
 - [ ] Monitoring & Logging
 
 **Get sign-offs from:**
+
 - Backend Developer
 - DevOps Engineer
 - Security Lead
@@ -240,6 +244,7 @@ git push --force
 ## Post-Deployment Checklist
 
 **Immediate (First 2 hours):**
+
 - [ ] Health check returns 200 OK
 - [ ] Can register new user
 - [ ] Can login
@@ -247,12 +252,14 @@ git push --force
 - [ ] Response times acceptable
 
 **Next 24 hours:**
+
 - [ ] Monitor error rates
 - [ ] Check database performance
 - [ ] Verify backups running
 - [ ] Test all critical user flows
 
 **Next 7 days:**
+
 - [ ] Review all monitoring dashboards
 - [ ] Analyze user feedback
 - [ ] Optimize slow queries
@@ -299,16 +306,19 @@ railway run psql $DATABASE_URL < backup.sql
 ## Need Help?
 
 **Quick fixes:**
+
 - Check `docs/SECRETS_USAGE_GUIDE.md` - Step-by-step guide
 - Check `docs/DEPLOYMENT_GUIDE.md` - Platform-specific details
 - Check `docs/SECRETS_MANAGEMENT.md` - Troubleshooting
 
 **Emergency:**
+
 - Run: `./backend/scripts/verify-secrets.sh`
 - Check: `railway logs --filter error`
 - Review: `docs/PRE_PRODUCTION_CHECKLIST.md`
 
 **Team support:**
+
 - DevOps team for infrastructure issues
 - Backend team for application issues
 - Security team for secret compromises
@@ -318,6 +328,7 @@ railway run psql $DATABASE_URL < backup.sql
 ## Success Indicators
 
 **You're ready to go live when:**
+
 - [ ] All secrets generated and verified
 - [ ] Health endpoint returns 200 OK
 - [ ] All critical APIs working
@@ -334,6 +345,7 @@ railway run psql $DATABASE_URL < backup.sql
 ## Total Time: ~45 minutes to production
 
 **Breakdown:**
+
 - Prerequisites: 5 min
 - Generate secrets: 2 min
 - Configure environment: 5 min

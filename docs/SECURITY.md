@@ -1,4 +1,5 @@
 # Security Documentation
+
 ## CompTIA Network+ Learning Platform
 
 This document outlines the security measures implemented in the CompTIA Network+ Learning Platform to protect against common web vulnerabilities and ensure data protection.
@@ -51,12 +52,14 @@ The platform implements multiple layers of security:
 The platform uses JWT for stateless authentication:
 
 **Access Tokens**:
+
 - Short-lived (15 minutes)
 - Used for API authentication
 - Stored in memory (not localStorage)
 - Automatically refreshed
 
 **Refresh Tokens**:
+
 - Long-lived (7 days)
 - Used to obtain new access tokens
 - Stored in httpOnly cookies
@@ -65,17 +68,20 @@ The platform uses JWT for stateless authentication:
 ### Password Security
 
 **Hashing**:
+
 - Algorithm: bcrypt
 - Work factor: 10 rounds (configurable)
 - Unique salt per password
 
 **Password Policy**:
+
 - Minimum length: 8 characters
 - Maximum length: 100 characters
 - Must contain: uppercase, lowercase, number, special character
 - Password history: prevent reuse of last 5 passwords
 
 **Account Protection**:
+
 - Rate limiting on login attempts (5 per 15 minutes)
 - Account lockout after 5 failed attempts (15 minutes)
 - Email notification on password changes
@@ -97,23 +103,27 @@ The platform uses JWT for stateless authentication:
 All user inputs validated using Zod schemas:
 
 **Auth Schemas** (`src/utils/validation/auth-schemas.ts`):
+
 - Email validation (RFC 5322 compliant)
 - Password strength validation
 - Username format validation
 - Registration data validation
 
 **User Schemas** (`src/utils/validation/user-schemas.ts`):
+
 - Profile update validation
 - Email update with password confirmation
 - Notification preferences
 - Privacy settings
 
 **Progress Schemas** (`src/utils/validation/progress-schemas.ts`):
+
 - Module completion validation
 - Study session tracking
 - Bookmark and note validation
 
 **Assessment Schemas** (`src/utils/validation/assessment-schemas.ts`):
+
 - Answer submission validation
 - Quiz attempt validation
 - Performance analytics validation
@@ -209,13 +219,14 @@ object-src 'none';
 
 3. **Token Verification**:
    - Required for POST, PUT, DELETE, PATCH
-   - Checked via header (X-CSRF-Token) or body (_csrf)
+   - Checked via header (X-CSRF-Token) or body (\_csrf)
    - Timing-safe comparison
    - Automatic regeneration after use
 
 ### Usage
 
 **Backend**:
+
 ```typescript
 import { csrfProtection } from '@/middleware/csrf.middleware';
 
@@ -227,6 +238,7 @@ router.post('/sensitive', csrfProtection, handler);
 ```
 
 **Frontend**:
+
 ```typescript
 // Token automatically included in requests
 fetch('/api/resource', {
@@ -256,17 +268,13 @@ fetch('/api/resource', {
 **Database Query Utility** (`backend/src/utils/db-query.ts`):
 
 **Safe Query Execution**:
+
 ```typescript
 // SAFE: Parameterized query
-const result = await dbQuery.execute(
-  'SELECT * FROM users WHERE email = $1',
-  ['user@example.com']
-);
+const result = await dbQuery.execute('SELECT * FROM users WHERE email = $1', ['user@example.com']);
 
 // UNSAFE: String concatenation (NEVER DO THIS!)
-const result = await dbQuery.execute(
-  `SELECT * FROM users WHERE email = '${email}'`
-);
+const result = await dbQuery.execute(`SELECT * FROM users WHERE email = '${email}'`);
 ```
 
 ### Query Builder Functions
@@ -298,10 +306,7 @@ const { clause, params } = dbQuery.buildWhereClause({
 });
 
 // Execute safe query
-const users = await dbQuery.execute(
-  `SELECT * FROM users ${clause}`,
-  params
-);
+const users = await dbQuery.execute(`SELECT * FROM users ${clause}`, params);
 ```
 
 ---
@@ -312,18 +317,18 @@ const users = await dbQuery.execute(
 
 **Rate Limit Middleware** (`backend/src/middleware/rate-limit.middleware.ts`):
 
-| Endpoint Type | Window | Max Requests | Purpose |
-|--------------|---------|--------------|----------|
-| Authentication | 15 min | 5 | Prevent brute force |
-| Registration | 1 hour | 3 | Prevent abuse |
-| Password Reset | 1 hour | 3 | Prevent enumeration |
-| Email Verification | 1 hour | 5 | Prevent spam |
-| Standard Write | 15 min | 100 | General protection |
-| Read Operations | 15 min | 300 | Lenient for reads |
-| Assessment Submit | 1 hour | 50 | Prevent cheating |
-| File Upload | 1 hour | 20 | Resource protection |
-| Search | 15 min | 100 | Prevent DoS |
-| Global | 15 min | 1000 | Overall protection |
+| Endpoint Type      | Window | Max Requests | Purpose             |
+| ------------------ | ------ | ------------ | ------------------- |
+| Authentication     | 15 min | 5            | Prevent brute force |
+| Registration       | 1 hour | 3            | Prevent abuse       |
+| Password Reset     | 1 hour | 3            | Prevent enumeration |
+| Email Verification | 1 hour | 5            | Prevent spam        |
+| Standard Write     | 15 min | 100          | General protection  |
+| Read Operations    | 15 min | 300          | Lenient for reads   |
+| Assessment Submit  | 1 hour | 50           | Prevent cheating    |
+| File Upload        | 1 hour | 20           | Resource protection |
+| Search             | 15 min | 100          | Prevent DoS         |
+| Global             | 15 min | 1000         | Overall protection  |
 
 ### Rate Limiting Features
 
@@ -332,7 +337,7 @@ const users = await dbQuery.execute(
 - Skip successful requests (count only failures)
 - Custom error responses
 - Retry-After headers
-- Rate limit headers (RateLimit-*)
+- Rate limit headers (RateLimit-\*)
 
 ### Usage
 
@@ -352,16 +357,16 @@ router.post('/register', registrationRateLimit, registerHandler);
 
 **Comprehensive security headers** (`backend/src/server.ts`):
 
-| Header | Value | Purpose |
-|--------|-------|----------|
-| Content-Security-Policy | Strict CSP | Prevent XSS |
-| Strict-Transport-Security | 1 year, includeSubDomains | Force HTTPS |
-| X-Content-Type-Options | nosniff | Prevent MIME sniffing |
-| X-Frame-Options | DENY | Prevent clickjacking |
-| X-XSS-Protection | 1; mode=block | XSS filter |
-| Referrer-Policy | strict-origin-when-cross-origin | Control referrer |
-| X-DNS-Prefetch-Control | off | Prevent DNS leakage |
-| X-Download-Options | noopen | Prevent file execution |
+| Header                    | Value                           | Purpose                |
+| ------------------------- | ------------------------------- | ---------------------- |
+| Content-Security-Policy   | Strict CSP                      | Prevent XSS            |
+| Strict-Transport-Security | 1 year, includeSubDomains       | Force HTTPS            |
+| X-Content-Type-Options    | nosniff                         | Prevent MIME sniffing  |
+| X-Frame-Options           | DENY                            | Prevent clickjacking   |
+| X-XSS-Protection          | 1; mode=block                   | XSS filter             |
+| Referrer-Policy           | strict-origin-when-cross-origin | Control referrer       |
+| X-DNS-Prefetch-Control    | off                             | Prevent DNS leakage    |
+| X-Download-Options        | noopen                          | Prevent file execution |
 
 ### HSTS Preloading
 
@@ -385,11 +390,13 @@ router.post('/register', registrationRateLimit, registerHandler);
 ### Encryption
 
 **At Rest**:
+
 - Database: PostgreSQL with encryption
 - Passwords: bcrypt with salt
 - Sensitive data: AES-256 encryption
 
 **In Transit**:
+
 - TLS 1.2+ required
 - HTTPS enforced
 - Secure cookies
@@ -419,6 +426,7 @@ router.post('/register', registrationRateLimit, registerHandler);
 All secrets stored in environment variables:
 
 **Critical Secrets**:
+
 - JWT_SECRET: JWT signing key
 - REFRESH_TOKEN_SECRET: Refresh token key
 - SESSION_SECRET: Session cookie signing
@@ -485,12 +493,14 @@ npm test -- --coverage
 ### Manual Security Testing
 
 **Tools**:
+
 - OWASP ZAP: Automated vulnerability scanning
 - Burp Suite: Manual penetration testing
 - SQLMap: SQL injection testing
 - XSSer: XSS vulnerability detection
 
 **Testing Checklist**:
+
 - [ ] SQL injection attempts
 - [ ] XSS payload injection
 - [ ] CSRF token bypass attempts
@@ -533,6 +543,7 @@ If you discover a security vulnerability:
 ### Security Monitoring
 
 **Logging**:
+
 - Authentication attempts (success/failure)
 - Authorization failures
 - Rate limit violations
@@ -543,6 +554,7 @@ If you discover a security vulnerability:
 - Error stack traces
 
 **Alerting**:
+
 - Multiple failed login attempts
 - Unusual API activity
 - Database errors
@@ -625,9 +637,9 @@ If you discover a security vulnerability:
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0.0 | 2025-01-29 | Initial security implementation |
+| Version | Date       | Changes                         |
+| ------- | ---------- | ------------------------------- |
+| 1.0.0   | 2025-01-29 | Initial security implementation |
 
 ---
 

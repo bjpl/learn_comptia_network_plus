@@ -6,12 +6,12 @@ Comprehensive performance optimizations have been implemented for the CompTIA Ne
 
 ## Key Results
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| **Initial Bundle** | ~1.2 MB | 86.5 KB (gzipped) | **83% reduction** |
-| **Bundle Chunks** | 1 monolithic | 20 optimized chunks | **Better caching** |
-| **Feature Loading** | All upfront | On-demand lazy loading | **Faster initial load** |
-| **Build Time** | N/A | 15.46s | **Fast builds** |
+| Metric              | Before       | After                  | Improvement             |
+| ------------------- | ------------ | ---------------------- | ----------------------- |
+| **Initial Bundle**  | ~1.2 MB      | 86.5 KB (gzipped)      | **83% reduction**       |
+| **Bundle Chunks**   | 1 monolithic | 20 optimized chunks    | **Better caching**      |
+| **Feature Loading** | All upfront  | On-demand lazy loading | **Faster initial load** |
+| **Build Time**      | N/A          | 15.46s                 | **Fast builds**         |
 
 ## What Was Implemented
 
@@ -196,21 +196,22 @@ Lazy Loaded Features:
 
 ## Performance Targets
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| Initial Bundle (gzipped) | <500 KB | ✅ 86.5 KB |
-| Lighthouse Performance | 95+ | 🎯 Pending audit |
-| First Contentful Paint | <1s | 🎯 Pending test |
-| Largest Contentful Paint | <2.5s | 🎯 Pending test |
-| Time to Interactive | <3.5s | 🎯 Pending test |
-| Total Blocking Time | <200ms | 🎯 Pending test |
-| Cumulative Layout Shift | <0.1 | 🎯 Pending test |
+| Metric                   | Target  | Status           |
+| ------------------------ | ------- | ---------------- |
+| Initial Bundle (gzipped) | <500 KB | ✅ 86.5 KB       |
+| Lighthouse Performance   | 95+     | 🎯 Pending audit |
+| First Contentful Paint   | <1s     | 🎯 Pending test  |
+| Largest Contentful Paint | <2.5s   | 🎯 Pending test  |
+| Time to Interactive      | <3.5s   | 🎯 Pending test  |
+| Total Blocking Time      | <200ms  | 🎯 Pending test  |
+| Cumulative Layout Shift  | <0.1    | 🎯 Pending test  |
 
 ✅ = Achieved | 🎯 = Target (requires full audit)
 
 ## Next Steps
 
 1. **Run Lighthouse Audit**
+
    ```bash
    npm run build
    npm run preview
@@ -237,12 +238,14 @@ Lazy Loaded Features:
 ### Build Issues
 
 **Problem**: Build fails with TypeScript errors
+
 ```bash
 # Solution: Skip type checking temporarily
 npx vite build --mode production
 ```
 
 **Problem**: Bundle size too large
+
 ```bash
 # Solution: Analyze bundle
 npm run build  # Opens visualizer automatically
@@ -252,6 +255,7 @@ npm run build  # Opens visualizer automatically
 ### Performance Issues
 
 **Problem**: Slow page load
+
 ```bash
 # Check network waterfall
 npx lighthouse http://localhost:4173 --view
@@ -261,6 +265,7 @@ npx lighthouse http://localhost:4173 --throttling-method=devtools
 ```
 
 **Problem**: Service worker not registering
+
 ```typescript
 // Check browser console
 // Ensure service worker is in /public folder
@@ -318,24 +323,28 @@ npx lighthouse http://localhost:4173 --throttling-method=devtools
 ### Common Questions
 
 **Q: How do I test performance locally?**
+
 ```bash
 npm run build && npm run preview
 npx lighthouse http://localhost:4173 --view
 ```
 
 **Q: How do I check bundle sizes?**
+
 ```bash
 npm run build  # Opens visualizer
 ls -lh dist/assets/  # Check file sizes
 ```
 
 **Q: How do I add more lazy loaded features?**
+
 ```typescript
 const NewFeature = React.lazy(() => import('./NewFeature'));
 // Add to manualChunks in vite.config.ts
 ```
 
 **Q: How do I monitor performance in production?**
+
 ```typescript
 // Web Vitals are already tracked in main.tsx
 // Add analytics integration in reportWebVitals callback
@@ -344,16 +353,19 @@ const NewFeature = React.lazy(() => import('./NewFeature'));
 ## Maintenance Schedule
 
 ### Weekly
+
 - Monitor build sizes
 - Check for console errors
 - Review performance metrics
 
 ### Monthly
+
 - Run full Lighthouse audit
 - Update dependencies
 - Review and optimize new features
 
 ### Quarterly
+
 - Comprehensive performance review
 - Bundle analysis and cleanup
 - Update optimization strategies

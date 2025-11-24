@@ -1,4 +1,5 @@
 # Test Suite Improvements Report
+
 ## CompTIA Network+ Learning Platform
 
 **Date**: 2025-10-29
@@ -23,6 +24,7 @@ This report documents the systematic improvement of the test suite for the CompT
 ## Initial State
 
 ### Test Results (Before Improvements)
+
 - **Total Tests**: 464
 - **Failing Tests**: 71 (15.3% failure rate)
 - **Passing Tests**: 393 (84.7%)
@@ -54,6 +56,7 @@ This report documents the systematic improvement of the test suite for the CompT
 ### 1. Test Infrastructure Fixes
 
 #### A. Setup Configuration (tests/setup.ts)
+
 ```typescript
 // Added URL mocking for file download tests
 global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
@@ -66,6 +69,7 @@ HTMLAnchorElement.prototype.click = vi.fn();
 **Impact**: Fixed all CloudArchitectureDesigner export tests and eliminated unhandled errors
 
 #### B. Dependency Installation
+
 ```bash
 npm install --save-dev @testing-library/dom
 ```
@@ -75,13 +79,15 @@ npm install --save-dev @testing-library/dom
 ### 2. Test Logic Corrections
 
 #### A. IPv4 Subnet Calculation (tests/unit/utils.test.ts)
+
 **Problem**: Hardcoded return values didn't account for different CIDR prefixes
 
 **Solution**: Implemented proper subnet calculation algorithm
+
 ```typescript
 function calculateSubnet(ip: string, mask: string) {
   const maskOctets = mask.split('.').map(Number);
-  const binary = maskOctets.map(o => o.toString(2).padStart(8, '0')).join('');
+  const binary = maskOctets.map((o) => o.toString(2).padStart(8, '0')).join('');
   const cidr = binary.split('1').length - 1;
 
   const ipOctets = ip.split('.').map(Number);
@@ -91,20 +97,23 @@ function calculateSubnet(ip: string, mask: string) {
   const broadcast = network | ~maskInt;
 
   const totalHosts = Math.pow(2, 32 - cidr);
-  const usableHosts = cidr === 32 ? 1 : (cidr === 31 ? 2 : totalHosts - 2);
+  const usableHosts = cidr === 32 ? 1 : cidr === 31 ? 2 : totalHosts - 2;
 
   // Proper IP conversion logic...
 }
 ```
 
 **Tests Fixed**:
+
 - `should handle /30 subnet` ✓
 - `should calculate subnet correctly` ✓
 
 #### B. IPv6 Validation (tests/unit/modern.test.ts)
+
 **Problem**: Regex pattern didn't properly validate all IPv6 formats
 
 **Solution**: Implemented comprehensive IPv6 validation
+
 ```typescript
 function validateIPv6(address: string): boolean {
   if (!address || typeof address !== 'string') return false;
@@ -117,8 +126,8 @@ function validateIPv6(address: string): boolean {
   let expanded = address;
   if (address.includes('::')) {
     const parts = address.split('::');
-    const leftGroups = parts[0] ? parts[0].split(':').filter(p => p) : [];
-    const rightGroups = parts[1] ? parts[1].split(':').filter(p => p) : [];
+    const leftGroups = parts[0] ? parts[0].split(':').filter((p) => p) : [];
+    const rightGroups = parts[1] ? parts[1].split(':').filter((p) => p) : [];
     const missingGroups = 8 - leftGroups.length - rightGroups.length;
     const middleGroups = Array(missingGroups).fill('0');
     expanded = [...leftGroups, ...middleGroups, ...rightGroups].join(':');
@@ -127,25 +136,30 @@ function validateIPv6(address: string): boolean {
   const groups = expanded.split(':');
   if (groups.length !== 8) return false;
 
-  return groups.every(group => /^[0-9a-fA-F]{1,4}$/.test(group));
+  return groups.every((group) => /^[0-9a-fA-F]{1,4}$/.test(group));
 }
 ```
 
 **Tests Fixed**:
+
 - `should validate IPv6 address format` ✓
 
 #### C. IPv6 Compression (tests/unit/modern.test.ts)
+
 **Problem**: Simple regex replacement produced invalid compressed addresses
 
 **Solution**: Implemented proper longest-zero-sequence algorithm
+
 ```typescript
 function compressIPv6(address: string): string {
   // Remove leading zeros from each group
-  let parts = address.split(':').map(part => part.replace(/^0+/, '') || '0');
+  let parts = address.split(':').map((part) => part.replace(/^0+/, '') || '0');
 
   // Find longest sequence of zeros
-  let maxStart = -1, maxLen = 0;
-  let currStart = -1, currLen = 0;
+  let maxStart = -1,
+    maxLen = 0;
+  let currStart = -1,
+    currLen = 0;
 
   for (let i = 0; i < parts.length; i++) {
     if (parts[i] === '0') {
@@ -166,18 +180,20 @@ function compressIPv6(address: string): string {
 ```
 
 **Tests Fixed**:
+
 - `should compress IPv6 addresses correctly` ✓
 
 #### D. Cloud Cost Optimization (tests/unit/cloud.test.ts)
+
 **Problem**: Only checked for low utilization, ignored high utilization
 
 **Solution**: Added upsize recommendation logic
+
 ```typescript
-function recommendRightSizing(utilization: {
-  cpu: number;
-  memory: number;
-  instanceType: string;
-}): { action: string; suggestedInstance: string } {
+function recommendRightSizing(utilization: { cpu: number; memory: number; instanceType: string }): {
+  action: string;
+  suggestedInstance: string;
+} {
   // Check for oversized instances
   if (utilization.cpu < 20 && utilization.memory < 20) {
     return { action: 'downsize', suggestedInstance: 't3.large' };
@@ -191,21 +207,29 @@ function recommendRightSizing(utilization: {
 ```
 
 **Tests Fixed**:
+
 - `should recommend right-sizing for oversized instances` ✓
 
 #### E. Assessment Domain Mastery (tests/unit/assessment.test.ts)
+
 **Problem**: Used >= 90 for Expert level, should be > 90
 
 **Solution**: Adjusted threshold logic
+
 ```typescript
 function calculateDomainMastery(scores: Record<string, number>): Record<string, string> {
   const mastery: Record<string, string> = {};
 
   Object.entries(scores).forEach(([domain, score]) => {
-    if (score > 90) {mastery[domain] = 'Expert';}
-    else if (score >= 80) {mastery[domain] = 'Proficient';}
-    else if (score >= 70) {mastery[domain] = 'Competent';}
-    else {mastery[domain] = 'Developing';}
+    if (score > 90) {
+      mastery[domain] = 'Expert';
+    } else if (score >= 80) {
+      mastery[domain] = 'Proficient';
+    } else if (score >= 70) {
+      mastery[domain] = 'Competent';
+    } else {
+      mastery[domain] = 'Developing';
+    }
   });
 
   return mastery;
@@ -213,12 +237,15 @@ function calculateDomainMastery(scores: Record<string, number>): Record<string, 
 ```
 
 **Tests Fixed**:
+
 - `should calculate domain mastery levels` ✓
 
 #### F. Knowledge Gap Identification (tests/unit/assessment.test.ts)
+
 **Problem**: Used threshold of 75, should be 80 for certification readiness
 
 **Solution**: Updated filter threshold
+
 ```typescript
 function identifyCertificationGaps(scores: Record<string, number>): string[] {
   // Identify domains where score is below 80 (certification requirement)
@@ -229,15 +256,18 @@ function identifyCertificationGaps(scores: Record<string, number>): string[] {
 ```
 
 **Tests Fixed**:
+
 - `should identify certification knowledge gaps` ✓
 
 #### G. Technology Prioritization (tests/unit/modern.test.ts)
+
 **Problem**: Overly simplistic priority assignment
 
 **Solution**: Implemented scoring algorithm based on benefit, cost, and complexity
+
 ```typescript
 function prioritizeTechnologies(technologies: any[]): any {
-  const scored = technologies.map(t => {
+  const scored = technologies.map((t) => {
     const benefitScore = t.benefit === 'High' ? 3 : t.benefit === 'Medium' ? 2 : 1;
     const costScore = t.cost === 'High' ? 1 : t.cost === 'Medium' ? 2 : 3;
     const complexityScore = t.complexity === 'Low' ? 3 : t.complexity === 'Medium' ? 2 : 1;
@@ -253,15 +283,19 @@ function prioritizeTechnologies(technologies: any[]): any {
 ```
 
 **Tests Fixed**:
+
 - `should prioritize technology upgrades` ✓
 
 #### H. IaC Benefits Calculation (tests/unit/modern.test.ts)
+
 **Problem**: Missing consistency metric
 
 **Solution**: Added consistency evaluation
+
 ```typescript
 function calculateIaCBenefits(manual: any, automated: any): any {
-  const timeReduction = ((manual.deploymentTime - automated.deploymentTime) / manual.deploymentTime) * 100;
+  const timeReduction =
+    ((manual.deploymentTime - automated.deploymentTime) / manual.deploymentTime) * 100;
   const errorReduction = ((manual.errorRate - automated.errorRate) / manual.errorRate) * 100;
 
   return {
@@ -273,6 +307,7 @@ function calculateIaCBenefits(manual: any, automated: any): any {
 ```
 
 **Tests Fixed**:
+
 - `should calculate IaC adoption benefits` ✓
 
 ---
@@ -280,6 +315,7 @@ function calculateIaCBenefits(manual: any, automated: any): any {
 ## Current Test Status
 
 ### After Phase 1 Improvements
+
 - **Total Tests**: 500 (36 new tests discovered after fixes)
 - **Passing Tests**: 394 (78.8%)
 - **Failing Tests**: 106 (21.2%)
@@ -321,12 +357,14 @@ function calculateIaCBenefits(manual: any, automated: any): any {
 Based on the initial 0% coverage report, the following files need comprehensive testing:
 
 #### High Priority (Core Application Logic)
+
 - `src/App.tsx` - 0% coverage
 - `src/main.tsx` - 0% coverage
 - `src/router.tsx` - 0% coverage
 - `src/components/ErrorBoundary.tsx` - 0% coverage
 
 #### Contexts & State (0% coverage)
+
 - `src/contexts/AuthContext.tsx`
 - `src/contexts/ProgressContext.tsx`
 - `src/contexts/ThemeContext.tsx`
@@ -335,17 +373,20 @@ Based on the initial 0% coverage report, the following files need comprehensive 
 - `src/stores/progressStore.ts`
 
 #### Hooks (0% coverage)
+
 - `src/hooks/useProgress.ts`
 - `src/hooks/useScoring.ts`
 - `src/hooks/useTimer.ts`
 
 #### Utilities (Partial coverage - only data files covered)
+
 - `src/utils/networking.ts` - 0% coverage (critical!)
 - `src/utils/animation.ts` - 0% coverage
 - `src/utils/auth.ts` - 0% coverage
 - Data files: 100% coverage (appliances-data.ts, assessment-data.ts, etc.)
 
 #### Component Libraries (All 0% coverage)
+
 - OSI Model components (3 components)
 - Network Appliances components (3 components)
 - Protocols components (3 components)
@@ -424,6 +465,7 @@ Based on the initial 0% coverage report, the following files need comprehensive 
 ### Phase 1 Summary
 
 We have successfully:
+
 - ✓ Fixed critical infrastructure issues blocking all tests
 - ✓ Installed missing dependencies
 - ✓ Corrected 8+ core test logic errors
@@ -450,6 +492,7 @@ We have successfully:
 ## Files Modified
 
 ### Test Files
+
 1. `tests/setup.ts` - Added URL and click mocks
 2. `tests/unit/utils.test.ts` - Fixed calculateSubnet implementation
 3. `tests/unit/modern.test.ts` - Fixed IPv6 validation and compression
@@ -457,9 +500,11 @@ We have successfully:
 5. `tests/unit/assessment.test.ts` - Fixed domain mastery and knowledge gaps
 
 ### Dependencies
+
 - Added `@testing-library/dom` and 8 related packages
 
 ### Documentation
+
 - Created `docs/testing/TEST_IMPROVEMENTS_REPORT.md` (this file)
 
 ---

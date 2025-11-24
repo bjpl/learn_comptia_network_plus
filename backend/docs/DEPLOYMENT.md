@@ -1,6 +1,7 @@
 # Deployment Guide - CompTIA Network+ Learning Platform Backend
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Prerequisites](#prerequisites)
 3. [Development Deployment](#development-deployment)
@@ -13,6 +14,7 @@
 ## Overview
 
 This guide covers deploying the CompTIA Network+ Learning Platform backend using Docker and Docker Compose. The platform uses:
+
 - Node.js 20 (Backend API)
 - PostgreSQL 16 (Database)
 - Redis 7 (Caching/Sessions)
@@ -21,12 +23,14 @@ This guide covers deploying the CompTIA Network+ Learning Platform backend using
 ## Prerequisites
 
 ### Required Software
+
 - Docker Engine 24.0+
 - Docker Compose 2.20+
 - Git
 - OpenSSL (for SSL certificates)
 
 ### Required Credentials
+
 - Database credentials
 - JWT secret keys
 - API keys (if using external services)
@@ -35,12 +39,14 @@ This guide covers deploying the CompTIA Network+ Learning Platform backend using
 ## Development Deployment
 
 ### 1. Clone Repository
+
 ```bash
 git clone https://github.com/your-org/comptia-network-plus.git
 cd comptia-network-plus/backend
 ```
 
 ### 2. Configure Environment
+
 ```bash
 # Copy example environment file
 cp .env.example .env
@@ -50,6 +56,7 @@ nano .env
 ```
 
 Required environment variables:
+
 ```bash
 NODE_ENV=development
 DB_PASSWORD=strong_password_here
@@ -59,6 +66,7 @@ CORS_ORIGIN=http://localhost:5173
 ```
 
 ### 3. Start Development Environment
+
 ```bash
 # Option 1: Use convenience script
 chmod +x scripts/start-dev.sh
@@ -70,6 +78,7 @@ docker-compose --profile dev up backend-dev
 ```
 
 ### 4. Verify Deployment
+
 ```bash
 # Check service status
 docker-compose ps
@@ -86,12 +95,14 @@ curl http://localhost:3000/health
 ### 1. Prepare Environment
 
 #### Create Production Environment File
+
 ```bash
 cp .env.production.template .env.production
 nano .env.production
 ```
 
 #### Generate Secure Secrets
+
 ```bash
 # Generate JWT secret
 openssl rand -base64 64
@@ -103,6 +114,7 @@ openssl rand -base64 32
 ### 2. SSL Certificate Setup
 
 #### Option A: Let's Encrypt (Recommended)
+
 ```bash
 # Install certbot
 sudo apt-get install certbot
@@ -116,6 +128,7 @@ sudo cp /etc/letsencrypt/live/api.yourdomain.com/privkey.pem backend/config/ssl/
 ```
 
 #### Option B: Self-Signed (Testing)
+
 ```bash
 mkdir -p config/ssl
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -124,12 +137,14 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 ```
 
 ### 3. Build Production Images
+
 ```bash
 chmod +x scripts/build-prod.sh
 ./scripts/build-prod.sh
 ```
 
 ### 4. Deploy to Production
+
 ```bash
 # Load environment
 export $(cat .env.production | grep -v '^#' | xargs)
@@ -142,11 +157,13 @@ docker-compose -f docker-compose.prod.yml ps
 ```
 
 ### 5. Run Database Migrations
+
 ```bash
 ./scripts/run-migrations.sh
 ```
 
 ### 6. Verify Production Deployment
+
 ```bash
 # Health check
 curl -k https://api.yourdomain.com/health
@@ -161,16 +178,19 @@ docker stats
 ## Database Management
 
 ### Create Backup
+
 ```bash
 ./scripts/backup-db.sh
 ```
 
 Backups are stored in `./backups/` with timestamp:
+
 ```
 comptia_network_backup_20241029_143022.sql.gz
 ```
 
 ### Restore Database
+
 ```bash
 # List available backups
 ls -lh backups/
@@ -182,11 +202,13 @@ ls -lh backups/
 ### Manual Database Operations
 
 #### Connect to Database
+
 ```bash
 docker-compose exec postgres psql -U postgres -d comptia_network
 ```
 
 #### Export Schema Only
+
 ```bash
 docker-compose exec -T postgres pg_dump \
   -U postgres -d comptia_network \
@@ -194,6 +216,7 @@ docker-compose exec -T postgres pg_dump \
 ```
 
 #### Import Data
+
 ```bash
 docker-compose exec -T postgres psql \
   -U postgres -d comptia_network < data.sql
@@ -202,6 +225,7 @@ docker-compose exec -T postgres psql \
 ## Monitoring
 
 ### Health Checks
+
 ```bash
 # Application health
 curl https://api.yourdomain.com/health
@@ -214,6 +238,7 @@ docker-compose exec postgres pg_isready
 ```
 
 ### Log Monitoring
+
 ```bash
 # Real-time logs
 docker-compose logs -f backend
@@ -229,6 +254,7 @@ docker-compose exec backend tail -f logs/app.log
 ```
 
 ### Resource Monitoring
+
 ```bash
 # Container stats
 docker stats
@@ -242,6 +268,7 @@ docker inspect comptia-backend
 ```
 
 ### Database Monitoring
+
 ```bash
 # Active connections
 docker-compose exec postgres psql -U postgres -c \
@@ -264,6 +291,7 @@ docker-compose exec postgres psql -U postgres -c \
 ### Application Rollback
 
 #### Option 1: Previous Docker Image
+
 ```bash
 # List available images
 docker images | grep comptia-backend
@@ -277,6 +305,7 @@ docker-compose up -d
 ```
 
 #### Option 2: Git Rollback
+
 ```bash
 # Find previous commit
 git log --oneline
@@ -290,6 +319,7 @@ docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ### Database Rollback
+
 ```bash
 # Restore from backup
 ./scripts/restore-db.sh comptia_network_backup_YYYYMMDD_HHMMSS.sql.gz
@@ -304,6 +334,7 @@ docker-compose exec postgres psql -U postgres -d comptia_network -c \
 ### Common Issues
 
 #### 1. Container Won't Start
+
 ```bash
 # Check logs
 docker-compose logs backend
@@ -316,6 +347,7 @@ docker-compose exec backend env | grep DB_
 ```
 
 #### 2. Database Connection Failed
+
 ```bash
 # Check PostgreSQL is running
 docker-compose ps postgres
@@ -329,6 +361,7 @@ docker network inspect backend_backend-network
 ```
 
 #### 3. High Memory Usage
+
 ```bash
 # Check container stats
 docker stats comptia-backend
@@ -341,6 +374,7 @@ docker-compose restart backend
 ```
 
 #### 4. Slow Performance
+
 ```bash
 # Check database performance
 docker-compose exec postgres psql -U postgres -c \
@@ -355,6 +389,7 @@ docker-compose exec nginx cat /var/log/nginx/access.log | \
 ```
 
 #### 5. SSL Certificate Issues
+
 ```bash
 # Verify certificate
 openssl x509 -in config/ssl/cert.pem -text -noout
@@ -369,6 +404,7 @@ openssl s_client -connect api.yourdomain.com:443
 ### Emergency Procedures
 
 #### Complete System Restart
+
 ```bash
 # Stop all services
 docker-compose down
@@ -382,6 +418,7 @@ docker-compose up -d
 ```
 
 #### Data Recovery
+
 ```bash
 # List backups
 ls -lh backups/
@@ -394,6 +431,7 @@ LATEST_BACKUP=$(ls -t backups/comptia_network_backup_*.sql.gz | head -1)
 ## Performance Optimization
 
 ### Database Optimization
+
 ```sql
 -- Analyze tables
 ANALYZE;
@@ -406,6 +444,7 @@ VACUUM ANALYZE;
 ```
 
 ### Cache Optimization
+
 ```bash
 # Clear Redis cache
 docker-compose exec redis redis-cli FLUSHALL
@@ -415,6 +454,7 @@ docker-compose exec redis redis-cli INFO stats | grep hit
 ```
 
 ### Container Optimization
+
 ```bash
 # Remove unused images
 docker image prune -a
@@ -440,6 +480,7 @@ docker builder prune
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/your-org/comptia-network-plus/issues
 - Documentation: https://docs.yourdomain.com
 - Email: support@yourdomain.com

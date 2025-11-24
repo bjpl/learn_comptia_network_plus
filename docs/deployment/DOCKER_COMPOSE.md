@@ -9,6 +9,7 @@
 ## Overview
 
 Deploy using Docker Compose for:
+
 - **Consistent environments** across dev, staging, production
 - **Easy scaling** with Docker Swarm or Kubernetes
 - **Portable deployments** across any Docker-compatible host
@@ -314,7 +315,7 @@ services:
     networks:
       - backend-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -328,10 +329,10 @@ services:
           cpus: '0.5'
           memory: 512M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "50m"
-        max-file: "5"
+        max-size: '50m'
+        max-file: '5'
 
   redis:
     image: redis:7-alpine
@@ -347,7 +348,7 @@ services:
     networks:
       - backend-network
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -357,10 +358,10 @@ services:
           cpus: '0.5'
           memory: 512M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   backend:
     build:
@@ -382,7 +383,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_SSL: "false"
+      DB_SSL: 'false'
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
@@ -416,10 +417,10 @@ services:
         delay: 10s
         failure_action: rollback
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "50m"
-        max-file: "10"
+        max-size: '50m'
+        max-file: '10'
 
   frontend:
     build:
@@ -439,10 +440,10 @@ services:
           cpus: '0.5'
           memory: 256M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   nginx:
     image: nginx:alpine
@@ -451,8 +452,8 @@ services:
       - frontend
       - backend
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
@@ -460,7 +461,7 @@ services:
     networks:
       - frontend-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost/health']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -470,10 +471,10 @@ services:
           cpus: '0.5'
           memory: 256M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "50m"
-        max-file: "10"
+        max-size: '50m'
+        max-file: '10'
 
 volumes:
   postgres-data:

@@ -19,6 +19,7 @@ This document outlines the comprehensive performance optimizations implemented i
 ### 1. Code Splitting & Lazy Loading
 
 #### Route-Based Code Splitting
+
 All routes are lazy loaded using React.lazy() to reduce initial bundle size:
 
 ```typescript
@@ -29,11 +30,13 @@ const NotFound = React.lazy(() => import('./pages/NotFound'));
 ```
 
 **Benefits**:
+
 - Reduced initial bundle size by ~60%
 - Faster initial page load
 - Components loaded on-demand
 
 #### Component-Level Optimization
+
 Reusable components for lazy loading:
 
 - `LoadingSpinner.tsx` - Optimized loading indicators
@@ -43,6 +46,7 @@ Reusable components for lazy loading:
 ### 2. Bundle Optimization (vite.config.ts)
 
 #### Manual Chunks Strategy
+
 Vendor and feature-based chunking:
 
 ```typescript
@@ -63,6 +67,7 @@ manualChunks: {
 ```
 
 **Benefits**:
+
 - Better caching (vendor code changes less frequently)
 - Parallel chunk loading
 - Reduced chunk duplication
@@ -82,6 +87,7 @@ build: {
 ```
 
 **Production optimizations**:
+
 - Console statements removed
 - Debugger statements removed
 - Source maps disabled in production
@@ -90,6 +96,7 @@ build: {
 ### 3. Image Optimization
 
 #### ViteImageOptimizer Plugin
+
 Automatic image compression:
 
 ```typescript
@@ -97,11 +104,12 @@ ViteImageOptimizer({
   png: { quality: 80 },
   jpeg: { quality: 80 },
   jpg: { quality: 80 },
-  webp: { lossless: false, quality: 80 }
-})
+  webp: { lossless: false, quality: 80 },
+});
 ```
 
 #### OptimizedImage Component
+
 ```typescript
 // src/components/shared/OptimizedImage.tsx
 <OptimizedImage
@@ -114,6 +122,7 @@ ViteImageOptimizer({
 ```
 
 **Features**:
+
 - Native lazy loading
 - Async decoding
 - Proper dimensions to prevent CLS
@@ -123,26 +132,34 @@ ViteImageOptimizer({
 #### index.html Optimizations
 
 **Preconnect to critical domains**:
+
 ```html
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 ```
 
 **Preload critical resources**:
+
 ```html
 <link rel="modulepreload" href="/src/main.tsx" />
 ```
 
 **Inline critical CSS**:
+
 ```html
 <style>
   /* Inline loading spinner CSS */
-  #root-loading { /* styles */ }
-  .loading-spinner { /* styles */ }
+  #root-loading {
+    /* styles */
+  }
+  .loading-spinner {
+    /* styles */
+  }
 </style>
 ```
 
 **Benefits**:
+
 - Faster font loading
 - Reduced render-blocking resources
 - Immediate loading state display
@@ -150,6 +167,7 @@ ViteImageOptimizer({
 ### 5. Web Workers
 
 #### Offload Heavy Computations
+
 ```typescript
 // src/workers/calculation.worker.ts
 // Handles:
@@ -159,6 +177,7 @@ ViteImageOptimizer({
 ```
 
 #### Worker Manager
+
 ```typescript
 // src/utils/workerManager.ts
 workerManager.calculateSubnet(ip, cidr, (result) => {
@@ -167,6 +186,7 @@ workerManager.calculateSubnet(ip, cidr, (result) => {
 ```
 
 **Benefits**:
+
 - Main thread stays responsive
 - Better perceived performance
 - No UI freezing during calculations
@@ -174,6 +194,7 @@ workerManager.calculateSubnet(ip, cidr, (result) => {
 ### 6. Service Worker & Offline Support
 
 #### Caching Strategy
+
 ```javascript
 // public/sw.js
 // Network-first for navigation
@@ -182,6 +203,7 @@ workerManager.calculateSubnet(ip, cidr, (result) => {
 ```
 
 **Features**:
+
 - Offline capability
 - Faster repeat visits
 - Automatic cache updates
@@ -189,6 +211,7 @@ workerManager.calculateSubnet(ip, cidr, (result) => {
 ### 7. Performance Monitoring
 
 #### Web Vitals Integration
+
 ```typescript
 // src/utils/performance.ts
 import { reportWebVitals } from './utils/performance';
@@ -199,6 +222,7 @@ reportWebVitals((metric) => {
 ```
 
 **Tracked Metrics**:
+
 - CLS (Cumulative Layout Shift)
 - FID (First Input Delay)
 - FCP (First Contentful Paint)
@@ -206,6 +230,7 @@ reportWebVitals((metric) => {
 - TTFB (Time to First Byte)
 
 #### Custom Performance Marks
+
 ```typescript
 import { markPerformance, measurePerformance } from './utils/performance';
 
@@ -218,6 +243,7 @@ measurePerformance('feature-duration', 'feature-start', 'feature-end');
 ### 8. Component-Level Optimizations
 
 #### React Memoization
+
 ```typescript
 import { memo, useMemo, useCallback } from 'react';
 
@@ -235,7 +261,9 @@ export const ExpensiveComponent = memo(({ data }) => {
 ```
 
 #### Virtual Lists
+
 For long lists (>100 items):
+
 ```typescript
 import { VirtualList } from './components/shared/VirtualList';
 
@@ -248,6 +276,7 @@ import { VirtualList } from './components/shared/VirtualList';
 ```
 
 **Benefits**:
+
 - Renders only visible items
 - Smooth scrolling
 - Reduced DOM nodes
@@ -255,11 +284,13 @@ import { VirtualList } from './components/shared/VirtualList';
 ## Bundle Analysis
 
 ### Run Bundle Analyzer
+
 ```bash
 npm run build
 ```
 
 The visualizer will automatically open showing:
+
 - Chunk sizes (raw and gzipped)
 - Module dependencies
 - Largest contributors
@@ -269,21 +300,25 @@ File location: `dist/stats.html`
 ### Expected Bundle Sizes
 
 **Vendor Chunks**:
+
 - react-vendor: ~150KB (gzipped: ~50KB)
 - ui-vendor: ~120KB (gzipped: ~40KB)
 - three-vendor: ~200KB (gzipped: ~70KB)
 - mui-vendor: ~180KB (gzipped: ~60KB)
 
 **Feature Chunks**:
+
 - Each feature: 20-50KB (gzipped: 5-15KB)
 
 **Total Initial Load**:
+
 - Without optimization: ~1.2MB
 - With optimization: <500KB (gzipped)
 
 ## Performance Testing
 
 ### Lighthouse Audit
+
 ```bash
 # Build production version
 npm run build
@@ -296,7 +331,9 @@ npx lighthouse http://localhost:4173 --view --output html --output-path ./lighth
 ```
 
 ### Web Vitals in Development
+
 Check browser console for real-time metrics:
+
 ```
 [Web Vitals] CLS: 0.05
 [Web Vitals] FCP: 850ms
@@ -308,6 +345,7 @@ Check browser console for real-time metrics:
 ## Optimization Checklist
 
 ### Before Deployment
+
 - [ ] Run bundle analyzer
 - [ ] Check all chunks are <600KB
 - [ ] Verify lazy loading works
@@ -319,6 +357,7 @@ Check browser console for real-time metrics:
 - [ ] Check font loading performance
 
 ### Continuous Monitoring
+
 - [ ] Monitor bundle size in CI/CD
 - [ ] Track Web Vitals in production
 - [ ] Review Lighthouse scores monthly
@@ -328,6 +367,7 @@ Check browser console for real-time metrics:
 ## Best Practices
 
 ### Do's
+
 ✅ Use code splitting for routes
 ✅ Implement lazy loading for heavy components
 ✅ Optimize images (compress, lazy load)
@@ -338,6 +378,7 @@ Check browser console for real-time metrics:
 ✅ Preload critical resources
 
 ### Don'ts
+
 ❌ Import entire libraries (use tree shaking)
 ❌ Load all components upfront
 ❌ Use unoptimized images
@@ -349,6 +390,7 @@ Check browser console for real-time metrics:
 ## Troubleshooting
 
 ### Large Bundle Size
+
 1. Run bundle analyzer: `npm run build`
 2. Identify large chunks
 3. Consider dynamic imports
@@ -356,6 +398,7 @@ Check browser console for real-time metrics:
 5. Remove unused dependencies
 
 ### Slow Initial Load
+
 1. Check network waterfall
 2. Verify code splitting
 3. Check preload/prefetch hints
@@ -363,6 +406,7 @@ Check browser console for real-time metrics:
 5. Review service worker cache
 
 ### Poor Lighthouse Score
+
 1. Run Lighthouse in incognito
 2. Check specific failing metrics
 3. Review suggestions
@@ -380,6 +424,7 @@ Check browser console for real-time metrics:
 ## Maintenance
 
 ### Monthly Tasks
+
 - Review bundle sizes
 - Update dependencies
 - Check for performance regressions
@@ -387,6 +432,7 @@ Check browser console for real-time metrics:
 - Review Web Vitals data
 
 ### Quarterly Tasks
+
 - Comprehensive Lighthouse audit
 - Bundle analysis and cleanup
 - Review and update caching strategies

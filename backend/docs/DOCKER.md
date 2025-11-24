@@ -7,6 +7,7 @@ This guide covers Docker-specific operations for the CompTIA Network+ Learning P
 ## Docker Architecture
 
 ### Container Structure
+
 ```
 ┌─────────────────────────────────────────┐
 │            Nginx (Reverse Proxy)        │
@@ -29,6 +30,7 @@ This guide covers Docker-specific operations for the CompTIA Network+ Learning P
 ### Basic Operations
 
 #### Start Services
+
 ```bash
 # Development (with hot reload)
 docker-compose up -d
@@ -47,6 +49,7 @@ docker-compose up -d --build
 ```
 
 #### Stop Services
+
 ```bash
 # Stop all
 docker-compose down
@@ -59,6 +62,7 @@ docker-compose stop backend
 ```
 
 #### Restart Services
+
 ```bash
 # Restart all
 docker-compose restart
@@ -311,6 +315,7 @@ docker-compose exec backend netstat -tuln
 ### Build Stages
 
 Our Dockerfile uses three stages:
+
 1. **dependencies**: Production dependencies only
 2. **builder**: Build TypeScript code
 3. **production**: Final minimal image

@@ -7,6 +7,7 @@ All Docker containerization and CI/CD pipelines have been successfully implement
 ## What's Included
 
 ### 1. Docker Configuration
+
 - **Frontend Dockerfile**: Multi-stage build with Nginx
 - **Backend Dockerfile**: Multi-stage build with Node.js
 - **Frontend docker-compose.yml**: Full-stack production
@@ -15,11 +16,13 @@ All Docker containerization and CI/CD pipelines have been successfully implement
 - **.dockerignore files**: Optimized build contexts
 
 ### 2. GitHub Actions Workflows
+
 - **ci.yml**: Continuous Integration (frontend, backend, integration tests, security)
 - **cd.yml**: Continuous Deployment (build, push, deploy to staging/production)
 - **docker-build.yml**: Docker build testing and validation
 
 ### 3. Helper Scripts
+
 - **docker-dev.sh**: Start development environment
 - **docker-prod.sh**: Build production images
 - **migrate.sh**: Run database migrations
@@ -27,6 +30,7 @@ All Docker containerization and CI/CD pipelines have been successfully implement
 - **restore-db.sh**: Restore from backups
 
 ### 4. Documentation
+
 - **backend/docs/DEPLOYMENT.md**: Complete deployment guide
 - **backend/docs/DOCKER.md**: Docker configuration guide
 - **docs/CICD.md**: CI/CD pipeline documentation
@@ -36,17 +40,20 @@ All Docker containerization and CI/CD pipelines have been successfully implement
 ## Quick Start
 
 ### Development
+
 ```bash
 cd backend
 ./scripts/docker-dev.sh
 ```
 
 ### Production
+
 ```bash
 docker-compose up -d
 ```
 
 ### Backup Database
+
 ```bash
 cd backend
 ./scripts/backup-db.sh
@@ -63,6 +70,7 @@ cd backend
 ## Documentation
 
 For detailed information, see:
+
 - 📖 [Quick Start Guide](DOCKER_QUICKSTART.md)
 - 📖 [Deployment Guide](backend/docs/DEPLOYMENT.md)
 - 📖 [Docker Guide](backend/docs/DOCKER.md)
@@ -72,6 +80,7 @@ For detailed information, see:
 ## Files Created
 
 ### Root Directory
+
 - `Dockerfile` - Frontend build
 - `nginx.conf` - Reverse proxy config
 - `docker-compose.yml` - Production stack
@@ -80,11 +89,13 @@ For detailed information, see:
 - `README_DOCKER.md` - This file
 
 ### Backend Directory
+
 - `backend/Dockerfile` - Backend build
 - `backend/docker-compose.yml` - Dev environment
 - `backend/.dockerignore` - Build exclusions
 
 ### Scripts (backend/scripts/)
+
 - `docker-dev.sh` - Dev environment
 - `docker-prod.sh` - Prod builds
 - `migrate.sh` - Migrations
@@ -92,11 +103,13 @@ For detailed information, see:
 - `restore-db.sh` - Restore
 
 ### Workflows (.github/workflows/)
+
 - `ci.yml` - CI pipeline
 - `cd.yml` - CD pipeline
 - `docker-build.yml` - Docker testing
 
 ### Documentation
+
 - `backend/docs/DEPLOYMENT.md`
 - `backend/docs/DOCKER.md`
 - `docs/CICD.md`
@@ -105,17 +118,20 @@ For detailed information, see:
 ## Testing
 
 ### Test Backend Build
+
 ```bash
 cd backend
 docker build -t comptia-backend:test .
 ```
 
 ### Test Frontend Build
+
 ```bash
 docker build -t comptia-frontend:test .
 ```
 
 ### Test Full Stack
+
 ```bash
 docker-compose up -d
 curl http://localhost:3001/api/health
@@ -162,6 +178,7 @@ docker-compose down
 ## Support
 
 For issues:
+
 - Check logs: `docker-compose logs -f`
 - Read docs: See documentation links above
 - GitHub Issues: Report problems

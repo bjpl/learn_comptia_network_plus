@@ -3,11 +3,13 @@
 ## 🚀 Quick Start
 
 ### Import the Hook
+
 ```typescript
 import { useMobileDetection } from '../../hooks/useMobileDetection';
 ```
 
 ### Basic Usage
+
 ```typescript
 const { isMobile, isTablet, isDesktop } = useMobileDetection();
 
@@ -23,14 +25,14 @@ return <DesktopView />;
 
 Returns an object with:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `isMobile` | `boolean` | True if screen < 768px |
-| `isTablet` | `boolean` | True if screen 768-1023px |
-| `isDesktop` | `boolean` | True if screen ≥ 1024px |
-| `deviceType` | `'mobile' \| 'tablet' \| 'desktop'` | Current device category |
-| `screenWidth` | `number` | Current screen width in pixels |
-| `isTouchDevice` | `boolean` | True if touch capabilities detected |
+| Property        | Type                                | Description                         |
+| --------------- | ----------------------------------- | ----------------------------------- |
+| `isMobile`      | `boolean`                           | True if screen < 768px              |
+| `isTablet`      | `boolean`                           | True if screen 768-1023px           |
+| `isDesktop`     | `boolean`                           | True if screen ≥ 1024px             |
+| `deviceType`    | `'mobile' \| 'tablet' \| 'desktop'` | Current device category             |
+| `screenWidth`   | `number`                            | Current screen width in pixels      |
+| `isTouchDevice` | `boolean`                           | True if touch capabilities detected |
 
 ### useMinimumWidth(minWidth: number)
 
@@ -70,10 +72,10 @@ Desktop  : 1024px ─────▶  ∞
 
 ```javascript
 // Check if dismissed
-localStorage.getItem('network-plus-mobile-dismissed')  // 'true' or null
+localStorage.getItem('network-plus-mobile-dismissed'); // 'true' or null
 
 // Reset (show modal again)
-localStorage.removeItem('network-plus-mobile-dismissed')
+localStorage.removeItem('network-plus-mobile-dismissed');
 ```
 
 ## 🧪 Testing Commands
@@ -82,7 +84,7 @@ localStorage.removeItem('network-plus-mobile-dismissed')
 
 ```javascript
 // Check current width
-window.innerWidth
+window.innerWidth;
 
 // Check detection
 const hook = useMobileDetection();
@@ -172,9 +174,10 @@ return (
 ## 🐛 Troubleshooting
 
 ### Modal shows on desktop
+
 ```javascript
 // Check width
-console.log(window.innerWidth);  // Should be ≥ 1024
+console.log(window.innerWidth); // Should be ≥ 1024
 
 // Check zoom
 // Press Ctrl+0 to reset zoom
@@ -184,18 +187,20 @@ console.log(window.innerWidth);  // Should be ≥ 1024
 ```
 
 ### Modal doesn't show on mobile
+
 ```javascript
 // Clear storage
 localStorage.clear();
 
 // Force show
-<MobileWarningModal forceShow={true} />
+<MobileWarningModal forceShow={true} />;
 
 // Check detection
 console.log(useMobileDetection());
 ```
 
 ### "Continue Anyway" doesn't persist
+
 ```javascript
 // Test localStorage
 try {
@@ -231,12 +236,12 @@ try {
 
 ## 🔗 Quick Links
 
-| Action | Command |
-|--------|---------|
-| Build | `npm run build` |
+| Action     | Command             |
+| ---------- | ------------------- |
+| Build      | `npm run build`     |
 | Type check | `npm run typecheck` |
-| Lint | `npm run lint` |
-| Dev server | `npm run dev` |
+| Lint       | `npm run lint`      |
+| Dev server | `npm run dev`       |
 
 ## 🎓 Best Practices
 
@@ -340,25 +345,32 @@ return (
 ## 🚨 Common Mistakes
 
 ### Mistake 1: Using window directly
+
 ```typescript
 // ❌ Wrong
-if (window.innerWidth < 768) { }
+if (window.innerWidth < 768) {
+}
 
 // ✅ Correct
 const { isMobile } = useMobileDetection();
-if (isMobile) { }
+if (isMobile) {
+}
 ```
 
 ### Mistake 2: Hard-coding breakpoints
+
 ```typescript
 // ❌ Wrong
-if (screenWidth < 768) { }
+if (screenWidth < 768) {
+}
 
 // ✅ Correct
-if (isMobile) { }
+if (isMobile) {
+}
 ```
 
 ### Mistake 3: Not handling resize
+
 ```typescript
 // ❌ Wrong (static detection)
 const isMobile = window.innerWidth < 768;

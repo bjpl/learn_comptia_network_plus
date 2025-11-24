@@ -70,14 +70,15 @@ This document provides a high-level overview of the complete database schema des
 
 ### 1. User Management (4 tables)
 
-| Table | Purpose | Records (est.) |
-|-------|---------|----------------|
-| users | Authentication & authorization | 1 per user |
-| user_profiles | Extended user information | 1 per user |
-| user_settings | Application preferences | 1 per user |
-| learning_streaks | Daily streak tracking | 1 per user |
+| Table            | Purpose                        | Records (est.) |
+| ---------------- | ------------------------------ | -------------- |
+| users            | Authentication & authorization | 1 per user     |
+| user_profiles    | Extended user information      | 1 per user     |
+| user_settings    | Application preferences        | 1 per user     |
+| learning_streaks | Daily streak tracking          | 1 per user     |
 
 **Key Features:**
+
 - bcrypt password hashing
 - Soft delete support
 - Role-based access (student, instructor, admin)
@@ -86,75 +87,83 @@ This document provides a high-level overview of the complete database schema des
 
 ### 2. Learning Content (4 tables)
 
-| Table | Purpose | Records (est.) |
-|-------|---------|----------------|
-| learning_components | Content catalog | ~200 components |
-| user_progress | Progress tracking | users × components |
-| learning_sessions | Session analytics | ~100 per user |
-| bookmarks | Quick access bookmarks | ~20 per user |
+| Table               | Purpose                | Records (est.)     |
+| ------------------- | ---------------------- | ------------------ |
+| learning_components | Content catalog        | ~200 components    |
+| user_progress       | Progress tracking      | users × components |
+| learning_sessions   | Session analytics      | ~100 per user      |
+| bookmarks           | Quick access bookmarks | ~20 per user       |
 
 **Component Types:**
+
 - Lessons, Videos, Flashcards
 - Quizzes, Labs, Simulations
 - Practice Exams, Study Guides
 
 ### 3. Assessments (4 tables)
 
-| Table | Purpose | Records (est.) |
-|-------|---------|----------------|
-| question_bank | Reusable questions | ~1000 questions |
-| assessments | Assessment definitions | ~50 assessments |
-| assessment_attempts | User attempts | ~30 per user |
-| assessment_answers | Individual answers | attempts × questions |
+| Table               | Purpose                | Records (est.)       |
+| ------------------- | ---------------------- | -------------------- |
+| question_bank       | Reusable questions     | ~1000 questions      |
+| assessments         | Assessment definitions | ~50 assessments      |
+| assessment_attempts | User attempts          | ~30 per user         |
+| assessment_answers  | Individual answers     | attempts × questions |
 
 **Question Types:**
+
 - Multiple Choice, Multiple Select
 - True/False, Fill in the Blank
 - Matching, Simulations
 
 ### 4. Progress Tracking (4 tables)
 
-| Table | Purpose | Records (est.) |
-|-------|---------|----------------|
-| achievements | Achievement definitions | ~25 achievements |
-| user_achievements | Earned achievements | ~10 per user |
-| study_goals | User-defined goals | ~3 per active user |
-| learning_streaks | Engagement tracking | 1 per user |
+| Table             | Purpose                 | Records (est.)     |
+| ----------------- | ----------------------- | ------------------ |
+| achievements      | Achievement definitions | ~25 achievements   |
+| user_achievements | Earned achievements     | ~10 per user       |
+| study_goals       | User-defined goals      | ~3 per active user |
+| learning_streaks  | Engagement tracking     | 1 per user         |
 
 **Achievement Types:**
+
 - Badges, Milestones, Streaks
 - Mastery, Special Events
 
 ### 5. Analytics (3 tables)
 
-| Table | Purpose | Records (est.) |
-|-------|---------|----------------|
-| user_activity_logs | Audit trail | ~100 per user |
+| Table               | Purpose          | Records (est.)    |
+| ------------------- | ---------------- | ----------------- |
+| user_activity_logs  | Audit trail      | ~100 per user     |
 | component_analytics | Daily aggregates | components × days |
-| performance_metrics | System health | Variable |
+| performance_metrics | System health    | Variable          |
 
 ---
 
 ## Key Design Decisions
 
 ### 1. UUID Primary Keys
+
 **Decision:** Use UUIDs instead of auto-incrementing integers
 
 **Rationale:**
+
 - Distributed system compatibility
 - No sequential ID exposure
 - Merge-friendly across databases
 - URL-safe identifiers
 
 ### 2. JSONB for Flexibility
+
 **Usage:** Content data, settings, criteria, metadata
 
 **Benefits:**
+
 - Schema flexibility for evolving requirements
 - Efficient storage and indexing
 - Native PostgreSQL query support
 
 **Examples:**
+
 ```json
 learning_components.content = {
   "type": "video",
@@ -170,33 +179,40 @@ achievements.criteria = {
 ```
 
 ### 3. Soft Deletes
+
 **Tables:** users, learning_components, assessments, question_bank
 
 **Implementation:** `deleted_at` timestamp column
 
 **Benefits:**
+
 - Data recovery capability
 - Audit trail preservation
 - Referential integrity maintenance
 
 ### 4. Array Columns
+
 **Usage:** Prerequisites, objectives, tags
 
 **Benefits:**
+
 - Denormalized for performance
 - Simple PostgreSQL array operators
 - No junction table overhead
 
 **Example:**
+
 ```sql
 learning_components.prerequisites = ARRAY[uuid1, uuid2, uuid3]
 question_bank.comptia_objectives = ARRAY['1.1', '2.3', '4.2']
 ```
 
 ### 5. Automatic Timestamps
+
 **Implementation:** Trigger function for `updated_at`
 
 **Trigger:**
+
 ```sql
 CREATE TRIGGER update_table_updated_at
 BEFORE UPDATE ON table_name
@@ -208,6 +224,7 @@ FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ## Data Flow Examples
 
 ### User Registration Flow
+
 ```
 1. INSERT INTO users (email, username, password_hash)
 2. INSERT INTO user_profiles (user_id, first_name, last_name)
@@ -217,6 +234,7 @@ FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ```
 
 ### Component Completion Flow
+
 ```
 1. UPDATE user_progress SET
    - status = 'completed'
@@ -235,6 +253,7 @@ FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ```
 
 ### Assessment Taking Flow
+
 ```
 1. INSERT INTO assessment_attempts (user_id, assessment_id, status='in_progress')
 
@@ -259,12 +278,14 @@ FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ### Indexes Strategy
 
 **Foreign Keys:** All foreign keys automatically indexed
+
 ```sql
 user_progress.user_id
 user_progress.component_id
 ```
 
 **Frequently Filtered Columns:**
+
 ```sql
 users.email, users.username
 learning_components.domain, learning_components.component_type
@@ -272,6 +293,7 @@ assessments.slug
 ```
 
 **Composite Indexes:**
+
 ```sql
 (user_id, component_id) for user_progress lookups
 (component_id, date) for analytics queries
@@ -280,6 +302,7 @@ assessments.slug
 ### Views for Complex Queries
 
 **Standard Views** (real-time):
+
 - v_user_learning_stats
 - v_component_performance
 - v_assessment_performance
@@ -287,6 +310,7 @@ assessments.slug
 - v_question_performance
 
 **Materialized Views** (cached):
+
 - mv_daily_user_activity (refresh nightly)
 - mv_weekly_domain_progress (refresh weekly)
 
@@ -294,7 +318,7 @@ assessments.slug
 
 1. **Use prepared statements** for repeated queries
 2. **Limit result sets** with LIMIT and OFFSET
-3. **Avoid SELECT *** - specify needed columns
+3. **Avoid SELECT \*** - specify needed columns
 4. **Use EXISTS** instead of COUNT for existence checks
 5. **Leverage views** for complex aggregations
 
@@ -303,22 +327,26 @@ assessments.slug
 ## Security Features
 
 ### Password Security
+
 - bcrypt hashing with salt rounds >= 10
 - Never store plain text passwords
 - Password reset tokens with expiration
 
 ### Account Security
+
 - Failed login attempt tracking
 - Account locking after threshold
 - Email verification workflow
 
 ### Data Security
+
 - Row-level security policies (optional)
 - Audit logging for sensitive operations
 - IP address tracking
 - Soft deletes for data retention
 
 ### SQL Injection Prevention
+
 - Always use parameterized queries
 - Never concatenate user input
 - Validate all input at application level
@@ -328,6 +356,7 @@ assessments.slug
 ## Maintenance Procedures
 
 ### Daily Tasks
+
 ```sql
 -- Refresh materialized views
 SELECT refresh_analytics_views();
@@ -338,6 +367,7 @@ ORDER BY mean_exec_time DESC LIMIT 10;
 ```
 
 ### Weekly Tasks
+
 ```sql
 -- Analyze tables for optimization
 ANALYZE;
@@ -348,6 +378,7 @@ WHERE created_at < NOW() - INTERVAL '30 days';
 ```
 
 ### Monthly Tasks
+
 ```sql
 -- Vacuum database
 VACUUM ANALYZE;
@@ -368,6 +399,7 @@ WHERE idx_scan = 0;
 ### Available Scripts
 
 **migrate.sh** - Database migration management
+
 ```bash
 ./migrate.sh up      # Apply migrations
 ./migrate.sh down    # Rollback migrations
@@ -375,11 +407,13 @@ WHERE idx_scan = 0;
 ```
 
 **seed.sh** - Populate with demo data
+
 ```bash
 ./seed.sh            # Run all seed files
 ```
 
 **backup.sh** - Database backup
+
 ```bash
 ./backup.sh full     # Full backup (schema + data)
 ./backup.sh schema   # Schema only
@@ -388,6 +422,7 @@ WHERE idx_scan = 0;
 ```
 
 **restore.sh** - Database restore
+
 ```bash
 ./restore.sh /path/to/backup.sql.gz
 ```
@@ -401,6 +436,7 @@ WHERE idx_scan = 0;
 5. **005_create_indexes.sql** - Views and functions
 
 Each migration includes:
+
 - UP section (apply changes)
 - DOWN section (rollback changes)
 - Proper indexing
@@ -412,13 +448,13 @@ Each migration includes:
 
 ### Demo Accounts
 
-| Account | Email | Role | Password |
-|---------|-------|------|----------|
-| Admin | admin@network.test | admin | password123 |
-| Instructor | instructor@network.test | instructor | password123 |
-| Student 1 | student1@network.test (sarah_network) | student | password123 |
-| Student 2 | student2@network.test (mike_netplus) | student | password123 |
-| Student 3 | student3@network.test (jane_tech) | student | password123 |
+| Account    | Email                                 | Role       | Password    |
+| ---------- | ------------------------------------- | ---------- | ----------- |
+| Admin      | admin@network.test                    | admin      | password123 |
+| Instructor | instructor@network.test               | instructor | password123 |
+| Student 1  | student1@network.test (sarah_network) | student    | password123 |
+| Student 2  | student2@network.test (mike_netplus)  | student    | password123 |
+| Student 3  | student3@network.test (jane_tech)     | student    | password123 |
 
 ### Seeded Content
 
@@ -436,13 +472,13 @@ The schema supports official CompTIA Network+ exam objectives:
 
 ### Domain Coverage
 
-| Domain | Code | Description |
-|--------|------|-------------|
-| 1.0 | Networking Fundamentals | OSI, TCP/IP, topologies |
-| 2.0 | Network Implementations | Routing, switching, wireless |
-| 3.0 | Network Operations | Monitoring, troubleshooting |
-| 4.0 | Network Security | Threats, firewalls, encryption |
-| 5.0 | Network Troubleshooting | Methodology, tools |
+| Domain | Code                    | Description                    |
+| ------ | ----------------------- | ------------------------------ |
+| 1.0    | Networking Fundamentals | OSI, TCP/IP, topologies        |
+| 2.0    | Network Implementations | Routing, switching, wireless   |
+| 3.0    | Network Operations      | Monitoring, troubleshooting    |
+| 4.0    | Network Security        | Threats, firewalls, encryption |
+| 5.0    | Network Troubleshooting | Methodology, tools             |
 
 ### Objective Tracking
 
@@ -455,6 +491,7 @@ assessments.comptia_objectives = ARRAY['1.0', '2.0', '3.0', '4.0', '5.0']
 ```
 
 This enables:
+
 - Progress tracking by objective
 - Gap analysis for exam readiness
 - Personalized study recommendations
@@ -465,23 +502,23 @@ This enables:
 
 ### Expected Query Performance
 
-| Query Type | Target | Notes |
-|-----------|--------|-------|
-| User login | < 50ms | Indexed on email/username |
-| Dashboard load | < 200ms | Uses views and caching |
-| Component list | < 100ms | Indexed on domain/type |
-| Progress update | < 50ms | Simple UPDATE |
-| Assessment submit | < 500ms | Transaction with INSERTs |
-| Analytics query | < 2s | Uses materialized views |
+| Query Type        | Target  | Notes                     |
+| ----------------- | ------- | ------------------------- |
+| User login        | < 50ms  | Indexed on email/username |
+| Dashboard load    | < 200ms | Uses views and caching    |
+| Component list    | < 100ms | Indexed on domain/type    |
+| Progress update   | < 50ms  | Simple UPDATE             |
+| Assessment submit | < 500ms | Transaction with INSERTs  |
+| Analytics query   | < 2s    | Uses materialized views   |
 
 ### Scalability Projections
 
-| Users | Storage | Queries/sec | Notes |
-|-------|---------|-------------|-------|
-| 1,000 | ~230 MB | ~100 | Single instance |
-| 10,000 | ~2.3 GB | ~500 | Single instance + caching |
-| 100,000 | ~23 GB | ~2,000 | Read replicas recommended |
-| 1,000,000 | ~230 GB | ~10,000 | Partitioning + sharding |
+| Users     | Storage | Queries/sec | Notes                     |
+| --------- | ------- | ----------- | ------------------------- |
+| 1,000     | ~230 MB | ~100        | Single instance           |
+| 10,000    | ~2.3 GB | ~500        | Single instance + caching |
+| 100,000   | ~23 GB  | ~2,000      | Read replicas recommended |
+| 1,000,000 | ~230 GB | ~10,000     | Partitioning + sharding   |
 
 ---
 
@@ -555,6 +592,7 @@ The schema is designed for extensibility:
 ## Version History
 
 ### Version 1.0.0 (2025-10-29)
+
 - Initial schema design
 - 18 core tables
 - 5 views + 2 materialized views

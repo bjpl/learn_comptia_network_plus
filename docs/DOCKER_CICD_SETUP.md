@@ -1,6 +1,7 @@
 # Docker and CI/CD Setup - Complete Implementation Summary
 
 ## Project: CompTIA Network+ Learning Platform
+
 **Date:** October 29, 2025
 **Status:** ✅ Complete
 
@@ -49,6 +50,7 @@ learn_comptia_network+/
 **File:** `/Dockerfile`
 
 **Features:**
+
 - Multi-stage build (Builder + Production)
 - Node.js 18 Alpine base image
 - Nginx Alpine for serving
@@ -59,6 +61,7 @@ learn_comptia_network+/
 **Build Size:** ~40MB (optimized)
 
 **Configuration:**
+
 ```dockerfile
 Stage 1: Builder (~500MB - discarded)
 - Install dependencies with npm ci
@@ -78,6 +81,7 @@ Stage 2: Production (~40MB - final)
 **File:** `/backend/Dockerfile`
 
 **Features:**
+
 - Multi-stage build (Builder + Production)
 - Node.js 18 Alpine base image
 - TypeScript compilation
@@ -88,6 +92,7 @@ Stage 2: Production (~40MB - final)
 **Build Size:** ~150MB (optimized)
 
 **Configuration:**
+
 ```dockerfile
 Stage 1: Builder (~500MB - discarded)
 - Install dependencies with npm ci
@@ -106,6 +111,7 @@ Stage 2: Production (~150MB - final)
 **File:** `/nginx.conf`
 
 **Features:**
+
 - API proxy to backend (port 3001)
 - Static asset caching (1 year)
 - Gzip compression
@@ -114,6 +120,7 @@ Stage 2: Production (~150MB - final)
 - Custom error pages
 
 **Security Headers:**
+
 - X-Frame-Options: SAMEORIGIN
 - X-Content-Type-Options: nosniff
 - X-XSS-Protection: 1; mode=block
@@ -128,6 +135,7 @@ Stage 2: Production (~150MB - final)
 **File:** `/backend/docker-compose.yml`
 
 **Services:**
+
 1. **backend-dev**
    - Hot-reload enabled
    - Volume mounts for source code
@@ -160,6 +168,7 @@ Stage 2: Production (~150MB - final)
 **File:** `/docker-compose.yml`
 
 **Services:**
+
 1. **frontend**
    - Nginx-served React app
    - Depends on backend health
@@ -185,6 +194,7 @@ Stage 2: Production (~150MB - final)
 **Networks:** app-network (bridge)
 
 **Volumes:**
+
 - comptia_pgdata (persistent database)
 - comptia_redisdata (persistent cache)
 
@@ -197,6 +207,7 @@ Stage 2: Production (~150MB - final)
 **Purpose:** Start development environment with one command
 
 **Features:**
+
 - Docker health check
 - Auto-create .env if missing
 - Stop existing containers
@@ -206,6 +217,7 @@ Stage 2: Production (~150MB - final)
 - Follow logs
 
 **Usage:**
+
 ```bash
 cd backend
 ./scripts/docker-dev.sh
@@ -216,6 +228,7 @@ cd backend
 **Purpose:** Build optimized production images
 
 **Features:**
+
 - Version extraction from package.json
 - Docker health check
 - Multi-tag support (version + latest)
@@ -225,6 +238,7 @@ cd backend
 - Size reporting
 
 **Usage:**
+
 ```bash
 cd backend
 ./scripts/docker-prod.sh
@@ -235,6 +249,7 @@ cd backend
 **Purpose:** Run database migrations in Docker
 
 **Features:**
+
 - Container health verification
 - Database readiness check
 - Migration execution
@@ -242,6 +257,7 @@ cd backend
 - Error handling
 
 **Usage:**
+
 ```bash
 cd backend
 ./scripts/migrate.sh
@@ -252,6 +268,7 @@ cd backend
 **Purpose:** Create PostgreSQL database backups
 
 **Features:**
+
 - Automatic backup directory creation
 - Timestamped backups
 - Compression (gzip)
@@ -259,6 +276,7 @@ cd backend
 - Size reporting
 
 **Usage:**
+
 ```bash
 cd backend
 ./scripts/backup-db.sh
@@ -271,6 +289,7 @@ cd backend
 **Purpose:** Restore database from backup
 
 **Features:**
+
 - Backup file validation
 - Container health check
 - Confirmation prompt
@@ -279,6 +298,7 @@ cd backend
 - Cleanup temporary files
 
 **Usage:**
+
 ```bash
 cd backend
 ./scripts/restore-db.sh backups/comptia_network_20251029_120000.sql.gz
@@ -291,12 +311,14 @@ cd backend
 ### CI Pipeline (.github/workflows/ci.yml)
 
 **Triggers:**
+
 - Push to main/develop
 - Pull requests to main
 
 **Jobs:**
 
 #### 1. Frontend CI
+
 - Matrix: Node.js 18.x, 20.x
 - Steps:
   - Type checking
@@ -308,6 +330,7 @@ cd backend
   - Artifact archiving
 
 #### 2. Backend CI
+
 - Matrix: Node.js 18.x, 20.x
 - Services: PostgreSQL 14, Redis 7
 - Steps:
@@ -318,6 +341,7 @@ cd backend
   - Artifact archiving
 
 #### 3. Integration Tests
+
 - Requires: Frontend + Backend CI
 - Steps:
   - Docker Compose startup
@@ -327,12 +351,14 @@ cd backend
   - Service cleanup
 
 #### 4. Security Scan
+
 - Steps:
   - Trivy filesystem scan
   - SARIF upload to GitHub Security
   - npm audit (frontend + backend)
 
 **Caching:**
+
 - npm dependencies cached
 - Docker layer caching (GHA)
 - Faster builds (2-3x speedup)
@@ -340,13 +366,15 @@ cd backend
 ### CD Pipeline (.github/workflows/cd.yml)
 
 **Triggers:**
+
 - Push to main
-- Version tags (v*.*.*)
+- Version tags (v*.*.\*)
 - Manual dispatch
 
 **Jobs:**
 
 #### 1. Build and Push
+
 - Registry: GitHub Container Registry
 - Images: Frontend + Backend
 - Features:
@@ -361,18 +389,21 @@ cd backend
     - Latest
 
 #### 2. Deploy to Staging
+
 - Environment: staging
 - Trigger: develop branch or manual
 - URL: https://staging.comptia-network-plus.example.com
 - Customizable deployment script
 
 #### 3. Deploy to Production
+
 - Environment: production
 - Trigger: Version tags or manual
 - URL: https://comptia-network-plus.example.com
 - GitHub Release creation
 
 #### 4. Notifications
+
 - Runs after deployment
 - Slack/email integration ready
 - Status reporting
@@ -380,6 +411,7 @@ cd backend
 ### Docker Build Pipeline (.github/workflows/docker-build.yml)
 
 **Triggers:**
+
 - Changes to Dockerfiles
 - Changes to docker-compose files
 - Push to main/develop
@@ -388,26 +420,31 @@ cd backend
 **Jobs:**
 
 #### 1. Hadolint (Dockerfile Linting)
+
 - Frontend Dockerfile validation
 - Backend Dockerfile validation
 - Best practices enforcement
 
 #### 2. Build Frontend Image
+
 - Image build with caching
 - Container startup test
 - Vulnerability scan (Trivy)
 
 #### 3. Build Backend Image
+
 - Image build with caching
 - Container test with services
 - Vulnerability scan
 
 #### 4. Docker Compose Test
+
 - Full stack startup
 - Service health checks
 - Inter-service communication test
 
 #### 5. Image Size Report
+
 - Measure image sizes
 - Report layer details
 - Track size trends
@@ -421,6 +458,7 @@ cd backend
 **Location:** `/backend/docs/DEPLOYMENT.md`
 
 **Contents:**
+
 - Prerequisites
 - Environment configuration
 - Local development setup
@@ -437,6 +475,7 @@ cd backend
 **Location:** `/backend/docs/DOCKER.md`
 
 **Contents:**
+
 - Docker architecture overview
 - Dockerfile explanations
 - Docker Compose configurations
@@ -455,6 +494,7 @@ cd backend
 **Location:** `/docs/CICD.md`
 
 **Contents:**
+
 - Pipeline architecture
 - Workflow configurations
 - Caching strategies
@@ -820,6 +860,7 @@ curl http://localhost:3001/api/health
 ### Common Issues
 
 #### Container Won't Start
+
 ```bash
 # Check logs
 docker-compose logs backend
@@ -832,6 +873,7 @@ docker-compose exec backend env
 ```
 
 #### Database Connection Failed
+
 ```bash
 # Check postgres status
 docker-compose ps postgres
@@ -844,6 +886,7 @@ docker network inspect backend_backend-network
 ```
 
 #### Port Conflicts
+
 ```bash
 # Check port usage
 lsof -i :3001 (macOS/Linux)
@@ -860,6 +903,7 @@ docker-compose run -p 3002:3001 backend
 ### Implementation Results
 
 ✅ **Completed Tasks:**
+
 1. Backend Dockerfile with multi-stage build
 2. Backend docker-compose.yml for development
 3. Backend .dockerignore file
@@ -926,18 +970,21 @@ docker-compose run -p 3002:3001 backend
 ## 16. Resources
 
 ### Documentation
+
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Reference](https://docs.docker.com/compose/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Nginx Documentation](https://nginx.org/en/docs/)
 
 ### Tools
+
 - Docker Desktop
 - Docker Buildx
 - Trivy Scanner
 - Hadolint
 
 ### Support
+
 - GitHub Issues
 - Documentation Portal
 - DevOps Team

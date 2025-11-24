@@ -1,23 +1,28 @@
 # MUI Dependency Resolution Report
 
 ## Problem Statement
+
 The CompTIA Network+ learning platform codebase referenced Material-UI (@mui/material) components in 3 files, but the required dependencies were not installed, causing build failures.
 
 ## Analysis Conducted
 
 ### Phase 1: Usage Analysis
+
 Searched the codebase for MUI imports:
+
 ```bash
 grep -r "@mui/material" src/
 grep -r "@mui/icons-material" src/
 ```
 
 **Files Using MUI:**
+
 1. `src/components/ipv4/SubnetDesigner.tsx`
 2. `src/components/ipv4/IPv4Troubleshooting.tsx`
 3. `src/components/ipv4/IPv4Troubleshooter.tsx`
 
 **MUI Components Used:**
+
 - Layout: Box, Grid, Card, CardContent, Typography, Paper, Divider
 - Forms: Button, TextField, Select, MenuItem, FormControl, InputLabel
 - Data Display: Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Alert, List, ListItem, ListItemIcon, ListItemText
@@ -31,6 +36,7 @@ grep -r "@mui/icons-material" src/
 ### Phase 2: Decision Matrix
 
 **Option A: Install MUI (SELECTED)**
+
 - Pros:
   - Quick fix
   - Feature-complete
@@ -41,6 +47,7 @@ grep -r "@mui/icons-material" src/
   - Potential styling conflicts with Tailwind
 
 **Option B: Refactor to Custom UI**
+
 - Pros:
   - Smaller bundle size
   - Consistent with existing Tailwind codebase
@@ -50,6 +57,7 @@ grep -r "@mui/icons-material" src/
   - Time-consuming for 3 large files
 
 **Option C: Hybrid Approach**
+
 - Not pursued due to maintenance complexity
 
 ## Solution Implemented
@@ -57,6 +65,7 @@ grep -r "@mui/icons-material" src/
 ### Approach: Option A (Install MUI)
 
 #### Rationale:
+
 1. **Limited usage scope:** Only 3 files out of 50+ components use MUI
 2. **Complex components:** These files use sophisticated MUI components (Stepper, Table, Accordion, Dialog) that would be time-consuming to recreate
 3. **Risk mitigation:** Installing a mature library is less risky than refactoring 1500+ lines of working code
@@ -70,6 +79,7 @@ grep -r "@mui/icons-material" src/
    - **Rolled back to MUI v5.16.0 (stable LTS)**
 
 2. **Package Installation:**
+
 ```bash
 npm install @mui/material@^5.16.0 @mui/icons-material@^5.16.0 @emotion/react@^11.11.0 @emotion/styled@^11.11.0
 ```
@@ -89,6 +99,7 @@ npm install @mui/material@^5.16.0 @mui/icons-material@^5.16.0 @emotion/react@^11
 ### Bundle Size Impact
 
 **Dependencies Added:**
+
 - @mui/material@5.16.0: ~290 KB (minified + gzipped)
 - @mui/icons-material@5.16.0: ~85 KB (only used icons)
 - @emotion/react@11.11.0: ~12 KB
@@ -97,6 +108,7 @@ npm install @mui/material@^5.16.0 @mui/icons-material@^5.16.0 @emotion/react@^11
 **Total Added:** ~396 KB (minified + gzipped)
 
 **Optimization Opportunities:**
+
 1. Tree-shaking: Only imports used components (already implemented)
 2. Icon optimization: Consider using a subset or SVG icons
 3. Code splitting: Load MUI components only on IPv4 routes
@@ -104,11 +116,13 @@ npm install @mui/material@^5.16.0 @mui/icons-material@^5.16.0 @emotion/react@^11
 ### Verification
 
 **Build Status:**
+
 - ✅ MUI dependency errors **RESOLVED**
 - ✅ All IPv4 component TypeScript errors **FIXED**
 - ⚠️ Other pre-existing TypeScript errors remain (unrelated to MUI)
 
 **Components Verified:**
+
 - ✅ SubnetDesigner.tsx compiles without errors
 - ✅ IPv4Troubleshooting.tsx compiles without errors
 - ✅ IPv4Troubleshooter.tsx compiles without errors
@@ -116,6 +130,7 @@ npm install @mui/material@^5.16.0 @mui/icons-material@^5.16.0 @emotion/react@^11
 ## Fallback Options Created
 
 As part of due diligence, custom UI components were created as a fallback:
+
 - `src/components/ui/input.tsx`
 - `src/components/ui/select.tsx`
 - `src/components/ui/accordion.tsx`
@@ -135,16 +150,19 @@ These components can be used in future features to avoid MUI dependency expansio
 ## Recommendations
 
 ### Short-term:
+
 1. ✅ **Complete:** MUI v5 is installed and working
 2. Continue building with existing UI patterns
 3. Monitor bundle size in production builds
 
 ### Medium-term:
+
 1. Consider migrating these 3 components to custom UI (if bundle size becomes a concern)
 2. Use custom UI components for new features
 3. Implement code splitting for IPv4 route
 
 ### Long-term:
+
 1. Standardize on single UI framework (Tailwind + custom components)
 2. Gradually migrate MUI components if needed
 3. Document UI component usage guidelines
@@ -152,11 +170,13 @@ These components can be used in future features to avoid MUI dependency expansio
 ## Compatibility Notes
 
 **MUI v5 vs v7:**
+
 - v5: Uses `<Grid item>` prop (compatible with existing code)
 - v7: Deprecated `item` prop in favor of Grid2
 - **Decision:** Stay on v5 until major refactoring
 
 **Tailwind Integration:**
+
 - No conflicts detected
 - MUI uses Emotion CSS-in-JS (scoped styling)
 - Tailwind utility classes can still be used alongside MUI
@@ -166,12 +186,14 @@ These components can be used in future features to avoid MUI dependency expansio
 **Resolution:** ✅ **SUCCESS**
 
 The MUI dependency issue has been fully resolved by installing Material-UI v5.16.0. The approach chosen (Option A: Install MUI) was optimal given:
+
 - Minimal time investment
 - Low risk of breaking changes
 - Acceptable bundle size impact (~396 KB)
 - Maintains code functionality
 
 **Next Steps:**
+
 1. ✅ MUI dependency resolved
 2. Address remaining TypeScript errors in other components (separate issue)
 3. Optimize bundle size if needed

@@ -3,6 +3,7 @@
 ## Quick Start
 
 ### Development Mode (Mock API)
+
 ```bash
 npm install
 npm run dev
@@ -10,6 +11,7 @@ npm run dev
 ```
 
 ### Production Mode (Real API)
+
 ```bash
 # Update .env
 VITE_USE_MOCK_API=false
@@ -71,7 +73,7 @@ const { updateComponentProgress } = useProgressStore();
 await updateComponentProgress('component-id', {
   completed: true,
   score: 85,
-  timeSpent: 300
+  timeSpent: 300,
 });
 
 // Sync progress
@@ -102,6 +104,7 @@ function Component() {
 ## API Endpoints
 
 ### Auth
+
 - `POST /auth/login` - Login
 - `POST /auth/register` - Register
 - `POST /auth/logout` - Logout
@@ -109,6 +112,7 @@ function Component() {
 - `GET /auth/me` - Current user
 
 ### User
+
 - `GET /users/profile` - Get profile
 - `PUT /users/profile` - Update profile
 - `POST /users/avatar` - Upload avatar
@@ -116,11 +120,13 @@ function Component() {
 - `PUT /users/settings` - Update settings
 
 ### Progress
+
 - `GET /progress` - Get all
 - `PUT /progress/component/:id` - Update
 - `POST /progress/sync` - Sync
 
 ### Assessments
+
 - `GET /assessments/quiz/:id` - Get quiz
 - `POST /assessments/quiz/:id/submit` - Submit
 - `GET /assessments/attempts` - Get attempts
@@ -153,6 +159,7 @@ npm run test:coverage       # With coverage
 ## Configuration
 
 ### Environment Variables
+
 ```bash
 VITE_API_URL=http://localhost:3000/api
 VITE_API_TIMEOUT=10000
@@ -161,6 +168,7 @@ VITE_USE_MOCK_API=true
 ```
 
 ### API Config
+
 ```typescript
 import { API_CONFIG, API_ENDPOINTS } from './config/api-config';
 
@@ -171,6 +179,7 @@ console.log(API_ENDPOINTS.AUTH.LOGIN);
 ## Troubleshooting
 
 ### Token Issues
+
 ```typescript
 // Clear and re-login
 localStorage.clear();
@@ -178,6 +187,7 @@ sessionStorage.clear();
 ```
 
 ### Network Issues
+
 ```typescript
 import { networkStatusManager } from './utils/api/network-status';
 
@@ -189,9 +199,10 @@ const size = networkStatusManager.getQueueSize();
 ```
 
 ### Debugging
+
 ```typescript
 // Enable in .env
-VITE_ENV=development
+VITE_ENV = development;
 
 // Check logs in console
 // All API requests/responses logged
@@ -200,6 +211,7 @@ VITE_ENV=development
 ## File Locations
 
 ### Services
+
 - `src/services/api-client.ts` - Base client
 - `src/services/auth-service.ts` - Auth
 - `src/services/user-service.ts` - User
@@ -207,19 +219,23 @@ VITE_ENV=development
 - `src/services/assessment-service.ts` - Assessments
 
 ### Stores
+
 - `src/stores/authStore.ts` - Auth state
 - `src/stores/userStore.ts` - User state
 - `src/stores/progressStore.ts` - Progress state
 
 ### Utils
+
 - `src/utils/api/error-handler.ts` - Errors
 - `src/utils/api/network-status.ts` - Network
 
 ### Config
+
 - `src/config/api-config.ts` - API config
 - `.env` - Environment variables
 
 ### Docs
+
 - `docs/api-integration.md` - Architecture
 - `docs/migration-guide.md` - Migration
 - `docs/QUICK_REFERENCE.md` - This file
@@ -227,10 +243,12 @@ VITE_ENV=development
 ## Demo Accounts
 
 **Student:**
+
 - Email: `demo@comptia.test`
 - Password: `demo123`
 
 **Admin:**
+
 - Email: `admin@comptia.test`
 - Password: `admin123`
 

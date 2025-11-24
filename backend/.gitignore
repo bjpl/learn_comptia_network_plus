@@ -12,6 +12,8 @@ build/
 .env.local
 .env.development
 .env.production
+.secrets.txt
+*.secrets.txt
 
 # Logs
 logs/

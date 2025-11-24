@@ -1,4 +1,5 @@
 # Accessibility Developer Guide
+
 **CompTIA Network+ Learning Platform**
 
 This guide provides practical patterns and best practices for maintaining WCAG 2.1 Level AA compliance in the CompTIA Network+ learning platform.
@@ -19,20 +20,22 @@ This guide provides practical patterns and best practices for maintaining WCAG 2
 ## Quick Reference
 
 ### Accessibility Hooks
+
 ```tsx
 import {
-  useAnnouncement,      // Screen reader announcements
-  useFocusManagement,   // Focus handling
-  useFocusTrap,         // Modal focus traps
-  useKeyboardShortcuts  // Keyboard shortcuts
+  useAnnouncement, // Screen reader announcements
+  useFocusManagement, // Focus handling
+  useFocusTrap, // Modal focus traps
+  useKeyboardShortcuts, // Keyboard shortcuts
 } from '@/hooks/accessibility';
 ```
 
 ### Accessibility Components
+
 ```tsx
 import {
-  SkipLink,   // Skip navigation link
-  LiveRegion  // ARIA live region
+  SkipLink, // Skip navigation link
+  LiveRegion, // ARIA live region
 } from '@/components/accessibility';
 ```
 
@@ -43,11 +46,14 @@ import {
 ### 1. Form Inputs with Labels
 
 **✅ CORRECT:**
+
 ```tsx
 <div className="form-field">
   <label htmlFor="user-email" className="form-label">
     Email Address
-    <span className="required" aria-label="required">*</span>
+    <span className="required" aria-label="required">
+      *
+    </span>
   </label>
   <input
     id="user-email"
@@ -71,6 +77,7 @@ import {
 ```
 
 **❌ INCORRECT:**
+
 ```tsx
 {/* Missing label association */}
 <label>Email:</label>
@@ -85,6 +92,7 @@ import {
 ### 2. Buttons vs Links
 
 **Use `<button>` for actions:**
+
 ```tsx
 // ✅ Actions that change state
 <button onClick={handleSubmit}>Submit Form</button>
@@ -93,6 +101,7 @@ import {
 ```
 
 **Use `<a>` for navigation:**
+
 ```tsx
 // ✅ Navigation to different pages
 <Link to="/dashboard">Dashboard</Link>
@@ -100,6 +109,7 @@ import {
 ```
 
 **❌ NEVER:**
+
 ```tsx
 // Don't use div/span as buttons
 <div onClick={handleClick}>Click Me</div>
@@ -137,10 +147,7 @@ export const MyComponent = () => {
       <button onClick={handleSubmit}>Submit</button>
 
       {/* Live region for announcements */}
-      <LiveRegion
-        message={announcement?.message}
-        priority={announcement?.priority}
-      />
+      <LiveRegion message={announcement?.message} priority={announcement?.priority} />
     </div>
   );
 };
@@ -151,6 +158,7 @@ export const MyComponent = () => {
 ### 4. Focus Management
 
 #### Moving Focus to New Content
+
 ```tsx
 import { useFocusManagement } from '@/hooks/accessibility';
 
@@ -165,12 +173,7 @@ export const SearchResults = ({ results, isLoading }) => {
   }, [results, isLoading, moveFocus]);
 
   return (
-    <div
-      ref={ref}
-      tabIndex={-1}
-      role="region"
-      aria-label="Search results"
-    >
+    <div ref={ref} tabIndex={-1} role="region" aria-label="Search results">
       <h2>Search Results ({results.length})</h2>
       {/* Results content */}
     </div>
@@ -179,6 +182,7 @@ export const SearchResults = ({ results, isLoading }) => {
 ```
 
 #### Focus Trap in Modals
+
 ```tsx
 import { useFocusTrap, useFocusManagement } from '@/hooks/accessibility';
 
@@ -229,25 +233,25 @@ export const MyComponent = () => {
     {
       key: '/',
       handler: () => searchRef.current?.focus(),
-      description: 'Focus search field'
+      description: 'Focus search field',
     },
     {
       key: 'n',
       ctrl: true,
       handler: handleNew,
-      description: 'Create new item'
+      description: 'Create new item',
     },
     {
       key: 's',
       ctrl: true,
       handler: handleSave,
-      description: 'Save changes'
+      description: 'Save changes',
     },
     {
       key: 'Escape',
       handler: handleClose,
-      description: 'Close modal'
-    }
+      description: 'Close modal',
+    },
   ];
 
   useKeyboardShortcuts(shortcuts);
@@ -295,12 +299,7 @@ export const MyComponent = () => {
 export const LoadingComponent = ({ isLoading, children }) => {
   if (isLoading) {
     return (
-      <div
-        role="status"
-        aria-live="polite"
-        aria-busy="true"
-        className="loading-container"
-      >
+      <div role="status" aria-live="polite" aria-busy="true" className="loading-container">
         <div className="spinner" aria-hidden="true" />
         <span>Loading...</span>
       </div>
@@ -422,13 +421,10 @@ export const AccessibleCard: React.FC<CardProps> = ({
   title,
   description,
   action,
-  actionLabel = 'Learn more'
+  actionLabel = 'Learn more',
 }) => {
   return (
-    <article
-      className="card"
-      aria-labelledby={`card-title-${useId()}`}
-    >
+    <article className="card" aria-labelledby={`card-title-${useId()}`}>
       <h3 id={`card-title-${useId()}`}>{title}</h3>
       <p>{description}</p>
       {action && (
@@ -481,6 +477,7 @@ export const Dropdown = ({ options, value, onChange, label }) => {
 ## Testing Your Code
 
 ### 1. Keyboard Testing
+
 ```bash
 # Navigate with Tab
 Tab         # Move forward
@@ -498,6 +495,7 @@ Escape      # Close modal/dialog
 ### 2. Screen Reader Testing
 
 **NVDA (Windows - Free):**
+
 ```bash
 # Download: https://www.nvaccess.org/download/
 Insert+Down    # Read all
@@ -508,6 +506,7 @@ F              # Next form field
 ```
 
 **VoiceOver (Mac - Built-in):**
+
 ```bash
 Cmd+F5         # Enable VoiceOver
 VO+A           # Read all
@@ -534,6 +533,7 @@ npm run test:e2e -- --reporter=html
 ## Common Mistakes
 
 ### ❌ Mistake 1: Clickable Divs
+
 ```tsx
 // WRONG
 <div onClick={handleClick}>Click me</div>
@@ -543,6 +543,7 @@ npm run test:e2e -- --reporter=html
 ```
 
 ### ❌ Mistake 2: Missing Alt Text
+
 ```tsx
 // WRONG
 <img src="logo.png" />
@@ -555,6 +556,7 @@ npm run test:e2e -- --reporter=html
 ```
 
 ### ❌ Mistake 3: Color-Only Information
+
 ```tsx
 // WRONG - Relies on color alone
 <span className="text-red-500">Error</span>
@@ -568,6 +570,7 @@ npm run test:e2e -- --reporter=html
 ```
 
 ### ❌ Mistake 4: Auto-Playing Content
+
 ```tsx
 // WRONG
 <video src="intro.mp4" autoPlay />
@@ -583,6 +586,7 @@ npm run test:e2e -- --reporter=html
 ```
 
 ### ❌ Mistake 5: Placeholder as Label
+
 ```tsx
 // WRONG - Disappears when typing
 <input type="text" placeholder="Enter your name" />
@@ -603,17 +607,20 @@ npm run test:e2e -- --reporter=html
 ## Tools & Extensions
 
 ### Browser Extensions
+
 - **axe DevTools** - Comprehensive accessibility testing
 - **WAVE** - Visual feedback on accessibility issues
 - **Lighthouse** - Built-in Chrome audit tool
 - **Accessibility Insights** - Microsoft's testing tool
 
 ### VS Code Extensions
+
 - **axe Accessibility Linter** - Real-time linting
 - **webhint** - Best practices checker
 - **ESLint** with `eslint-plugin-jsx-a11y`
 
 ### Command Line Tools
+
 ```bash
 # Install pa11y
 npm install -g pa11y
@@ -654,12 +661,14 @@ Before submitting a PR, verify:
 ## Getting Help
 
 ### Internal Resources
+
 - `/docs/accessibility/WCAG-Compliance-Report.md` - Implementation details
 - `/docs/accessibility/Testing-Guide.md` - Testing procedures
 - `/src/hooks/accessibility/` - Accessibility hooks
 - `/src/components/accessibility/` - Accessibility components
 
 ### External Resources
+
 - [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [WebAIM Articles](https://webaim.org/articles/)

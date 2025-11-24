@@ -53,9 +53,11 @@ chmod +x *.sh
 ### 1. Core User Tables
 
 #### users
+
 Core authentication and authorization table.
 
 **Key Fields:**
+
 - `id`: UUID primary key
 - `email`: Unique email address
 - `username`: Unique username
@@ -66,14 +68,17 @@ Core authentication and authorization table.
 - `deleted_at`: Soft delete timestamp
 
 **Indexes:**
+
 - email (unique, where not deleted)
 - username (unique, where not deleted)
 - role, account_status, created_at
 
 #### user_profiles
+
 Extended user information and preferences.
 
 **Key Fields:**
+
 - `user_id`: Foreign key to users (1:1)
 - `first_name`, `last_name`, `display_name`
 - `bio`, `avatar_url`
@@ -81,9 +86,11 @@ Extended user information and preferences.
 - `certifications`: Array of earned certifications
 
 #### user_settings
+
 Application preferences and configuration.
 
 **Key Fields:**
+
 - `theme`: light | dark | system
 - `notifications_enabled`, `email_notifications`
 - `study_reminders`, `reminder_time`, `reminder_days`
@@ -94,14 +101,17 @@ Application preferences and configuration.
 ### 2. Learning Content Tables
 
 #### learning_components
+
 Catalog of all learning materials.
 
 **Component Types:**
+
 - lesson, video, flashcard, quiz
 - lab, simulation, assessment
 - reading, practice_exam, study_guide
 
 **Key Fields:**
+
 - `component_type`: Type of learning material
 - `domain`, `subdomain`: Content organization
 - `title`, `slug`: Identification
@@ -112,16 +122,20 @@ Catalog of all learning materials.
 - `is_published`: Publication status
 
 **Metrics:**
+
 - `view_count`, `completion_count`
 - `average_rating`, `rating_count`
 
 #### user_progress
+
 Individual progress tracking per component.
 
 **Status Values:**
+
 - not_started, in_progress, completed, mastered
 
 **Key Fields:**
+
 - `progress_percentage`: 0-100
 - `time_spent_minutes`: Total time on component
 - `last_position`: JSONB for resume capability
@@ -129,9 +143,11 @@ Individual progress tracking per component.
 - `completion_date`, `mastery_date`: Milestones
 
 #### learning_sessions
+
 Detailed session tracking for analytics.
 
 **Key Fields:**
+
 - `session_start`, `session_end`, `duration_minutes`
 - `interaction_count`: User engagement metric
 - `device_type`: desktop | tablet | mobile
@@ -140,14 +156,17 @@ Detailed session tracking for analytics.
 ### 3. Assessment Tables
 
 #### question_bank
+
 Reusable question pool for all assessments.
 
 **Question Types:**
+
 - multiple_choice, multiple_select
 - true_false, fill_blank
 - matching, simulation
 
 **Key Fields:**
+
 - `question_text`: The question
 - `question_data`: JSONB (options, etc.)
 - `correct_answer`: JSONB correct answer(s)
@@ -156,16 +175,20 @@ Reusable question pool for all assessments.
 - `points`: Point value
 
 **Analytics:**
+
 - `usage_count`, `correct_count`, `incorrect_count`
 - `average_time_seconds`
 
 #### assessments
+
 Assessment definitions and configuration.
 
 **Assessment Types:**
+
 - quiz, practice_exam, final_exam, checkpoint
 
 **Key Fields:**
+
 - `time_limit_minutes`: Optional time limit
 - `passing_score`: Minimum passing percentage
 - `question_ids`: Array of question IDs
@@ -174,12 +197,15 @@ Assessment definitions and configuration.
 - `max_attempts`: Optional attempt limit
 
 #### assessment_attempts
+
 User attempt tracking and scoring.
 
 **Status Values:**
+
 - in_progress, completed, abandoned, timed_out
 
 **Key Fields:**
+
 - `attempt_number`: Attempt sequence
 - `score`, `percentage`: Performance metrics
 - `passed`: Boolean pass/fail
@@ -187,9 +213,11 @@ User attempt tracking and scoring.
 - `correct_answers`, `incorrect_answers`, `skipped_questions`
 
 #### assessment_answers
+
 Individual answers for each question.
 
 **Key Fields:**
+
 - `attempt_id`, `question_id`: References
 - `user_answer`: JSONB user's answer
 - `is_correct`: Boolean correctness
@@ -200,32 +228,40 @@ Individual answers for each question.
 ### 4. Progress Tracking Tables
 
 #### achievements
+
 Achievement and badge definitions.
 
 **Achievement Types:**
+
 - badge, milestone, streak, mastery, special
 
 **Rarity Levels:**
+
 - common, uncommon, rare, epic, legendary
 
 **Key Fields:**
+
 - `code`: Unique achievement code
 - `name`, `description`: Display info
 - `criteria`: JSONB earning criteria
 - `points`: Achievement point value
 
 #### user_achievements
+
 Achievements earned by users.
 
 **Key Fields:**
+
 - `user_id`, `achievement_id`: References
 - `earned_at`: Timestamp
 - `progress_data`: JSONB tracking data
 
 #### learning_streaks
+
 Daily engagement streak tracking.
 
 **Key Fields:**
+
 - `current_streak`: Current consecutive days
 - `longest_streak`: All-time longest streak
 - `last_activity_date`: Last activity date
@@ -234,15 +270,19 @@ Daily engagement streak tracking.
 - `streak_history`: JSONB history
 
 #### study_goals
+
 User-defined learning goals.
 
 **Goal Types:**
+
 - daily, weekly, monthly, exam_date, custom
 
 **Metrics:**
+
 - minutes, components, assessments, score, streak
 
 **Key Fields:**
+
 - `target_value`, `current_value`: Goal tracking
 - `start_date`, `target_date`, `completed_date`
 - `status`: active | completed | failed | abandoned
@@ -250,9 +290,11 @@ User-defined learning goals.
 ### 5. Analytics Tables
 
 #### user_activity_logs
+
 Comprehensive activity audit trail.
 
 **Key Fields:**
+
 - `activity_type`: Type of activity
 - `activity_description`: Human-readable description
 - `resource_type`, `resource_id`: Affected resource
@@ -260,18 +302,22 @@ Comprehensive activity audit trail.
 - `ip_address`, `user_agent`: Request info
 
 #### component_analytics
+
 Daily aggregated component metrics.
 
 **Key Fields:**
+
 - `date`: Analytics date
 - `views`, `unique_users`, `completions`
 - `average_time_minutes`, `average_score`
 - `engagement_rate`, `bounce_rate`
 
 #### performance_metrics
+
 System performance and health metrics.
 
 **Key Fields:**
+
 - `metric_type`, `metric_name`: Metric identification
 - `metric_value`, `unit`: Measurement
 - `tags`: JSONB categorization
@@ -282,42 +328,52 @@ System performance and health metrics.
 ### Views
 
 #### v_user_learning_stats
+
 Aggregated learning statistics per user.
 
 **Columns:**
+
 - Components started, completed, mastered
 - Total time, average progress
 - Current/longest streak
 - Achievements earned
 
 #### v_component_performance
+
 Performance metrics for learning components.
 
 **Columns:**
+
 - Unique users, completion count
 - Average progress, time, score
 - Rating information
 
 #### v_assessment_performance
+
 Performance metrics for assessments.
 
 **Columns:**
+
 - Total attempts, unique users
 - Average score, pass/fail counts
 - Average time
 
 #### v_user_assessment_history
+
 Complete user assessment history.
 
 **Columns:**
+
 - All attempt details
 - Scores, time spent
 - Question statistics
 
 #### v_question_performance
+
 Performance metrics for individual questions.
 
 **Columns:**
+
 - Usage statistics
 - Success rate
 - Average time
@@ -325,17 +381,21 @@ Performance metrics for individual questions.
 ### Materialized Views
 
 #### mv_daily_user_activity
+
 Daily aggregated user activity (refresh nightly).
 
 **Columns:**
+
 - Active users, total sessions
 - Total/average minutes
 - Completion statistics
 
 #### mv_weekly_domain_progress
+
 Weekly progress by domain (refresh weekly).
 
 **Columns:**
+
 - Week start date, domain
 - Active users, components in progress
 - Completions, average progress
@@ -344,30 +404,36 @@ Weekly progress by domain (refresh weekly).
 ### Functions
 
 #### calculate_overall_progress(user_id)
+
 Calculate user's overall progress percentage.
 
 **Returns:** DECIMAL(5,2)
 
 #### update_learning_streak(user_id)
+
 Update user's learning streak based on activity.
 
 **Returns:** VOID
 
 **Logic:**
+
 - First activity: Initialize streak
 - Same day: No change
 - Consecutive day: Increment streak
 - Gap: Reset streak to 1
 
 #### check_and_award_achievement(user_id, achievement_code)
+
 Award achievement to user if not already earned.
 
 **Returns:** BOOLEAN (true if awarded, false otherwise)
 
 #### get_user_dashboard_summary(user_id)
+
 Get comprehensive dashboard summary for user.
 
 **Returns:** TABLE with:
+
 - Components started/completed
 - Total time, current streak
 - Achievement count
@@ -375,11 +441,13 @@ Get comprehensive dashboard summary for user.
 - Active goals count
 
 #### refresh_analytics_views()
+
 Refresh all materialized views for analytics.
 
 **Returns:** VOID
 
 **Views Refreshed:**
+
 - mv_daily_user_activity
 - mv_weekly_domain_progress
 
@@ -388,6 +456,7 @@ Refresh all materialized views for analytics.
 ### Migration Scripts
 
 #### migrate.sh
+
 Run database migrations.
 
 ```bash
@@ -402,6 +471,7 @@ Run database migrations.
 ```
 
 #### seed.sh
+
 Populate database with demo data.
 
 ```bash
@@ -409,6 +479,7 @@ Populate database with demo data.
 ```
 
 **Creates:**
+
 - Demo user accounts (admin, instructor, students)
 - Learning components catalog
 - Question bank
@@ -417,6 +488,7 @@ Populate database with demo data.
 ### Backup Scripts
 
 #### backup.sh
+
 Create database backups.
 
 ```bash
@@ -436,6 +508,7 @@ Create database backups.
 **Retention:** Automatically keeps last 7 days of backups.
 
 #### restore.sh
+
 Restore database from backup.
 
 ```bash
@@ -469,6 +542,7 @@ postgresql://username:password@host:port/database
 ### Regular Tasks
 
 #### Daily
+
 - Refresh materialized views
 - Monitor query performance
 - Check error logs
@@ -484,6 +558,7 @@ LIMIT 10;
 ```
 
 #### Weekly
+
 - Analyze tables for query optimization
 - Review and clean old sessions
 - Backup database
@@ -498,6 +573,7 @@ WHERE created_at < NOW() - INTERVAL '30 days';
 ```
 
 #### Monthly
+
 - Vacuum database
 - Review index usage
 - Archive old activity logs
@@ -539,6 +615,7 @@ REINDEX TABLE tablename;
 #### Connection Pooling
 
 Recommended: PgBouncer or application-level pooling
+
 - Min pool size: 10
 - Max pool size: 50
 - Idle timeout: 300s
@@ -639,6 +716,7 @@ ORDER BY pg_total_relation_size(relid) DESC;
 ### Version Control
 
 All schema changes must:
+
 1. Create new migration file with incremented number
 2. Include UP and DOWN sections
 3. Test on development database
@@ -656,6 +734,7 @@ All schema changes must:
 ### Contact
 
 For database issues or questions:
+
 - Create issue in project repository
 - Contact database team
 - Check documentation wiki

@@ -15,11 +15,13 @@ This guide walks you through migrating the CompTIA Network+ Learning Platform fr
 ### Step 1: Environment Configuration
 
 1. Copy the environment example file:
+
 ```bash
 cp .env.example .env
 ```
 
 2. Configure your `.env` file:
+
 ```bash
 # Development with Mock API
 VITE_API_URL=http://localhost:3000/api
@@ -132,6 +134,7 @@ Before switching to real API, test with mock API:
 
 1. Ensure `VITE_USE_MOCK_API=true` in `.env`
 2. Start development server:
+
 ```bash
 npm run dev
 ```
@@ -151,17 +154,20 @@ npm run dev
 ### Step 4: Switch to Real API
 
 1. Update `.env`:
+
 ```bash
 VITE_USE_MOCK_API=false
 ```
 
 2. Ensure backend is running:
+
 ```bash
 # In backend directory
 npm run dev
 ```
 
 3. Restart frontend:
+
 ```bash
 npm run dev
 ```
@@ -250,6 +256,7 @@ function Dashboard() {
 ## Testing Checklist
 
 ### Authentication
+
 - [ ] Login with valid credentials
 - [ ] Login with invalid credentials shows error
 - [ ] Register new user
@@ -261,6 +268,7 @@ function Dashboard() {
 - [ ] Without remember me stores token in sessionStorage
 
 ### User Management
+
 - [ ] View user profile
 - [ ] Update profile information
 - [ ] Change password
@@ -269,6 +277,7 @@ function Dashboard() {
 - [ ] Settings persist after logout/login
 
 ### Progress Tracking
+
 - [ ] Progress saved locally
 - [ ] Progress synced to backend
 - [ ] Offline progress queued
@@ -277,6 +286,7 @@ function Dashboard() {
 - [ ] Progress displays correctly on dashboard
 
 ### Error Handling
+
 - [ ] Network errors show user-friendly messages
 - [ ] Validation errors display on form fields
 - [ ] 401 errors redirect to login
@@ -285,6 +295,7 @@ function Dashboard() {
 - [ ] Retry works for retryable errors
 
 ### Network Status
+
 - [ ] Offline indicator appears when offline
 - [ ] Requests queued when offline
 - [ ] Queue processed when back online
@@ -297,12 +308,15 @@ function Dashboard() {
 **Symptom:** Browser console shows CORS policy errors
 
 **Solution:** Configure backend CORS:
+
 ```javascript
 // Backend (Express.js example)
-app.use(cors({
-  origin: 'http://localhost:5173', // Vite dev server
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Vite dev server
+    credentials: true,
+  })
+);
 ```
 
 ### Issue: Token Not Being Sent
@@ -310,12 +324,14 @@ app.use(cors({
 **Symptom:** API returns 401 even after login
 
 **Solution:** Check browser dev tools:
+
 1. Open Network tab
 2. Click on failed request
 3. Check Headers tab
 4. Verify `Authorization: Bearer <token>` header is present
 
 If missing, check:
+
 - Token is stored in localStorage/sessionStorage
 - API client is including token in requests
 - `skipAuth` is not set to `true`
@@ -325,9 +341,11 @@ If missing, check:
 **Symptom:** App keeps making refresh token requests
 
 **Solution:**
+
 1. Check refresh token expiry
 2. Ensure refresh endpoint returns new refresh token
 3. Clear storage and re-login:
+
 ```javascript
 localStorage.clear();
 sessionStorage.clear();
@@ -338,6 +356,7 @@ sessionStorage.clear();
 **Symptom:** Progress saved locally but not on backend
 
 **Solution:**
+
 1. Check network status: `networkStatusManager.getStatus()`
 2. Check progress queue: `localStorage.getItem('progress_queue')`
 3. Manually trigger sync: `useProgressStore.getState().syncProgress()`
@@ -348,6 +367,7 @@ sessionStorage.clear();
 **Symptom:** Still seeing demo accounts in production
 
 **Solution:**
+
 1. Verify `.env` file: `VITE_USE_MOCK_API=false`
 2. Rebuild app: `npm run build`
 3. Clear browser cache
@@ -365,7 +385,7 @@ apiClient.addResponseInterceptor((response) => {
   if (response.config.method === 'GET') {
     cache.set(response.config.url, {
       data: response.data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
   return response;
@@ -391,7 +411,7 @@ const [data, setData] = useState([]);
 
 const loadMore = async () => {
   const response = await apiClient.get('/data', {
-    params: { page, limit: 20 }
+    params: { page, limit: 20 },
   });
   setData([...data, ...response.data]);
   setPage(page + 1);
@@ -419,11 +439,13 @@ const validateEmail = (email: string): boolean => {
 };
 
 const validatePassword = (password: string): boolean => {
-  return password.length >= 8 &&
-         /[A-Z]/.test(password) &&
-         /[a-z]/.test(password) &&
-         /\d/.test(password) &&
-         /[!@#$%^&*]/.test(password);
+  return (
+    password.length >= 8 &&
+    /[A-Z]/.test(password) &&
+    /[a-z]/.test(password) &&
+    /\d/.test(password) &&
+    /[!@#$%^&*]/.test(password)
+  );
 };
 ```
 
@@ -433,8 +455,8 @@ const validatePassword = (password: string): boolean => {
 // vite.config.ts
 export default defineConfig({
   server: {
-    https: process.env.NODE_ENV === 'production'
-  }
+    https: process.env.NODE_ENV === 'production',
+  },
 });
 ```
 
@@ -462,7 +484,7 @@ const checkRateLimit = (endpoint: string): boolean => {
 
 ```typescript
 // Set in .env
-VITE_ENV=development
+VITE_ENV = development;
 
 // Or in code
 if (import.meta.env.DEV) {
@@ -477,7 +499,7 @@ if (import.meta.env.DEV) {
 const metrics = {
   requests: 0,
   errors: 0,
-  averageResponseTime: 0
+  averageResponseTime: 0,
 };
 
 apiClient.addRequestInterceptor((config) => {
@@ -488,8 +510,7 @@ apiClient.addRequestInterceptor((config) => {
 
 apiClient.addResponseInterceptor((response) => {
   const duration = Date.now() - response.config.startTime;
-  metrics.averageResponseTime =
-    (metrics.averageResponseTime + duration) / 2;
+  metrics.averageResponseTime = (metrics.averageResponseTime + duration) / 2;
   return response;
 });
 
@@ -504,6 +525,7 @@ apiClient.addErrorInterceptor((error) => {
 If issues occur in production:
 
 1. **Immediate Rollback to Mock API:**
+
    ```bash
    # Update .env
    VITE_USE_MOCK_API=true

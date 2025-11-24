@@ -24,6 +24,7 @@ cat secrets-production-$(date +%Y%m%d).txt
 ```
 
 **Output will look like:**
+
 ```
 ===================================
 Production Secrets Generator
@@ -137,6 +138,7 @@ git status # Should not show .env.production
 4. Add each secret:
 
 **Required Secrets:**
+
 ```
 JWT_SECRET=<from generate-secrets.sh>
 REFRESH_TOKEN_SECRET=<from generate-secrets.sh>
@@ -298,6 +300,7 @@ cp .env.production .env
 ```
 
 **Expected Output:**
+
 ```
 🔍 Secrets Verification Script
 ==============================
@@ -350,6 +353,7 @@ console.log('Verified:', jwt.verify(token, process.env.JWT_SECRET));
 Open and complete: `docs/PRE_PRODUCTION_CHECKLIST.md`
 
 **Key Sections:**
+
 - [ ] Secrets & Configuration (should be 100% complete now)
 - [ ] Security Hardening
 - [ ] Database Security
@@ -359,6 +363,7 @@ Open and complete: `docs/PRE_PRODUCTION_CHECKLIST.md`
 - [ ] Testing & Validation
 
 **Sign-off required from:**
+
 - Backend Developer
 - DevOps Engineer
 - Security Lead
@@ -489,6 +494,7 @@ curl https://api.yourdomain.com/health
 **Problem:** Application can't find environment variable
 
 **Solution:**
+
 ```bash
 # 1. Verify secret is set
 echo $JWT_SECRET  # Should not be empty
@@ -510,6 +516,7 @@ railway variables
 **Problem:** JWT secret changed but old tokens still in use
 
 **Solution:**
+
 ```bash
 # This is expected behavior
 # Users need to log in again
@@ -521,6 +528,7 @@ railway variables
 **Problem:** DATABASE_URL incorrect or database not accessible
 
 **Solution:**
+
 ```bash
 # 1. Verify DATABASE_URL format
 echo $DATABASE_URL
@@ -541,6 +549,7 @@ psql $DATABASE_URL -c "SELECT 1;"
 **Problem:** Secret values appearing in application logs
 
 **Solution:**
+
 ```bash
 # 1. Immediately rotate affected secret
 ./backend/scripts/rotate-secrets.sh
@@ -591,23 +600,27 @@ git push
 ## Maintenance Checklist
 
 ### Weekly
+
 - [ ] Review error logs for secret-related errors
 - [ ] Verify monitoring alerts working
 - [ ] Check database connection pool health
 
 ### Monthly
+
 - [ ] Review access logs
 - [ ] Verify backups completing successfully
 - [ ] Check for dependency security updates
 - [ ] Test secret rotation procedure in staging
 
 ### Quarterly
+
 - [ ] Rotate JWT and session secrets
 - [ ] Review and update security policies
 - [ ] Conduct team training on secret management
 - [ ] Audit secret access (who has access to what)
 
 ### Annually
+
 - [ ] Rotate all secrets
 - [ ] Conduct security audit
 - [ ] Review and update disaster recovery plan
@@ -618,16 +631,19 @@ git push
 ## Additional Resources
 
 ### Documentation
+
 - **Secrets Management Guide**: `docs/SECRETS_MANAGEMENT.md`
 - **GitHub Secrets Setup**: `docs/GITHUB_SECRETS_SETUP.md`
 - **Pre-Production Checklist**: `docs/PRE_PRODUCTION_CHECKLIST.md`
 
 ### Scripts
+
 - **Generate Secrets**: `backend/scripts/generate-secrets.sh`
 - **Rotate Secrets**: `backend/scripts/rotate-secrets.sh`
 - **Verify Secrets**: `backend/scripts/verify-secrets.sh`
 
 ### External Links
+
 - [OWASP Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_CheatSheet.html)
 - [12-Factor App: Config](https://12factor.net/config)
 - [GitHub Encrypted Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)

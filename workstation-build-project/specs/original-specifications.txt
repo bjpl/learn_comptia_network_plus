@@ -1,0 +1,121 @@
+Ultimate Local AI Workstation - 4x RTX 4090 Build
+Complete System Specification for 405B+ Models
+
+CPU: AMD Threadripper PRO 7975WX - $3,899
+32 cores / 64 threads, 4.0 GHz base / 5.3 GHz boost
+Why this CPU:
+
+PCIe Lanes: 128 lanes (vs 64 on regular Threadripper) - critical for 4 GPUs at full x16 speed
+Memory Channels: 8-channel DDR5 for 460 GB/s memory bandwidth
+Direct GPU Communication: Each GPU gets full PCIe 5.0 x16 bandwidth
+Model Loading: High core count crucial for initial model loading from disk
+Alternative: Threadripper 7980X ($5,000) offers 64 cores but similar GPU performance
+
+
+Motherboard: ASUS Pro WS WRX90E-SAGE SE - $1,299
+E-ATX, Socket sTR5, 7x PCIe 5.0 x16 slots
+Critical Features:
+
+7x physical x16 slots wired for x16/x16/x16/x16 electrical
+Spacing: 3-slot spacing between x16 slots for 4090s
+Power Delivery: Dual 24-pin ATX + 2x 8-pin EPS for 2000W+ support
+10Gbit Ethernet: For fast model downloads and network storage
+IPMI: Remote management for headless operation
+
+
+Memory: 512GB DDR5-5600 ECC - $3,200
+8x 64GB Kingston Server Premier KSM56R46BD4PMI-64HAI
+Configuration:
+
+8-channel populated: Maximum bandwidth utilization
+ECC: Critical for 24/7 operation and large model stability
+Speed: DDR5-5600 for 460 GB/s aggregate bandwidth
+Capacity: 512GB allows CPU offloading for truly massive models
+Buffer: Registered DIMMs for stability at high capacity
+
+
+GPUs: 4x NVIDIA RTX 4090 24GB - $7,200
+PNY RTX 4090 24GB XLR8 Gaming VERTO
+Combined Specs:
+
+Total VRAM: 96GB
+CUDA Cores: 65,536 total
+Memory Bandwidth: 4 TB/s combined
+Power: 450W TDP each = 1800W GPU power
+
+Model Selection Reasoning:
+
+2.5-slot design: Fits 3-slot spacing on motherboard
+Reference PCB: Better compatibility and thermals in dense config
+Avoid: 3.5-4 slot cards (won't fit), liquid cooled (complexity)
+
+
+Power Supply: Dual PSU Configuration - $899
+Primary: EVGA SuperNOVA 1600 T2 Titanium - $599
+Secondary: EVGA SuperNOVA 1000 T2 Titanium - $300
+Power Distribution:
+
+Primary PSU: 2x RTX 4090s + Motherboard
+Secondary PSU: 2x RTX 4090s
+Add2PSU adapter: Synchronizes both PSUs ($25)
+Total Capacity: 2600W (2080W @ 80% load)
+Efficiency: 94%+ Titanium rating for lower heat
+
+
+Storage Configuration - $850
+Primary OS/Software: 2TB Samsung 990 PRO NVMe - $150
+
+PCIe 4.0, 7,450 MB/s reads
+OS + CUDA + frameworks
+
+Model Storage: 2x 4TB Crucial T705 NVMe - $700
+
+PCIe 5.0, 14,500 MB/s reads
+Critical: Fast model loading (405B model = ~200GB on disk)
+RAID 0 for 29 GB/s theoretical model loading
+
+
+Cooling Solution - $450
+Case: Phanteks Enthoo Pro 2 Server Edition - $250
+
+Supports dual PSU configuration
+10x 3.5" drive bays for future storage
+Dual chamber design for thermal isolation
+
+Fans: 6x Noctua iPPC-3000 PWM 140mm - $180
+
+Industrial grade for 24/7 operation
+3000 RPM max for high static pressure
+Front intake (3x), top exhaust (2x), rear exhaust (1x)
+
+Thermal Paste: Thermal Grizzly Kryonaut - $20
+
+Networking & Accessories - $275
+Network Card: Mellanox ConnectX-4 Lx 25GbE - $200
+
+Direct model downloads at 3.125 GB/s
+RDMA support for distributed computing future
+
+KVM over IP: PiKVM v4 - $75
+
+Remote access for headless operation
+BIOS-level control
+
+
+Operating System & Software Stack
+OS: Ubuntu 22.04 LTS Server
+
+Headless configuration
+CUDA 12.4 toolkit
+Docker for containerized deployments
+
+Inference Stack:
+
+vLLM for distributed inference
+ExLlamaV2 for quantized models
+Ollama for simple management
+text-generation-inference for production
+
+
+Total System Cost: $17,972
+Component Breakdown:

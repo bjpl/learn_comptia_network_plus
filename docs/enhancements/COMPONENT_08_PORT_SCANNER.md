@@ -1,15 +1,19 @@
 # Component #8: Enhanced Port Scanner Simulator
 
 ## Overview
+
 An educational port scanning simulator designed to teach CompTIA Network+ security concepts through hands-on interaction. This tool simulates various port scanning techniques, visualizes packet exchanges, and demonstrates defense mechanisms without performing real network scans.
 
 ## Implementation Date
+
 November 1, 2025
 
 ## Route
+
 `/ports/scanner`
 
 ## Component Location
+
 `src/components/protocols/PortScannerEnhanced.tsx`
 
 ---
@@ -50,6 +54,7 @@ November 1, 2025
 ### 1. Scan Type Simulators
 
 #### TCP Connect Scan
+
 - **Stealth Level**: Low (Non-Stealth)
 - **Detection Risk**: HIGH
 - **How it works**:
@@ -71,6 +76,7 @@ November 1, 2025
   - Verifying service availability
 
 #### SYN Scan (Stealth/Half-Open)
+
 - **Stealth Level**: High
 - **Detection Risk**: MEDIUM
 - **How it works**:
@@ -91,6 +97,7 @@ November 1, 2025
   - Penetration testing
 
 #### UDP Scan
+
 - **Stealth Level**: High
 - **Detection Risk**: LOW
 - **How it works**:
@@ -116,6 +123,7 @@ November 1, 2025
   - DHCP server identification
 
 #### ACK Scan (Firewall Detection)
+
 - **Stealth Level**: High
 - **Detection Risk**: LOW
 - **Purpose**: Firewall rule mapping (does NOT find open ports)
@@ -132,6 +140,7 @@ November 1, 2025
   - Network security assessment
 
 #### Banner Grabbing
+
 - **Stealth Level**: Low (Non-Stealth)
 - **Detection Risk**: HIGH
 - **How it works**:
@@ -158,30 +167,35 @@ November 1, 2025
 #### Port States Explained
 
 **Open**
+
 - Service is actively listening on the port
 - Responds to connection attempts
 - Security implication: Potential attack vector
 - Example: Web server on port 80/443
 
 **Closed**
+
 - No service listening on port
 - Port is accessible (not filtered)
 - Returns RST packet
 - Security implication: Reveals system is active
 
 **Filtered**
+
 - Firewall or packet filter blocking access
 - No response received
 - Cannot determine if service exists
 - Security implication: Defense mechanism active
 
 **Open|Filtered** (UDP-specific)
+
 - Cannot definitively determine state
 - No response received (common for UDP)
 - Could be open OR filtered
 - Requires additional testing
 
 **Unfiltered** (ACK scan specific)
+
 - Port is accessible (not blocked)
 - Does NOT indicate if service is running
 - Only reveals firewall configuration
@@ -209,6 +223,7 @@ Step 4: 📡 Scanner → 🖥️ Target [RST]
 ```
 
 Visual indicators show:
+
 - Packet direction (Scanner ↔ Target)
 - TCP flags used [SYN, ACK, RST, FIN]
 - Detection status
@@ -217,6 +232,7 @@ Visual indicators show:
 ### 4. Defense Mechanisms
 
 #### Firewall (Port Filtering)
+
 - **Function**: Blocks or allows traffic based on port rules
 - **Configuration**: Per-port allow/block/rate-limit rules
 - **Effect on Scans**:
@@ -225,6 +241,7 @@ Visual indicators show:
   - Demonstrates packet filtering
 
 #### IDS/IPS (Intrusion Detection/Prevention)
+
 - **Function**: Monitors network for suspicious patterns
 - **Detection Triggers**:
   - Multiple connection attempts
@@ -236,12 +253,14 @@ Visual indicators show:
   - May trigger countermeasures
 
 #### Rate Limiting
+
 - **Function**: Throttles scan speed
 - **Purpose**: Prevents rapid port sweeps
 - **Effect**: Slows down automated scanning
 - **Real-world**: Prevents DoS from scan activity
 
 #### Port Knocking
+
 - **Function**: Hides services behind sequence requirement
 - **How it works**: Must connect to ports in specific order
 - **Security benefit**: Obscures actual service ports
@@ -249,41 +268,46 @@ Visual indicators show:
 
 ### 5. Stealth vs Non-Stealth Comparison
 
-| Feature | TCP Connect | SYN Scan | UDP Scan | ACK Scan |
-|---------|-------------|----------|----------|----------|
-| **Stealth** | ❌ Low | ✅ High | ✅ High | ✅ High |
-| **Speed** | Medium | Fast | Very Slow | Fast |
-| **Accuracy** | High | High | Medium | N/A |
-| **Detection** | 🔴 HIGH | 🟡 MEDIUM | 🟢 LOW | 🟢 LOW |
-| **Logged** | ✅ Always | ⚠️ Sometimes | ❌ Rarely | ❌ Rarely |
-| **Root Required** | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Purpose** | Service Detection | Reconnaissance | UDP Services | Firewall Mapping |
+| Feature           | TCP Connect       | SYN Scan       | UDP Scan     | ACK Scan         |
+| ----------------- | ----------------- | -------------- | ------------ | ---------------- |
+| **Stealth**       | ❌ Low            | ✅ High        | ✅ High      | ✅ High          |
+| **Speed**         | Medium            | Fast           | Very Slow    | Fast             |
+| **Accuracy**      | High              | High           | Medium       | N/A              |
+| **Detection**     | 🔴 HIGH           | 🟡 MEDIUM      | 🟢 LOW       | 🟢 LOW           |
+| **Logged**        | ✅ Always         | ⚠️ Sometimes   | ❌ Rarely    | ❌ Rarely        |
+| **Root Required** | ❌ No             | ✅ Yes         | ✅ Yes       | ✅ Yes           |
+| **Purpose**       | Service Detection | Reconnaissance | UDP Services | Firewall Mapping |
 
 ### 6. Educational Scenarios
 
 #### Scenario 1: Web Server Security Audit
+
 **Target**: Port 80 (HTTP) and 443 (HTTPS)
 **Finding**: HTTP open but unencrypted
 **Recommendation**: Redirect HTTP to HTTPS, implement HSTS
 **Exam Tip**: Always recommend encryption for sensitive data
 
 #### Scenario 2: Database Exposure
+
 **Target**: Port 3306 (MySQL) open to internet
 **Risk Level**: CRITICAL
 **Recommendation**:
+
 - Firewall to block public access
 - VPN-only access
 - Network segmentation
-**Exam Tip**: Database ports should NEVER be internet-facing
+  **Exam Tip**: Database ports should NEVER be internet-facing
 
 #### Scenario 3: Legacy Protocol Detection
+
 **Target**: Port 23 (Telnet) open
 **Risk Level**: CRITICAL
 **Issue**: All traffic sent in plaintext
 **Recommendation**:
+
 - Replace with SSH (port 22)
 - Immediate shutdown if not required
-**Exam Tip**: Telnet is obsolete and inexcusable on modern networks
+  **Exam Tip**: Telnet is obsolete and inexcusable on modern networks
 
 ---
 
@@ -292,6 +316,7 @@ Visual indicators show:
 ### Port Number Memorization
 
 **Well-Known Ports (0-1023)**
+
 - FTP: 20 (data), 21 (control)
 - SSH/SFTP: 22
 - Telnet: 23
@@ -304,6 +329,7 @@ Visual indicators show:
 - SMB: 445
 
 **Registered Ports (1024-49151)**
+
 - SQL Server: 1433
 - RDP: 3389
 - MySQL: 3306
@@ -373,6 +399,7 @@ PortScannerEnhanced
 ### Key Algorithms
 
 #### Port State Determination
+
 ```typescript
 function determinePortState(
   scanType: ScanType,
@@ -400,6 +427,7 @@ function determinePortState(
 ```
 
 #### Detection Simulation
+
 ```typescript
 function simulateDetection(
   scanType: ScanType,
@@ -411,7 +439,7 @@ function simulateDetection(
 
   // IDS can detect stealth scans
   if (idsEnabled) {
-    return exchanges.some(e => e.type.includes('SYN-ACK'));
+    return exchanges.some((e) => e.type.includes('SYN-ACK'));
   }
 
   return false;
@@ -434,8 +462,8 @@ interface ScanResult {
 interface PacketExchange {
   step: number;
   source: 'scanner' | 'target';
-  flags?: string[];  // TCP flags
-  type: string;      // Packet type
+  flags?: string[]; // TCP flags
+  type: string; // Packet type
   description: string;
   detected?: boolean; // Logged/detected?
 }
@@ -503,14 +531,14 @@ Only scan networks you OWN or have WRITTEN PERMISSION to test.
 
 ### Simulator vs Real Tool
 
-| Feature | This Simulator | Real nmap |
-|---------|---------------|-----------|
-| **Network Activity** | None (simulated) | Real packets sent |
-| **Target Required** | No | Yes (IP/domain) |
-| **Legal Risk** | Zero | High if unauthorized |
-| **Educational Value** | High | High |
-| **Packet Details** | Visualized | Command-line output |
-| **Purpose** | CompTIA exam prep | Security assessment |
+| Feature               | This Simulator    | Real nmap            |
+| --------------------- | ----------------- | -------------------- |
+| **Network Activity**  | None (simulated)  | Real packets sent    |
+| **Target Required**   | No                | Yes (IP/domain)      |
+| **Legal Risk**        | Zero              | High if unauthorized |
+| **Educational Value** | High              | High                 |
+| **Packet Details**    | Visualized        | Command-line output  |
+| **Purpose**           | CompTIA exam prep | Security assessment  |
 
 ### Responsible Security Education
 
@@ -611,6 +639,7 @@ This tool does NOT:
 Component #8: Enhanced Port Scanner Simulator successfully delivers a comprehensive, educational tool for understanding network security scanning techniques. It balances technical accuracy with pedagogical value, providing CompTIA Network+ students with hands-on experience in a safe, legal, and ethical environment.
 
 The component emphasizes:
+
 - **Education over exploitation**
 - **Understanding over automation**
 - **Defense over attack**
@@ -629,6 +658,7 @@ This aligns perfectly with CompTIA's certification objectives of producing respo
 ---
 
 ## Documentation Maintained By
+
 Claude Code - Implementation Agent
 CompTIA Network+ SPARC Development Environment
 

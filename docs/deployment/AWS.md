@@ -58,6 +58,7 @@ This guide deploys a production-grade architecture on AWS:
 ### Step 1: Install AWS CLI
 
 **macOS:**
+
 ```bash
 brew install awscli
 ```
@@ -66,6 +67,7 @@ brew install awscli
 Download from [AWS CLI Installer](https://aws.amazon.com/cli/)
 
 **Linux:**
+
 ```bash
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
@@ -89,6 +91,7 @@ aws sts get-caller-identity
 ```
 
 **Create IAM user with necessary permissions:**
+
 1. Go to AWS Console → IAM → Users
 2. Click "Add users"
 3. Username: `comptia-network-deploy`
@@ -964,6 +967,7 @@ aws application-autoscaling put-scaling-policy \
 ## Cost Optimization
 
 **Current configuration costs (approximate):**
+
 - VPC + Networking: $0 (free)
 - NAT Gateway: $32/month + data transfer
 - RDS t3.micro Multi-AZ: $58/month
@@ -977,6 +981,7 @@ aws application-autoscaling put-scaling-policy \
 **Total: ~$160-200/month**
 
 ### Reduce costs:
+
 1. **Use single AZ for RDS** (not recommended for production): Save $29/month
 2. **Remove ElastiCache**: Save $24/month (use in-memory cache)
 3. **Use 1 ECS task**: Save $15/month (not recommended for HA)
@@ -1069,6 +1074,7 @@ jobs:
 ### ECS Tasks Not Starting
 
 Check CloudWatch logs:
+
 ```bash
 aws logs tail /ecs/comptia-network-backend --follow
 ```
@@ -1076,6 +1082,7 @@ aws logs tail /ecs/comptia-network-backend --follow
 ### Database Connection Failed
 
 Verify security groups:
+
 ```bash
 aws ec2 describe-security-groups --group-ids $ECS_SG $RDS_SG
 ```
@@ -1083,6 +1090,7 @@ aws ec2 describe-security-groups --group-ids $ECS_SG $RDS_SG
 ### High Costs
 
 Review AWS Cost Explorer:
+
 ```bash
 aws ce get-cost-and-usage \
   --time-period Start=2025-10-01,End=2025-10-29 \

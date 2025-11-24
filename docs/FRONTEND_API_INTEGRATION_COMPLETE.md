@@ -254,6 +254,7 @@ npm test
 ```
 
 **Demo Accounts:**
+
 - Student: `demo@comptia.test / demo123`
 - Admin: `admin@comptia.test / admin123`
 
@@ -274,6 +275,7 @@ npm run preview
 ### 3. Using in Components
 
 **Authentication:**
+
 ```typescript
 import { useAuthStore } from './stores/authStore';
 
@@ -293,6 +295,7 @@ function LoginPage() {
 ```
 
 **User Profile:**
+
 ```typescript
 import { useUserStore } from './stores/userStore';
 
@@ -312,6 +315,7 @@ function ProfilePage() {
 ```
 
 **Progress Tracking:**
+
 ```typescript
 import { useProgressStore } from './stores/progressStore';
 
@@ -335,6 +339,7 @@ function LessonPage() {
 ```
 
 **Network Status:**
+
 ```typescript
 import { useNetworkStatus } from './utils/api/network-status';
 
@@ -357,12 +362,14 @@ function App() {
 ## Key Features
 
 ### ✅ Dual Mode Support
+
 - Mock API for development (no backend needed)
 - Real API for production
 - Toggle via environment variable
 - Seamless switching
 
 ### ✅ Automatic Token Management
+
 - Access token (15min lifetime)
 - Refresh token (7 days lifetime)
 - Automatic refresh on expiry
@@ -370,6 +377,7 @@ function App() {
 - "Remember me" functionality
 
 ### ✅ Offline Support
+
 - Automatic network detection
 - Request queuing when offline
 - Auto-sync when back online
@@ -377,6 +385,7 @@ function App() {
 - Visual indicators
 
 ### ✅ Comprehensive Error Handling
+
 - User-friendly error messages
 - Detailed logging in dev mode
 - Retry logic for transient errors
@@ -384,6 +393,7 @@ function App() {
 - Error recovery
 
 ### ✅ Progress Synchronization
+
 - Real-time local updates
 - Background API sync
 - Conflict resolution
@@ -391,12 +401,14 @@ function App() {
 - Network-aware sync
 
 ### ✅ Type Safety
+
 - Full TypeScript support
 - Typed API responses
 - Type-safe stores
 - Intellisense support
 
 ### ✅ Testing
+
 - Unit tests for services
 - Integration tests for flows
 - Component tests
@@ -405,6 +417,7 @@ function App() {
 ## API Endpoints Supported
 
 ### Authentication
+
 - `POST /auth/login` - User login
 - `POST /auth/register` - User registration
 - `POST /auth/logout` - User logout
@@ -415,6 +428,7 @@ function App() {
 - `GET /auth/me` - Get current user
 
 ### User Management
+
 - `GET /users/profile` - Get user profile
 - `PUT /users/profile` - Update profile
 - `POST /users/password` - Change password
@@ -423,6 +437,7 @@ function App() {
 - `PUT /users/settings` - Update settings
 
 ### Progress Tracking
+
 - `GET /progress` - Get all progress
 - `GET /progress/component/:id` - Get component progress
 - `PUT /progress/component/:id` - Update progress
@@ -430,6 +445,7 @@ function App() {
 - `POST /progress/reset` - Reset progress
 
 ### Assessments
+
 - `GET /assessments/quiz/:id` - Get quiz
 - `POST /assessments/quiz/:id/submit` - Submit answers
 - `GET /assessments/results/:attemptId` - Get results
@@ -450,21 +466,25 @@ VITE_USE_MOCK_API=true                    # Use mock API (true/false)
 ## Testing
 
 ### Run All Tests
+
 ```bash
 npm test
 ```
 
 ### Run Integration Tests
+
 ```bash
 npm run test:integration
 ```
 
 ### Run with Coverage
+
 ```bash
 npm run test:coverage
 ```
 
 ### Run Specific Test
+
 ```bash
 npm test -- api-integration.test.ts
 ```
@@ -480,20 +500,24 @@ npm test -- api-integration.test.ts
 ## Security
 
 ✅ **Token Security:**
+
 - Secure storage (localStorage/sessionStorage)
 - HttpOnly cookie support ready
 - XSS protection
 
 ✅ **Input Validation:**
+
 - Client-side validation
 - Type checking
 - Sanitization ready
 
 ✅ **HTTPS Enforcement:**
+
 - Production HTTPS required
 - Secure cookie flags
 
 ✅ **Rate Limiting:**
+
 - Client-side throttling
 - Backend rate limit support
 
@@ -505,6 +529,7 @@ npm test -- api-integration.test.ts
 - ✅ Edge 90+
 
 **Requirements:**
+
 - LocalStorage support
 - Fetch API support
 - ES2020+ support
@@ -547,16 +572,19 @@ npm test -- api-integration.test.ts
 ## Support & Resources
 
 **Documentation:**
+
 - Architecture: `/docs/api-integration.md`
 - Migration: `/docs/migration-guide.md`
 - Summary: `/docs/API_INTEGRATION_SUMMARY.md`
 
 **Code Examples:**
+
 - Service usage in tests
 - Component integration examples
 - Store usage patterns
 
 **Testing:**
+
 - `tests/integration/` - Test examples
 - Run `npm test` for examples
 

@@ -299,39 +299,39 @@ erDiagram
 
 ### One-to-One Relationships
 
-| Parent Table | Child Table | Relationship | Notes |
-|-------------|-------------|--------------|-------|
-| users | user_profiles | 1:1 | Each user has one profile |
-| users | user_settings | 1:1 | Each user has one settings record |
-| users | learning_streaks | 1:1 | Each user has one streak record |
+| Parent Table | Child Table      | Relationship | Notes                             |
+| ------------ | ---------------- | ------------ | --------------------------------- |
+| users        | user_profiles    | 1:1          | Each user has one profile         |
+| users        | user_settings    | 1:1          | Each user has one settings record |
+| users        | learning_streaks | 1:1          | Each user has one streak record   |
 
 ### One-to-Many Relationships
 
-| Parent Table | Child Table | Relationship | Cascade Rule |
-|-------------|-------------|--------------|--------------|
-| users | user_progress | 1:N | CASCADE on delete |
-| users | learning_sessions | 1:N | CASCADE on delete |
-| users | bookmarks | 1:N | CASCADE on delete |
-| users | assessment_attempts | 1:N | CASCADE on delete |
-| users | user_achievements | 1:N | CASCADE on delete |
-| users | study_goals | 1:N | CASCADE on delete |
-| users | user_activity_logs | 1:N | SET NULL on delete |
-| learning_components | user_progress | 1:N | CASCADE on delete |
-| learning_components | learning_sessions | 1:N | CASCADE on delete |
-| learning_components | bookmarks | 1:N | CASCADE on delete |
-| learning_components | component_analytics | 1:N | CASCADE on delete |
-| assessments | assessment_attempts | 1:N | CASCADE on delete |
-| assessment_attempts | assessment_answers | 1:N | CASCADE on delete |
-| question_bank | assessment_answers | 1:N | CASCADE on delete |
-| achievements | user_achievements | 1:N | CASCADE on delete |
+| Parent Table        | Child Table         | Relationship | Cascade Rule       |
+| ------------------- | ------------------- | ------------ | ------------------ |
+| users               | user_progress       | 1:N          | CASCADE on delete  |
+| users               | learning_sessions   | 1:N          | CASCADE on delete  |
+| users               | bookmarks           | 1:N          | CASCADE on delete  |
+| users               | assessment_attempts | 1:N          | CASCADE on delete  |
+| users               | user_achievements   | 1:N          | CASCADE on delete  |
+| users               | study_goals         | 1:N          | CASCADE on delete  |
+| users               | user_activity_logs  | 1:N          | SET NULL on delete |
+| learning_components | user_progress       | 1:N          | CASCADE on delete  |
+| learning_components | learning_sessions   | 1:N          | CASCADE on delete  |
+| learning_components | bookmarks           | 1:N          | CASCADE on delete  |
+| learning_components | component_analytics | 1:N          | CASCADE on delete  |
+| assessments         | assessment_attempts | 1:N          | CASCADE on delete  |
+| assessment_attempts | assessment_answers  | 1:N          | CASCADE on delete  |
+| question_bank       | assessment_answers  | 1:N          | CASCADE on delete  |
+| achievements        | user_achievements   | 1:N          | CASCADE on delete  |
 
 ### Many-to-Many Relationships (through junction tables)
 
-| Table 1 | Junction | Table 2 | Notes |
-|---------|----------|---------|-------|
-| users | user_achievements | achievements | Users earn achievements |
-| users | user_progress | learning_components | Users progress through components |
-| assessments | (array) | question_bank | Assessments contain questions via array |
+| Table 1     | Junction          | Table 2             | Notes                                   |
+| ----------- | ----------------- | ------------------- | --------------------------------------- |
+| users       | user_achievements | achievements        | Users earn achievements                 |
+| users       | user_progress     | learning_components | Users progress through components       |
+| assessments | (array)           | question_bank       | Assessments contain questions via array |
 
 ## Data Flow Diagrams
 
@@ -404,50 +404,59 @@ Dashboard Queries
 ### 1. UUID Primary Keys
 
 **Rationale:**
+
 - Distributed system compatibility
 - No sequential ID exposure
 - Merge-friendly across databases
 - URL-safe identifiers
 
 **Drawback:**
+
 - Slightly larger storage (16 bytes vs 4/8 bytes)
 - Less human-readable
 
 **Mitigation:**
+
 - Proper indexing strategy
 - Use slugs for user-facing URLs
 
 ### 2. JSONB for Flexible Data
 
 **Use Cases:**
+
 - `learning_components.content` - Dynamic content structure
 - `question_bank.question_data` - Question-type-specific data
 - `user_settings.privacy_settings` - Flexible settings
 - `achievements.criteria` - Dynamic achievement rules
 
 **Benefits:**
+
 - Schema flexibility
 - Efficient storage and querying
 - Native PostgreSQL indexing support
 
 **Considerations:**
+
 - Validate JSON structure in application
 - Use specific fields when frequently queried
 
 ### 3. Soft Deletes
 
 **Tables with Soft Delete:**
+
 - users
 - learning_components
 - assessments
 - question_bank
 
 **Implementation:**
+
 - `deleted_at` timestamp column
 - Indexes exclude deleted records
 - Queries filter `WHERE deleted_at IS NULL`
 
 **Benefits:**
+
 - Data recovery capability
 - Audit trail maintenance
 - Referential integrity preservation
@@ -455,6 +464,7 @@ Dashboard Queries
 ### 4. Array Columns
 
 **Use Cases:**
+
 - `learning_components.prerequisites` - Component dependencies
 - `learning_components.objectives` - Learning objectives
 - `learning_components.comptia_objectives` - Exam mapping
@@ -462,21 +472,25 @@ Dashboard Queries
 - `user_settings.reminder_days` - Day selections
 
 **Benefits:**
+
 - Denormalized for performance
 - Simple querying with array operators
 - No junction table overhead
 
 **Considerations:**
+
 - Limited to PostgreSQL
 - Array size should be reasonable
 
 ### 5. Automatic Timestamps
 
 **Implementation:**
+
 - Trigger function `update_updated_at_column()`
 - Applied to all tables with `updated_at`
 
 **Benefits:**
+
 - Automatic audit trail
 - Consistent behavior
 - No application-level logic needed
@@ -484,16 +498,19 @@ Dashboard Queries
 ### 6. Enum-like Check Constraints
 
 **Examples:**
+
 - `users.role` IN ('student', 'instructor', 'admin')
 - `learning_components.component_type` IN (...)
 - `user_progress.status` IN (...)
 
 **Benefits:**
+
 - Database-level validation
 - Self-documenting
 - Query optimization
 
 **vs. Separate Enum Tables:**
+
 - Simpler structure
 - Better performance
 - Trade-off: Less flexible for dynamic values
@@ -501,12 +518,14 @@ Dashboard Queries
 ### 7. Composite Unique Constraints
 
 **Examples:**
+
 - `user_progress` (user_id, component_id)
 - `bookmarks` (user_id, component_id)
 - `user_achievements` (user_id, achievement_id)
 - `component_analytics` (component_id, date)
 
 **Purpose:**
+
 - Prevent duplicate entries
 - Natural business logic enforcement
 - Query optimization
@@ -516,6 +535,7 @@ Dashboard Queries
 ### Horizontal Scalability
 
 **Read Replicas:**
+
 - Analytics queries → Read replicas
 - User dashboard → Read replicas
 - Component browsing → Read replicas
@@ -536,15 +556,18 @@ PARTITION BY RANGE (created_at);
 ### Performance Optimization
 
 **Materialized Views:**
+
 - `mv_daily_user_activity` - Refresh nightly
 - `mv_weekly_domain_progress` - Refresh weekly
 
 **Indexes:**
+
 - All foreign keys indexed
 - Frequently filtered columns indexed
 - Composite indexes for common query patterns
 
 **Query Optimization:**
+
 - Views for complex aggregations
 - Functions for repeated logic
 - Prepared statements in application
@@ -552,12 +575,14 @@ PARTITION BY RANGE (created_at);
 ### Caching Strategy
 
 **Application-level Cache:**
+
 - Learning component catalog (5-10 min TTL)
 - Achievement definitions (1 hour TTL)
 - User settings (session duration)
 - Question bank (10 min TTL)
 
 **Database-level:**
+
 - Connection pooling
 - Shared buffer configuration
 - Work memory optimization
@@ -611,7 +636,7 @@ COMMIT;
 
 1. **Use EXPLAIN ANALYZE** for slow queries
 2. **Limit result sets** with pagination
-3. **Avoid SELECT *** - specify columns
+3. **Avoid SELECT \*** - specify columns
 4. **Use EXISTS** instead of COUNT when checking existence
 5. **Index foreign keys** automatically
 
@@ -636,12 +661,14 @@ COMMIT;
 ### Estimated Storage Requirements
 
 **Per User (Average):**
+
 - User records: ~2 KB
 - Progress tracking: ~10 KB per component
 - Session history: ~0.5 KB per session
 - Activity logs: ~0.2 KB per log entry
 
 **For 10,000 Users:**
+
 - Core user data: ~20 MB
 - Learning progress: ~2 GB (200 components)
 - Session history: ~50 MB (100 sessions/user)
@@ -649,18 +676,19 @@ COMMIT;
 - **Total: ~2.3 GB**
 
 **For 100,000 Users:**
+
 - Estimated: ~23 GB
 
 ### Query Performance Targets
 
-| Query Type | Target Time | Notes |
-|-----------|-------------|-------|
-| User login | < 50ms | Indexed on email/username |
-| Dashboard load | < 200ms | Uses views and caching |
-| Component list | < 100ms | Indexed on domain/type |
-| Progress update | < 50ms | Simple UPDATE |
-| Assessment submit | < 500ms | Transaction with multiple INSERTs |
-| Analytics query | < 2s | Uses materialized views |
+| Query Type        | Target Time | Notes                             |
+| ----------------- | ----------- | --------------------------------- |
+| User login        | < 50ms      | Indexed on email/username         |
+| Dashboard load    | < 200ms     | Uses views and caching            |
+| Component list    | < 100ms     | Indexed on domain/type            |
+| Progress update   | < 50ms      | Simple UPDATE                     |
+| Assessment submit | < 500ms     | Transaction with multiple INSERTs |
+| Analytics query   | < 2s        | Uses materialized views           |
 
 ## Conclusion
 

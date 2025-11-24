@@ -166,26 +166,31 @@ Enhanced interactive connector identification and termination training tool for 
 ## User Experience Flow
 
 ### 1. Identification Tab
+
 ```
 View 3D Model → Select Answer → Submit → Get Feedback → Next Question
 ```
 
 ### 2. Wiring Tab
+
 ```
 Select Standard → Drag Wires → Arrange Order → Check Wiring → Get Result
 ```
 
 ### 3. Termination Tab
+
 ```
 Read Step → View Tips → Note Mistakes → Next Step → Complete Process
 ```
 
 ### 4. Fiber Inspection Tab
+
 ```
 Learn Polish Types → Compare Characteristics → Review Guidelines
 ```
 
 ### 5. Use Cases Tab
+
 ```
 Read Scenario → Select Connector → Submit → Get Explanation → Next Scenario
 ```
@@ -194,36 +199,36 @@ Read Scenario → Select Connector → Submit → Get Explanation → Next Scena
 
 ### Connector Quick Reference
 
-| Connector | Type | Use Case | Key Feature |
-|-----------|------|----------|-------------|
-| RJ45 | Copper | Ethernet networks | 8P8C, T568A/B |
-| RJ11 | Copper | Telephone lines | 6P4C |
-| LC | Fiber | Datacenter, high-density | Small form factor |
-| SC | Fiber | Enterprise, standard | Square, push-pull |
-| ST | Fiber | Legacy multimode | Bayonet mount |
-| MPO | Fiber | 40G/100G datacenter | Multi-fiber (12/24) |
-| F-type | Coaxial | Cable TV/internet | Threaded, screw-on |
-| BNC | Coaxial | Video, RF | Bayonet, quick-connect |
+| Connector | Type    | Use Case                 | Key Feature            |
+| --------- | ------- | ------------------------ | ---------------------- |
+| RJ45      | Copper  | Ethernet networks        | 8P8C, T568A/B          |
+| RJ11      | Copper  | Telephone lines          | 6P4C                   |
+| LC        | Fiber   | Datacenter, high-density | Small form factor      |
+| SC        | Fiber   | Enterprise, standard     | Square, push-pull      |
+| ST        | Fiber   | Legacy multimode         | Bayonet mount          |
+| MPO       | Fiber   | 40G/100G datacenter      | Multi-fiber (12/24)    |
+| F-type    | Coaxial | Cable TV/internet        | Threaded, screw-on     |
+| BNC       | Coaxial | Video, RF                | Bayonet, quick-connect |
 
 ### T568A vs T568B
 
 **Key Difference:** Orange and green pairs are swapped
 
-| Pin | T568A | T568B |
-|-----|-------|-------|
-| 1-2 | Green pair | Orange pair |
-| 3-6 | Orange pair | Green pair |
+| Pin | T568A       | T568B       |
+| --- | ----------- | ----------- |
+| 1-2 | Green pair  | Orange pair |
+| 3-6 | Orange pair | Green pair  |
 
 **T568A:** Government, residential, USOC compatible
 **T568B:** Commercial standard, most common
 
 ### Fiber Polish Comparison
 
-| Type | Return Loss | Angle | Use Case | Color |
-|------|-------------|-------|----------|-------|
-| PC | -35 to -40 dB | Flat | Multimode | Blue |
-| UPC | -50 dB | Curved | Single-mode | Blue |
-| APC | -60 dB | 8° | High-performance SMF | Green |
+| Type | Return Loss   | Angle  | Use Case             | Color |
+| ---- | ------------- | ------ | -------------------- | ----- |
+| PC   | -35 to -40 dB | Flat   | Multimode            | Blue  |
+| UPC  | -50 dB        | Curved | Single-mode          | Blue  |
+| APC  | -60 dB        | 8°     | High-performance SMF | Green |
 
 ## Exam Preparation Tips
 

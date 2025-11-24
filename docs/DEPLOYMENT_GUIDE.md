@@ -1,6 +1,7 @@
 # CompTIA Network+ Learning Platform - Deployment Guide
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Prerequisites](#prerequisites)
 3. [Platform-Specific Guides](#platform-specific-guides)
@@ -63,6 +64,7 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 ### Technology Stack
 
 **Frontend:**
+
 - React 18.3+
 - TypeScript 5.7+
 - Vite 6.0+ (Build tool)
@@ -70,6 +72,7 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 - React Router 6.28+
 
 **Backend:**
+
 - Node.js 18+
 - Express 4.18+
 - PostgreSQL 14+
@@ -79,12 +82,14 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 ## Prerequisites
 
 ### Local Development
+
 - Node.js 18+ and npm 9+
 - PostgreSQL 14+ or Docker
 - Git
 - Text editor (VS Code recommended)
 
 ### Production Requirements
+
 - **Domain name** with DNS access
 - **SSL certificate** (Let's Encrypt free or purchased)
 - **Hosting account** on chosen platform
@@ -97,33 +102,34 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 
 ### Cost Estimates (Monthly)
 
-| Platform | Tier | Frontend | Backend | Database | Total |
-|----------|------|----------|---------|----------|-------|
-| **Vercel + Railway** | Hobby | $0 | $5-10 | $5 | $5-15 |
-| **Vercel + Railway** | Pro | $20 | $20 | $15 | $55 |
-| **DigitalOcean** | Basic | - | $12 | $15 | $27 |
-| **DigitalOcean** | Production | - | $48 | $30 | $78 |
-| **AWS** | Small | $5 | $30 | $25 | $60 |
-| **AWS** | Medium | $15 | $100 | $75 | $190 |
-| **Self-Hosted** | VPS | - | $5-20 | - | $5-20 |
+| Platform             | Tier       | Frontend | Backend | Database | Total |
+| -------------------- | ---------- | -------- | ------- | -------- | ----- |
+| **Vercel + Railway** | Hobby      | $0       | $5-10   | $5       | $5-15 |
+| **Vercel + Railway** | Pro        | $20      | $20     | $15      | $55   |
+| **DigitalOcean**     | Basic      | -        | $12     | $15      | $27   |
+| **DigitalOcean**     | Production | -        | $48     | $30      | $78   |
+| **AWS**              | Small      | $5       | $30     | $25      | $60   |
+| **AWS**              | Medium     | $15      | $100    | $75      | $190  |
+| **Self-Hosted**      | VPS        | -        | $5-20   | -        | $5-20 |
 
 ## Platform-Specific Guides
 
 ### Quick Comparison
 
-| Platform | Difficulty | Cost/Month | Scalability | Best For |
-|----------|-----------|------------|-------------|----------|
-| [Vercel + Railway](./deployment/VERCEL_RAILWAY.md) | Easy | $5-15 | Good | Quick start, MVP |
-| [DigitalOcean](./deployment/DIGITALOCEAN.md) | Medium | $27-78 | Good | Budget conscious |
-| [AWS](./deployment/AWS.md) | Hard | $60-200+ | Excellent | Enterprise |
-| [Self-Hosted](./deployment/SELF_HOSTED.md) | Medium | $5-20 | Limited | Full control |
-| [Docker Compose](./deployment/DOCKER_COMPOSE.md) | Medium | Variable | Good | Containers |
+| Platform                                           | Difficulty | Cost/Month | Scalability | Best For         |
+| -------------------------------------------------- | ---------- | ---------- | ----------- | ---------------- |
+| [Vercel + Railway](./deployment/VERCEL_RAILWAY.md) | Easy       | $5-15      | Good        | Quick start, MVP |
+| [DigitalOcean](./deployment/DIGITALOCEAN.md)       | Medium     | $27-78     | Good        | Budget conscious |
+| [AWS](./deployment/AWS.md)                         | Hard       | $60-200+   | Excellent   | Enterprise       |
+| [Self-Hosted](./deployment/SELF_HOSTED.md)         | Medium     | $5-20      | Limited     | Full control     |
+| [Docker Compose](./deployment/DOCKER_COMPOSE.md)   | Medium     | Variable   | Good        | Containers       |
 
 ### 1. Vercel + Railway (Recommended for Beginners)
 
 **Best for:** Quick deployment, prototypes, small to medium traffic
 
 **Pros:**
+
 - Easiest setup (15 minutes)
 - Automatic SSL
 - Global CDN included
@@ -131,6 +137,7 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 - Free tier available
 
 **Cons:**
+
 - Limited backend customization
 - Higher cost at scale
 - Platform lock-in
@@ -142,12 +149,14 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 **Best for:** Large scale applications, enterprise requirements
 
 **Pros:**
+
 - Highly scalable
 - Full control
 - Extensive services
 - Industry standard
 
 **Cons:**
+
 - Complex setup
 - Steeper learning curve
 - Can be expensive
@@ -160,12 +169,14 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 **Best for:** Cost-conscious teams, medium traffic
 
 **Pros:**
+
 - Predictable pricing
 - Simple interface
 - Good documentation
 - Managed databases
 
 **Cons:**
+
 - Less features than AWS
 - Limited regions
 - Manual scaling
@@ -177,12 +188,14 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 **Best for:** Experienced teams, specific requirements
 
 **Pros:**
+
 - Complete control
 - Lowest cost (if you have servers)
 - No platform limitations
 - Custom configurations
 
 **Cons:**
+
 - Most complex
 - You handle everything
 - Security responsibility
@@ -195,12 +208,14 @@ This guide covers deploying the CompTIA Network+ Learning Platform to various ho
 **Best for:** Containerized environments, reproducible deployments
 
 **Pros:**
+
 - Consistent across environments
 - Easy to replicate
 - Good for CI/CD
 - Portable
 
 **Cons:**
+
 - Requires Docker knowledge
 - Need orchestration for scale
 - Extra layer of complexity
@@ -287,6 +302,7 @@ NEW_RELIC_LICENSE_KEY=your-key-here
 ### Generate Strong Secrets
 
 **Option 1: Using OpenSSL**
+
 ```bash
 # Generate JWT secret
 openssl rand -base64 32
@@ -299,11 +315,13 @@ openssl rand -base64 32
 ```
 
 **Option 2: Using Node.js**
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
 **Option 3: Using provided script**
+
 ```bash
 cd backend
 chmod +x scripts/generate-secrets.sh
@@ -315,6 +333,7 @@ chmod +x scripts/generate-secrets.sh
 ### PostgreSQL Installation
 
 **Ubuntu/Debian:**
+
 ```bash
 # Install PostgreSQL
 sudo apt update
@@ -326,6 +345,7 @@ sudo systemctl enable postgresql
 ```
 
 **macOS:**
+
 ```bash
 brew install postgresql@14
 brew services start postgresql@14
@@ -352,16 +372,19 @@ GRANT ALL PRIVILEGES ON DATABASE comptia_network_prod TO comptia_admin;
 ### Connection String Formats
 
 **Standard format:**
+
 ```
 postgresql://username:password@hostname:5432/database
 ```
 
 **With SSL:**
+
 ```
 postgresql://username:password@hostname:5432/database?sslmode=require
 ```
 
 **Connection pooling:**
+
 ```
 postgresql://username:password@hostname:5432/database?pool_size=20&pool_timeout=10
 ```
@@ -407,6 +430,7 @@ crontab -e
 ```
 
 **Backup to remote storage:**
+
 ```bash
 # After backup, sync to S3
 aws s3 sync ./backups/ s3://your-bucket/db-backups/
@@ -464,6 +488,7 @@ sudo chmod 644 /etc/ssl/certs/yourdomain.com.crt
 ```
 
 **Nginx configuration:**
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -521,6 +546,7 @@ curl -X POST https://api.yourdomain.com/api/auth/register \
 ### 3. Configure DNS
 
 **A Records:**
+
 ```
 A     @              YOUR_SERVER_IP
 A     www            YOUR_SERVER_IP
@@ -528,6 +554,7 @@ A     api            YOUR_SERVER_IP
 ```
 
 **CNAME (if using CDN):**
+
 ```
 CNAME www            yourdomain.com
 CNAME api            yourdomain.com
@@ -550,6 +577,7 @@ Ensure all HTTP traffic redirects to HTTPS (should be automatic with most setups
 ### 6. Performance Optimization
 
 **Enable CDN caching:**
+
 ```nginx
 # Cache static assets
 location ~* \.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2)$ {
@@ -559,6 +587,7 @@ location ~* \.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2)$ {
 ```
 
 **Enable compression:**
+
 ```nginx
 gzip on;
 gzip_types text/plain text/css application/json application/javascript text/xml;
@@ -566,6 +595,7 @@ gzip_comp_level 6;
 ```
 
 **Enable HTTP/2:**
+
 ```nginx
 listen 443 ssl http2;
 ```
@@ -575,18 +605,21 @@ listen 443 ssl http2;
 ### Application Monitoring
 
 **Option 1: Built-in Health Endpoint**
+
 ```bash
 # Monitor health
 watch -n 30 'curl -s https://api.yourdomain.com/health | jq'
 ```
 
 **Option 2: Uptime Robot (Free)**
+
 1. Sign up at [uptimerobot.com](https://uptimerobot.com)
 2. Add HTTP monitor for https://yourdomain.com
 3. Add HTTP monitor for https://api.yourdomain.com/health
 4. Configure alerts (email, SMS, Slack)
 
 **Option 3: Sentry (Error Tracking)**
+
 ```bash
 # Install Sentry
 npm install @sentry/node @sentry/react
@@ -598,6 +631,7 @@ npm install @sentry/node @sentry/react
 ### Log Management
 
 **View logs:**
+
 ```bash
 # Backend logs
 tail -f backend/logs/production.log
@@ -613,6 +647,7 @@ sudo tail -f /var/log/postgresql/postgresql-14-main.log
 ```
 
 **Log rotation:**
+
 ```bash
 # Configure logrotate
 sudo nano /etc/logrotate.d/comptia-network
@@ -632,6 +667,7 @@ sudo nano /etc/logrotate.d/comptia-network
 ### Database Maintenance
 
 **Weekly maintenance script:**
+
 ```bash
 #!/bin/bash
 # /etc/cron.weekly/db-maintenance
@@ -677,6 +713,7 @@ psql -U comptia_admin -d comptia_network_test -c "SELECT COUNT(*) FROM users;"
 ### Application Won't Start
 
 **Check logs:**
+
 ```bash
 # Backend logs
 cd backend && npm run start
@@ -685,6 +722,7 @@ cd backend && npm run start
 ```
 
 **Common issues:**
+
 - Database connection failed: Verify DATABASE_URL
 - Port already in use: Change PORT in .env
 - Missing dependencies: Run `npm install`
@@ -743,6 +781,7 @@ sudo systemctl restart comptia-backend
 ### Slow Performance
 
 **Database queries:**
+
 ```sql
 -- Find slow queries
 SELECT pid, now() - pg_stat_activity.query_start AS duration, query
@@ -755,6 +794,7 @@ CREATE INDEX idx_progress_user_id ON user_progress(user_id);
 ```
 
 **Enable Redis caching:**
+
 ```env
 # In .env.production
 REDIS_ENABLED=true
@@ -773,6 +813,7 @@ CACHE_TTL=3600
 ### API Errors
 
 **Enable debug logging:**
+
 ```env
 # In backend/.env.production
 LOG_LEVEL=debug
@@ -780,6 +821,7 @@ NODE_ENV=development
 ```
 
 **Check API responses:**
+
 ```bash
 # Test auth
 curl -X POST https://api.yourdomain.com/api/auth/login \
@@ -793,6 +835,7 @@ curl -v https://api.yourdomain.com/api/courses
 ### Rollback Deployment
 
 **Git rollback:**
+
 ```bash
 # Find previous commit
 git log --oneline
@@ -807,6 +850,7 @@ git push -f origin main
 ```
 
 **Docker rollback:**
+
 ```bash
 # List images
 docker images
@@ -817,6 +861,7 @@ docker-compose up -d --no-build
 ```
 
 **Database rollback:**
+
 ```bash
 # Restore from backup
 ./backend/database/scripts/restore.sh ./backups/backup-2025-10-28.sql
@@ -825,16 +870,19 @@ docker-compose up -d --no-build
 ## Getting Help
 
 ### Documentation
+
 - [Frontend README](../README.md)
 - [Backend README](../backend/README.md)
 - [API Documentation](../backend/API.md)
 
 ### Support Channels
+
 - GitHub Issues: [Report bugs or request features]
 - Email: support@yourdomain.com
 - Documentation: https://docs.yourdomain.com
 
 ### Common Resources
+
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [Nginx Documentation](https://nginx.org/en/docs/)
@@ -870,12 +918,12 @@ npm run lint                    # Check code quality
 
 ### Port Reference
 
-| Service | Port | Protocol |
-|---------|------|----------|
-| Frontend | 80, 443 | HTTP/HTTPS |
-| Backend API | 3001 | HTTP |
-| PostgreSQL | 5432 | TCP |
-| Redis | 6379 | TCP |
+| Service     | Port    | Protocol   |
+| ----------- | ------- | ---------- |
+| Frontend    | 80, 443 | HTTP/HTTPS |
+| Backend API | 3001    | HTTP       |
+| PostgreSQL  | 5432    | TCP        |
+| Redis       | 6379    | TCP        |
 
 ### File Locations
 

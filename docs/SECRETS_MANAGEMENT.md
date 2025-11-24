@@ -29,6 +29,7 @@ This guide covers the complete lifecycle of secrets management for the CompTIA N
 ### Scope
 
 This guide covers:
+
 - Application secrets (JWT, API keys, etc.)
 - Database credentials
 - Third-party service keys
@@ -42,6 +43,7 @@ This guide covers:
 ### 1. Authentication Secrets
 
 **JWT Secrets**
+
 - **Purpose**: Sign and verify JSON Web Tokens
 - **Length**: 32+ characters
 - **Rotation**: Every 90 days
@@ -53,6 +55,7 @@ REFRESH_TOKEN_SECRET=xyz987wvu654tsr321qpo876nml543ij
 ```
 
 **Session Secrets**
+
 - **Purpose**: Sign session cookies
 - **Length**: 64 characters (hex)
 - **Rotation**: Every 90 days
@@ -66,6 +69,7 @@ COOKIE_SECRET=z9y8x7w6v5u4t3s2r1q0p9o8n7m6l5k4
 ### 2. Database Credentials
 
 **Connection Strings**
+
 - **Purpose**: Connect to PostgreSQL database
 - **Rotation**: Every 180 days
 - **Impact if compromised**: Complete data breach
@@ -78,6 +82,7 @@ DB_PASSWORD=secure_database_password_32chars
 ### 3. Encryption Keys
 
 **Data Encryption**
+
 - **Purpose**: Encrypt sensitive data at rest
 - **Length**: 64 characters (hex)
 - **Rotation**: Every 180 days (requires data re-encryption)
@@ -90,6 +95,7 @@ ENCRYPTION_KEY=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 ### 4. API Keys
 
 **Third-Party Services**
+
 - **Purpose**: Authenticate with external services
 - **Rotation**: Per service requirements
 - **Impact if compromised**: Service abuse, billing issues
@@ -103,6 +109,7 @@ AWS_SECRET_ACCESS_KEY=wJal...
 ### 5. Security Tokens
 
 **CSRF Protection**
+
 - **Purpose**: Prevent cross-site request forgery
 - **Length**: 64 characters (hex)
 - **Rotation**: Every 90 days
@@ -158,6 +165,7 @@ openssl rand -base64 24 | tr -d "=+/"
 ### Generation Requirements
 
 **Minimum Requirements:**
+
 - Use cryptographically secure random number generator (CSRNG)
 - Minimum 32 characters for most secrets
 - Minimum 64 characters for encryption keys
@@ -165,6 +173,7 @@ openssl rand -base64 24 | tr -d "=+/"
 - Unique for each environment
 
 **Do NOT use:**
+
 - Weak generators (Math.random(), timestamp-based)
 - Default or example secrets
 - Secrets from tutorials or documentation
@@ -178,6 +187,7 @@ openssl rand -base64 24 | tr -d "=+/"
 ### Development Environment
 
 **Local Development:**
+
 ```bash
 # Create .env file (never commit)
 cp .env.example .env
@@ -190,12 +200,14 @@ echo "!.env.example" >> .gitignore
 ### Password Manager
 
 **Recommended Services:**
+
 - 1Password (Teams)
 - LastPass (Enterprise)
 - Bitwarden (Teams/Enterprise)
 - HashiCorp Vault (Self-hosted)
 
 **Storage Structure:**
+
 ```
 CompTIA Network+ Platform/
 ├── Production/
@@ -212,6 +224,7 @@ CompTIA Network+ Platform/
 ### GitHub Secrets
 
 **Repository Secrets:**
+
 ```bash
 # Add using GitHub CLI
 gh secret set JWT_SECRET
@@ -222,6 +235,7 @@ gh secret set -R owner/repo < secrets.env
 ```
 
 **Environment Secrets:**
+
 ```bash
 # Set for specific environment
 gh secret set JWT_SECRET --env production
@@ -230,6 +244,7 @@ gh secret set JWT_SECRET --env production
 ### Hosting Platform
 
 **Vercel:**
+
 ```bash
 # Using Vercel CLI
 vercel env add JWT_SECRET production
@@ -239,6 +254,7 @@ vercel env add JWT_SECRET production
 ```
 
 **Railway:**
+
 ```bash
 # Using Railway CLI
 railway variables set JWT_SECRET=xxx
@@ -248,6 +264,7 @@ railway variables set JWT_SECRET=xxx
 ```
 
 **Heroku:**
+
 ```bash
 # Using Heroku CLI
 heroku config:set JWT_SECRET=xxx -a app-name
@@ -259,26 +276,28 @@ heroku config:set JWT_SECRET=xxx -a app-name
 
 ### Rotation Schedule
 
-| Secret Type | Rotation Period | Grace Period | Impact |
-|------------|----------------|--------------|--------|
-| JWT_SECRET | 90 days | 24 hours | Medium |
-| DATABASE_URL | 180 days | None | High |
-| SESSION_SECRET | 90 days | None | Medium |
-| ENCRYPTION_KEY | 180 days | N/A | Critical |
-| API_KEY | 90 days | 30 days | Low |
-| CSRF_SECRET | 90 days | 24 hours | Low |
+| Secret Type    | Rotation Period | Grace Period | Impact   |
+| -------------- | --------------- | ------------ | -------- |
+| JWT_SECRET     | 90 days         | 24 hours     | Medium   |
+| DATABASE_URL   | 180 days        | None         | High     |
+| SESSION_SECRET | 90 days         | None         | Medium   |
+| ENCRYPTION_KEY | 180 days        | N/A          | Critical |
+| API_KEY        | 90 days         | 30 days      | Low      |
+| CSRF_SECRET    | 90 days         | 24 hours     | Low      |
 
 ### Zero-Downtime Rotation
 
 **Step-by-Step Process:**
 
 1. **Generate New Secret**
+
 ```bash
 ./backend/scripts/rotate-secrets.sh
 # Choose the secret to rotate
 ```
 
 2. **Add Temporary Secret**
+
 ```env
 # Add alongside existing secret
 JWT_SECRET=old_secret_value
@@ -286,15 +305,13 @@ JWT_SECRET_NEW=new_secret_value
 ```
 
 3. **Update Code to Accept Both**
+
 ```javascript
 // Example: Accept both old and new JWT secrets
-const jwtSecrets = [
-  process.env.JWT_SECRET,
-  process.env.JWT_SECRET_NEW
-].filter(Boolean);
+const jwtSecrets = [process.env.JWT_SECRET, process.env.JWT_SECRET_NEW].filter(Boolean);
 
 // Verify with either secret
-const verified = jwtSecrets.some(secret => {
+const verified = jwtSecrets.some((secret) => {
   try {
     jwt.verify(token, secret);
     return true;
@@ -305,6 +322,7 @@ const verified = jwtSecrets.some(secret => {
 ```
 
 4. **Deploy and Verify**
+
 ```bash
 # Deploy to staging first
 npm run deploy:staging
@@ -317,6 +335,7 @@ npm run deploy:production
 ```
 
 5. **Wait for Grace Period**
+
 ```bash
 # Wait for all old tokens to expire
 # JWT: 15 minutes
@@ -325,6 +344,7 @@ npm run deploy:production
 ```
 
 6. **Remove Old Secret**
+
 ```env
 # Remove old secret, rename new
 JWT_SECRET=new_secret_value
@@ -332,6 +352,7 @@ JWT_SECRET=new_secret_value
 ```
 
 7. **Final Deployment**
+
 ```bash
 # Deploy updated configuration
 npm run deploy:production
@@ -366,6 +387,7 @@ gh workflow run deploy.yml
 ### Environment-Specific Configuration
 
 **Development:**
+
 ```env
 # .env.development (can use weak secrets)
 JWT_SECRET=dev-secret-not-for-production
@@ -373,6 +395,7 @@ DATABASE_URL=postgresql://localhost:5432/comptia_dev
 ```
 
 **Staging:**
+
 ```env
 # .env.staging (production-like secrets)
 JWT_SECRET=staging_abc123def456ghi789jkl012
@@ -380,6 +403,7 @@ DATABASE_URL=postgresql://staging-db:5432/comptia_staging
 ```
 
 **Production:**
+
 ```env
 # .env.production (strong, unique secrets)
 JWT_SECRET=prod_xyz987wvu654tsr321qpo876nml543
@@ -389,6 +413,7 @@ DATABASE_URL=postgresql://prod-db:5432/comptia_prod
 ### Deployment Checklist
 
 **Pre-Deployment:**
+
 - [ ] All secrets generated using secure methods
 - [ ] Secrets stored in password manager
 - [ ] Secrets configured in hosting platform
@@ -397,6 +422,7 @@ DATABASE_URL=postgresql://prod-db:5432/comptia_prod
 - [ ] No secrets in code or comments
 
 **During Deployment:**
+
 - [ ] Verify environment variables loaded correctly
 - [ ] Test database connection
 - [ ] Test JWT signing/verification
@@ -404,6 +430,7 @@ DATABASE_URL=postgresql://prod-db:5432/comptia_prod
 - [ ] Check logs for secret-related errors
 
 **Post-Deployment:**
+
 - [ ] Verify all features working
 - [ ] Check for secret leaks in logs
 - [ ] Monitor error rates
@@ -419,6 +446,7 @@ DATABASE_URL=postgresql://prod-db:5432/comptia_prod
 **Immediate Actions (First 15 Minutes):**
 
 1. **Assess Impact**
+
 ```bash
 # Determine which secret was compromised
 # Check git history, logs, error reports
@@ -428,6 +456,7 @@ git log -p --all | grep -i "jwt_secret"
 ```
 
 2. **Rotate Compromised Secret**
+
 ```bash
 # Generate new secret
 NEW_SECRET=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
@@ -438,6 +467,7 @@ vercel env add JWT_SECRET production <<< "$NEW_SECRET"
 ```
 
 3. **Invalidate Active Sessions**
+
 ```javascript
 // Application code to invalidate all sessions
 await db.sessions.deleteAll();
@@ -445,6 +475,7 @@ await redisClient.flushdb(); // If using Redis for sessions
 ```
 
 4. **Deploy Emergency Fix**
+
 ```bash
 # Trigger immediate deployment
 gh workflow run deploy.yml --ref main
@@ -456,6 +487,7 @@ npm run deploy:production
 **Short-Term Actions (First Hour):**
 
 5. **Notify Stakeholders**
+
 ```text
 Subject: Security Incident - Secret Rotation
 
@@ -470,6 +502,7 @@ Impact: [DESCRIBE USER IMPACT]
 ```
 
 6. **Monitor for Abuse**
+
 ```bash
 # Check logs for suspicious activity
 grep -i "unauthorized\|forbidden\|error" /var/log/app.log
@@ -479,6 +512,7 @@ grep -i "unauthorized\|forbidden\|error" /var/log/app.log
 ```
 
 7. **Review Access Logs**
+
 ```bash
 # Database access logs
 psql -c "SELECT * FROM pg_stat_activity WHERE state = 'active';"
@@ -490,12 +524,14 @@ awk '{print $1}' access.log | sort | uniq -c | sort -nr | head -20
 **Long-Term Actions (First 24 Hours):**
 
 8. **Root Cause Analysis**
+
 - How was the secret compromised?
 - What systems were affected?
 - What data was potentially accessed?
 - How can we prevent this in the future?
 
 9. **Rotate All Related Secrets**
+
 ```bash
 # If one secret compromised, rotate all secrets as precaution
 ./backend/scripts/rotate-secrets.sh
@@ -503,6 +539,7 @@ awk '{print $1}' access.log | sort | uniq -c | sort -nr | head -20
 ```
 
 10. **Update Security Procedures**
+
 - Enhance secret scanning
 - Implement additional monitoring
 - Update team training
@@ -560,15 +597,17 @@ git push
 ### Development
 
 1. **Use Environment Variables**
+
 ```javascript
 // ✅ Good
 const secret = process.env.JWT_SECRET;
 
 // ❌ Bad
-const secret = "hardcoded-secret";
+const secret = 'hardcoded-secret';
 ```
 
 2. **Never Log Secrets**
+
 ```javascript
 // ✅ Good
 logger.info('User authenticated', { userId: user.id });
@@ -578,6 +617,7 @@ logger.info('JWT token:', token);
 ```
 
 3. **Validate Secret Format**
+
 ```javascript
 // Check secret meets minimum requirements
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
@@ -588,6 +628,7 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
 ### CI/CD
 
 1. **Use GitHub Encrypted Secrets**
+
 ```yaml
 # ✅ Good
 env:
@@ -599,6 +640,7 @@ env:
 ```
 
 2. **Mask Secrets in Logs**
+
 ```yaml
 # Secrets are automatically masked in GitHub Actions
 # But avoid echoing them
@@ -609,6 +651,7 @@ env:
 ```
 
 3. **Limit Secret Scope**
+
 ```yaml
 # Use environment-specific secrets
 - name: Deploy to Production
@@ -620,22 +663,25 @@ env:
 ### Monitoring
 
 1. **Enable Secret Scanning**
+
 - GitHub secret scanning
 - GitGuardian
 - TruffleHog
 - Pre-commit hooks
 
 2. **Alert on Secret Access**
+
 ```javascript
 // Log when secrets are accessed
 logger.info('Secret accessed', {
   secret: 'JWT_SECRET',
   timestamp: new Date(),
-  user: req.user?.id
+  user: req.user?.id,
 });
 ```
 
 3. **Regular Audits**
+
 ```bash
 # Monthly secret audit
 # Check for:
@@ -648,6 +694,7 @@ logger.info('Secret accessed', {
 ### Team Training
 
 1. **Onboarding Checklist**
+
 - [ ] Reviewed secrets management guide
 - [ ] Installed password manager
 - [ ] Configured git hooks to prevent commits
@@ -655,6 +702,7 @@ logger.info('Secret accessed', {
 - [ ] Practiced secret rotation procedure
 
 2. **Regular Reminders**
+
 - Weekly security tips
 - Monthly secret rotation reviews
 - Quarterly security training
@@ -665,23 +713,27 @@ logger.info('Secret accessed', {
 ## Tools & Resources
 
 ### Secret Generation
+
 - `openssl` - Cryptographically secure random generation
 - `uuidgen` - UUID generation
 - `/dev/urandom` - Linux random number generator
 
 ### Secret Storage
+
 - **1Password** - https://1password.com/teams
 - **LastPass** - https://www.lastpass.com/products/enterprise
 - **Bitwarden** - https://bitwarden.com/products/business
 - **HashiCorp Vault** - https://www.vaultproject.io
 
 ### Secret Scanning
+
 - **GitHub Secret Scanning** - Built-in to GitHub
 - **GitGuardian** - https://www.gitguardian.com
 - **TruffleHog** - https://github.com/trufflesecurity/trufflehog
 - **detect-secrets** - https://github.com/Yelp/detect-secrets
 
 ### Pre-commit Hooks
+
 ```bash
 # Install pre-commit
 pip install pre-commit
@@ -701,6 +753,7 @@ pre-commit install
 ```
 
 ### Monitoring
+
 - **Sentry** - Error tracking with secret redaction
 - **DataDog** - Infrastructure monitoring
 - **AWS CloudWatch** - AWS service monitoring
@@ -719,7 +772,7 @@ function calculateEntropy(secret) {
     lowercase: 26,
     uppercase: 26,
     numbers: 10,
-    special: 32
+    special: 32,
   };
 
   let charset = 0;
@@ -749,32 +802,39 @@ function calculateEntropy(secret) {
 **Severity:** [Critical/High/Medium/Low]
 
 ## Summary
+
 [Brief description of incident]
 
 ## Timeline
+
 - [HH:MM] - Incident detected
 - [HH:MM] - Secret rotated
 - [HH:MM] - Systems secured
 - [HH:MM] - Incident resolved
 
 ## Impact
+
 - **Users Affected:** [Number]
 - **Data Accessed:** [Description]
 - **Downtime:** [Duration]
 
 ## Actions Taken
+
 1. [Action 1]
 2. [Action 2]
 3. [Action 3]
 
 ## Root Cause
+
 [Detailed analysis]
 
 ## Prevention Measures
+
 1. [Measure 1]
 2. [Measure 2]
 
 ## Follow-Up
+
 - [ ] Update security procedures
 - [ ] Team training scheduled
 - [ ] Monitoring enhanced

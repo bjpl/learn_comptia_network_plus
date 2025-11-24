@@ -9,6 +9,7 @@
 ## Overview
 
 This guide deploys on DigitalOcean using:
+
 - **Full Stack** → Droplet (Ubuntu 22.04)
 - **Database** → Managed PostgreSQL Database
 - **CDN** → DigitalOcean Spaces + CDN (optional)
@@ -17,6 +18,7 @@ This guide deploys on DigitalOcean using:
 ### Why DigitalOcean?
 
 **Pros:**
+
 - Simple, predictable pricing
 - User-friendly interface
 - Good documentation
@@ -25,6 +27,7 @@ This guide deploys on DigitalOcean using:
 - Reasonable cost
 
 **Cons:**
+
 - Fewer regions than AWS
 - Less feature-rich
 - Manual scaling required
@@ -57,6 +60,7 @@ cat ~/.ssh/id_ed25519.pub
 ```
 
 In DigitalOcean:
+
 1. Click "Settings" → "Security" → "SSH Keys"
 2. Click "Add SSH Key"
 3. Paste public key
@@ -65,11 +69,13 @@ In DigitalOcean:
 ### Step 3: Install doctl (DigitalOcean CLI)
 
 **macOS:**
+
 ```bash
 brew install doctl
 ```
 
 **Linux:**
+
 ```bash
 cd ~
 wget https://github.com/digitalocean/doctl/releases/download/v1.98.1/doctl-1.98.1-linux-amd64.tar.gz
@@ -81,6 +87,7 @@ sudo mv doctl /usr/local/bin
 Download from [GitHub releases](https://github.com/digitalocean/doctl/releases)
 
 **Authenticate:**
+
 ```bash
 # Create API token in DigitalOcean → API → Generate New Token
 doctl auth init
@@ -94,6 +101,7 @@ doctl account get
 ### Step 1: Create PostgreSQL Database
 
 **Via Web Interface:**
+
 1. DigitalOcean Dashboard → Databases → Create Database
 2. Choose PostgreSQL 14
 3. Select plan:
@@ -104,6 +112,7 @@ doctl account get
 6. Click "Create Database Cluster"
 
 **Via CLI:**
+
 ```bash
 # Create database
 doctl databases create comptia-network-db \
@@ -156,6 +165,7 @@ Add your Droplet's IP to trusted sources (you'll get this IP after creating the 
 ### Step 1: Create Droplet
 
 **Via Web Interface:**
+
 1. Dashboard → Droplets → Create Droplet
 2. Choose Ubuntu 22.04 LTS
 3. Select plan:
@@ -169,6 +179,7 @@ Add your Droplet's IP to trusted sources (you'll get this IP after creating the 
 8. Click "Create Droplet"
 
 **Via CLI:**
+
 ```bash
 # Create Droplet
 doctl compute droplet create comptia-network-prod \
@@ -726,6 +737,7 @@ jobs:
 ```
 
 **Setup secrets in GitHub:**
+
 - `DROPLET_IP`: Your Droplet's IP address
 - `SSH_PRIVATE_KEY`: Your private SSH key
 
@@ -734,12 +746,14 @@ jobs:
 ### Vertical Scaling (Resize Droplet)
 
 **Via Web Interface:**
+
 1. Dashboard → Droplet → Resize
 2. Choose larger plan
 3. Click "Resize Droplet"
 4. Droplet will be powered off and resized (5-10 minutes)
 
 **Via CLI:**
+
 ```bash
 # Power off Droplet
 doctl compute droplet-action power-off DROPLET_ID
@@ -827,6 +841,7 @@ sudo systemctl status certbot.timer
 ## Cost Breakdown
 
 **Configuration:** Basic ($12 Droplet + $15 Database)
+
 - Droplet (2GB RAM): $12/month
 - Managed PostgreSQL: $15/month
 - Bandwidth: 2TB included (free)
@@ -834,6 +849,7 @@ sudo systemctl status certbot.timer
 - **Total: ~$28/month**
 
 **Configuration:** Recommended ($48 Droplet + $30 Database)
+
 - Droplet (8GB RAM): $48/month
 - Managed PostgreSQL: $30/month
 - Load Balancer: $12/month (optional)
@@ -860,11 +876,13 @@ sudo systemctl status certbot.timer
 ## Security Best Practices
 
 1. **Keep system updated**:
+
    ```bash
    sudo apt update && sudo apt upgrade -y
    ```
 
 2. **Disable root SSH**:
+
    ```bash
    sudo nano /etc/ssh/sshd_config
    # Set: PermitRootLogin no
@@ -872,12 +890,14 @@ sudo systemctl status certbot.timer
    ```
 
 3. **Enable automatic security updates**:
+
    ```bash
    sudo apt install unattended-upgrades
    sudo dpkg-reconfigure -plow unattended-upgrades
    ```
 
 4. **Install fail2ban**:
+
    ```bash
    sudo apt install fail2ban
    sudo systemctl enable fail2ban

@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import type { ArchitectureDesign, ArchitectureComponent } from './cloud-types';
+import type { ArchitectureDesign } from './cloud-types';
 import {
   cloudTooltips,
   architectureTemplates,

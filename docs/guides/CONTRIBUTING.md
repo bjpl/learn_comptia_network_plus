@@ -19,6 +19,7 @@ Thank you for your interest in contributing to our learning platform! This docum
 ### Our Pledge
 
 We are committed to providing a welcoming and inclusive environment for all contributors, regardless of:
+
 - Age, body size, disability, ethnicity
 - Gender identity and expression
 - Level of experience
@@ -28,6 +29,7 @@ We are committed to providing a welcoming and inclusive environment for all cont
 ### Our Standards
 
 **Positive behaviors include:**
+
 - Using welcoming and inclusive language
 - Being respectful of differing viewpoints
 - Gracefully accepting constructive criticism
@@ -35,6 +37,7 @@ We are committed to providing a welcoming and inclusive environment for all cont
 - Showing empathy towards other community members
 
 **Unacceptable behaviors include:**
+
 - Harassment, trolling, or insulting comments
 - Public or private harassment
 - Publishing others' private information
@@ -43,6 +46,7 @@ We are committed to providing a welcoming and inclusive environment for all cont
 ### Enforcement
 
 Violations of the Code of Conduct may result in:
+
 1. Warning
 2. Temporary ban
 3. Permanent ban
@@ -132,6 +136,7 @@ git commit -m "feat: add subnet calculator component"
 ```
 
 **Commit Types:**
+
 - `feat:` New feature
 - `fix:` Bug fix
 - `docs:` Documentation changes
@@ -141,6 +146,7 @@ git commit -m "feat: add subnet calculator component"
 - `chore:` Maintenance tasks
 
 **Examples:**
+
 ```bash
 git commit -m "feat: add interactive network topology visualization"
 git commit -m "fix: resolve quiz answer validation issue"
@@ -166,6 +172,7 @@ git push --force-with-lease origin feature/your-feature-name
 ### What to Contribute
 
 **We welcome:**
+
 - Bug fixes
 - New features
 - Performance improvements
@@ -175,6 +182,7 @@ git push --force-with-lease origin feature/your-feature-name
 - UI/UX improvements
 
 **Before starting major work:**
+
 1. Check existing issues and PRs
 2. Open an issue to discuss your idea
 3. Wait for maintainer feedback
@@ -185,12 +193,14 @@ git push --force-with-lease origin feature/your-feature-name
 **When creating an issue:**
 
 **Bug Reports:**
+
 ```markdown
 **Describe the bug**
 A clear description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '...'
 3. See error
@@ -202,12 +212,14 @@ What you expected to happen.
 If applicable, add screenshots.
 
 **Environment:**
+
 - OS: [e.g., Windows 11]
 - Browser: [e.g., Chrome 120]
 - Node version: [e.g., 20.10.0]
 ```
 
 **Feature Requests:**
+
 ```markdown
 **Is your feature request related to a problem?**
 A clear description of the problem.
@@ -240,18 +252,22 @@ Any other context or screenshots.
 
 ```markdown
 ## Description
+
 Brief description of changes.
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change fixing an issue)
 - [ ] New feature (non-breaking change adding functionality)
 - [ ] Breaking change (fix or feature causing existing functionality to change)
 - [ ] Documentation update
 
 ## How Has This Been Tested?
+
 Describe tests performed.
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review performed
 - [ ] Code is commented
@@ -271,6 +287,7 @@ Describe tests performed.
 5. **Merge**: PR merged into main branch
 
 **Response Times:**
+
 - Initial review: Within 48 hours
 - Follow-up reviews: Within 24 hours
 - Merge: After approval and passing checks
@@ -301,12 +318,12 @@ const Button = ({ label, onClick, variant }: any) => {
 
 ```typescript
 // Component file structure
-import React from 'react';           // External imports first
+import React from 'react'; // External imports first
 import { useState } from 'react';
 
-import { Button } from '../ui';      // Internal imports second
+import { Button } from '../ui'; // Internal imports second
 
-import styles from './Component.module.css';  // Styles last
+import styles from './Component.module.css'; // Styles last
 
 // Types
 interface ComponentProps {
@@ -404,7 +421,7 @@ describe('Component', () => {
 
 ### Code Documentation
 
-```typescript
+````typescript
 /**
  * Calculate usable hosts in a subnet
  *
@@ -420,11 +437,11 @@ export function calculateUsableHosts(cidr: number): number {
   const hostBits = 32 - cidr;
   return Math.pow(2, hostBits) - 2;
 }
-```
+````
 
 ### Component Documentation
 
-```typescript
+````typescript
 /**
  * Interactive quiz component with multiple-choice questions
  *
@@ -440,11 +457,12 @@ export function calculateUsableHosts(cidr: number): number {
 export const Quiz: React.FC<QuizProps> = (props) => {
   // Implementation
 };
-```
+````
 
 ### Update Documentation
 
 When changing:
+
 - Component APIs → Update `docs/api/component-api.md`
 - Architecture → Create/update ADR in `docs/architecture/decisions/`
 - Development process → Update `docs/guides/development-guide.md`
@@ -468,6 +486,7 @@ When changing:
 ### Recognition
 
 Contributors are recognized in:
+
 - README.md contributors section
 - Release notes
 - Annual contributor highlights
@@ -475,6 +494,7 @@ Contributors are recognized in:
 ### Maintainers
 
 Current maintainers:
+
 - [Maintainer Name] (@github-username)
 
 ## License
