@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="description" content="Interactive learning platform for CompTIA Network+ N10-009 certification" />
+    <meta name="keywords" content="CompTIA, Network+, N10-009, certification, learning, networking" />
+    <meta name="theme-color" content="#2563eb" />
+
+    <!-- Preconnect to critical domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Preload critical resources -->
+    <link rel="modulepreload" href="data:application/octet-stream;base64,aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IFJlYWN0RE9NIGZyb20gJ3JlYWN0LWRvbS9jbGllbnQnOwppbXBvcnQgQXBwIGZyb20gJy4vQXBwJzsKaW1wb3J0ICcuL2luZGV4LmNzcyc7CmltcG9ydCB7IHJlcG9ydFdlYlZpdGFscywgbWFya1BlcmZvcm1hbmNlIH0gZnJvbSAnLi91dGlscy9wZXJmb3JtYW5jZSc7CgovLyBNYXJrIGFwcCBpbml0aWFsaXphdGlvbiBzdGFydAptYXJrUGVyZm9ybWFuY2UoJ2FwcC1pbml0LXN0YXJ0Jyk7CgovLyBFcnJvciBoYW5kbGVyIGZvciB0aGUgZW50aXJlIGFwcApjb25zdCBlcnJvckhhbmRsZXIgPSAoZXJyb3I6IEVycm9yRXZlbnQpID0+IHsKICBjb25zb2xlLmVycm9yKCdHbG9iYWwgZXJyb3I6JywgZXJyb3IpOwp9OwoKY29uc3QgcmVqZWN0aW9uSGFuZGxlciA9IChldmVudDogUHJvbWlzZVJlamVjdGlvbkV2ZW50KSA9PiB7CiAgY29uc29sZS5lcnJvcignVW5oYW5kbGVkIHByb21pc2UgcmVqZWN0aW9uOicsIGV2ZW50LnJlYXNvbik7Cn07Cgp3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcignZXJyb3InLCBlcnJvckhhbmRsZXIpOwp3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcigndW5oYW5kbGVkcmVqZWN0aW9uJywgcmVqZWN0aW9uSGFuZGxlcik7CgovLyBSZW1vdmUgaW5pdGlhbCBsb2FkaW5nIHN0YXRlCmNvbnN0IHJvb3RFbGVtZW50ID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3Jvb3QnKTsKY29uc3QgbG9hZGluZ0VsZW1lbnQgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncm9vdC1sb2FkaW5nJyk7CmlmIChsb2FkaW5nRWxlbWVudCkgewogIGxvYWRpbmdFbGVtZW50LnJlbW92ZSgpOwp9CgovLyBNYXJrIGJlZm9yZSBSZWFjdCByZW5kZXIKbWFya1BlcmZvcm1hbmNlKCdyZWFjdC1yZW5kZXItc3RhcnQnKTsKClJlYWN0RE9NLmNyZWF0ZVJvb3Qocm9vdEVsZW1lbnQhKS5yZW5kZXIoCiAgPFJlYWN0LlN0cmljdE1vZGU+CiAgICA8QXBwIC8+CiAgPC9SZWFjdC5TdHJpY3RNb2RlPgopOwoKLy8gTWFyayBhZnRlciBSZWFjdCByZW5kZXIKbWFya1BlcmZvcm1hbmNlKCdyZWFjdC1yZW5kZXItZW5kJyk7CgovLyBSZXBvcnQgV2ViIFZpdGFscwpyZXBvcnRXZWJWaXRhbHMoKG1ldHJpYykgPT4gewogIC8vIFlvdSBjYW4gc2VuZCBtZXRyaWNzIHRvIGFuYWx5dGljcyBzZXJ2aWNlIGhlcmUKICBpZiAoaW1wb3J0Lm1ldGEuZW52LkRFVikgewogICAgY29uc29sZS53YXJuKGBbV2ViIFZpdGFsc10gJHttZXRyaWMubmFtZX06YCwgbWV0cmljLnZhbHVlKTsKICB9Cn0pOwo=" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!-- Page title -->
+    <title>CompTIA Network+ Learning Platform</title>
+
+    <!-- Inline critical CSS for loading state -->
+    <style>
+      #root-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+      }
+      .loading-spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid #e5e7eb;
+        border-top-color: #2563eb;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      @media (prefers-color-scheme: dark) {
+        #root-loading {
+          background: linear-gradient(to bottom, #1f2937, #111827);
+        }
+        .loading-spinner {
+          border-color: #374151;
+          border-top-color: #3b82f6;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="/learn_comptia_network_plus/assets/index-DkMzoCJR.js"></script>
+    <link rel="modulepreload" crossorigin href="/learn_comptia_network_plus/assets/react-vendor-CweoBIVe.js">
+    <link rel="modulepreload" crossorigin href="/learn_comptia_network_plus/assets/ui-vendor-DWlLC9ee.js">
+    <link rel="modulepreload" crossorigin href="/learn_comptia_network_plus/assets/three-vendor-CkYZlhNY.js">
+    <link rel="modulepreload" crossorigin href="/learn_comptia_network_plus/assets/state-vendor-BH-f4zot.js">
+    <link rel="stylesheet" crossorigin href="/learn_comptia_network_plus/assets/index-taxMdvmh.css">
+  </head>
+  <body>
+    <div id="root">
+      <!-- Initial loading state -->
+      <div id="root-loading">
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+    <!-- GitHub Pages SPA redirect handler -->
+    <script>
+      // Check if redirected from 404.html
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
+
+
+    <!-- Service Worker Registration Disabled for GitHub Pages -->
+    <!-- <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('SW registered:', registration);
+            })
+            .catch(error => {
+              console.log('SW registration failed:', error);
+            });
+        });
+      }
+    </script> -->
+  </body>
+</html>
