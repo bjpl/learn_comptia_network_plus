@@ -189,11 +189,77 @@ export const TrafficTypeDemo: React.FC = () => {
     }
   };
 
+  // Keyboard navigation handler
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      // Space to play/pause animation
+      if (e.key === ' ') {
+        e.preventDefault();
+        if (animationState.animating) {
+          resetAnimation();
+        } else {
+          startAnimation();
+        }
+      }
+
+      // Arrow Left/Right to switch traffic types
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        const currentIndex = TRAFFIC_TYPES.findIndex((t) => t.id === selectedType.id);
+        const nextIndex =
+          e.key === 'ArrowLeft'
+            ? (currentIndex - 1 + TRAFFIC_TYPES.length) % TRAFFIC_TYPES.length
+            : (currentIndex + 1) % TRAFFIC_TYPES.length;
+        setSelectedType(TRAFFIC_TYPES[nextIndex]);
+        resetAnimation();
+      }
+
+      // R to reset
+      if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        resetAnimation();
+      }
+    },
+    [animationState.animating, selectedType.id]
+  );
+
   return (
-    <div className="traffic-type-demo">
+    <div
+      className="traffic-type-demo"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      role="application"
+      aria-label="Traffic Type Demonstrator"
+    >
       <div className="demo-header">
-        <h2>Traffic Type Demonstrator</h2>
-        <p className="subtitle">Visualize how different traffic patterns flow through networks</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h2>Traffic Type Demonstrator</h2>
+            <p className="subtitle">
+              Visualize how different traffic patterns flow through networks
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              const shortcuts = [
+                'Space: Play/Pause animation',
+                'Arrow Left/Right: Switch traffic types',
+                'R: Reset animation',
+              ];
+              alert('Keyboard Shortcuts:\n\n' + shortcuts.join('\n'));
+            }}
+            style={{
+              padding: '8px 16px',
+              background: '#f0f0f0',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+            title="Show keyboard shortcuts"
+          >
+            ⌨️ Shortcuts
+          </button>
+        </div>
       </div>
 
       <div className="demo-container">
@@ -425,6 +491,12 @@ export const TrafficTypeDemo: React.FC = () => {
           margin: 0 auto;
           padding: 20px;
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          border-radius: 8px;
+        }
+
+        .traffic-type-demo:focus {
+          outline: 2px solid #3b82f6;
+          outline-offset: 4px;
         }
 
         .demo-header {

@@ -43,7 +43,11 @@ export const OSIEnhanced: React.FC = () => {
       {/* Tabs */}
       <div className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         <div className="border-b border-gray-200 dark:border-gray-700">
-          <nav className="-mb-px flex overflow-x-auto">
+          <nav
+            className="-mb-px flex overflow-x-auto"
+            role="tablist"
+            aria-label="OSI Model sections"
+          >
             {[
               { id: 'overview', label: 'OSI Overview', icon: '📚' },
               { id: 'protocols', label: 'Protocols & Ports', icon: '🔌' },
@@ -55,13 +59,17 @@ export const OSIEnhanced: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`${tab.id}-panel`}
+                aria-label={tab.label}
                 className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-6 py-3 text-sm font-medium transition-colors ${
                   activeTab === tab.id
                     ? 'border-blue-600 text-blue-600 dark:text-blue-400'
                     : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
                 } `}
               >
-                <span>{tab.icon}</span>
+                <span aria-hidden="true">{tab.icon}</span>
                 <span>{tab.label}</span>
               </button>
             ))}
@@ -71,7 +79,12 @@ export const OSIEnhanced: React.FC = () => {
         <div className="p-6">
           {/* OSI Overview Tab */}
           {activeTab === 'overview' && (
-            <div className="space-y-6">
+            <div
+              className="space-y-6"
+              role="tabpanel"
+              id="overview-panel"
+              aria-labelledby="overview-tab"
+            >
               <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
                 OSI Model 7 Layers
               </h2>
@@ -212,7 +225,12 @@ export const OSIEnhanced: React.FC = () => {
 
           {/* Protocols & Ports Tab */}
           {activeTab === 'protocols' && (
-            <div className="space-y-6">
+            <div
+              className="space-y-6"
+              role="tabpanel"
+              id="protocols-panel"
+              aria-labelledby="protocols-tab"
+            >
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   Protocols & Port Numbers
@@ -223,6 +241,7 @@ export const OSIEnhanced: React.FC = () => {
                     checked={showPortNumbers}
                     onChange={(e) => setShowPortNumbers(e.target.checked)}
                     className="h-4 w-4 rounded text-blue-600"
+                    aria-label="Show or hide port numbers"
                   />
                   <span className="text-sm text-gray-900 dark:text-gray-100">
                     Show Port Numbers

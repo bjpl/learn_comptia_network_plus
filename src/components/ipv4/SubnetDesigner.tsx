@@ -396,7 +396,6 @@ const SubnetDesigner: React.FC = () => {
   };
 
   return (
-    // @ts-expect-error - Complex MUI sx prop types
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom className="text-gray-900 dark:text-white">
         Scenario-Based Subnet Designer
@@ -440,7 +439,9 @@ const SubnetDesigner: React.FC = () => {
           </Grid>
 
           <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" className="text-gray-900 dark:text-white">{selectedScenario.title}</Typography>
+            <Typography variant="h6" className="text-gray-900 dark:text-white">
+              {selectedScenario.title}
+            </Typography>
             <Typography variant="body2" className="text-gray-700 dark:text-gray-300">
               {selectedScenario.description}
             </Typography>

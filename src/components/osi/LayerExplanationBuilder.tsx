@@ -382,11 +382,19 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
         </p>
 
         {/* Mode Selection Tabs */}
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '20px' }}>
+        <div
+          style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '20px' }}
+          role="tablist"
+          aria-label="Learning modes"
+        >
           {DIFFICULTY_LEVELS.map((level) => (
             <button
               key={level.level}
               onClick={() => setCurrentMode(level.level as 1 | 2 | 3 | 4 | 5)}
+              role="tab"
+              aria-selected={currentMode === level.level}
+              aria-controls={`mode-${level.level}-panel`}
+              aria-label={`${level.name}: ${level.description}`}
               style={{
                 padding: '10px 20px',
                 backgroundColor: currentMode === level.level ? '#2196F3' : '#e0e0e0',
@@ -406,10 +414,16 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
 
         {/* Stats Bar */}
         <div style={{ display: 'flex', gap: '20px', marginTop: '15px', flexWrap: 'wrap' }}>
-          <div className="bg-gray-100 dark:bg-gray-800" style={{ padding: '10px 15px', borderRadius: '4px' }}>
+          <div
+            className="bg-gray-100 dark:bg-gray-800"
+            style={{ padding: '10px 15px', borderRadius: '4px' }}
+          >
             Hints Used: {hintsUsed}/3
           </div>
-          <div className="bg-gray-100 dark:bg-gray-800" style={{ padding: '10px 15px', borderRadius: '4px' }}>
+          <div
+            className="bg-gray-100 dark:bg-gray-800"
+            style={{ padding: '10px 15px', borderRadius: '4px' }}
+          >
             Current Score: {score}%
           </div>
           <button
@@ -606,7 +620,10 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                       150
                       {layer.interactionExplanation.split(' ').filter((w) => w.length > 0).length >=
                         150 && (
-                        <span className="text-green-600 dark:text-green-400" style={{ marginLeft: '10px' }}>
+                        <span
+                          className="text-green-600 dark:text-green-400"
+                          style={{ marginLeft: '10px' }}
+                        >
                           ✓ Meets requirement
                         </span>
                       )}
@@ -786,7 +803,10 @@ export const LayerExplanationBuilder: React.FC<LayerExplanationBuilderProps> = (
                   backgroundColor: '#fafafa',
                 }}
               >
-                <p className="text-gray-800 dark:text-gray-200" style={{ fontWeight: 'bold', marginBottom: '12px' }}>
+                <p
+                  className="text-gray-800 dark:text-gray-200"
+                  style={{ fontWeight: 'bold', marginBottom: '12px' }}
+                >
                   {question.question}
                 </p>
                 <div

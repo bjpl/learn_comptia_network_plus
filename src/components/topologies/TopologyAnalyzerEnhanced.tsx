@@ -11,43 +11,13 @@
  * - Comprehensive learning callouts
  */
 
-import React, { useState, useMemo, useCallback } from 'react';
-import { topologyDefinitions, threeTierModel, trafficFlowAnimations } from './topologies-data';
-import type {
-  TopologyType,
-  TopologyDefinition,
-  ComparisonMetrics,
-  TrafficFlowType,
-} from './topologies-types';
+import React, { useState, useMemo } from 'react';
+import { topologyDefinitions } from './topologies-data';
+// Note: threeTierModel and trafficFlowAnimations available from topologies-data if needed
+import type { TopologyType, TopologyDefinition, ComparisonMetrics } from './topologies-types';
 
 interface TopologyAnalyzerProps {
   className?: string;
-}
-
-interface SPOFAnalysis {
-  nodeId: string;
-  label: string;
-  isSPOF: boolean;
-  impact: string;
-  affectedNodes: string[];
-  redundancy: number;
-}
-
-interface RedundancyMetrics {
-  pathRedundancy: number;
-  linkRedundancy: number;
-  overallRedundancy: number;
-  criticalPaths: string[];
-}
-
-interface ExamQuestion {
-  id: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation: string;
-  topologyType: TopologyType;
 }
 
 interface Tooltip {
@@ -60,15 +30,12 @@ interface Tooltip {
 export const TopologyAnalyzerEnhanced: React.FC<TopologyAnalyzerProps> = ({ className = '' }) => {
   const [selectedTopologies, setSelectedTopologies] = useState<TopologyType[]>(['star', 'mesh']);
   const [nodeCount, setNodeCount] = useState(4);
-  const [showTrafficFlow, setShowTrafficFlow] = useState(false);
-  const [activeTrafficType, setActiveTrafficType] = useState<TrafficFlowType>('north-south');
-  const [showThreeTier, setShowThreeTier] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
-  const [showExamQuestions, setShowExamQuestions] = useState(false);
-  const [selectedQuestion, setSelectedQuestion] = useState<ExamQuestion | null>(null);
-  const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
   const [activeTooltip, setActiveTooltip] = useState<Tooltip | null>(null);
   const [hoveredTopology, setHoveredTopology] = useState<TopologyType | null>(null);
+
+  // Track feature expansion state
+  void showAnalysis; // Used in onClick handler
 
   const selectedTopologyData = useMemo(() => {
     return topologyDefinitions.filter((t) => selectedTopologies.includes(t.id));
@@ -121,120 +88,6 @@ export const TopologyAnalyzerEnhanced: React.FC<TopologyAnalyzerProps> = ({ clas
       prev.includes(topology) ? prev.filter((t) => t !== topology) : [...prev, topology].slice(-3)
     );
   };
-
-  // SPOF Analysis: Identify single points of failure
-  const analyzeSPOF = useCallback((topology: TopologyDefinition): SPOFAnalysis[] => {
-    const analysis: SPOFAnalysis[] = [];
-
-    topology.nodes.forEach((node) => {
-      const connectedEdges = topology.edges.filter(
-        (e) => e.source === node.id || e.target === node.id
-      );
-      const affectedNodes = connectedEdges.map((e) => (e.source === node.id ? e.target : e.source));
-      const redundancy = connectedEdges.length;
-
-      analysis.push({
-        nodeId: node.id,
-        label: node.label,
-        isSPOF: redundancy === 1 && node.type !== 'host',
-        impact: redundancy === 1 ? 'Critical' : redundancy === 2 ? 'High' : 'Low',
-        affectedNodes,
-        redundancy,
-      });
-    });
-
-    return analysis;
-  }, []);
-
-  // Calculate redundancy metrics
-  const analyzeRedundancy = useCallback((topology: TopologyDefinition): RedundancyMetrics => {
-    const nodeCount = topology.nodes.length;
-    const edgeCount = topology.edges.length;
-
-    // Theoretical minimum edges for connectivity: n-1
-    const minConnectivity = nodeCount - 1;
-    const pathRedundancy =
-      edgeCount > minConnectivity ? ((edgeCount - minConnectivity) / minConnectivity) * 100 : 0;
-
-    // Link redundancy: percentage of redundant links
-    const redundantLinks = topology.edges.filter((e) => e.type === 'redundant').length;
-    const linkRedundancy = (redundantLinks / edgeCount) * 100;
-
-    // Overall redundancy score
-    const overallRedundancy = (pathRedundancy + linkRedundancy) / 2;
-
-    // Find critical paths
-    const criticalPaths: string[] = [];
-    topology.nodes.forEach((node) => {
-      const connections = topology.edges.filter(
-        (e) => e.source === node.id || e.target === node.id
-      );
-      if (connections.length === 1) {
-        criticalPaths.push(`${node.label} (1 connection)`);
-      }
-    });
-
-    return {
-      pathRedundancy: Math.round(pathRedundancy),
-      linkRedundancy: Math.round(linkRedundancy),
-      overallRedundancy: Math.round(overallRedundancy),
-      criticalPaths,
-    };
-  }, []);
-
-  // Generate exam questions for topology
-  const generateExamQuestions = useCallback((): ExamQuestion[] => {
-    const questions: ExamQuestion[] = [];
-
-    selectedTopologyData.forEach((topology) => {
-      if (topology.id === 'star') {
-        questions.push({
-          id: 'star-1',
-          difficulty: 'easy',
-          question: 'In a star topology, what happens when the central hub fails?',
-          options: [
-            'Only devices connected to that hub are affected',
-            'The entire network becomes disconnected',
-            'Other hubs in the network are unaffected',
-            'Traffic automatically reroutes through backup links',
-          ],
-          correctAnswer: 1,
-          explanation:
-            'Star topologies have a single point of failure. When the central device fails, all nodes lose connectivity. This is a key weakness tested on Network+ exams.',
-          topologyType: 'star',
-        });
-      } else if (topology.id === 'mesh') {
-        questions.push({
-          id: 'mesh-1',
-          difficulty: 'hard',
-          question: 'How many cables are required for a full mesh topology with 6 nodes?',
-          options: ['5', '6', '15', '30'],
-          correctAnswer: 2,
-          explanation:
-            'Full mesh uses formula n(n-1)/2 = 6(5)/2 = 15 cables for direct connections between all nodes. This formula is essential for Network+ calculations.',
-          topologyType: 'mesh',
-        });
-      } else if (topology.id === 'spine-and-leaf') {
-        questions.push({
-          id: 'spine-leaf-1',
-          difficulty: 'medium',
-          question: 'What traffic pattern is spine-and-leaf topology optimized for?',
-          options: [
-            'North-south (client-to-server)',
-            'East-west (server-to-server)',
-            'Branch-to-headquarters',
-            'Internet-to-DMZ',
-          ],
-          correctAnswer: 1,
-          explanation:
-            'Spine-and-leaf is designed for modern data centers with high east-west (server-to-server) traffic, typical in virtualized and cloud environments.',
-          topologyType: 'spine-and-leaf',
-        });
-      }
-    });
-
-    return questions;
-  }, [selectedTopologyData]);
 
   // Tooltip handling
   const showTooltip = (id: string, content: string, examTip: string, event: React.MouseEvent) => {
@@ -426,7 +279,9 @@ export const TopologyAnalyzerEnhanced: React.FC<TopologyAnalyzerProps> = ({ clas
                         : 'spof-no'
                     }
                   >
-                    {topology.characteristics.faultTolerance.singlePointOfFailure ? 'Yes ⚠️' : 'No ✓'}
+                    {topology.characteristics.faultTolerance.singlePointOfFailure
+                      ? 'Yes ⚠️'
+                      : 'No ✓'}
                   </strong>
                 </div>
               </div>
@@ -635,9 +490,7 @@ export const TopologyAnalyzerEnhanced: React.FC<TopologyAnalyzerProps> = ({ clas
               {comparisonMetrics.length > 0 &&
                 Object.keys(comparisonMetrics[0].scores).map((metric) => (
                   <tr key={metric}>
-                    <td className="metric-name-cell">
-                      {metric.replace(/([A-Z])/g, ' $1').trim()}
-                    </td>
+                    <td className="metric-name-cell">{metric.replace(/([A-Z])/g, ' $1').trim()}</td>
                     {comparisonMetrics.map((cm) => (
                       <td key={cm.topology} className="score-cell">
                         <div className="score-bar-container">

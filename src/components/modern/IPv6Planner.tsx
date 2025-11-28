@@ -641,9 +641,16 @@ const IPv6Planner: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="mb-6 flex gap-2 border-b border-gray-300">
+      <div
+        className="mb-6 flex gap-2 border-b border-gray-300"
+        role="tablist"
+        aria-label="IPv6 Planner sections"
+      >
         <button
           onClick={() => setActiveTab('migration')}
+          role="tab"
+          aria-selected={activeTab === 'migration'}
+          aria-controls="migration-panel"
           className={`px-4 py-2 font-semibold transition-colors ${
             activeTab === 'migration'
               ? 'border-b-2 border-blue-600 text-blue-600'
@@ -654,6 +661,9 @@ const IPv6Planner: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveTab('fundamentals')}
+          role="tab"
+          aria-selected={activeTab === 'fundamentals'}
+          aria-controls="fundamentals-panel"
           className={`px-4 py-2 font-semibold transition-colors ${
             activeTab === 'fundamentals'
               ? 'border-b-2 border-blue-600 text-blue-600'
@@ -664,6 +674,9 @@ const IPv6Planner: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveTab('subnetting')}
+          role="tab"
+          aria-selected={activeTab === 'subnetting'}
+          aria-controls="subnetting-panel"
           className={`px-4 py-2 font-semibold transition-colors ${
             activeTab === 'subnetting'
               ? 'border-b-2 border-blue-600 text-blue-600'
@@ -674,6 +687,9 @@ const IPv6Planner: React.FC = () => {
         </button>
         <button
           onClick={() => setActiveTab('practice')}
+          role="tab"
+          aria-selected={activeTab === 'practice'}
+          aria-controls="practice-panel"
           className={`px-4 py-2 font-semibold transition-colors ${
             activeTab === 'practice'
               ? 'border-b-2 border-blue-600 text-blue-600'
@@ -686,7 +702,7 @@ const IPv6Planner: React.FC = () => {
 
       {/* Fundamentals Tab */}
       {activeTab === 'fundamentals' && (
-        <div className="space-y-6">
+        <div className="space-y-6" role="tabpanel" id="fundamentals-panel">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* IPv6 Format */}
             <div className="rounded-lg border-2 border-blue-300 bg-blue-50 p-6">
@@ -857,10 +873,12 @@ const IPv6Planner: React.FC = () => {
                 onChange={(e) => setSubnettingInput(e.target.value)}
                 placeholder="e.g., 2001:db8::/32"
                 className="flex-1 rounded-lg border-2 border-gray-300 px-4 py-2 font-mono text-sm focus:border-green-500 focus:outline-none"
+                aria-label="IPv6 address and prefix length"
               />
               <button
                 onClick={() => calculateIPv6Subnetting(subnettingInput)}
                 className="rounded-lg bg-green-600 px-6 py-2 font-semibold text-white transition-colors hover:bg-green-700"
+                aria-label="Calculate IPv6 subnetting information"
               >
                 Calculate
               </button>

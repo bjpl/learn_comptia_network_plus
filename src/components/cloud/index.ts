@@ -6,6 +6,7 @@
 export { CloudSummaryBuilder } from './CloudSummaryBuilder';
 export { CloudArchitectureDesigner } from './CloudArchitectureDesigner';
 export { CloudSummaryBuilderEnhanced } from './CloudSummaryBuilderEnhanced';
+export { default as CloudMigrationSimulator } from './CloudMigrationSimulator';
 
 export * from './cloud-types';
 export * from './cloud-data';
@@ -53,6 +54,23 @@ export const cloudComponents = {
       'Exam practice questions (4 questions with feedback)',
       'Responsive design with mobile optimization',
       '637 lines (under 700-line limit)',
+    ],
+  },
+  migrationSimulator: {
+    id: 'component-migration',
+    name: 'Cloud Migration Simulator',
+    learningObjective: '1.2',
+    description: 'Interactive tool for planning and simulating cloud migrations',
+    features: [
+      "Migration strategy selection (6 R's framework)",
+      'Pre-built migration scenarios (AWS, Azure, multi-cloud, DR)',
+      'Phase-based migration workflow (5 phases)',
+      'Cost comparison calculator (on-prem vs cloud TCO)',
+      'Risk assessment matrix with severity scoring',
+      'Timeline visualization (Gantt-style)',
+      'Dependency mapping and checklist tracking',
+      'Rollback planning and validation procedures',
+      'Educational content for each strategy',
     ],
   },
 };

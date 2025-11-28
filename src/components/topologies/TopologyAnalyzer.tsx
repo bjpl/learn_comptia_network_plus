@@ -57,6 +57,57 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
     return topologyDefinitions.filter((t) => selectedTopologies.includes(t.id));
   }, [selectedTopologies]);
 
+  // Keyboard navigation handler
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      // Tab to cycle topology selections
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        if (topologyDefinitions.length === 0) {
+          return;
+        }
+        const currentIndex = topologyDefinitions.findIndex(
+          (t) => t.id === selectedTopologies[selectedTopologies.length - 1]
+        );
+        const nextIndex = e.shiftKey
+          ? (currentIndex - 1 + topologyDefinitions.length) % topologyDefinitions.length
+          : (currentIndex + 1) % topologyDefinitions.length;
+        const nextTopology = topologyDefinitions[nextIndex].id;
+        if (!selectedTopologies.includes(nextTopology)) {
+          toggleTopology(nextTopology);
+        }
+      }
+
+      // Space to toggle selection
+      if (e.key === ' ') {
+        e.preventDefault();
+        // Toggle the last selected topology
+        if (selectedTopologies.length > 0) {
+          toggleTopology(selectedTopologies[selectedTopologies.length - 1]);
+        }
+      }
+
+      // Arrow keys for slider control
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        const step = e.shiftKey ? 5 : 1;
+        if (e.key === 'ArrowLeft') {
+          setNodeCount((prev) => Math.max(3, prev - step));
+        } else {
+          setNodeCount((prev) => Math.min(20, prev + step));
+        }
+      }
+
+      // Number keys 1-9 to set node count
+      if (e.key >= '1' && e.key <= '9') {
+        e.preventDefault();
+        const num = parseInt(e.key, 10);
+        setNodeCount(Math.max(3, Math.min(20, num)));
+      }
+    },
+    [selectedTopologies, topologyDefinitions]
+  );
+
   const comparisonMetrics = useMemo((): ComparisonMetrics[] => {
     return selectedTopologyData.map((topology) => {
       const chars = topology.characteristics;
@@ -204,14 +255,40 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
   }, [selectedTopologyData]);
 
   return (
-    <div className={`topology-analyzer ${className}`}>
+    <div
+      className={`topology-analyzer ${className}`}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      role="application"
+      aria-label="Network Topology Comparison Analyzer"
+    >
       {/* Header */}
       <div className="analyzer-header">
-        <h2>Network Topology Comparison Analyzer</h2>
-        <p>
-          Compare different network topologies based on cost, scalability, fault tolerance, and
-          traffic patterns
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h2>Network Topology Comparison Analyzer</h2>
+            <p>
+              Compare different network topologies based on cost, scalability, fault tolerance, and
+              traffic patterns
+            </p>
+          </div>
+          <button
+            className="toggle-btn"
+            onClick={() => {
+              const shortcuts = [
+                'Tab/Shift+Tab: Cycle topology selections',
+                'Space: Toggle last selected topology',
+                'Arrow Left/Right: Adjust node count (Shift for +/- 5)',
+                '1-9: Set node count directly',
+              ];
+              alert('Keyboard Shortcuts:\n\n' + shortcuts.join('\n'));
+            }}
+            style={{ marginLeft: '1rem', fontSize: '0.875rem', padding: '0.5rem 1rem' }}
+            title="Show keyboard shortcuts"
+          >
+            ⌨️ Shortcuts
+          </button>
+        </div>
       </div>
 
       {/* Topology Selection */}
@@ -859,6 +936,12 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
           padding: 2rem;
           max-width: 1400px;
           margin: 0 auto;
+          border-radius: 8px;
+        }
+
+        .topology-analyzer:focus {
+          outline: 2px solid #3b82f6;
+          outline-offset: 4px;
         }
 
         .analyzer-header {

@@ -314,14 +314,21 @@ const TechnologySummarizer: React.FC = () => {
               onChange={(e) => handleSummaryChange(selectedArticle.id, e.target.value)}
               placeholder="Write your summary here (max 200 words)..."
               className="h-48 w-full resize-none rounded-lg border-2 border-gray-300 p-3 focus:border-blue-500 focus:outline-none"
+              aria-label="Article summary text area"
+              aria-describedby="word-count-display"
             />
             <div className="mt-2 flex items-center justify-between">
-              <span className="text-sm text-gray-800 dark:text-gray-200">
+              <span
+                className="text-sm text-gray-800 dark:text-gray-200"
+                id="word-count-display"
+                aria-live="polite"
+              >
                 Word count: {summaries[selectedArticle.id]?.trim().split(/\s+/).length || 0} / 200
               </span>
               <button
                 onClick={evaluateSummary}
                 className="rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
+                aria-label="Evaluate summary and show scores"
               >
                 Evaluate Summary
               </button>

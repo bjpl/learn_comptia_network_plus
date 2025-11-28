@@ -114,6 +114,13 @@ const components: HomePageComponent[] = [
     learningObjective: 'LO 1.4',
     description: 'Match transceivers to network requirements',
   },
+  {
+    id: 'signal-analyzer',
+    name: 'Signal Analyzer',
+    path: '/transmission/signal-analyzer',
+    learningObjective: 'LO 1.4',
+    description: 'Analyze signal degradation and transmission characteristics',
+  },
   // Network Topologies (LO 1.5)
   {
     id: 'analyzer',
@@ -214,25 +221,27 @@ const HomePage: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-8 text-white">
-        <h1 className="text-3xl font-bold mb-2">
+      <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white">
+        <h1 className="mb-2 text-3xl font-bold">
           Welcome to CompTIA Network+ Interactive Learning
         </h1>
-        <p className="text-blue-100 text-lg mb-6">
+        <p className="mb-6 text-lg text-blue-100">
           Master networking concepts through 23 interactive components
         </p>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-            <div className="text-2xl font-bold">{stats.completed}/{stats.total}</div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm">
+            <div className="text-2xl font-bold">
+              {stats.completed}/{stats.total}
+            </div>
             <div className="text-sm text-blue-100">Components Completed</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+          <div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm">
             <div className="text-2xl font-bold">{stats.percentage}%</div>
             <div className="text-sm text-blue-100">Overall Progress</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+          <div className="rounded-lg bg-white/10 p-4 backdrop-blur-sm">
             <div className="text-2xl font-bold">{stats.averageScore}%</div>
             <div className="text-sm text-blue-100">Average Score</div>
           </div>
@@ -247,16 +256,14 @@ const HomePage: React.FC = () => {
 
         return (
           <section key={lo}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {lo}
-              </h2>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{lo}</h2>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {completedCount} of {loComponents.length} completed
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {loComponents.map((component) => (
                 <ComponentCard key={component.id} component={component} />
               ))}
@@ -266,25 +273,23 @@ const HomePage: React.FC = () => {
       })}
 
       {/* Quick Start Guide */}
-      <section className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-          Quick Start Guide
-        </h2>
+      <section className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+        <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">Quick Start Guide</h2>
         <div className="space-y-3 text-gray-600 dark:text-gray-400">
           <div className="flex items-start">
-            <span className="font-bold text-blue-600 dark:text-blue-400 mr-2">1.</span>
+            <span className="mr-2 font-bold text-blue-600 dark:text-blue-400">1.</span>
             <span>Navigate through learning objectives using the sidebar</span>
           </div>
           <div className="flex items-start">
-            <span className="font-bold text-blue-600 dark:text-blue-400 mr-2">2.</span>
+            <span className="mr-2 font-bold text-blue-600 dark:text-blue-400">2.</span>
             <span>Complete interactive components to learn concepts</span>
           </div>
           <div className="flex items-start">
-            <span className="font-bold text-blue-600 dark:text-blue-400 mr-2">3.</span>
+            <span className="mr-2 font-bold text-blue-600 dark:text-blue-400">3.</span>
             <span>Track your progress in the Progress Dashboard</span>
           </div>
           <div className="flex items-start">
-            <span className="font-bold text-blue-600 dark:text-blue-400 mr-2">4.</span>
+            <span className="mr-2 font-bold text-blue-600 dark:text-blue-400">4.</span>
             <span>Test your knowledge with the Integrated Simulator</span>
           </div>
         </div>

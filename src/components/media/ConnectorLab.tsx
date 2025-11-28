@@ -1,4 +1,4 @@
-import { useState, useRef, Suspense } from 'react';
+import { useState, useRef, Suspense, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Grid } from '@react-three/drei';
 import * as THREE from 'three';
@@ -97,15 +97,86 @@ export default function ConnectorLab() {
 
   const pinLayout = wiringStandard === 'T568A' ? T568A_LAYOUT : T568B_LAYOUT;
 
+  // Keyboard navigation handler
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      // Arrow keys to rotate 3D model
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        const rotationStep = Math.PI / 8;
+        setRotation((prev) => prev + (e.key === 'ArrowLeft' ? -rotationStep : rotationStep));
+      }
+
+      // +/- to zoom
+      if (e.key === '+' || e.key === '=' || e.key === '-' || e.key === '_') {
+        e.preventDefault();
+        if (e.key === '+' || e.key === '=') {
+          handleZoomIn();
+        } else {
+          handleZoomOut();
+        }
+      }
+
+      // Tab to cycle connectors
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const currentIndex = CONNECTORS.findIndex((c) => c.id === selectedConnector);
+        const nextIndex = e.shiftKey
+          ? (currentIndex - 1 + CONNECTORS.length) % CONNECTORS.length
+          : (currentIndex + 1) % CONNECTORS.length;
+        setSelectedConnector(CONNECTORS[nextIndex].id);
+      }
+
+      // X to toggle X-ray mode
+      if (e.key === 'x' || e.key === 'X') {
+        e.preventDefault();
+        setXrayMode(!xrayMode);
+        setViewMode(xrayMode ? 'normal' : 'xray');
+      }
+
+      // R to reset view
+      if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        handleReset();
+      }
+    },
+    [selectedConnector, xrayMode, handleZoomIn, handleZoomOut, handleReset]
+  );
+
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+    >
       {/* Header */}
       <Card>
         <CardHeader>
-          <CardTitle>Connector Identification Laboratory</CardTitle>
-          <CardDescription>
-            Interactive 3D viewer for network connectors with X-ray mode and comparison tools
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Connector Identification Laboratory</CardTitle>
+              <CardDescription>
+                Interactive 3D viewer for network connectors with X-ray mode and comparison tools
+              </CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const shortcuts = [
+                  'Arrow Left/Right: Rotate 3D model',
+                  '+/- : Zoom in/out',
+                  'Tab/Shift+Tab: Cycle through connectors',
+                  'X: Toggle X-ray mode',
+                  'R: Reset view',
+                ];
+                alert('Keyboard Shortcuts:\n\n' + shortcuts.join('\n'));
+              }}
+              title="Show keyboard shortcuts"
+            >
+              ⌨️ Shortcuts
+            </Button>
+          </div>
         </CardHeader>
       </Card>
 

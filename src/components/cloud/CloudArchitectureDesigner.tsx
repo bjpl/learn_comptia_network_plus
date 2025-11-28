@@ -140,6 +140,16 @@ export const CloudArchitectureDesigner: React.FC = () => {
     }));
   }, [design]);
 
+  const snapToGrid = useCallback(
+    (value: number): number => {
+      if (!canvasState.snapToGrid) {
+        return value;
+      }
+      return Math.round(value / canvasState.gridSize) * canvasState.gridSize;
+    },
+    [canvasState.snapToGrid, canvasState.gridSize]
+  );
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -158,27 +168,70 @@ export const CloudArchitectureDesigner: React.FC = () => {
         e.preventDefault();
         handleComponentDelete(selectedComponent.id);
       }
-      // Escape: Cancel connection mode
+      // Escape: Cancel connection mode or deselect
       if (e.key === 'Escape') {
         setConnectionState({ isConnecting: false, fromId: null, cursorX: 0, cursorY: 0 });
+        setSelectedComponent(null);
       }
       // Duplicate: Ctrl+D
       if (e.ctrlKey && e.key === 'd' && selectedComponent) {
         e.preventDefault();
         handleDuplicateComponent(selectedComponent.id);
       }
+      // Arrow keys to move selected component
+      if (e.key.startsWith('Arrow') && selectedComponent) {
+        e.preventDefault();
+        const step = e.shiftKey ? 20 : 5;
+        let newX = selectedComponent.x;
+        let newY = selectedComponent.y;
+
+        if (e.key === 'ArrowLeft') {
+          newX -= step;
+        } else if (e.key === 'ArrowRight') {
+          newX += step;
+        } else if (e.key === 'ArrowUp') {
+          newY -= step;
+        } else if (e.key === 'ArrowDown') {
+          newY += step;
+        }
+
+        setDesign((prev) => ({
+          ...prev,
+          components: prev.components.map((c) =>
+            c.id === selectedComponent.id ? { ...c, x: snapToGrid(newX), y: snapToGrid(newY) } : c
+          ),
+        }));
+      }
+      // Tab to cycle through components
+      if (e.key === 'Tab' && design.components.length > 0) {
+        e.preventDefault();
+        const currentIndex = selectedComponent
+          ? design.components.findIndex((c) => c.id === selectedComponent.id)
+          : -1;
+        const nextIndex = e.shiftKey
+          ? (currentIndex - 1 + design.components.length) % design.components.length
+          : (currentIndex + 1) % design.components.length;
+        setSelectedComponent(design.components[nextIndex]);
+      }
+      // Space to toggle selection (if hovering)
+      if (e.key === ' ' && hoveredComponent) {
+        e.preventDefault();
+        const component = design.components.find((c) => c.id === hoveredComponent);
+        if (component) {
+          setSelectedComponent(selectedComponent?.id === hoveredComponent ? null : component);
+        }
+      }
+      // Enter to open properties (for now, just select)
+      if (e.key === 'Enter' && selectedComponent) {
+        e.preventDefault();
+        // Properties panel could be opened here if implemented
+        console.log('Open properties for:', selectedComponent);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedComponent, history]);
-
-  const snapToGrid = (value: number): number => {
-    if (!canvasState.snapToGrid) {
-      return value;
-    }
-    return Math.round(value / canvasState.gridSize) * canvasState.gridSize;
-  };
+  }, [selectedComponent, history, design.components, hoveredComponent, snapToGrid]);
 
   const handleUndo = () => {
     if (history.past.length > 0) {

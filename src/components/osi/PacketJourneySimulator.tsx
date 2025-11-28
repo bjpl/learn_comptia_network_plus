@@ -240,6 +240,8 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
               cursor: 'pointer',
               fontWeight: 'bold',
             }}
+            aria-label={animationState.isPlaying ? 'Pause animation' : 'Play animation'}
+            aria-pressed={animationState.isPlaying}
           >
             {animationState.isPlaying ? '⏸ Pause' : '▶ Play'}
           </button>
@@ -254,6 +256,7 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
               borderRadius: '4px',
               cursor: 'pointer',
             }}
+            aria-label="Reset animation to beginning"
           >
             🔄 Reset
           </button>
@@ -300,6 +303,9 @@ export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ 
         <div
           className="text-gray-800 dark:text-gray-200"
           style={{ marginTop: '10px', fontSize: '14px' }}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
         >
           <strong>Current Layer:</strong> Layer {packetState.currentLayer} (
           {LAYER_NAMES[packetState.currentLayer]}) |<strong> Direction:</strong>{' '}

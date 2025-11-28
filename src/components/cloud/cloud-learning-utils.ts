@@ -3,11 +3,7 @@
  * Provides tooltips, explanations, templates, and cost estimations
  */
 
-import type {
-  ArchitectureComponent,
-  ArchitectureDesign,
-  ComponentType,
-} from './cloud-types';
+import type { ArchitectureComponent, ArchitectureDesign, ComponentType } from './cloud-types';
 
 /**
  * Tooltip system for educational context
@@ -104,8 +100,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
     learnMore:
       'SaaS requires zero infrastructure management, automatic updates, and easy collaboration but offers limited customization.',
     example: 'Salesforce, Office 365, Slack, Google Workspace',
-    bestPractice:
-      'Use for standard business applications where customization needs are minimal.',
+    bestPractice: 'Use for standard business applications where customization needs are minimal.',
   },
   'PaaS Platform': {
     title: 'Platform as a Service (PaaS)',
@@ -131,8 +126,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
   // Connectivity
   'VPN Tunnel': {
     title: 'VPN (Virtual Private Network)',
-    description:
-      'Encrypted connection over the internet between your network and the cloud.',
+    description: 'Encrypted connection over the internet between your network and the cloud.',
     learnMore:
       'VPNs are cost-effective ($50-200/month) but have variable latency (20-100ms) and limited bandwidth (50-500 Mbps).',
     example: 'IPSec tunnel from office router to AWS VPC',
@@ -167,14 +161,14 @@ export const cloudTooltips: Record<string, Tooltip> = {
       'Isolated network segment within a VPC with its own IP address range (CIDR block).',
     learnMore:
       'Subnets enable network segmentation for security and organization. Public subnets have internet access; private subnets do not.',
-    example: 'Public subnet (10.0.1.0/24) for web servers, Private subnet (10.0.2.0/24) for databases',
+    example:
+      'Public subnet (10.0.1.0/24) for web servers, Private subnet (10.0.2.0/24) for databases',
     bestPractice:
       'Use multiple subnets to separate tiers (web, app, database) and implement defense in depth.',
   },
   'Security Group': {
     title: 'Security Group (Firewall Rules)',
-    description:
-      'Stateful firewall that controls inbound and outbound traffic for resources.',
+    description: 'Stateful firewall that controls inbound and outbound traffic for resources.',
     learnMore:
       'Security groups act as virtual firewalls at the instance level. They are stateful (return traffic automatically allowed).',
     example: 'Allow HTTPS (443) from internet, allow SSH (22) from admin subnet only',
@@ -188,8 +182,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
     learnMore:
       'NACLs are stateless (must explicitly allow return traffic) and evaluated before security groups.',
     example: 'Deny all traffic from suspicious IP ranges at subnet boundary',
-    bestPractice:
-      'Use NACLs for subnet-level protection and to explicitly deny known bad actors.',
+    bestPractice: 'Use NACLs for subnet-level protection and to explicitly deny known bad actors.',
   },
 
   // Gateways
@@ -200,8 +193,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
     learnMore:
       'IGW is horizontally scaled, redundant, and highly available. Required for any internet-facing resources.',
     example: 'Web servers in public subnet receive traffic from internet via IGW',
-    bestPractice:
-      'Only attach IGW to subnets that need direct internet access. One IGW per VPC.',
+    bestPractice: 'Only attach IGW to subnets that need direct internet access. One IGW per VPC.',
   },
   'NAT Gateway': {
     title: 'NAT Gateway (Network Address Translation)',
@@ -210,8 +202,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
     learnMore:
       'NAT Gateway allows downloading updates, accessing external APIs, but blocks inbound connections from internet.',
     example: 'Database servers download patches from internet without exposing public IP',
-    bestPractice:
-      'Deploy NAT Gateway in public subnet. Use one per AZ for high availability.',
+    bestPractice: 'Deploy NAT Gateway in public subnet. Use one per AZ for high availability.',
   },
 
   // NFV Components
@@ -232,8 +223,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
     learnMore:
       'Virtual firewalls offer enterprise security features without physical appliances: deep packet inspection, intrusion prevention.',
     example: 'Palo Alto VM-Series, Cisco Firepower Virtual',
-    bestPractice:
-      'Deploy in inline mode for production traffic, monitor mode for testing.',
+    bestPractice: 'Deploy in inline mode for production traffic, monitor mode for testing.',
   },
   'Virtual Load Balancer': {
     title: 'Virtual Load Balancer (Application Delivery)',
@@ -242,8 +232,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
     learnMore:
       'Load balancers perform health checks, SSL termination, session persistence, and can auto-scale.',
     example: 'AWS Application Load Balancer, Azure Load Balancer, GCP Load Balancing',
-    bestPractice:
-      'Use L7 (Application) load balancers for HTTP/HTTPS, L4 (Network) for TCP/UDP.',
+    bestPractice: 'Use L7 (Application) load balancers for HTTP/HTTPS, L4 (Network) for TCP/UDP.',
   },
 
   // Architecture Concepts
@@ -259,8 +248,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
   },
   Elasticity: {
     title: 'Cloud Elasticity',
-    description:
-      'Automatic adjustment of resources in real-time based on current demand.',
+    description: 'Automatic adjustment of resources in real-time based on current demand.',
     learnMore:
       'Elasticity is scalability with automation. Resources scale up during peaks and scale down during lulls to optimize costs.',
     example: 'Lambda functions scale from 0 to 1000+ concurrent executions automatically',
@@ -274,8 +262,7 @@ export const cloudTooltips: Record<string, Tooltip> = {
     learnMore:
       'Multi-tenancy can be at shared instance level (most efficient) or dedicated instance level (most isolated).',
     example: 'SaaS application with separate database schema per customer',
-    bestPractice:
-      'Choose tenancy model based on security requirements and cost constraints.',
+    bestPractice: 'Choose tenancy model based on security requirements and cost constraints.',
   },
 };
 
@@ -512,8 +499,7 @@ export const architectureTemplates: ArchitectureTemplate[] = [
   {
     id: 'data-pipeline',
     name: 'Data Processing Pipeline',
-    description:
-      'Big data architecture with ingestion, processing, and analytics layers.',
+    description: 'Big data architecture with ingestion, processing, and analytics layers.',
     difficulty: 'Advanced',
     category: 'Data',
     icon: '📊',
@@ -597,9 +583,7 @@ export function estimateArchitectureCost(design: ArchitectureDesign): CostEstima
         maxCost = count * 500; // $500/month per large instance
         factor = `${count} instance(s) × $30-500 (varies by size)`;
         if (count > 5) {
-          recommendations.push(
-            'Consider Reserved Instances for 40-60% savings on IaaS workloads'
-          );
+          recommendations.push('Consider Reserved Instances for 40-60% savings on IaaS workloads');
         }
         break;
 
@@ -643,9 +627,7 @@ export function estimateArchitectureCost(design: ArchitectureDesign): CostEstima
         minCost = count * 500;
         maxCost = count * 5000;
         factor = `${count} connection(s) × $500-5000 (varies by bandwidth)`;
-        recommendations.push(
-          'Direct Connect has high fixed costs but low data transfer fees'
-        );
+        recommendations.push('Direct Connect has high fixed costs but low data transfer fees');
         break;
 
       case 'VPN Tunnel':
@@ -683,10 +665,14 @@ export function estimateArchitectureCost(design: ArchitectureDesign): CostEstima
 
   // General recommendations
   if (monthlyMax > 1000) {
-    recommendations.push('Consider AWS Savings Plans or Azure Reservations for significant discounts');
+    recommendations.push(
+      'Consider AWS Savings Plans or Azure Reservations for significant discounts'
+    );
   }
   if (design.components.length < 3) {
-    recommendations.push('Architecture seems minimal - ensure all required components are included');
+    recommendations.push(
+      'Architecture seems minimal - ensure all required components are included'
+    );
   }
   recommendations.push('Enable cost monitoring and set budget alerts');
   recommendations.push('Review and remove unused resources regularly');
@@ -716,7 +702,8 @@ export function analyzeSecurityHints(design: ArchitectureDesign): SecurityHint[]
       type: 'critical',
       title: 'Missing Security Groups',
       description: 'Public subnets detected without security group protection.',
-      remediation: 'Add security groups to control inbound and outbound traffic. Follow principle of least privilege.',
+      remediation:
+        'Add security groups to control inbound and outbound traffic. Follow principle of least privilege.',
       affectedComponents: publicSubnets.map((s) => s.id),
     });
   }
@@ -730,7 +717,8 @@ export function analyzeSecurityHints(design: ArchitectureDesign): SecurityHint[]
       type: 'warning',
       title: 'No Load Balancer for Internet Traffic',
       description: 'Internet gateway detected without load balancer for SSL/TLS termination.',
-      remediation: 'Add a load balancer to handle SSL/TLS termination and distribute traffic securely.',
+      remediation:
+        'Add a load balancer to handle SSL/TLS termination and distribute traffic securely.',
     });
   }
 
@@ -745,7 +733,8 @@ export function analyzeSecurityHints(design: ArchitectureDesign): SecurityHint[]
       type: 'info',
       title: 'Private Subnets Without NAT',
       description: 'Private subnets cannot access internet for updates without NAT Gateway.',
-      remediation: 'Add NAT Gateway in public subnet to allow private instances to download updates securely.',
+      remediation:
+        'Add NAT Gateway in public subnet to allow private instances to download updates securely.',
       affectedComponents: privateSubnets.map((s) => s.id),
     });
   }
@@ -757,7 +746,8 @@ export function analyzeSecurityHints(design: ArchitectureDesign): SecurityHint[]
       type: 'warning',
       title: 'No Virtual Firewall Detected',
       description: 'Complex architecture without virtual firewall for advanced threat protection.',
-      remediation: 'Consider adding virtual firewall with IPS/DPI for enhanced security in production.',
+      remediation:
+        'Consider adding virtual firewall with IPS/DPI for enhanced security in production.',
     });
   }
 
@@ -768,7 +758,8 @@ export function analyzeSecurityHints(design: ArchitectureDesign): SecurityHint[]
       type: 'info',
       title: 'Multi-Tenancy Isolation',
       description: 'SaaS application should implement strong tenant isolation.',
-      remediation: 'Use separate security groups, database schemas, or VPCs per tenant depending on security requirements.',
+      remediation:
+        'Use separate security groups, database schemas, or VPCs per tenant depending on security requirements.',
     });
   }
 
@@ -778,7 +769,7 @@ export function analyzeSecurityHints(design: ArchitectureDesign): SecurityHint[]
 /**
  * Get contextual help based on component type
  */
-export function getComponentHelp(componentType: ComponentType, subtype: string): Tooltip | null {
+export function getComponentHelp(_componentType: ComponentType, subtype: string): Tooltip | null {
   return cloudTooltips[subtype] || null;
 }
 
@@ -798,10 +789,10 @@ export const tutorialSteps = [
   {
     step: 2,
     title: 'Add Internet Connectivity',
-    description: 'Add an Internet Gateway to allow your cloud resources to communicate with the internet.',
+    description:
+      'Add an Internet Gateway to allow your cloud resources to communicate with the internet.',
     highlight: 'gateway',
-    helpText:
-      'Internet Gateways are free and provide two-way internet access for public subnets.',
+    helpText: 'Internet Gateways are free and provide two-way internet access for public subnets.',
     action: 'Drag an Internet Gateway into your cloud zone',
   },
   {

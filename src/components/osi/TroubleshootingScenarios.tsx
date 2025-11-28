@@ -676,13 +676,14 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
         <h4 className="text-gray-900 dark:text-gray-100" style={{ marginTop: 0 }}>
           Scenario Progress ({currentScenarioIndex + 1} of {filteredScenarios.length})
         </h4>
-        <div
+        <nav
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
             gap: '8px',
             marginTop: '15px',
           }}
+          aria-label="Scenario navigation grid"
         >
           {filteredScenarios.map((scenario, index) => {
             const response = responses.get(scenario.id);
@@ -708,13 +709,15 @@ export const TroubleshootingScenarios: React.FC<TroubleshootingScenariosProps> =
                   fontSize: '12px',
                   fontWeight: index === currentScenarioIndex ? 'bold' : 'normal',
                 }}
+                aria-label={`Scenario ${index + 1}: ${scenario.title}. ${response ? (isCorrect ? 'Correct' : 'Incorrect') : index === currentScenarioIndex ? 'Current' : 'Not attempted'}`}
+                aria-current={index === currentScenarioIndex ? 'page' : undefined}
                 title={scenario.title}
               >
                 {index + 1}
               </button>
             );
           })}
-        </div>
+        </nav>
       </div>
     </div>
   );

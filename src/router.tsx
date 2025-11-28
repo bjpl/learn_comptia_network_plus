@@ -2,7 +2,9 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './components/shared/Layout';
 import { ErrorBoundary } from './components/shared/ErrorBoundary';
+import ErrorBoundaryCommon from './components/common/ErrorBoundary';
 import { LoadingSpinner } from './components/shared/LoadingSpinner';
+import './components/common/ErrorBoundary.css';
 
 // Lazy load pages
 const Dashboard = React.lazy(() => import(/* webpackChunkName: "dashboard" */ './pages/Dashboard'));
@@ -20,7 +22,9 @@ const TroubleshootingScenarios = React.lazy(
 );
 
 // Networking Appliances Components
-const ComparisonMatrix = React.lazy(() => import('./components/appliances/ComparisonMatrix'));
+const EnhancedComparisonMatrix = React.lazy(
+  () => import('./components/appliances/EnhancedComparisonMatrix')
+);
 const DecisionTree = React.lazy(() => import('./components/appliances/DecisionTree'));
 const NetworkSimulator = React.lazy(() => import('./components/appliances/NetworkSimulator'));
 
@@ -28,6 +32,9 @@ const NetworkSimulator = React.lazy(() => import('./components/appliances/Networ
 const CloudSummaryBuilder = React.lazy(() => import('./components/cloud/CloudSummaryBuilder'));
 const CloudArchitectureDesigner = React.lazy(
   () => import('./components/cloud/CloudArchitectureDesigner')
+);
+const CloudMigrationSimulator = React.lazy(
+  () => import('./components/cloud/CloudMigrationSimulator')
 );
 
 // Ports & Protocols Components
@@ -39,10 +46,12 @@ const PortScanner = React.lazy(() => import('./components/protocols/PortScannerE
 const MediaSelectionMatrix = React.lazy(() => import('./components/media/MediaSelectionMatrix'));
 const ConnectorLab = React.lazy(() => import('./components/media/ConnectorLab'));
 const TransceiverMatch = React.lazy(() => import('./components/media/TransceiverMatch'));
+const SignalAnalyzer = React.lazy(() => import('./components/media/SignalAnalyzer'));
 
 // Network Topologies Components
 const TopologyAnalyzer = React.lazy(() => import('./components/topologies/TopologyAnalyzer'));
 const TopologyTransformer = React.lazy(() => import('./components/topologies/TopologyTransformer'));
+const TopologyBuilder = React.lazy(() => import('./components/topologies/TopologyBuilder'));
 
 // IPv4 Addressing Components
 const SubnetDesigner = React.lazy(() => import('./components/ipv4/SubnetDesigner'));
@@ -56,6 +65,7 @@ const IaCBuilder = React.lazy(() => import('./components/modern/IaCBuilder'));
 // Assessment Components
 const ScenarioSimulator = React.lazy(() => import('./components/assessment/ScenarioSimulator'));
 const ProgressDashboardPage = React.lazy(() => import('./pages/ProgressDashboardPage'));
+const QuizEngine = React.lazy(() => import('./components/assessment/QuizEngine'));
 
 // Optimized loading component
 const LoadingFallback = () => <LoadingSpinner />;
@@ -67,6 +77,18 @@ const LazyRoute: React.FC<{ component: React.LazyExoticComponent<React.Component
   <React.Suspense fallback={<LoadingFallback />}>
     <Component />
   </React.Suspense>
+);
+
+// Wrapper for major components with ErrorBoundary
+const ProtectedRoute: React.FC<{
+  component: React.LazyExoticComponent<React.ComponentType>;
+  componentName: string;
+}> = ({ component: Component, componentName }) => (
+  <ErrorBoundaryCommon componentName={componentName}>
+    <React.Suspense fallback={<LoadingFallback />}>
+      <Component />
+    </React.Suspense>
+  </ErrorBoundaryCommon>
 );
 
 // Breadcrumb navigation map
@@ -85,6 +107,7 @@ export const breadcrumbMap: Record<string, { title: string; parent?: string }> =
   // Cloud
   '/cloud/summary-builder': { title: 'Cloud Summary Builder', parent: '/' },
   '/cloud/architecture': { title: 'Cloud Architecture Designer', parent: '/' },
+  '/cloud/migration': { title: 'Cloud Migration Simulator', parent: '/' },
   // Ports & Protocols
   '/ports/trainer': { title: 'Port/Protocol Trainer', parent: '/' },
   '/ports/traffic-demo': { title: 'Traffic Type Demonstration', parent: '/' },
@@ -93,9 +116,11 @@ export const breadcrumbMap: Record<string, { title: string; parent?: string }> =
   '/transmission/media-selection': { title: 'Media Selection Matrix', parent: '/' },
   '/transmission/connector-lab': { title: 'Connector Lab', parent: '/' },
   '/transmission/transceiver': { title: 'Transceiver Matching', parent: '/' },
+  '/transmission/signal-analyzer': { title: 'Signal Analyzer', parent: '/' },
   // Topologies
   '/topologies/analyzer': { title: 'Topology Analyzer', parent: '/' },
   '/topologies/transformer': { title: 'Topology Transformer', parent: '/' },
+  '/topologies/builder': { title: 'Topology Builder', parent: '/' },
   // IPv4
   '/ipv4/subnet-designer': { title: 'Subnet Designer', parent: '/' },
   '/ipv4/troubleshooter': { title: 'IPv4 Troubleshooter', parent: '/' },
@@ -106,6 +131,7 @@ export const breadcrumbMap: Record<string, { title: string; parent?: string }> =
   // Assessment
   '/assessment/simulator': { title: 'Integrated Simulator', parent: '/' },
   '/assessment/dashboard': { title: 'Progress Dashboard', parent: '/' },
+  '/assessment/quiz': { title: 'Practice Quiz', parent: '/' },
 };
 
 export const router = createBrowserRouter(
@@ -129,7 +155,7 @@ export const router = createBrowserRouter(
         // OSI Model Routes
         {
           path: 'osi/enhanced',
-          element: <LazyRoute component={OSIEnhanced} />,
+          element: <ProtectedRoute component={OSIEnhanced} componentName="OSI Master Class" />,
         },
         {
           path: 'osi/layer-builder',
@@ -146,7 +172,7 @@ export const router = createBrowserRouter(
         // Networking Appliances Routes
         {
           path: 'appliances/comparison',
-          element: <LazyRoute component={ComparisonMatrix} />,
+          element: <LazyRoute component={EnhancedComparisonMatrix} />,
         },
         {
           path: 'appliances/decision-tree',
@@ -154,7 +180,9 @@ export const router = createBrowserRouter(
         },
         {
           path: 'appliances/simulator',
-          element: <LazyRoute component={NetworkSimulator} />,
+          element: (
+            <ProtectedRoute component={NetworkSimulator} componentName="Network Simulator" />
+          ),
         },
         // Cloud Concepts Routes
         {
@@ -163,7 +191,16 @@ export const router = createBrowserRouter(
         },
         {
           path: 'cloud/architecture',
-          element: <LazyRoute component={CloudArchitectureDesigner} />,
+          element: (
+            <ProtectedRoute
+              component={CloudArchitectureDesigner}
+              componentName="Cloud Architecture Designer"
+            />
+          ),
+        },
+        {
+          path: 'cloud/migration',
+          element: <LazyRoute component={CloudMigrationSimulator} />,
         },
         // Ports & Protocols Routes
         {
@@ -176,7 +213,7 @@ export const router = createBrowserRouter(
         },
         {
           path: 'ports/scanner',
-          element: <LazyRoute component={PortScanner} />,
+          element: <ProtectedRoute component={PortScanner} componentName="Port Scanner" />,
         },
         // Transmission Media Routes
         {
@@ -185,29 +222,41 @@ export const router = createBrowserRouter(
         },
         {
           path: 'transmission/connector-lab',
-          element: <LazyRoute component={ConnectorLab} />,
+          element: <ProtectedRoute component={ConnectorLab} componentName="Connector Lab" />,
         },
         {
           path: 'transmission/transceiver',
           element: <LazyRoute component={TransceiverMatch} />,
         },
+        {
+          path: 'transmission/signal-analyzer',
+          element: <LazyRoute component={SignalAnalyzer} />,
+        },
         // Network Topologies Routes
         {
           path: 'topologies/analyzer',
-          element: <LazyRoute component={TopologyAnalyzer} />,
+          element: (
+            <ProtectedRoute component={TopologyAnalyzer} componentName="Topology Analyzer" />
+          ),
         },
         {
           path: 'topologies/transformer',
           element: <LazyRoute component={TopologyTransformer} />,
         },
+        {
+          path: 'topologies/builder',
+          element: <LazyRoute component={TopologyBuilder} />,
+        },
         // IPv4 Addressing Routes
         {
           path: 'ipv4/subnet-designer',
-          element: <LazyRoute component={SubnetDesigner} />,
+          element: <ProtectedRoute component={SubnetDesigner} componentName="Subnet Designer" />,
         },
         {
           path: 'ipv4/troubleshooter',
-          element: <LazyRoute component={IPv4Troubleshooter} />,
+          element: (
+            <ProtectedRoute component={IPv4Troubleshooter} componentName="IPv4 Troubleshooter" />
+          ),
         },
         // Modern Networking Routes
         {
@@ -225,11 +274,19 @@ export const router = createBrowserRouter(
         // Assessment Routes
         {
           path: 'assessment/simulator',
-          element: <LazyRoute component={ScenarioSimulator} />,
+          element: (
+            <ProtectedRoute component={ScenarioSimulator} componentName="Scenario Simulator" />
+          ),
         },
         {
           path: 'assessment/dashboard',
-          element: <LazyRoute component={ProgressDashboardPage} />,
+          element: (
+            <ProtectedRoute component={ProgressDashboardPage} componentName="Progress Dashboard" />
+          ),
+        },
+        {
+          path: 'assessment/quiz',
+          element: <ProtectedRoute component={QuizEngine} componentName="Practice Quiz" />,
         },
       ],
     },

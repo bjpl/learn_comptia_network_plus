@@ -1,6 +1,147 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { IaCTemplate, IaCPlatform } from './modern-types';
 import { iacTemplates, driftExamples, validationChecks } from './modern-data';
+
+// Syntax highlighting function for code blocks
+const highlightCode = (code: string, language: 'yaml' | 'json' | 'hcl'): string => {
+  let highlighted = code;
+
+  // Escape HTML
+  highlighted = highlighted.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  if (language === 'yaml') {
+    // YAML syntax highlighting
+    highlighted = highlighted
+      .replace(/^(\s*#.*)$/gm, '<span class="syntax-comment">$1</span>') // Comments
+      .replace(/^(\s*-\s+name:)/gm, '<span class="syntax-keyword">$1</span>') // Task markers
+      .replace(/^(\s*)([\w_]+)(:)/gm, '$1<span class="syntax-property">$2</span>$3') // Properties
+      .replace(/(['"])(.*?)(['"])/g, '<span class="syntax-string">$1$2$3</span>') // Strings
+      .replace(/(\{\{[^}]+\}\})/g, '<span class="syntax-variable">$1</span>') // Variables
+      .replace(/\b(true|false|yes|no|null)\b/gi, '<span class="syntax-boolean">$1</span>') // Booleans
+      .replace(/\b(\d+)\b/g, '<span class="syntax-number">$1</span>'); // Numbers
+  } else if (language === 'json') {
+    // JSON syntax highlighting
+    highlighted = highlighted
+      .replace(/"([^"]+)":/g, '<span class="syntax-property">"$1"</span>:') // Property names
+      .replace(/:\s*"([^"]*)"/g, ': <span class="syntax-string">"$1"</span>') // String values
+      .replace(/\b(true|false|null)\b/g, '<span class="syntax-boolean">$1</span>') // Booleans
+      .replace(/:\s*(\d+)/g, ': <span class="syntax-number">$1</span>'); // Numbers
+  } else if (language === 'hcl') {
+    // HCL/Terraform syntax highlighting
+    highlighted = highlighted
+      .replace(/^(\s*#.*)$/gm, '<span class="syntax-comment">$1</span>') // Comments
+      .replace(
+        /\b(variable|resource|data|output|locals|module|provider)\b/g,
+        '<span class="syntax-keyword">$1</span>'
+      ) // Keywords
+      .replace(
+        /\b(type|description|default|required|tags|name|cidr_block|vpc_id|count)\b/g,
+        '<span class="syntax-property">$1</span>'
+      ) // Properties
+      .replace(/(['"])(.*?)(['"])/g, '<span class="syntax-string">$1$2$3</span>') // Strings
+      .replace(/\b(true|false)\b/g, '<span class="syntax-boolean">$1</span>') // Booleans
+      .replace(/\b(\d+)\b/g, '<span class="syntax-number">$1</span>') // Numbers
+      .replace(/(var\.|aws_|cidr\w+|data\.)/g, '<span class="syntax-function">$1</span>'); // Functions/references
+  }
+
+  return highlighted;
+};
+
+// Code display component with syntax highlighting
+const CodeBlock: React.FC<{
+  code: string;
+  language: 'yaml' | 'json' | 'hcl';
+  showLineNumbers?: boolean;
+  onCopy?: () => void;
+}> = ({ code, language, showLineNumbers = true, onCopy }) => {
+  const lines = code.split('\n');
+  const highlightedLines = useMemo(
+    () => lines.map((line) => highlightCode(line, language)),
+    [code, language]
+  );
+
+  return (
+    <div className="code-block-container">
+      {onCopy && (
+        <button
+          onClick={onCopy}
+          className="copy-button absolute right-2 top-2 rounded bg-blue-600 px-3 py-1 text-sm text-white opacity-0 transition-opacity hover:bg-blue-700 group-hover:opacity-100"
+        >
+          Copy
+        </button>
+      )}
+      <div className="code-block overflow-x-auto">
+        <pre className="code-pre">
+          {showLineNumbers && (
+            <div className="line-numbers">
+              {lines.map((_, idx) => (
+                <div key={idx} className="line-number">
+                  {idx + 1}
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="code-content">
+            {highlightedLines.map((line, idx) => (
+              <div key={idx} className="code-line" dangerouslySetInnerHTML={{ __html: line }} />
+            ))}
+          </div>
+        </pre>
+      </div>
+      <style>{`
+        .code-block-container {
+          position: relative;
+          background: #1e1e1e;
+          border-radius: 0.5rem;
+          overflow: hidden;
+        }
+        .code-block-container:hover .copy-button {
+          opacity: 1;
+        }
+        .code-block {
+          background: #1e1e1e;
+          color: #d4d4d4;
+          font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+          font-size: 0.875rem;
+          line-height: 1.5;
+        }
+        .code-pre {
+          margin: 0;
+          padding: 1rem;
+          display: flex;
+          min-height: 100px;
+        }
+        .line-numbers {
+          color: #858585;
+          text-align: right;
+          padding-right: 1rem;
+          border-right: 1px solid #3e3e3e;
+          margin-right: 1rem;
+          user-select: none;
+          min-width: 2.5rem;
+        }
+        .line-number {
+          line-height: 1.5;
+        }
+        .code-content {
+          flex: 1;
+        }
+        .code-line {
+          line-height: 1.5;
+          white-space: pre;
+        }
+        .syntax-comment { color: #6a9955; font-style: italic; }
+        .syntax-keyword { color: #569cd6; font-weight: 600; }
+        .syntax-property { color: #9cdcfe; }
+        .syntax-string { color: #ce9178; }
+        .syntax-number { color: #b5cea8; }
+        .syntax-boolean { color: #569cd6; }
+        .syntax-variable { color: #dcdcaa; font-weight: 500; }
+        .syntax-function { color: #dcdcaa; }
+      `}</style>
+    </div>
+  );
+};
 
 const IaCBuilder: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -492,16 +633,12 @@ ${template.tasks
               <div className="rounded-lg bg-white p-4 dark:bg-gray-700">
                 <div className="mb-2 flex items-center justify-between">
                   <h5 className="font-semibold text-gray-900 dark:text-gray-100">Generated Code</h5>
-                  <button
-                    onClick={() => navigator.clipboard.writeText(codeEditorContent)}
-                    className="rounded bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
-                  >
-                    Copy Code
-                  </button>
                 </div>
-                <pre className="overflow-x-auto rounded bg-gray-900 p-4 text-sm text-gray-100">
-                  {codeEditorContent}
-                </pre>
+                <CodeBlock
+                  code={codeEditorContent}
+                  language="yaml"
+                  onCopy={() => navigator.clipboard.writeText(codeEditorContent)}
+                />
               </div>
             </div>
           )}
@@ -567,12 +704,26 @@ ${template.tasks
                 </button>
               </div>
             </div>
-            <textarea
-              value={codeEditorContent}
-              onChange={(e) => setCodeEditorContent(e.target.value)}
-              className="h-96 w-full resize-none bg-gray-900 p-4 font-mono text-sm text-gray-100 focus:outline-none"
-              spellCheck={false}
-            />
+            <div className="h-96 overflow-auto">
+              <CodeBlock
+                code={codeEditorContent || sampleCode[selectedLanguage]}
+                language={selectedLanguage}
+                showLineNumbers={true}
+                onCopy={() => {}}
+              />
+            </div>
+            <div className="mt-4 rounded-lg border-2 border-gray-300 bg-gray-50 p-4">
+              <h5 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Edit Mode (Plain Text)
+              </h5>
+              <textarea
+                value={codeEditorContent}
+                onChange={(e) => setCodeEditorContent(e.target.value)}
+                className="h-64 w-full resize-none rounded border-2 border-gray-300 bg-gray-900 p-4 font-mono text-sm text-gray-100 focus:border-blue-500 focus:outline-none"
+                placeholder={`Enter your ${selectedLanguage.toUpperCase()} code here...`}
+                spellCheck={false}
+              />
+            </div>
           </div>
 
           {/* Validation Checks Panel */}
@@ -604,7 +755,9 @@ ${template.tasks
       {activeTab === 'drift' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">Configuration Drift Detection</h3>
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">
+              Configuration Drift Detection
+            </h3>
             <p className="mb-4 text-gray-700 dark:text-gray-300">
               Identify unauthorized changes and maintain configuration compliance
             </p>
@@ -697,7 +850,9 @@ ${template.tasks
       {activeTab === 'pipeline' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">NetOps CI/CD Pipeline</h3>
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">
+              NetOps CI/CD Pipeline
+            </h3>
             <p className="mb-4 text-gray-700 dark:text-gray-300">
               Automated workflow for network configuration deployment
             </p>
@@ -706,7 +861,9 @@ ${template.tasks
           {/* Pipeline Visualization */}
           <div className="rounded-lg border-2 border-gray-300 bg-gray-50 p-6">
             <div className="mb-6 flex items-center justify-between">
-              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Pipeline Stages</h4>
+              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Pipeline Stages
+              </h4>
               <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
                 Active
               </span>
@@ -768,10 +925,16 @@ ${template.tasks
                   <div className="flex-1 rounded-lg border-2 border-gray-200 bg-white p-4">
                     <div className="flex items-start justify-between">
                       <div>
-                        <div className="text-lg font-semibold text-gray-900 dark:text-white">{stage.name}</div>
-                        <p className="text-sm text-gray-700 dark:text-gray-300">{stage.description}</p>
+                        <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {stage.name}
+                        </div>
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                          {stage.description}
+                        </p>
                       </div>
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{stage.duration}</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        {stage.duration}
+                      </span>
                     </div>
                   </div>
                   {idx < 4 && <div className="ml-6 h-8 w-px bg-gray-300"></div>}
@@ -805,7 +968,9 @@ ${template.tasks
             </div>
 
             <div className="rounded-lg border-2 border-green-200 bg-green-50 p-6">
-              <h4 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">Notifications</h4>
+              <h4 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
+                Notifications
+              </h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-green-600"></span>
@@ -833,7 +998,9 @@ ${template.tasks
       {activeTab === 'tools' && (
         <div className="space-y-6">
           <div>
-            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">IaC Tools Comparison</h3>
+            <h3 className="mb-3 text-xl font-semibold text-gray-900 dark:text-white">
+              IaC Tools Comparison
+            </h3>
             <p className="mb-4 text-gray-700 dark:text-gray-300">
               Understand the differences between popular IaC tools and their network automation
               capabilities
@@ -865,38 +1032,56 @@ ${template.tasks
               <tbody>
                 <tr className="border-b border-gray-100 hover:bg-blue-50">
                   <td className="px-4 py-3 font-semibold text-red-600">Ansible</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Procedural</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Imperative/Procedural
+                  </td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">YAML</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agentless (SSH)</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Multi-vendor network automation</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Multi-vendor network automation
+                  </td>
                 </tr>
                 <tr className="border-b border-gray-100 hover:bg-purple-50">
                   <td className="px-4 py-3 font-semibold text-purple-600">Terraform</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Declarative</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">HCL</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">No (cloud-based)</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Infrastructure provisioning</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Infrastructure provisioning
+                  </td>
                 </tr>
                 <tr className="border-b border-gray-100 hover:bg-orange-50">
                   <td className="px-4 py-3 font-semibold text-orange-600">Puppet</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Declarative</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Puppet DSL</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agent-based</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Enterprise configuration management</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Enterprise configuration management
+                  </td>
                 </tr>
                 <tr className="border-b border-gray-100 hover:bg-blue-50">
                   <td className="px-4 py-3 font-semibold text-blue-600">Chef</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Declarative</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Imperative/Declarative
+                  </td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Ruby</td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agent-based</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Application and infrastructure</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Application and infrastructure
+                  </td>
                 </tr>
                 <tr className="hover:bg-teal-50">
                   <td className="px-4 py-3 font-semibold text-teal-600">SaltStack</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Declarative</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Imperative/Declarative
+                  </td>
                   <td className="px-4 py-3 text-gray-900 dark:text-gray-100">YAML</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agent-based (minion)</td>
-                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Event-driven automation</td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Agent-based (minion)
+                  </td>
+                  <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                    Event-driven automation
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -1029,28 +1214,36 @@ ${template.tasks
                 <span className="font-bold text-yellow-700">Q:</span>
                 <div>
                   <p className="font-semibold">Managing network devices?</p>
-                  <p className="text-gray-700 dark:text-gray-300">Consider Ansible for agentless automation</p>
+                  <p className="text-gray-700 dark:text-gray-300">
+                    Consider Ansible for agentless automation
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="font-bold text-yellow-700">Q:</span>
                 <div>
                   <p className="font-semibold">Provisioning cloud infrastructure?</p>
-                  <p className="text-gray-700 dark:text-gray-300">Terraform excels at multi-cloud orchestration</p>
+                  <p className="text-gray-700 dark:text-gray-300">
+                    Terraform excels at multi-cloud orchestration
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="font-bold text-yellow-700">Q:</span>
                 <div>
                   <p className="font-semibold">Enterprise-scale operations?</p>
-                  <p className="text-gray-700 dark:text-gray-300">Puppet provides mature management at scale</p>
+                  <p className="text-gray-700 dark:text-gray-300">
+                    Puppet provides mature management at scale
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="font-bold text-yellow-700">Q:</span>
                 <div>
                   <p className="font-semibold">Event-driven automation needs?</p>
-                  <p className="text-gray-700 dark:text-gray-300">SaltStack's real-time capabilities shine</p>
+                  <p className="text-gray-700 dark:text-gray-300">
+                    SaltStack's real-time capabilities shine
+                  </p>
                 </div>
               </div>
             </div>
@@ -1060,7 +1253,9 @@ ${template.tasks
 
       {/* Instructions */}
       <div className="mt-6 rounded-lg border-2 border-gray-200 bg-gray-50 p-6">
-        <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">Infrastructure as Code Best Practices:</h3>
+        <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
+          Infrastructure as Code Best Practices:
+        </h3>
         <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
           <div>
             <h4 className="mb-2 font-semibold text-gray-900 dark:text-white">Core Principles:</h4>
@@ -1073,7 +1268,9 @@ ${template.tasks
             </ul>
           </div>
           <div>
-            <h4 className="mb-2 font-semibold text-gray-900 dark:text-white">Implementation Strategy:</h4>
+            <h4 className="mb-2 font-semibold text-gray-900 dark:text-white">
+              Implementation Strategy:
+            </h4>
             <ul className="list-inside list-disc space-y-1 text-gray-900 dark:text-gray-100">
               <li>Start with non-production environments</li>
               <li>Build reusable templates and modules</li>
