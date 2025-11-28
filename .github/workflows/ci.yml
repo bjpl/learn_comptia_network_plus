@@ -1,12 +1,15 @@
 name: CI Pipeline
 
 on:
-  # Temporarily disabled to prevent email spam
-  # push:
-    # branches: [main, develop]
-  # pull_request:
-    # branches: [main]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint-and-format:
@@ -28,11 +31,9 @@ jobs:
 
       - name: Run linter
         run: npm run lint
-        continue-on-error: true
 
       - name: Check code formatting
         run: npm run format:check
-        continue-on-error: true
 
   type-check:
     name: TypeScript Type Check
@@ -53,7 +54,6 @@ jobs:
 
       - name: Run type checking
         run: npm run typecheck
-        continue-on-error: true
 
   unit-tests:
     name: Unit Tests
@@ -73,8 +73,15 @@ jobs:
         run: npm ci
 
       - name: Run unit tests
-        run: npm run test:unit
-        continue-on-error: true
+        run: npm run test:unit -- --run --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          files: ./coverage/lcov.info
+          flags: unit
+          fail_ci_if_error: false
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
@@ -83,6 +90,17 @@ jobs:
           name: coverage-unit
           path: coverage/
           retention-days: 7
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "## Unit Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "✅ Coverage report generated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Coverage report not found" >> $GITHUB_STEP_SUMMARY
+          fi
 
   integration-tests:
     name: Integration Tests
@@ -103,7 +121,6 @@ jobs:
 
       - name: Run integration tests
         run: npm run test:integration
-        continue-on-error: true
 
   e2e-tests:
     name: E2E Tests
@@ -127,7 +144,6 @@ jobs:
 
       - name: Run E2E tests
         run: npm run test:e2e
-        continue-on-error: true
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -136,6 +152,17 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+      - name: E2E Test Summary
+        if: always()
+        run: |
+          echo "## E2E Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -d playwright-report ]; then
+            echo "✅ Playwright report available as artifact" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No Playwright report generated" >> $GITHUB_STEP_SUMMARY
+          fi
 
   build-verification:
     name: Build Verification
@@ -197,5 +224,25 @@ jobs:
     steps:
       - name: Check CI Status
         run: |
-          echo "CI Pipeline Completed"
-          echo "Status: ${{ needs.build-verification.result }}"
+          echo "## CI Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Verification | ${{ needs.build-verification.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | ${{ needs.e2e-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scan | ${{ needs.security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+
+          # Fail if any critical job failed
+          if [ "${{ needs.build-verification.result }}" != "success" ]; then
+            echo "::error::Build verification failed"
+            exit 1
+          fi
+          if [ "${{ needs.integration-tests.result }}" != "success" ]; then
+            echo "::error::Integration tests failed"
+            exit 1
+          fi
+          if [ "${{ needs.e2e-tests.result }}" != "success" ]; then
+            echo "::error::E2E tests failed"
+            exit 1
+          fi
