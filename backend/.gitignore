@@ -7,11 +7,26 @@ yarn.lock
 dist/
 build/
 
-# Environment variables
+# Environment variables - NEVER commit real env files
 .env
 .env.local
 .env.development
+.env.development.local
 .env.production
+.env.production.local
+.env.staging
+.env.staging.local
+!.env.example
+!.env.*.template
+!.env.test
+
+# Secrets and credentials
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
 .secrets.txt
 *.secrets.txt
 
