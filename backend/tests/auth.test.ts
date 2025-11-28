@@ -313,4 +313,248 @@ describe('Auth API', () => {
       // Should not indicate whether email exists
     });
   });
+
+  describe('POST /api/auth/verify-email', () => {
+    it('should verify email with valid token', async () => {
+      // This test requires mocking UserModel.verifyEmailToken
+      // Since we can't create real tokens without database access
+      const response = await request(app)
+        .post('/api/auth/verify-email')
+        .send({ token: 'invalid-test-token' });
+
+      // Expecting 400 for invalid token
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+    });
+
+    it('should reject missing token', async () => {
+      const response = await request(app).post('/api/auth/verify-email').send({}).expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('required');
+    });
+
+    it('should reject empty token', async () => {
+      const response = await request(app)
+        .post('/api/auth/verify-email')
+        .send({ token: '' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+    });
+
+    it('should reject invalid token format', async () => {
+      const response = await request(app)
+        .post('/api/auth/verify-email')
+        .send({ token: 'invalid-token-format' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('Invalid or expired');
+    });
+  });
+
+  describe('POST /api/auth/resend-verification', () => {
+    it('should accept valid email address', async () => {
+      const response = await request(app)
+        .post('/api/auth/resend-verification')
+        .send({ email: 'test@example.com' });
+
+      // Always returns success to prevent email enumeration
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+    });
+
+    it('should not reveal if email exists', async () => {
+      const response = await request(app)
+        .post('/api/auth/resend-verification')
+        .send({ email: 'nonexistent@example.com' })
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.message).toContain('verification email has been sent');
+    });
+
+    it('should reject missing email', async () => {
+      const response = await request(app)
+        .post('/api/auth/resend-verification')
+        .send({})
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('required');
+    });
+
+    it('should reject invalid email format', async () => {
+      const response = await request(app)
+        .post('/api/auth/resend-verification')
+        .send({ email: 'invalid-email' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+    });
+
+    it('should handle empty email string', async () => {
+      const response = await request(app)
+        .post('/api/auth/resend-verification')
+        .send({ email: '' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+    });
+  });
+
+  describe('POST /api/auth/forgot-password', () => {
+    it('should accept valid email and return success', async () => {
+      const response = await request(app)
+        .post('/api/auth/forgot-password')
+        .send({ email: testUser.email });
+
+      // Always returns success to prevent email enumeration
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.message).toContain('password reset link');
+    });
+
+    it('should not reveal if email exists', async () => {
+      const response = await request(app)
+        .post('/api/auth/forgot-password')
+        .send({ email: 'nonexistent@example.com' })
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.message).toContain('If an account exists');
+    });
+
+    it('should reject missing email', async () => {
+      const response = await request(app).post('/api/auth/forgot-password').send({}).expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('required');
+    });
+
+    it('should reject invalid email format', async () => {
+      const response = await request(app)
+        .post('/api/auth/forgot-password')
+        .send({ email: 'not-an-email' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+    });
+
+    it('should handle rate limiting', async () => {
+      // Make multiple requests quickly
+      const requests = [];
+      for (let i = 0; i < 10; i++) {
+        requests.push(
+          request(app).post('/api/auth/forgot-password').send({ email: 'test@example.com' })
+        );
+      }
+
+      const responses = await Promise.all(requests);
+      const rateLimited = responses.some((r) => r.status === 429);
+
+      // At least one should be rate limited
+      expect(rateLimited).toBe(true);
+    });
+  });
+
+  describe('POST /api/auth/reset-password', () => {
+    it('should reject invalid token', async () => {
+      const response = await request(app)
+        .post('/api/auth/reset-password')
+        .send({
+          token: 'invalid-token',
+          newPassword: 'NewPass@1234',
+        })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('Invalid or expired');
+    });
+
+    it('should reject missing token', async () => {
+      const response = await request(app)
+        .post('/api/auth/reset-password')
+        .send({ newPassword: 'NewPass@1234' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('required');
+    });
+
+    it('should reject missing password', async () => {
+      const response = await request(app)
+        .post('/api/auth/reset-password')
+        .send({ token: 'some-token' })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('required');
+    });
+
+    it('should reject weak password', async () => {
+      const response = await request(app)
+        .post('/api/auth/reset-password')
+        .send({
+          token: 'some-token',
+          newPassword: 'weak',
+        })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('8 characters');
+    });
+
+    it('should reject password without uppercase', async () => {
+      const response = await request(app)
+        .post('/api/auth/reset-password')
+        .send({
+          token: 'some-token',
+          newPassword: 'nouppercas@123',
+        })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('uppercase');
+    });
+
+    it('should reject password without special character', async () => {
+      const response = await request(app)
+        .post('/api/auth/reset-password')
+        .send({
+          token: 'some-token',
+          newPassword: 'NoSpecial123',
+        })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('special character');
+    });
+
+    it('should reject password without number', async () => {
+      const response = await request(app)
+        .post('/api/auth/reset-password')
+        .send({
+          token: 'some-token',
+          newPassword: 'NoNumber@Pass',
+        })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('number');
+    });
+
+    it('should handle empty token string', async () => {
+      const response = await request(app)
+        .post('/api/auth/reset-password')
+        .send({
+          token: '',
+          newPassword: 'Valid@Pass123',
+        })
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+    });
+  });
 });

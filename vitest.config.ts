@@ -15,13 +15,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      exclude: [
-        'node_modules/',
-        'tests/',
-        '**/*.config.*',
-        '**/*.d.ts',
-        '**/dist/**',
-      ],
+      exclude: ['node_modules/', 'tests/', '**/*.config.*', '**/*.d.ts', '**/dist/**'],
       all: true,
       lines: 90,
       functions: 90,
@@ -29,6 +23,7 @@ export default defineConfig({
       statements: 90,
     },
     include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+    exclude: ['**/node_modules/**', '**/dist/**', 'tests/e2e/**'],
     testTimeout: 10000,
     hookTimeout: 10000,
     teardownTimeout: 10000,

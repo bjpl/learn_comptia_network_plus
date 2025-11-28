@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
-import { router } from '../../../src/routes';
-import { ThemeProvider } from '../../../src/contexts/ThemeContext';
-import { ProgressProvider } from '../../../src/contexts/ProgressContext';
+import { router } from '../../src/router';
+import { ThemeProvider } from '../../src/contexts/ThemeContext';
+import { ProgressProvider } from '../../src/contexts/ProgressContext';
 import React from 'react';
 
 // Helper to wrap router with providers
@@ -26,9 +26,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should show loading state during lazy load', async () => {
@@ -53,9 +56,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should load packet journey route', async () => {
@@ -65,9 +71,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should load troubleshooting route', async () => {
@@ -77,9 +86,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   });
 
@@ -91,9 +103,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should load cloud architecture designer', async () => {
@@ -103,9 +118,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   });
 
@@ -117,9 +135,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should load traffic demo', async () => {
@@ -129,9 +150,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should load port scanner', async () => {
@@ -141,9 +165,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   });
 
@@ -155,9 +182,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should load progress dashboard', async () => {
@@ -167,9 +197,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   });
 
@@ -181,11 +214,14 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        // Should show either error boundary or 404 page
-        const body = document.body.textContent || '';
-        expect(body.length).toBeGreaterThan(0);
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          // Should show either error boundary or 404 page
+          const body = document.body.textContent || '';
+          expect(body.length).toBeGreaterThan(0);
+        },
+        { timeout: 3000 }
+      );
     });
   });
 
@@ -203,11 +239,7 @@ describe('Routing Integration', () => {
     });
 
     it('should load multiple routes sequentially', async () => {
-      const routes = [
-        '/osi/layer-builder',
-        '/cloud/architecture',
-        '/assessment/simulator',
-      ];
+      const routes = ['/osi/layer-builder', '/cloud/architecture', '/assessment/simulator'];
 
       for (const route of routes) {
         const testRouter = createMemoryRouter(router.routes, {
@@ -216,9 +248,12 @@ describe('Routing Integration', () => {
 
         const { unmount } = renderWithProviders(testRouter);
 
-        await waitFor(() => {
-          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-        }, { timeout: 3000 });
+        await waitFor(
+          () => {
+            expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+          },
+          { timeout: 3000 }
+        );
 
         unmount();
       }
@@ -242,8 +277,10 @@ describe('Routing Integration', () => {
 
       await waitFor(() => {
         // Theme should still be applied
-        expect(document.documentElement.classList.contains('light') ||
-               document.documentElement.classList.contains('dark')).toBe(true);
+        expect(
+          document.documentElement.classList.contains('light') ||
+            document.documentElement.classList.contains('dark')
+        ).toBe(true);
       });
     });
   });
@@ -276,9 +313,12 @@ describe('Routing Integration', () => {
       testRouter.navigate('/assessment/simulator');
       testRouter.navigate('/');
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 5000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
     });
 
     it('should cleanup previous route on navigation', async () => {
@@ -288,15 +328,21 @@ describe('Routing Integration', () => {
 
       const { unmount } = renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       testRouter.navigate('/cloud/architecture');
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       unmount();
     });
@@ -312,9 +358,12 @@ describe('Routing Integration', () => {
 
       renderWithProviders(testRouter);
 
-      await waitFor(() => {
-        expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       const endTime = performance.now();
       const loadTime = endTime - startTime;

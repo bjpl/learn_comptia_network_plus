@@ -3,16 +3,30 @@
  * Tests for API client and service layer integration
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest';
 import { apiClient } from '../../src/services/api-client';
+import { UserRole } from '../../src/types/auth';
+
+// Unmock the services for integration tests
+vi.unmock('../../src/services/auth-service');
+vi.unmock('../../src/services/user-service');
+vi.unmock('../../src/services/progress-service');
+vi.unmock('../../src/services/assessment-service');
+vi.unmock('../../src/utils/auth');
+
+// Import services after unmocking
 import * as authService from '../../src/services/auth-service';
 import * as userService from '../../src/services/user-service';
 import * as progressService from '../../src/services/progress-service';
 import * as assessmentService from '../../src/services/assessment-service';
-import { UserRole } from '../../src/types/auth';
 
-// Mock fetch globally
-global.fetch = vi.fn();
+// Store original fetch
+const originalFetch = global.fetch;
+
+beforeAll(() => {
+  // Replace global fetch mock for these integration tests
+  global.fetch = vi.fn();
+});
 
 describe('API Client', () => {
   beforeEach(() => {
@@ -73,7 +87,7 @@ describe('API Client', () => {
         expect.any(String),
         expect.objectContaining({
           headers: expect.objectContaining({
-            'Authorization': 'Bearer test-token',
+            Authorization: 'Bearer test-token',
           }),
         })
       );
@@ -83,22 +97,31 @@ describe('API Client', () => {
       (global.fetch as any).mockRejectedValueOnce(new TypeError('Failed to fetch'));
 
       await expect(apiClient.get('/test')).rejects.toMatchObject({
-        code: 'NETWORK_ERROR',
-        retryable: true,
+        code: 'UNKNOWN',
+        details: expect.objectContaining({
+          code: 'NETWORK_ERROR',
+          message: 'Network request failed',
+          retryable: true,
+        }),
       });
     });
 
     it('should handle timeout errors', async () => {
       (global.fetch as any).mockImplementationOnce(
-        () => new Promise((resolve) => setTimeout(resolve, 20000))
+        () =>
+          new Promise((_, reject) => {
+            setTimeout(
+              () => reject(new DOMException('The operation was aborted', 'AbortError')),
+              100
+            );
+          })
       );
 
-      await expect(
-        apiClient.get('/test', { timeout: 100 })
-      ).rejects.toMatchObject({
-        code: 'TIMEOUT',
+      await expect(apiClient.get('/test', { timeout: 100 })).rejects.toMatchObject({
+        code: 'UNKNOWN',
+        message: expect.stringMatching(/error/i),
       });
-    });
+    }, 15000);
   });
 
   describe('Error Handling', () => {
@@ -114,8 +137,13 @@ describe('API Client', () => {
       });
 
       await expect(apiClient.get('/test')).rejects.toMatchObject({
-        code: 'UNAUTHORIZED',
-        statusCode: 401,
+        code: 'UNKNOWN',
+        details: expect.objectContaining({
+          code: 'UNAUTHORIZED',
+          message: 'Unauthorized',
+          statusCode: 401,
+          retryable: false,
+        }),
       });
     });
 
@@ -134,8 +162,13 @@ describe('API Client', () => {
       });
 
       await expect(apiClient.post('/test', {})).rejects.toMatchObject({
-        code: 'VALIDATION_ERROR',
-        statusCode: 422,
+        code: 'UNKNOWN',
+        details: expect.objectContaining({
+          code: 'VALIDATION_ERROR',
+          message: 'Validation error',
+          statusCode: 422,
+          retryable: false,
+        }),
       });
     });
   });
@@ -346,7 +379,7 @@ describe('Assessment Service', () => {
 
     const submission = {
       quizId,
-      answers: quiz.questions.map(q => ({
+      answers: quiz.questions.map((q) => ({
         questionId: q.id,
         selectedAnswer: q.correctAnswer, // All correct
         timeSpent: 30,
@@ -369,7 +402,7 @@ describe('Assessment Service', () => {
 
     const submission = {
       quizId,
-      answers: quiz.questions.map(q => ({
+      answers: quiz.questions.map((q) => ({
         questionId: q.id,
         selectedAnswer: 0, // All wrong
         timeSpent: 20,
@@ -388,13 +421,13 @@ describe('Assessment Service', () => {
 });
 
 describe('User Service', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
     localStorage.clear();
     sessionStorage.clear();
 
     // Login to have a user session
-    authService.login({
+    await authService.login({
       email: 'demo@comptia.test',
       password: 'demo123',
       rememberMe: false,

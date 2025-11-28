@@ -162,7 +162,7 @@ export class AuthController {
     }
   }
 
-  static async refresh(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+  static async refresh(req: AuthRequest, res: Response, _next: NextFunction): Promise<void> {
     try {
       const { refreshToken } = req.body;
 

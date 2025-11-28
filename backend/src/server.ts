@@ -18,67 +18,77 @@ const PORT = process.env.PORT || 3001;
 const API_PREFIX = process.env.API_PREFIX || '/api';
 
 // Security middleware - Comprehensive helmet configuration
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for React
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      frameSrc: ["'none'"],
-      formAction: ["'self'"],
-      upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for React
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+        formAction: ["'self'"],
+        upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+      },
     },
-  },
-  hsts: {
-    maxAge: 31536000, // 1 year
-    includeSubDomains: true,
-    preload: true,
-  },
-  noSniff: true,
-  xssFilter: true,
-  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-  hidePoweredBy: true,
-  frameguard: { action: 'deny' },
-  dnsPrefetchControl: { allow: false },
-  ieNoOpen: true,
-}));
+    hsts: {
+      maxAge: 31536000, // 1 year
+      includeSubDomains: true,
+      preload: true,
+    },
+    noSniff: true,
+    xssFilter: true,
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    hidePoweredBy: true,
+    frameguard: { action: 'deny' },
+    dnsPrefetchControl: { allow: false },
+    ieNoOpen: true,
+  })
+);
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-XSRF-Token'],
-  exposedHeaders: ['X-CSRF-Token'],
-  maxAge: 86400, // 24 hours
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-XSRF-Token'],
+    exposedHeaders: ['X-CSRF-Token'],
+    maxAge: 86400, // 24 hours
+  })
+);
 
 // Body parsing middleware with size limits
-app.use(express.json({
-  limit: '1mb', // Reduced from 10mb for security
-  strict: true,
-}));
-app.use(express.urlencoded({
-  extended: true,
-  limit: '1mb',
-  parameterLimit: 1000, // Limit number of parameters
-}));
+app.use(
+  express.json({
+    limit: '1mb', // Reduced from 10mb for security
+    strict: true,
+  })
+);
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '1mb',
+    parameterLimit: 1000, // Limit number of parameters
+  })
+);
 
 // Cookie parser for CSRF tokens
 app.use(cookieParser());
 
 // Logging middleware
 if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan('combined', {
-    stream: {
-      write: (message: string) => logger.info(message.trim()),
-    },
-  }));
+  app.use(
+    morgan('combined', {
+      stream: {
+        write: (message: string) => logger.info(message.trim()),
+      },
+    })
+  );
 }
 
 // Apply global rate limiting to all routes
@@ -96,7 +106,7 @@ app.use((req, res, next) => {
 app.use(API_PREFIX, routes);
 
 // Root endpoint
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.status(200).json({
     success: true,
     message: 'CompTIA Network+ Learning Platform API',

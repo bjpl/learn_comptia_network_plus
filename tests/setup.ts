@@ -66,13 +66,28 @@ if (typeof window !== 'undefined') {
 // =========================================================================
 
 // Create a mock state that can be accessed via getState
-const mockAuthState = {
+const mockAuthState: any = {
   user: null,
   token: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
-  login: vi.fn().mockResolvedValue(undefined),
+  login: vi.fn().mockImplementation(async ({ email }: { email: string }) => {
+    mockAuthState.user = {
+      id: 'test-user-1',
+      email,
+      username: email.split('@')[0],
+      firstName: 'Test',
+      lastName: 'User',
+      role: 'student',
+      createdAt: new Date().toISOString(),
+      emailVerified: true,
+    };
+    mockAuthState.token = 'mock-jwt-token';
+    mockAuthState.isAuthenticated = true;
+    mockAuthState.error = null;
+    return Promise.resolve();
+  }),
   logout: vi.fn().mockImplementation(() => {
     mockAuthState.user = null;
     mockAuthState.token = null;
@@ -80,12 +95,41 @@ const mockAuthState = {
     mockAuthState.error = null;
     return Promise.resolve();
   }),
-  register: vi.fn().mockResolvedValue(undefined),
+  register: vi
+    .fn()
+    .mockImplementation(async ({ email, username }: { email: string; username: string }) => {
+      mockAuthState.user = {
+        id: 'test-user-1',
+        email,
+        username,
+        firstName: 'New',
+        lastName: 'User',
+        role: 'student',
+        createdAt: new Date().toISOString(),
+        emailVerified: false,
+      };
+      mockAuthState.token = 'mock-jwt-token';
+      mockAuthState.isAuthenticated = true;
+      mockAuthState.error = null;
+      return Promise.resolve();
+    }),
   refreshUser: vi.fn().mockResolvedValue(undefined),
-  clearError: vi.fn(),
-  setError: vi.fn(),
+  clearError: vi.fn(() => {
+    mockAuthState.error = null;
+  }),
+  setError: vi.fn((error: string) => {
+    mockAuthState.error = error;
+  }),
   checkSession: vi.fn().mockResolvedValue(true),
-  restoreSession: vi.fn(),
+  restoreSession: vi.fn().mockImplementation(() => {
+    const storedToken = localStorage.getItem('auth_token');
+    const storedUser = localStorage.getItem('auth_user');
+    if (storedToken && storedUser) {
+      mockAuthState.token = storedToken;
+      mockAuthState.user = JSON.parse(storedUser);
+      mockAuthState.isAuthenticated = true;
+    }
+  }),
 };
 
 // Mock useAuthStore with getState and setState support
@@ -203,32 +247,44 @@ vi.mock('../src/services/auth-service', () => ({
 // =========================================================================
 
 vi.mock('../src/utils/auth', () => ({
+  // Storage keys constant - REQUIRED
+  STORAGE_KEYS: {
+    TOKEN: 'auth_token',
+    REFRESH_TOKEN: 'auth_refresh_token',
+    USER: 'auth_user',
+    REMEMBER_ME: 'auth_remember_me',
+    LAST_ACTIVITY: 'auth_last_activity',
+  },
+  SESSION_CONFIG: {
+    INACTIVITY_TIMEOUT: 30 * 60 * 1000,
+    REFRESH_INTERVAL: 14 * 60 * 1000,
+  },
+  // Auth data functions
   getAuthData: vi.fn(() => null),
-  setAuthData: vi.fn(),
+  storeAuthData: vi.fn(),
   clearAuthData: vi.fn(),
+  // Token functions
   isTokenExpired: vi.fn(() => false),
-  getTokenPayload: vi.fn(() => ({ userId: 'test-user-1', exp: Date.now() / 1000 + 3600 })),
+  generateMockToken: vi.fn((userId) => `mock-token-${userId}`),
+  decodeMockToken: vi.fn(() => ({ exp: Date.now() / 1000 + 3600, sub: 'test-user-1' })),
+  // Activity tracking
   updateLastActivity: vi.fn(),
   isInactive: vi.fn(() => false),
+  // Validation functions
   validatePasswordStrength: vi.fn((password) => ({
     score: password.length >= 12 ? 4 : password.length >= 8 ? 3 : 2,
-    feedback: password.length >= 12 ? 'Strong password' : 'Password could be stronger',
+    feedback: password.length >= 12 ? ['Strong password'] : ['Password could be stronger'],
+    isValid: password.length >= 8,
   })),
   validateEmail: vi.fn((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)),
-  storeAuthData: vi.fn(),
+  // Utility functions
+  hashPassword: vi.fn(async (password) => `hashed-${password}`),
+  generateUserId: vi.fn(() => 'test-user-' + Math.random().toString(36).substr(2, 9)),
+  mockApiDelay: vi.fn(() => Promise.resolve()),
   getUserDisplayName: vi.fn((user) => user?.username || user?.email || 'User'),
   getUserInitials: vi.fn((user) =>
     (user?.username || user?.email || 'U').substring(0, 2).toUpperCase()
   ),
-  // Additional exports from auth utils
-  mockApiDelay: vi.fn((ms = 500) => Promise.resolve()),
-  generateSessionId: vi.fn(() => 'mock-session-id'),
-  formatAuthError: vi.fn((error) => error?.message || 'Authentication error'),
-  isValidToken: vi.fn(() => true),
-  decodeToken: vi.fn(() => ({ userId: 'test-user-1', email: 'test@example.com' })),
-  AUTH_TOKEN_KEY: 'auth_token',
-  USER_KEY: 'user',
-  REFRESH_TOKEN_KEY: 'refresh_token',
 }));
 
 global.fetch = vi.fn((url, init) => {
