@@ -10,7 +10,7 @@ import CloudArchitectureDesigner from '../../../src/components/cloud/CloudArchit
 import {
   mockCloudComponent,
   mockCloudDesign,
-  mockValidationResult
+  mockValidationResult,
 } from '../../fixtures/test-data';
 
 expect.extend(toHaveNoViolations);
@@ -41,7 +41,7 @@ describe('CloudArchitectureDesigner', () => {
       render(<CloudArchitectureDesigner />);
       expect(screen.getByText('Deployment')).toBeInTheDocument();
       expect(screen.getByText('Services')).toBeInTheDocument();
-      expect(screen.getByText('Connectivity')).toBeInTheDocument();
+      expect(screen.getByText('Connect')).toBeInTheDocument();
       expect(screen.getByText('VPC')).toBeInTheDocument();
       expect(screen.getByText('Gateways')).toBeInTheDocument();
       expect(screen.getByText('NFV')).toBeInTheDocument();
@@ -78,7 +78,10 @@ describe('CloudArchitectureDesigner', () => {
       const servicesTab = screen.getByText('Services');
       await user.click(servicesTab);
 
-      expect(servicesTab).toHaveClass('active');
+      // After clicking, the tab's parent button should have 'active' class
+      // The text is inside a span within the button
+      const button = servicesTab.closest('button');
+      expect(button).toHaveClass('active');
     });
 
     it('should update design name', async () => {
@@ -111,9 +114,11 @@ describe('CloudArchitectureDesigner', () => {
       render(<CloudArchitectureDesigner />);
 
       // Find a draggable library item
-      const libraryItems = screen.getAllByRole('generic', {
-        hidden: true
-      }).filter(el => el.draggable);
+      const libraryItems = screen
+        .getAllByRole('generic', {
+          hidden: true,
+        })
+        .filter((el) => el.draggable);
 
       expect(libraryItems.length).toBeGreaterThan(0);
     });

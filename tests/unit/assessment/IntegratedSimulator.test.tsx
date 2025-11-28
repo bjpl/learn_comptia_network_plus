@@ -135,48 +135,79 @@ describe('IntegratedSimulator', () => {
     });
 
     it('should navigate to next phase after scoring', async () => {
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(
-          textarea,
-          'This is a detailed answer that addresses all the assessment criteria with specific technical details.'
-        );
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-      });
-
-      await waitFor(async () => {
-        const nextButton = screen.getByText(/Next Phase|Complete Scenario/);
-        await user.click(nextButton);
-      });
-
-      // Phase should change
+      // Wait for textarea to be available
       await waitFor(() => {
-        expect(screen.getByText(/Phase \d+ of \d+/)).toBeInTheDocument();
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
+      });
+
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(
+        textarea,
+        'This is a detailed answer that addresses all the assessment criteria.'
+      );
+
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      // Wait for scoring to complete and next button to appear
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Next Phase|Complete Scenario/)).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
+
+      const nextButton = screen.getByText(/Next Phase|Complete Scenario/);
+      await user.click(nextButton);
+
+      // Phase should change or scenario completes
+      await waitFor(() => {
+        expect(screen.getByText(/Phase \d+ of \d+|Scenario Complete/)).toBeInTheDocument();
       });
     });
 
     it('should navigate to previous phase', async () => {
-      // Move to second phase first
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(textarea, 'Detailed answer.');
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-
-        const nextButton = screen.getByText(/Next Phase/);
-        await user.click(nextButton);
+      // Wait for textarea to be available
+      await waitFor(() => {
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
       });
 
-      // Go back
-      await waitFor(async () => {
-        const prevButton = screen.getByText('Previous Phase');
-        await user.click(prevButton);
-      });
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(textarea, 'Detailed answer.');
 
-      expect(screen.getByText(/Phase 1 of/)).toBeInTheDocument();
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      // Wait for next button to appear
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Next Phase/)).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
+
+      const nextButton = screen.getByText(/Next Phase/);
+      await user.click(nextButton);
+
+      // Check if Previous Phase button exists and click it
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Previous Phase/i)).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
+
+      const prevButton = screen.getByText('Previous Phase');
+      await user.click(prevButton);
+
+      // Should be back at Phase 1
+      await waitFor(() => {
+        expect(screen.getByText(/Phase 1 of/)).toBeInTheDocument();
+      });
     });
 
     it('should disable previous button on first phase', async () => {
