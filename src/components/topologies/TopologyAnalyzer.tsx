@@ -570,10 +570,30 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
                   <h4>{topology.name} - Detailed Analysis</h4>
 
                   {/* SPOF Analysis */}
-                  <div className="spof-analysis">
+                  <div
+                    className="spof-analysis"
+                    role="region"
+                    aria-label="Single Points of Failure analysis"
+                  >
                     <h5>Single Points of Failure (SPOF) Detection</h5>
+
+                    {/* Screen reader summary */}
+                    <div className="sr-only" aria-live="polite">
+                      {topology.name} topology analysis: {spofCount} single point
+                      {spofCount !== 1 ? 's' : ''} of failure detected.{' '}
+                      {spofCount === 0
+                        ? 'This topology has good redundancy.'
+                        : spofCount === 1
+                          ? 'One critical node identified.'
+                          : `${spofCount} critical nodes identified.`}
+                    </div>
+
                     <div className="spof-summary">
-                      <div className="spof-badge">
+                      <div
+                        className="spof-badge"
+                        role="status"
+                        aria-label={`${spofCount} single points of failure found`}
+                      >
                         <span className={`count ${spofCount === 0 ? 'safe' : 'critical'}`}>
                           {spofCount} SPOF{spofCount !== 1 ? 's' : ''}
                         </span>
@@ -619,22 +639,52 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
                   </div>
 
                   {/* Redundancy Metrics */}
-                  <div className="redundancy-metrics">
+                  <div className="redundancy-metrics" role="region" aria-label="Redundancy metrics">
                     <h5>Redundancy Analysis</h5>
+
+                    {/* Screen reader summary */}
+                    <div className="sr-only" aria-live="polite">
+                      Redundancy analysis for {topology.name}: Overall redundancy score{' '}
+                      {redundancyData.overallRedundancy} percent. Path redundancy{' '}
+                      {redundancyData.pathRedundancy} percent. Link redundancy{' '}
+                      {redundancyData.linkRedundancy} percent.
+                      {redundancyData.criticalPaths.length > 0 &&
+                        ` ${redundancyData.criticalPaths.length} critical paths identified.`}
+                    </div>
+
                     <div className="metrics-grid">
-                      <div className="metric-card">
+                      <div className="metric-card" role="group" aria-label="Path redundancy metric">
                         <span className="label">Path Redundancy</span>
-                        <span className="value">{redundancyData.pathRedundancy}%</span>
+                        <span
+                          className="value"
+                          aria-label={`${redundancyData.pathRedundancy} percent`}
+                        >
+                          {redundancyData.pathRedundancy}%
+                        </span>
                         <span className="description">Extra paths beyond minimum</span>
                       </div>
-                      <div className="metric-card">
+                      <div className="metric-card" role="group" aria-label="Link redundancy metric">
                         <span className="label">Link Redundancy</span>
-                        <span className="value">{redundancyData.linkRedundancy}%</span>
+                        <span
+                          className="value"
+                          aria-label={`${redundancyData.linkRedundancy} percent`}
+                        >
+                          {redundancyData.linkRedundancy}%
+                        </span>
                         <span className="description">Redundant links</span>
                       </div>
-                      <div className="metric-card">
+                      <div
+                        className="metric-card"
+                        role="group"
+                        aria-label="Overall redundancy score"
+                      >
                         <span className="label">Overall Score</span>
-                        <span className="value">{redundancyData.overallRedundancy}%</span>
+                        <span
+                          className="value"
+                          aria-label={`${redundancyData.overallRedundancy} percent`}
+                        >
+                          {redundancyData.overallRedundancy}%
+                        </span>
                         <span className="description">Combined redundancy</span>
                       </div>
                     </div>

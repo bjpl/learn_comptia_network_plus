@@ -632,13 +632,26 @@ export const PortScannerEnhanced: React.FC = () => {
 
   const renderPacketExchange = (result: ScanResult) => {
     return (
-      <div className="packet-exchange">
+      <div
+        className="packet-exchange"
+        role="region"
+        aria-label={`Packet exchange details for port ${result.port}`}
+      >
         <h4>Packet Exchange Analysis - Port {result.port}</h4>
-        <div className="exchange-timeline">
+
+        {/* Screen reader summary */}
+        <div className="sr-only">
+          Packet exchange for port {result.port}, {result.service}. {result.exchanges.length} steps
+          total. Final state: {result.state}.{result.detected && ' This scan was detected by IDS.'}
+        </div>
+
+        <div className="exchange-timeline" role="list" aria-label="Packet exchange steps">
           {result.exchanges.map((exchange, idx) => (
             <div
               key={idx}
               className={`exchange-step ${exchange.source} ${exchange.detected ? 'detected' : ''}`}
+              role="listitem"
+              aria-label={`Step ${exchange.step}: ${exchange.source === 'scanner' ? 'Scanner' : 'Target'} sends ${exchange.type}. ${exchange.description}.${exchange.detected ? ' Detected and logged.' : ''}`}
             >
               <div className="step-number">Step {exchange.step}</div>
               <div className="step-content">
@@ -809,7 +822,9 @@ export const PortScannerEnhanced: React.FC = () => {
                     setDefenseConfig((prev) => ({
                       ...prev,
                       rules: prev.rules.map((r) =>
-                        r.id === rule.id ? { ...r, action: e.target.value as any } : r
+                        r.id === rule.id
+                          ? { ...r, action: e.target.value as 'allow' | 'block' | 'rate-limit' }
+                          : r
                       ),
                     }))
                   }
@@ -841,7 +856,7 @@ export const PortScannerEnhanced: React.FC = () => {
               <p>Unauthorized port scanning is ILLEGAL and may violate:</p>
               <ul>
                 <li>Computer Fraud and Abuse Act (CFAA)</li>
-                <li>Your organization's acceptable use policy</li>
+                <li>Your organization&apos;s acceptable use policy</li>
                 <li>International cybersecurity laws</li>
               </ul>
               <p>
@@ -869,8 +884,9 @@ export const PortScannerEnhanced: React.FC = () => {
             <h3>Scan Configuration</h3>
 
             <div className="scan-type-selector">
-              <label>Scan Type:</label>
+              <label htmlFor="scan-type-select">Scan Type:</label>
               <select
+                id="scan-type-select"
                 value={selectedScanType}
                 onChange={(e) => setSelectedScanType(e.target.value as ScanType)}
                 disabled={scanning}
@@ -893,7 +909,14 @@ export const PortScannerEnhanced: React.FC = () => {
         </div>
 
         <div className="right-panel">
-          <div className="terminal" ref={terminalRef}>
+          <div
+            className="terminal"
+            ref={terminalRef}
+            role="log"
+            aria-label="Port scan terminal output"
+            aria-live="polite"
+            aria-atomic="false"
+          >
             {terminalOutput.map((line, idx) => (
               <div key={idx} className="terminal-line">
                 {line}
@@ -901,22 +924,52 @@ export const PortScannerEnhanced: React.FC = () => {
             ))}
           </div>
 
+          {/* Screen reader summary of scan results */}
+          {scanning && (
+            <div className="sr-only" aria-live="assertive">
+              Scan in progress. {results.length} ports scanned so far.
+            </div>
+          )}
+          {!scanning && results.length > 0 && (
+            <div className="sr-only" aria-live="polite">
+              Scan complete. {results.length} ports scanned.{' '}
+              {results.filter((r) => r.state === 'open').length} ports open,{' '}
+              {results.filter((r) => r.state === 'closed').length} ports closed,{' '}
+              {results.filter((r) => r.state === 'filtered').length} ports filtered.{' '}
+              {results.filter((r) => r.detected).length} detection events occurred.
+            </div>
+          )}
+
           {results.length > 0 && (
             <div className="results-panel">
               <h3>Scan Results - Click for Details</h3>
-              <div className="results-grid">
+              <div className="results-grid" role="list" aria-label="Port scan results">
                 {results.map((result) => (
                   <div
                     key={result.port}
                     className={`result-card ${selectedPort === result.port ? 'selected' : ''} state-${result.state}`}
                     onClick={() => setSelectedPort(result.port)}
+                    role="listitem button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedPort(result.port);
+                      }
+                    }}
+                    aria-label={`Port ${result.port}, ${result.service}, state: ${result.state}${result.detected ? ', detection alert' : ''}`}
+                    aria-pressed={selectedPort === result.port}
                   >
                     <div className="result-port">Port {result.port}</div>
                     <div className="result-service">{result.service}</div>
                     <div className={`result-state state-${result.state}`}>
                       {result.state.toUpperCase()}
                     </div>
-                    {result.detected && <div className="detected-badge">🚨</div>}
+                    {result.detected && (
+                      <div className="detected-badge" aria-label="Detected by IDS">
+                        🚨
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

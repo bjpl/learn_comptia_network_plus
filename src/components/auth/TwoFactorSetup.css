@@ -1,0 +1,281 @@
+/**
+ * Two-Factor Authentication Setup Styles
+ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--color-background);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.twofa-modal {
+  padding: 32px;
+}
+
+.twofa-step {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.twofa-step h2 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--color-text);
+}
+
+.twofa-step p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Step Indicator */
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.step.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.step.completed {
+  background-color: var(--color-success);
+  color: white;
+}
+
+/* QR Code */
+.qr-code-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--color-surface);
+  border-radius: 8px;
+}
+
+.qr-code {
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+}
+
+.secret-key {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background-color: var(--color-surface);
+  border-radius: 8px;
+}
+
+.secret-key p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.secret-key code {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--color-text);
+  padding: 8px;
+  background-color: var(--color-background);
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+/* Backup Codes */
+.backup-codes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 16px;
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.backup-code code {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  padding: 12px;
+  background-color: var(--color-background);
+  border-radius: 4px;
+  text-align: center;
+  letter-spacing: 1px;
+  color: var(--color-text);
+}
+
+.backup-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.warning-text {
+  color: var(--color-warning) !important;
+  font-weight: 500;
+  padding: 12px;
+  background-color: rgba(255, 193, 7, 0.1);
+  border-radius: 6px;
+  border-left: 4px solid var(--color-warning);
+}
+
+/* Verification Input */
+.verification-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.verification-input input {
+  font-size: 32px;
+  text-align: center;
+  letter-spacing: 8px;
+  font-family: 'Courier New', monospace;
+  padding: 16px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: border-color 0.2s;
+}
+
+.verification-input input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.verification-input input.error {
+  border-color: var(--color-error);
+}
+
+/* Success */
+.success-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--color-success);
+  color: white;
+  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Actions */
+.twofa-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.btn-link:hover {
+  background-color: var(--color-surface-hover);
+}
+
+/* Dark Mode */
+[data-theme='dark'] .modal-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .twofa-modal {
+    padding: 24px;
+  }
+
+  .backup-codes {
+    grid-template-columns: 1fr;
+  }
+
+  .twofa-actions {
+    flex-direction: column-reverse;
+  }
+
+  .twofa-actions button {
+    width: 100%;
+  }
+
+  .verification-input input {
+    font-size: 24px;
+    letter-spacing: 4px;
+  }
+}

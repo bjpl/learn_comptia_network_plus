@@ -490,3 +490,7 @@ export type AsyncFunction<T = unknown, TArgs extends unknown[] = unknown[]> = (
  * Callback function type
  */
 export type Callback<T = void, TArgs extends unknown[] = unknown[]> = (...args: TArgs) => T;
+
+// Re-export auth and security types for convenience
+export type { User, UserRole, LoginCredentials, RegisterData, PasswordStrength } from './auth';
+export type { TwoFactorSetupData, DeviceSession, TwoFactorStatus } from './security';

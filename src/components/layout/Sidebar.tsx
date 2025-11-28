@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import type { NavigationItem } from '../../types';
 import { useAppStore } from '../../store';
@@ -103,9 +103,10 @@ const navigationStructure: NavigationItem[] = [
 interface SidebarItemProps {
   item: NavigationItem;
   depth?: number;
+  onNavigate?: () => void;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0 }) => {
+const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0, onNavigate }) => {
   const location = useLocation();
   const { progress } = useAppStore();
   const [isExpanded, setIsExpanded] = useState(true);
@@ -170,7 +171,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0 }) => {
   return (
     <div>
       {item.path ? (
-        <Link to={item.path}>
+        <Link to={item.path} onClick={onNavigate}>
           <ItemContent />
         </Link>
       ) : (
@@ -180,7 +181,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0 }) => {
       {hasChildren && isExpanded && (
         <div className="mt-1 space-y-1">
           {item.children!.map((child) => (
-            <SidebarItem key={child.id} item={child} depth={depth + 1} />
+            <SidebarItem key={child.id} item={child} depth={depth + 1} onNavigate={onNavigate} />
           ))}
         </div>
       )}
@@ -190,17 +191,46 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ item, depth = 0 }) => {
 
 export const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { isMobileSidebarOpen, closeMobileSidebar } = useAppStore();
+
+  // Close sidebar on mobile when route changes
+  const location = useLocation();
+  useEffect(() => {
+    closeMobileSidebar();
+  }, [location.pathname, closeMobileSidebar]);
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isMobileSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileSidebarOpen]);
+
+  const handleMobileNavigate = () => {
+    closeMobileSidebar();
+  };
 
   return (
     <>
       {/* Mobile Overlay */}
-      <div className="fixed inset-0 z-20 bg-black/50 md:hidden" />
+      {isMobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black/50 transition-opacity duration-300 md:hidden"
+          onClick={closeMobileSidebar}
+          aria-label="Close sidebar"
+        />
+      )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-16 z-30 h-[calc(100vh-4rem)] overflow-y-auto border-r border-gray-200 bg-white transition-all duration-300 md:sticky dark:border-gray-700 dark:bg-gray-800 ${
-          isCollapsed ? 'w-16' : 'w-64'
-        }`}
+        className={`fixed left-0 top-16 z-30 h-[calc(100vh-4rem)] overflow-y-auto border-r border-gray-200 bg-white transition-transform duration-300 ease-in-out dark:border-gray-700 dark:bg-gray-800 md:sticky md:translate-x-0 ${
+          isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } ${isCollapsed ? 'w-16' : 'w-64'}`}
       >
         {/* Collapse Toggle */}
         <div className="sticky top-0 flex justify-end border-b border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-800">
@@ -231,7 +261,7 @@ export const Sidebar: React.FC = () => {
         {!isCollapsed && (
           <nav className="space-y-2 p-4">
             {navigationStructure.map((item) => (
-              <SidebarItem key={item.id} item={item} />
+              <SidebarItem key={item.id} item={item} onNavigate={handleMobileNavigate} />
             ))}
           </nav>
         )}

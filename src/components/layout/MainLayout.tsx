@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Link } from 'react-router-dom';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { useAppStore } from '../../store';
@@ -34,12 +34,12 @@ export const MainLayout: React.FC = () => {
               <nav className="mb-6" aria-label="Breadcrumb">
                 <ol className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                   <li>
-                    <a
-                      href="/"
+                    <Link
+                      to="/"
                       className="text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       Home
-                    </a>
+                    </Link>
                   </li>
                   {breadcrumbs.map((crumb, index) => (
                     <li key={crumb.path} className="flex items-center">
@@ -61,12 +61,12 @@ export const MainLayout: React.FC = () => {
                           {crumb.label}
                         </span>
                       ) : (
-                        <a
-                          href={crumb.path}
+                        <Link
+                          to={crumb.path}
                           className="text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
                         >
                           {crumb.label}
-                        </a>
+                        </Link>
                       )}
                     </li>
                   ))}

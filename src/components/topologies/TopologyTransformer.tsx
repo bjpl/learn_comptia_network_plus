@@ -381,8 +381,15 @@ export const TopologyTransformer: React.FC<TopologyTransformerProps> = ({ classN
           </div>
 
           {/* Step Progress */}
-          <div className="step-progress">
-            <div className="progress-bar">
+          <div className="step-progress" role="region" aria-label="Transformation progress">
+            <div
+              className="progress-bar"
+              role="progressbar"
+              aria-valuenow={currentStep + 1}
+              aria-valuemin={1}
+              aria-valuemax={selectedTransformation.steps.length}
+              aria-label={`Step ${currentStep + 1} of ${selectedTransformation.steps.length}`}
+            >
               <div
                 className="progress-fill"
                 style={{
@@ -390,7 +397,14 @@ export const TopologyTransformer: React.FC<TopologyTransformerProps> = ({ classN
                 }}
               />
             </div>
-            <div className="step-buttons">
+
+            {/* Screen reader announcement of step changes */}
+            <div className="sr-only" aria-live="assertive" aria-atomic="true">
+              {isAnimating &&
+                `Now showing step ${currentStep + 1} of ${selectedTransformation.steps.length}: ${currentStepData.title}`}
+            </div>
+
+            <div className="step-buttons" role="group" aria-label="Transformation steps">
               {selectedTransformation.steps.map((step, idx) => (
                 <button
                   key={step.id}
@@ -398,8 +412,12 @@ export const TopologyTransformer: React.FC<TopologyTransformerProps> = ({ classN
                     currentStep > idx ? 'completed' : ''
                   }`}
                   onClick={() => handleStepChange(idx)}
+                  aria-label={`Step ${idx + 1}: ${step.title}${currentStep === idx ? ' (current)' : currentStep > idx ? ' (completed)' : ''}`}
+                  aria-pressed={currentStep === idx}
                 >
-                  <span className="step-number">{idx + 1}</span>
+                  <span className="step-number" aria-hidden="true">
+                    {idx + 1}
+                  </span>
                   <span className="step-title">{step.title}</span>
                 </button>
               ))}
@@ -410,32 +428,53 @@ export const TopologyTransformer: React.FC<TopologyTransformerProps> = ({ classN
           <div className="visualization-area">
             {showComparison ? (
               /* Side-by-Side Comparison */
-              <div className="side-by-side">
+              <div className="side-by-side" role="region" aria-label="Before and after comparison">
                 <div className="topology-view before">
                   <h4>Before: {selectedTransformation.fromTopology}</h4>
-                  <div className="topology-diagram">
+                  <div
+                    className="topology-diagram"
+                    role="img"
+                    aria-label={`${selectedTransformation.fromTopology} topology diagram`}
+                  >
                     <div className="diagram-placeholder">
                       <span className="topology-name">{selectedTransformation.fromTopology}</span>
-                      <div className="topology-icon">🔷</div>
+                      <div className="topology-icon" aria-hidden="true">
+                        🔷
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="transformation-arrow">
-                  <div className="arrow-icon">→</div>
-                  <div className="step-indicator">
+                <div className="transformation-arrow" role="presentation">
+                  <div className="arrow-icon" aria-hidden="true">
+                    →
+                  </div>
+                  <div className="step-indicator" aria-live="polite">
                     Step {currentStep + 1} of {selectedTransformation.steps.length}
                   </div>
                 </div>
 
                 <div className="topology-view after">
                   <h4>After: {selectedTransformation.toTopology}</h4>
-                  <div className="topology-diagram">
+                  <div
+                    className="topology-diagram"
+                    role="img"
+                    aria-label={`${selectedTransformation.toTopology} topology diagram`}
+                  >
                     <div className="diagram-placeholder">
                       <span className="topology-name">{selectedTransformation.toTopology}</span>
-                      <div className="topology-icon">🔶</div>
+                      <div className="topology-icon" aria-hidden="true">
+                        🔶
+                      </div>
                     </div>
                   </div>
+                </div>
+
+                {/* Screen reader description of comparison */}
+                <div className="sr-only">
+                  Comparing {selectedTransformation.fromTopology} topology before transformation
+                  with {selectedTransformation.toTopology} topology after transformation. Currently
+                  showing step {currentStep + 1} of {selectedTransformation.steps.length}.
                 </div>
               </div>
             ) : (

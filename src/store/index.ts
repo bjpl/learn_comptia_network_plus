@@ -20,6 +20,11 @@ interface AppState {
   currentPath: string;
   setCurrentPath: (path: string) => void;
 
+  // Mobile sidebar
+  isMobileSidebarOpen: boolean;
+  toggleMobileSidebar: () => void;
+  closeMobileSidebar: () => void;
+
   // Loading states
   isLoading: boolean;
   setLoading: (loading: boolean) => void;
@@ -40,7 +45,7 @@ export const useAppStore = create<AppState>()(
         overallProgress: 0,
         domainProgress: new Map(),
         achievements: [],
-        streak: 0
+        streak: 0,
       },
 
       // Progress actions
@@ -48,7 +53,8 @@ export const useAppStore = create<AppState>()(
         set((state) => {
           const newScores = { ...state.progress.componentScores, [componentId]: score };
           const scores = Object.values(newScores);
-          const totalScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+          const totalScore =
+            scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
 
           return {
             progress: {
@@ -80,6 +86,12 @@ export const useAppStore = create<AppState>()(
       // Navigation state and actions
       currentPath: '/',
       setCurrentPath: (path: string) => set({ currentPath: path }),
+
+      // Mobile sidebar state and actions
+      isMobileSidebarOpen: false,
+      toggleMobileSidebar: () =>
+        set((state) => ({ isMobileSidebarOpen: !state.isMobileSidebarOpen })),
+      closeMobileSidebar: () => set({ isMobileSidebarOpen: false }),
 
       // Loading state
       isLoading: false,

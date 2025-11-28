@@ -157,7 +157,23 @@ export default function ConnectorLab() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="rounded-lg bg-gray-100" style={{ height: '500px' }}>
+              <div
+                className="rounded-lg bg-gray-100"
+                style={{ height: '500px' }}
+                role="img"
+                aria-label={`3D visualization of ${connector?.name || 'network connector'}${viewMode === 'xray' ? ' in X-ray mode' : viewMode === 'comparison' ? ` compared with ${comparisonConn?.name}` : ''}`}
+              >
+                {/* Screen reader description of 3D view */}
+                <div className="sr-only" aria-live="polite">
+                  Currently viewing {connector?.name}
+                  {viewMode === 'comparison' && ` and ${comparisonConn?.name}`}. View mode:{' '}
+                  {viewMode}.
+                  {viewMode === 'xray' && ' X-ray mode allows you to see internal structure.'}
+                  {viewMode === 'comparison' &&
+                    ' Comparison mode shows two connectors side by side.'}
+                  Zoom level: {Math.round(zoom * 100)} percent.
+                </div>
+
                 <Canvas>
                   <PerspectiveCamera makeDefault position={[0, 0, 10]} />
                   <OrbitControls enableZoom enablePan enableRotate />
@@ -210,24 +226,55 @@ export default function ConnectorLab() {
 
               {/* Controls */}
               <div className="mt-4 flex items-center justify-between">
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={handleRotate}>
-                    <RotateCw className="mr-1 h-4 w-4" />
+                <div className="flex gap-2" role="group" aria-label="3D view controls">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRotate}
+                    aria-label="Rotate connector 45 degrees"
+                  >
+                    <RotateCw className="mr-1 h-4 w-4" aria-hidden="true" />
                     Rotate
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleZoomIn}>
-                    <ZoomIn className="mr-1 h-4 w-4" />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleZoomIn}
+                    aria-label="Zoom in"
+                    disabled={zoom >= 4}
+                  >
+                    <ZoomIn className="mr-1 h-4 w-4" aria-hidden="true" />
                     Zoom In
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleZoomOut}>
-                    <ZoomOut className="mr-1 h-4 w-4" />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleZoomOut}
+                    aria-label="Zoom out"
+                    disabled={zoom <= 0.5}
+                  >
+                    <ZoomOut className="mr-1 h-4 w-4" aria-hidden="true" />
                     Zoom Out
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleReset}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleReset}
+                    aria-label="Reset view to default"
+                  >
                     Reset View
                   </Button>
                 </div>
-                <div className="text-sm text-gray-500">Zoom: {Math.round(zoom * 100)}%</div>
+                <div className="text-sm text-gray-500" aria-live="polite">
+                  Zoom: {Math.round(zoom * 100)}%
+                </div>
+              </div>
+
+              {/* Keyboard navigation instructions for screen readers */}
+              <div className="sr-only">
+                Use Tab to navigate between view mode buttons and controls. Press Enter or Space to
+                activate buttons. Use mouse drag or touch to rotate the 3D model. Scroll or pinch to
+                zoom.
               </div>
             </CardContent>
           </Card>
