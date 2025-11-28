@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../config/logger';
+import { sendError } from '../utils/response';
 
 export interface ApiError extends Error {
   statusCode?: number;
@@ -23,25 +24,19 @@ export const errorHandler = (
     method: req.method,
   });
 
-  res.status(statusCode).json({
-    success: false,
-    error: message,
-    ...(process.env.NODE_ENV === 'development' && {
-      stack: err.stack,
-      details: err.details,
-    }),
-  });
+  const details =
+    process.env.NODE_ENV === 'development'
+      ? {
+          stack: err.stack,
+          details: err.details,
+        }
+      : undefined;
+
+  sendError(res, message, statusCode, details);
 };
 
-export const notFoundHandler = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
-  res.status(404).json({
-    success: false,
-    error: 'Route not found',
-  });
+export const notFoundHandler = (req: Request, res: Response, next: NextFunction): void => {
+  sendError(res, 'Route not found', 404);
 };
 
 export default { errorHandler, notFoundHandler };

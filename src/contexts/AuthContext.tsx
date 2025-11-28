@@ -1,311 +1,75 @@
 /**
  * Authentication Context Provider
- * Manages authentication state and provides auth methods throughout the app
+ * DEPRECATED: This is now a thin wrapper around authStore for backward compatibility.
+ * New code should use `useAuthStore` from '../stores/authStore' directly.
+ *
+ * This context delegates all operations to the Zustand authStore, ensuring
+ * a single source of truth for authentication state.
  */
 
 import type { ReactNode } from 'react';
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type { User, AuthState, LoginCredentials, RegisterData, AuthResponse } from '../types/auth';
-import { UserRole } from '../types/auth';
-import {
-  storeAuthData,
-  getAuthData,
-  clearAuthData,
-  isTokenExpired,
-  isInactive,
-  updateLastActivity,
-  generateMockToken,
-  generateUserId,
-  hashPassword,
-  mockApiDelay,
-} from '../utils/auth';
+import React, { createContext, useContext, useEffect } from 'react';
+import { useAuthStore } from '../stores/authStore';
+import type { User, LoginCredentials, RegisterData } from '../types/auth';
+import { isInactive, updateLastActivity } from '../utils/auth';
 
-interface AuthContextType extends AuthState {
+interface AuthContextType {
+  // State from authStore
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+
+  // Actions from authStore
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
-  logout: () => void;
-  updateUser: (user: Partial<User>) => void;
+  logout: () => Promise<void>;
+  clearError: () => void;
+
+  // Legacy methods for backward compatibility
+  updateUser: (updates: Partial<User>) => void;
   checkAuth: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock user database (in production, this would be server-side)
-const MOCK_USERS: Array<User & { passwordHash: string }> = [
-  {
-    id: 'user_demo_123',
-    email: 'demo@comptia.test',
-    username: 'demo_user',
-    firstName: 'Demo',
-    lastName: 'User',
-    role: UserRole.STUDENT,
-    createdAt: new Date().toISOString(),
-    emailVerified: true,
-    passwordHash: 'demo123', // In production: properly hashed
-  },
-  {
-    id: 'user_admin_456',
-    email: 'admin@comptia.test',
-    username: 'admin',
-    firstName: 'Admin',
-    lastName: 'User',
-    role: UserRole.ADMIN,
-    createdAt: new Date().toISOString(),
-    emailVerified: true,
-    passwordHash: 'admin123', // In production: properly hashed
-  },
-];
-
+/**
+ * AuthProvider - Wraps the Zustand authStore for backward compatibility
+ */
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<AuthState>({
-    user: null,
-    token: null,
-    isAuthenticated: false,
-    isLoading: true,
-    error: null,
-  });
+  // Get state and actions from Zustand store
+  const authState = useAuthStore();
 
   /**
-   * Mock login API call
+   * Legacy updateUser method - maps to refreshUser from authStore
    */
-  const mockLoginApi = async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    await mockApiDelay();
-
-    // Find user by email
-    const user = MOCK_USERS.find((u) => u.email === credentials.email);
-
-    if (!user) {
-      throw new Error('Invalid email or password');
-    }
-
-    // Check password (mock - in production use bcrypt)
-    if (user.passwordHash !== credentials.password) {
-      throw new Error('Invalid email or password');
-    }
-
-    // Generate token
-    const token = generateMockToken(user.id);
-
-    // Remove password from response
-    const { passwordHash: _passwordHash, ...userWithoutPassword } = user;
-
-    return {
-      user: {
-        ...userWithoutPassword,
-        lastLogin: new Date().toISOString(),
-      },
-      token,
-      expiresIn: 15 * 60 * 1000, // 15 minutes
-    };
+  const updateUser = (_updates: Partial<User>) => {
+    // In the Zustand implementation, user updates should go through the API
+    // For now, just refresh the user data
+    authState.refreshUser();
   };
 
   /**
-   * Mock register API call
+   * Legacy checkAuth method - maps to checkSession from authStore
    */
-  const mockRegisterApi = async (data: RegisterData): Promise<AuthResponse> => {
-    await mockApiDelay();
-
-    // Check if user exists
-    if (MOCK_USERS.some((u) => u.email === data.email)) {
-      throw new Error('Email already registered');
-    }
-
-    if (MOCK_USERS.some((u) => u.username === data.username)) {
-      throw new Error('Username already taken');
-    }
-
-    // Create new user
-    const userId = generateUserId();
-    const passwordHash = await hashPassword(data.password);
-
-    const newUser: User & { passwordHash: string } = {
-      id: userId,
-      email: data.email,
-      username: data.username,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      role: UserRole.STUDENT,
-      createdAt: new Date().toISOString(),
-      emailVerified: false,
-      passwordHash,
-    };
-
-    // Add to mock database
-    MOCK_USERS.push(newUser);
-
-    // Generate token
-    const token = generateMockToken(userId);
-
-    const { passwordHash: _, ...userWithoutPassword } = newUser;
-
-    return {
-      user: userWithoutPassword,
-      token,
-      expiresIn: 15 * 60 * 1000,
-    };
+  const checkAuth = () => {
+    authState.checkSession();
   };
-
-  /**
-   * Login user
-   */
-  const login = useCallback(async (credentials: LoginCredentials) => {
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-    try {
-      const response = await mockLoginApi(credentials);
-
-      storeAuthData(response, credentials.rememberMe || false);
-
-      setState({
-        user: response.user,
-        token: response.token,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Login failed',
-      }));
-      throw error;
-    }
-  }, []);
-
-  /**
-   * Register new user
-   */
-  const register = useCallback(async (data: RegisterData) => {
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
-
-    try {
-      if (data.password !== data.confirmPassword) {
-        throw new Error('Passwords do not match');
-      }
-
-      if (!data.acceptTerms) {
-        throw new Error('You must accept the terms and conditions');
-      }
-
-      const response = await mockRegisterApi(data);
-
-      storeAuthData(response, false);
-
-      setState({
-        user: response.user,
-        token: response.token,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Registration failed',
-      }));
-      throw error;
-    }
-  }, []);
-
-  /**
-   * Logout user
-   */
-  const logout = useCallback(() => {
-    clearAuthData();
-    setState({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      isLoading: false,
-      error: null,
-    });
-  }, []);
-
-  /**
-   * Update user profile
-   */
-  const updateUser = useCallback((updates: Partial<User>) => {
-    setState((prev) => {
-      if (!prev.user) {
-        return prev;
-      }
-
-      const updatedUser = { ...prev.user, ...updates };
-
-      // Update storage
-      const storage = localStorage.getItem('auth_remember_me') ? localStorage : sessionStorage;
-      storage.setItem('auth_user', JSON.stringify(updatedUser));
-
-      return {
-        ...prev,
-        user: updatedUser,
-      };
-    });
-  }, []);
-
-  /**
-   * Check authentication status
-   */
-  const checkAuth = useCallback(() => {
-    const authData = getAuthData();
-
-    if (!authData) {
-      setState((prev) => ({ ...prev, isLoading: false }));
-      return;
-    }
-
-    // Check if token is expired
-    if (isTokenExpired(authData.token)) {
-      clearAuthData();
-      setState({
-        user: null,
-        token: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: 'Session expired. Please login again.',
-      });
-      return;
-    }
-
-    // Check for inactivity
-    if (isInactive()) {
-      clearAuthData();
-      setState({
-        user: null,
-        token: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: 'Session expired due to inactivity.',
-      });
-      return;
-    }
-
-    // Restore auth state
-    setState({
-      user: authData.user,
-      token: authData.token,
-      isAuthenticated: true,
-      isLoading: false,
-      error: null,
-    });
-
-    updateLastActivity();
-  }, []);
 
   /**
    * Initialize auth state on mount
    */
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    // Restore session if available
+    authState.restoreSession();
+  }, []);
 
   /**
-   * Set up activity tracking
+   * Set up activity tracking for session timeout
    */
   useEffect(() => {
-    if (!state.isAuthenticated) {
+    if (!authState.isAuthenticated) {
       return;
     }
 
@@ -322,7 +86,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Check for inactivity every minute
     const inactivityCheck = setInterval(() => {
       if (isInactive()) {
-        logout();
+        authState.logout();
       }
     }, 60 * 1000);
 
@@ -332,34 +96,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
       clearInterval(inactivityCheck);
     };
-  }, [state.isAuthenticated, logout]);
+  }, [authState.isAuthenticated, authState.logout]);
 
-  /**
-   * Set up token refresh
-   */
-  useEffect(() => {
-    if (!state.isAuthenticated || !state.token) {
-      return;
-    }
-
-    // Check token expiry every 5 minutes
-    const tokenCheck = setInterval(
-      () => {
-        if (isTokenExpired(state.token!)) {
-          logout();
-        }
-      },
-      5 * 60 * 1000
-    );
-
-    return () => clearInterval(tokenCheck);
-  }, [state.isAuthenticated, state.token, logout]);
-
+  // Create context value that matches the legacy interface
   const value: AuthContextType = {
-    ...state,
-    login,
-    register,
-    logout,
+    user: authState.user,
+    token: authState.token,
+    isAuthenticated: authState.isAuthenticated,
+    isLoading: authState.isLoading,
+    error: authState.error,
+    login: authState.login,
+    register: authState.register,
+    logout: authState.logout,
+    clearError: authState.clearError,
     updateUser,
     checkAuth,
   };
@@ -368,12 +117,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 };
 
 /**
- * Hook to use auth context
+ * Hook to use auth
+ * Works both with AuthProvider (context) or standalone (direct Zustand store).
+ * For new code, consider using `useAuthStore` from '../stores/authStore' directly.
  */
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  const directStore = useAuthStore();
+
+  // If context is available, use it (component wrapped in AuthProvider)
+  if (context !== undefined) {
+    return context;
   }
-  return context;
+
+  // Otherwise, use Zustand store directly (works without provider)
+  // This ensures tests work without wrapping components in AuthProvider
+  return {
+    user: directStore.user,
+    token: directStore.token,
+    isAuthenticated: directStore.isAuthenticated,
+    isLoading: directStore.isLoading,
+    error: directStore.error,
+    login: directStore.login,
+    register: directStore.register,
+    logout: directStore.logout,
+    clearError: directStore.clearError,
+    // Legacy methods
+    updateUser: () => directStore.refreshUser(),
+    checkAuth: () => {
+      directStore.checkSession();
+    },
+  };
 };

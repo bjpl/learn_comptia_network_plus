@@ -51,8 +51,8 @@ export class AuthService {
     };
 
     return jwt.sign(payload, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
-    });
+      expiresIn: JWT_EXPIRES_IN as string,
+    } as jwt.SignOptions);
   }
 
   static generateRefreshToken(user: User): string {
@@ -63,8 +63,8 @@ export class AuthService {
     };
 
     return jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-      expiresIn: REFRESH_TOKEN_EXPIRES_IN,
-    });
+      expiresIn: REFRESH_TOKEN_EXPIRES_IN as string,
+    } as jwt.SignOptions);
   }
 
   static verifyAccessToken(token: string): TokenPayload {

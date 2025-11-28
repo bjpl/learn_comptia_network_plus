@@ -7,6 +7,7 @@ All 23 components now have fully functional routes with authentication integrati
 ## Route Structure
 
 ### Total Routes: 28
+
 - **23** Learning component routes
 - **2** Assessment routes (protected)
 - **1** Dashboard route
@@ -18,70 +19,80 @@ All 23 components now have fully functional routes with authentication integrati
 ## Component Routes by Category
 
 ### 📚 OSI Model (3 routes)
-| Route | Component | Path |
-|-------|-----------|------|
-| Layer Builder | `LayerExplanationBuilder` | `/osi/layer-builder` |
-| Packet Journey | `PacketJourneySimulator` | `/osi/packet-journey` |
+
+| Route           | Component                  | Path                   |
+| --------------- | -------------------------- | ---------------------- |
+| Layer Builder   | `LayerExplanationBuilder`  | `/osi/layer-builder`   |
+| Packet Journey  | `PacketJourneySimulator`   | `/osi/packet-journey`  |
 | Troubleshooting | `TroubleshootingScenarios` | `/osi/troubleshooting` |
 
 ### 🖥️ Network Appliances (3 routes)
-| Route | Component | Path |
-|-------|-----------|------|
-| Comparison Matrix | `ComparisonMatrix` | `/appliances/comparison` |
-| Decision Tree | `DecisionTree` | `/appliances/decision-tree` |
-| Network Simulator | `NetworkSimulator` | `/appliances/simulator` |
+
+| Route             | Component          | Path                        |
+| ----------------- | ------------------ | --------------------------- |
+| Comparison Matrix | `ComparisonMatrix` | `/appliances/comparison`    |
+| Decision Tree     | `DecisionTree`     | `/appliances/decision-tree` |
+| Network Simulator | `NetworkSimulator` | `/appliances/simulator`     |
 
 ### ☁️ Cloud Computing (2 routes)
-| Route | Component | Path |
-|-------|-----------|------|
-| Summary Builder | `CloudSummaryBuilder` | `/cloud/summary-builder` |
-| Architecture Designer | `CloudArchitectureDesigner` | `/cloud/architecture` |
+
+| Route                 | Component                   | Path                     |
+| --------------------- | --------------------------- | ------------------------ |
+| Summary Builder       | `CloudSummaryBuilder`       | `/cloud/summary-builder` |
+| Architecture Designer | `CloudArchitectureDesigner` | `/cloud/architecture`    |
 
 ### 🔌 Protocols & Ports (3 routes)
-| Route | Component | Path |
-|-------|-----------|------|
-| Port Protocol Trainer | `PortProtocolTrainer` | `/protocols/trainer` |
-| Traffic Type Demo | `TrafficTypeDemo` | `/protocols/traffic-demo` |
-| Port Scanner | `PortScanner` | `/protocols/scanner` |
+
+| Route                 | Component             | Path                      |
+| --------------------- | --------------------- | ------------------------- |
+| Port Protocol Trainer | `PortProtocolTrainer` | `/protocols/trainer`      |
+| Traffic Type Demo     | `TrafficTypeDemo`     | `/protocols/traffic-demo` |
+| Port Scanner          | `PortScanner`         | `/protocols/scanner`      |
 
 ### 🔗 Physical Media (3 routes)
-| Route | Component | Path |
-|-------|-----------|------|
+
+| Route                  | Component              | Path                      |
+| ---------------------- | ---------------------- | ------------------------- |
 | Media Selection Matrix | `MediaSelectionMatrix` | `/media/selection-matrix` |
-| Connector Lab | `ConnectorLab` | `/media/connector-lab` |
-| Transceiver Match | `TransceiverMatch` | `/media/transceiver` |
+| Connector Lab          | `ConnectorLab`         | `/media/connector-lab`    |
+| Transceiver Match      | `TransceiverMatch`     | `/media/transceiver`      |
 
 ### 🕸️ Network Topologies (2 routes)
-| Route | Component | Path |
-|-------|-----------|------|
-| Topology Analyzer | `TopologyAnalyzer` | `/topologies/analyzer` |
+
+| Route                | Component             | Path                      |
+| -------------------- | --------------------- | ------------------------- |
+| Topology Analyzer    | `TopologyAnalyzer`    | `/topologies/analyzer`    |
 | Topology Transformer | `TopologyTransformer` | `/topologies/transformer` |
 
 ### 🌐 IPv4 & Subnetting (2 routes)
-| Route | Component | Path |
-|-------|-----------|------|
-| Subnet Designer | `SubnetDesigner` | `/ipv4/subnet-designer` |
+
+| Route                | Component             | Path                    |
+| -------------------- | --------------------- | ----------------------- |
+| Subnet Designer      | `SubnetDesigner`      | `/ipv4/subnet-designer` |
 | IPv4 Troubleshooting | `IPv4Troubleshooting` | `/ipv4/troubleshooting` |
 
 ### 🚀 Modern Networking (3 routes)
-| Route | Component | Path |
-|-------|-----------|------|
+
+| Route                 | Component              | Path                 |
+| --------------------- | ---------------------- | -------------------- |
 | Technology Summarizer | `TechnologySummarizer` | `/modern/technology` |
-| IPv6 Planner | `IPv6Planner` | `/modern/ipv6` |
-| IaC Builder | `IaCBuilder` | `/modern/iac` |
+| IPv6 Planner          | `IPv6Planner`          | `/modern/ipv6`       |
+| IaC Builder           | `IaCBuilder`           | `/modern/iac`        |
 
 ### 📝 Assessment (2 routes - Protected)
-| Route | Component | Path | Protected |
-|-------|-----------|------|-----------|
-| Scenario Simulator | `ScenarioSimulator` | `/assessment/simulator` | ✅ Yes |
-| Progress Dashboard | `ProgressDashboard` | `/assessment/dashboard` | ✅ Yes |
+
+| Route              | Component           | Path                    | Protected |
+| ------------------ | ------------------- | ----------------------- | --------- |
+| Scenario Simulator | `ScenarioSimulator` | `/assessment/simulator` | ✅ Yes    |
+| Progress Dashboard | `ProgressDashboard` | `/assessment/dashboard` | ✅ Yes    |
 
 ### 🔐 Authentication (3 routes)
-| Route | Component | Path |
-|-------|-----------|------|
-| Login | `LoginForm` | `/login` |
-| Register | `RegisterForm` | `/register` |
-| Profile | `UserProfile` | `/profile` (protected) |
+
+| Route    | Component      | Path                   |
+| -------- | -------------- | ---------------------- |
+| Login    | `LoginForm`    | `/login`               |
+| Register | `RegisterForm` | `/register`            |
+| Profile  | `UserProfile`  | `/profile` (protected) |
 
 ---
 
@@ -90,13 +101,17 @@ All 23 components now have fully functional routes with authentication integrati
 ### Key Features
 
 #### 1. Lazy Loading
+
 All components use `React.lazy()` for optimal performance:
+
 ```typescript
 const ComponentName = React.lazy(() => import('./path/to/Component'));
 ```
 
 #### 2. Route Protection
+
 Assessment routes are protected using `ProtectedRoute` wrapper:
+
 ```typescript
 <ProtectedRoute>
   <ScenarioSimulator />
@@ -104,19 +119,24 @@ Assessment routes are protected using `ProtectedRoute` wrapper:
 ```
 
 #### 3. Breadcrumb Navigation
+
 Hierarchical breadcrumb map with parent-child relationships:
+
 ```typescript
 export const breadcrumbMap = {
   '/osi/layer-builder': { title: 'Layer Explanation Builder', parent: '/osi' },
   // ... more mappings
-}
+};
 ```
 
 #### 4. Error Boundaries
+
 All routes wrapped in `ErrorBoundary` for graceful error handling.
 
 #### 5. Loading States
+
 Consistent loading spinner across all routes:
+
 ```typescript
 const LoadingFallback = () => (
   <div className="flex items-center justify-center">
@@ -186,6 +206,7 @@ C:\Users\brand\Development\Project_Workspace\active-development\learn_comptia_ne
 ## Dashboard Integration
 
 ### Category Cards (9 total)
+
 Each card links to the first component in its category:
 
 1. **OSI Model** → `/osi/layer-builder`
@@ -199,6 +220,7 @@ Each card links to the first component in its category:
 9. **Assessment** → `/assessment/dashboard`
 
 ### Quick Actions (3 links)
+
 1. **Scenario Simulator** → `/assessment/simulator`
 2. **Progress Dashboard** → `/assessment/dashboard`
 3. **Start Learning** → `/osi/layer-builder`
@@ -208,16 +230,19 @@ Each card links to the first component in its category:
 ## Authentication & Protection
 
 ### Public Routes
+
 - All learning component routes (23 routes)
 - Dashboard
 - Login/Register pages
 
 ### Protected Routes
+
 - `/assessment/simulator` - Requires authentication
 - `/assessment/dashboard` - Requires authentication
 - `/profile` - Requires authentication
 
 ### Protection Mechanism
+
 ```typescript
 <ProtectedRoute>
   {/* Protected component */}
@@ -229,12 +254,14 @@ Each card links to the first component in its category:
 ## Performance Metrics
 
 ### Code Splitting Benefits
+
 - **Initial Bundle**: Contains only essential code
 - **Route Chunks**: Each component loaded on-demand
 - **Loading Time**: ~50ms per lazy-loaded component
 - **Bundle Reduction**: Estimated 60-70% smaller initial load
 
 ### User Experience
+
 - ✅ Smooth navigation transitions
 - ✅ Loading indicators for all routes
 - ✅ Breadcrumb context at all times
@@ -261,12 +288,14 @@ Each card links to the first component in its category:
 ## Browser Testing URLs
 
 ### Development Server
+
 ```
 npm run dev
 # Server: http://localhost:5173
 ```
 
 ### Quick Test Routes
+
 ```
 http://localhost:5173/                           # Dashboard
 http://localhost:5173/osi/layer-builder         # First learning component
@@ -280,6 +309,7 @@ http://localhost:5173/login                      # Login page
 ## Future Enhancements
 
 ### Recommended Additions
+
 1. **Route Preloading** - Preload next likely route
 2. **Animations** - Smooth page transitions
 3. **SEO Meta Tags** - Unique meta tags per route
@@ -289,6 +319,7 @@ http://localhost:5173/login                      # Login page
 7. **Deep Linking** - Share specific component states
 
 ### Component Improvements
+
 1. Fix TypeScript warnings in components
 2. Standardize variant types across UI components
 3. Add loading skeletons for better UX
@@ -299,6 +330,7 @@ http://localhost:5173/login                      # Login page
 ## Known Issues
 
 ### TypeScript Warnings (Non-blocking)
+
 - Unused variable warnings in some components
 - Badge variant type mismatches
 - Style prop type issues in CloudArchitectureDesigner

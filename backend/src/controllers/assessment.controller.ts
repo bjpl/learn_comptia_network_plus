@@ -2,15 +2,13 @@ import { Response, NextFunction } from 'express';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { AssessmentModel } from '../models/assessment.model';
 import { logger } from '../config/logger';
+import { sendSuccess, sendError, sendCreated } from '../utils/response';
 
 export class AssessmentController {
   static async getAssessments(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({
-          success: false,
-          error: 'Unauthorized',
-        });
+        sendError(res, 'Unauthorized', 401);
         return;
       }
 
@@ -21,16 +19,10 @@ export class AssessmentController {
           req.user.userId,
           assessment_type
         );
-        res.status(200).json({
-          success: true,
-          data: assessments,
-        });
+        sendSuccess(res, assessments);
       } else {
         const assessments = await AssessmentModel.findByUserId(req.user.userId);
-        res.status(200).json({
-          success: true,
-          data: assessments,
-        });
+        sendSuccess(res, assessments);
       }
     } catch (error) {
       logger.error('Get assessments error:', error);
@@ -41,10 +33,7 @@ export class AssessmentController {
   static async saveAssessment(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({
-          success: false,
-          error: 'Unauthorized',
-        });
+        sendError(res, 'Unauthorized', 401);
         return;
       }
 
@@ -61,10 +50,7 @@ export class AssessmentController {
 
       logger.info(`Assessment saved for user ${req.user.email}, type ${assessment_type}`);
 
-      res.status(201).json({
-        success: true,
-        data: assessment,
-      });
+      sendCreated(res, assessment);
     } catch (error) {
       logger.error('Save assessment error:', error);
       next(error);
@@ -74,19 +60,13 @@ export class AssessmentController {
   static async getStatistics(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({
-          success: false,
-          error: 'Unauthorized',
-        });
+        sendError(res, 'Unauthorized', 401);
         return;
       }
 
       const statistics = await AssessmentModel.getStatistics(req.user.userId);
 
-      res.status(200).json({
-        success: true,
-        data: statistics,
-      });
+      sendSuccess(res, statistics);
     } catch (error) {
       logger.error('Get assessment statistics error:', error);
       next(error);

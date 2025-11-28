@@ -6,6 +6,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { randomBytes, timingSafeEqual } from 'crypto';
 import { logger } from '../config/logger';
+import { sendError } from '../utils/response';
 
 /**
  * CSRF token storage
@@ -21,14 +22,17 @@ const TOKEN_EXPIRY = 15 * 60 * 1000;
 /**
  * Clean up expired tokens periodically
  */
-setInterval(() => {
-  const now = Date.now();
-  for (const [sessionId, data] of tokenStore.entries()) {
-    if (data.expiresAt < now) {
-      tokenStore.delete(sessionId);
+setInterval(
+  () => {
+    const now = Date.now();
+    for (const [sessionId, data] of tokenStore.entries()) {
+      if (data.expiresAt < now) {
+        tokenStore.delete(sessionId);
+      }
     }
-  }
-}, 5 * 60 * 1000); // Run every 5 minutes
+  },
+  5 * 60 * 1000
+); // Run every 5 minutes
 
 /**
  * Generate a cryptographically secure CSRF token
@@ -104,11 +108,7 @@ export const verifyCsrfToken = (req: Request, res: Response, next: NextFunction)
         path: req.path,
       });
 
-      res.status(403).json({
-        success: false,
-        error: 'CSRF token missing',
-        code: 'CSRF_TOKEN_MISSING',
-      });
+      sendError(res, 'CSRF token missing', 403, { code: 'CSRF_TOKEN_MISSING' });
       return;
     }
 
@@ -122,11 +122,7 @@ export const verifyCsrfToken = (req: Request, res: Response, next: NextFunction)
         path: req.path,
       });
 
-      res.status(403).json({
-        success: false,
-        error: 'CSRF token invalid or expired',
-        code: 'CSRF_TOKEN_INVALID',
-      });
+      sendError(res, 'CSRF token invalid or expired', 403, { code: 'CSRF_TOKEN_INVALID' });
       return;
     }
 
@@ -139,11 +135,7 @@ export const verifyCsrfToken = (req: Request, res: Response, next: NextFunction)
         path: req.path,
       });
 
-      res.status(403).json({
-        success: false,
-        error: 'CSRF token expired',
-        code: 'CSRF_TOKEN_EXPIRED',
-      });
+      sendError(res, 'CSRF token expired', 403, { code: 'CSRF_TOKEN_EXPIRED' });
       return;
     }
 
@@ -158,11 +150,7 @@ export const verifyCsrfToken = (req: Request, res: Response, next: NextFunction)
         path: req.path,
       });
 
-      res.status(403).json({
-        success: false,
-        error: 'CSRF token invalid',
-        code: 'CSRF_TOKEN_INVALID',
-      });
+      sendError(res, 'CSRF token invalid', 403, { code: 'CSRF_TOKEN_INVALID' });
       return;
     }
 
@@ -173,11 +161,7 @@ export const verifyCsrfToken = (req: Request, res: Response, next: NextFunction)
         path: req.path,
       });
 
-      res.status(403).json({
-        success: false,
-        error: 'CSRF token invalid',
-        code: 'CSRF_TOKEN_INVALID',
-      });
+      sendError(res, 'CSRF token invalid', 403, { code: 'CSRF_TOKEN_INVALID' });
       return;
     }
 
@@ -198,10 +182,7 @@ export const verifyCsrfToken = (req: Request, res: Response, next: NextFunction)
     next();
   } catch (error) {
     logger.error('Error verifying CSRF token:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-    });
+    sendError(res, 'Internal server error', 500);
   }
 };
 

@@ -9,11 +9,13 @@ Comprehensive CI/CD pipeline for the CompTIA Network+ Learning Application with 
 ### 1. CI Pipeline (`.github/workflows/ci.yml`)
 
 **Triggers:**
+
 - Push to `main` or `develop` branches
 - Pull requests to `main`
 - Manual workflow dispatch
 
 **Jobs:**
+
 - **Lint and Format Check** - ESLint and Prettier validation
 - **Type Check** - TypeScript type validation
 - **Unit Tests** - Jest unit test execution with coverage
@@ -26,10 +28,12 @@ Comprehensive CI/CD pipeline for the CompTIA Network+ Learning Application with 
 ### 2. Deployment Pipeline (`.github/workflows/deploy.yml`)
 
 **Triggers:**
+
 - Push to `main` branch
 - Manual workflow dispatch
 
 **Jobs:**
+
 - **Build** - Production build with asset optimization
   - Gzip compression for JS, CSS, and HTML
   - Asset optimization
@@ -40,9 +44,11 @@ Comprehensive CI/CD pipeline for the CompTIA Network+ Learning Application with 
 ### 3. Deploy Preview (`.github/workflows/deploy-preview.yml`)
 
 **Triggers:**
+
 - Pull requests to `main`
 
 **Features:**
+
 - Builds preview version
 - Uploads artifacts for testing
 - Comments on PR with build status
@@ -50,11 +56,13 @@ Comprehensive CI/CD pipeline for the CompTIA Network+ Learning Application with 
 ### 4. CodeQL Analysis (`.github/workflows/codeql.yml`)
 
 **Triggers:**
+
 - Push to `main` or `develop`
 - Pull requests to `main`
 - Weekly schedule (Monday 6 AM UTC)
 
 **Features:**
+
 - Security vulnerability scanning
 - Code quality analysis
 - Extended security queries
@@ -62,11 +70,13 @@ Comprehensive CI/CD pipeline for the CompTIA Network+ Learning Application with 
 ### 5. Lighthouse Performance (`.github/workflows/lighthouse.yml`)
 
 **Triggers:**
+
 - Push to `main`
 - Pull requests to `main`
 - Weekly schedule (Sunday)
 
 **Features:**
+
 - Performance auditing
 - Accessibility testing
 - SEO analysis
@@ -86,11 +96,13 @@ Automated dependency updates configured in `.github/dependabot.yml`:
 ### Production Dockerfile
 
 Multi-stage build optimized for production:
+
 1. **Dependencies** - Install production dependencies
 2. **Builder** - Build the application
 3. **Production** - Nginx server with optimized assets
 
 **Features:**
+
 - Alpine Linux for minimal image size
 - Custom nginx configuration
 - Health checks
@@ -100,6 +112,7 @@ Multi-stage build optimized for production:
 ### Development Dockerfile (Dockerfile.dev)
 
 Optimized for development with hot reload:
+
 - Playwright browser dependencies
 - Volume mounting for live code updates
 - Dev server on port 5173
@@ -107,12 +120,14 @@ Optimized for development with hot reload:
 ### Docker Compose
 
 Services available:
+
 - **dev** - Development server with hot reload
 - **prod** - Production preview on port 8080
 - **test** - Test runner
 - **e2e** - E2E testing with Playwright
 
 **Usage:**
+
 ```bash
 # Start development server
 docker-compose up dev
@@ -130,6 +145,7 @@ docker-compose up e2e
 ## Nginx Configuration
 
 Custom `nginx.conf` with:
+
 - Gzip compression
 - Browser caching (1 year for static assets)
 - Security headers (X-Frame-Options, X-Content-Type-Options, etc.)
@@ -140,6 +156,7 @@ Custom `nginx.conf` with:
 ## Lighthouse CI
 
 Configuration in `.lighthouserc.json`:
+
 - 3 runs for consistency
 - Minimum scores:
   - Performance: 90/100
@@ -163,6 +180,7 @@ Configuration in `.lighthouserc.json`:
 ### Required Permissions
 
 The deploy workflow requires these permissions:
+
 - `contents: read`
 - `pages: write`
 - `id-token: write`
@@ -191,6 +209,7 @@ The deploy workflow requires these permissions:
 ### Build Status
 
 View workflow runs at:
+
 ```
 https://github.com/{username}/{repo-name}/actions
 ```
@@ -198,6 +217,7 @@ https://github.com/{username}/{repo-name}/actions
 ### Artifacts
 
 Build artifacts are stored for 7 days:
+
 - Build outputs
 - Test coverage reports
 - Playwright test results
@@ -206,6 +226,7 @@ Build artifacts are stored for 7 days:
 ### PR Comments
 
 Automated comments on PRs for:
+
 - Build completion status
 - Lighthouse performance scores
 - Test results
@@ -296,6 +317,7 @@ docker-compose up e2e
 ## Support
 
 For issues or questions:
+
 1. Check workflow logs in GitHub Actions
 2. Review this documentation
 3. Check repository issues

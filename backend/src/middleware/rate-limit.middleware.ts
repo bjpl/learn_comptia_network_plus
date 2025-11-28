@@ -6,6 +6,7 @@
 import rateLimit from 'express-rate-limit';
 import { Request, Response } from 'express';
 import { logger } from '../config/logger';
+import { sendError } from '../utils/response';
 
 /**
  * Rate limit exceeded handler
@@ -17,9 +18,7 @@ const rateLimitHandler = (req: Request, res: Response): void => {
     method: req.method,
   });
 
-  res.status(429).json({
-    success: false,
-    error: 'Too many requests, please try again later',
+  sendError(res, 'Too many requests, please try again later', 429, {
     code: 'RATE_LIMIT_EXCEEDED',
     retryAfter: res.getHeader('Retry-After'),
   });

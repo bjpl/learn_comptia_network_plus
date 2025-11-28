@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth.service';
 import { logger } from '../config/logger';
+import { sendError } from '../utils/response';
 
 export interface AuthRequest extends Request {
   user?: {
@@ -19,10 +20,7 @@ export const authenticate = async (
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      res.status(401).json({
-        success: false,
-        error: 'No token provided',
-      });
+      sendError(res, 'No token provided', 401);
       return;
     }
 
@@ -37,36 +35,24 @@ export const authenticate = async (
       };
       next();
     } catch (error) {
-      res.status(401).json({
-        success: false,
-        error: 'Invalid or expired token',
-      });
+      sendError(res, 'Invalid or expired token', 401);
       return;
     }
   } catch (error) {
     logger.error('Authentication error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-    });
+    sendError(res, 'Internal server error', 500);
   }
 };
 
 export const authorize = (...roles: string[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      res.status(401).json({
-        success: false,
-        error: 'Unauthorized',
-      });
+      sendError(res, 'Unauthorized', 401);
       return;
     }
 
     if (!roles.includes(req.user.role)) {
-      res.status(403).json({
-        success: false,
-        error: 'Forbidden: Insufficient permissions',
-      });
+      sendError(res, 'Forbidden: Insufficient permissions', 403);
       return;
     }
 

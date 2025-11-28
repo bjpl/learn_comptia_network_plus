@@ -49,6 +49,9 @@ export const initializeDatabase = async (): Promise<void> => {
         password_hash VARCHAR(255) NOT NULL,
         role VARCHAR(50) DEFAULT 'student',
         is_active BOOLEAN DEFAULT true,
+        failed_login_attempts INTEGER DEFAULT 0,
+        locked_until TIMESTAMP,
+        last_failed_login TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -119,11 +122,24 @@ export const initializeDatabase = async (): Promise<void> => {
 
     // Create indexes
     await client.query('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)');
-    await client.query('CREATE INDEX IF NOT EXISTS idx_user_progress_user_id ON user_progress(user_id)');
-    await client.query('CREATE INDEX IF NOT EXISTS idx_assessment_results_user_id ON assessment_results(user_id)');
-    await client.query('CREATE INDEX IF NOT EXISTS idx_learning_sessions_user_id ON learning_sessions(user_id)');
-    await client.query('CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id)');
-    await client.query('CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens(token)');
+    await client.query(
+      'CREATE INDEX IF NOT EXISTS idx_users_locked_until ON users(locked_until) WHERE locked_until IS NOT NULL'
+    );
+    await client.query(
+      'CREATE INDEX IF NOT EXISTS idx_user_progress_user_id ON user_progress(user_id)'
+    );
+    await client.query(
+      'CREATE INDEX IF NOT EXISTS idx_assessment_results_user_id ON assessment_results(user_id)'
+    );
+    await client.query(
+      'CREATE INDEX IF NOT EXISTS idx_learning_sessions_user_id ON learning_sessions(user_id)'
+    );
+    await client.query(
+      'CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id)'
+    );
+    await client.query(
+      'CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens(token)'
+    );
 
     await client.query('COMMIT');
     logger.info('Database tables created successfully');

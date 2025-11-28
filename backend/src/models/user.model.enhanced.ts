@@ -10,7 +10,6 @@ export interface User {
   is_active: boolean;
   email_verified: boolean;
   verification_token?: string | null;
-  verification_token_expires?: Date | null;
   failed_login_attempts: number;
   locked_until: Date | null;
   last_failed_login: Date | null;
@@ -444,164 +443,29 @@ export class UserModel {
       client.release();
     }
   }
-  /**
-   * Get user settings
-   */
-  static async getSettings(userId: number): Promise<any> {
-    const client = await pool.connect();
-    try {
-      const result = await client.query('SELECT * FROM user_settings WHERE user_id = $1', [userId]);
 
-      if (result.rows.length === 0) {
-        // Create default settings if they don't exist
-        const defaultSettings = await client.query(
-          'INSERT INTO user_settings (user_id) VALUES ($1) RETURNING *',
-          [userId]
-        );
-        return defaultSettings.rows[0];
-      }
-
-      return result.rows[0];
-    } catch (error) {
-      logger.error('Error getting user settings:', error);
-      throw error;
-    } finally {
-      client.release();
-    }
-  }
+  // ============================================================
+  // EMAIL VERIFICATION METHODS
+  // ============================================================
 
   /**
-   * Update user settings
-   */
-  static async updateSettings(userId: number, settings: any): Promise<any> {
-    const client = await pool.connect();
-    try {
-      const fields: string[] = [];
-      const values: any[] = [];
-      let paramCount = 1;
-
-      const allowedFields = [
-        'theme',
-        'language',
-        'notifications_enabled',
-        'email_notifications',
-        'push_notifications',
-        'study_reminders',
-        'reminder_time',
-        'reminder_days',
-        'accessibility_mode',
-        'high_contrast',
-        'font_size',
-        'reduce_motion',
-        'auto_play_videos',
-        'show_hints',
-        'difficulty_level',
-        'daily_goal_minutes',
-        'privacy_settings',
-      ];
-
-      Object.entries(settings).forEach(([key, value]) => {
-        if (value !== undefined && allowedFields.includes(key)) {
-          fields.push(`${key} = $${paramCount}`);
-          values.push(value);
-          paramCount++;
-        }
-      });
-
-      if (fields.length === 0) {
-        return this.getSettings(userId);
-      }
-
-      fields.push(`updated_at = CURRENT_TIMESTAMP`);
-      values.push(userId);
-
-      const query = `
-        UPDATE user_settings
-        SET ${fields.join(', ')}
-        WHERE user_id = $${paramCount}
-        RETURNING *
-      `;
-
-      const result = await client.query(query, values);
-
-      if (result.rows.length === 0) {
-        // If no rows affected, settings don't exist yet, so create them
-        return this.getSettings(userId);
-      }
-
-      logger.info(`User settings updated: ${userId}`);
-      return result.rows[0];
-    } catch (error) {
-      logger.error('Error updating user settings:', error);
-      throw error;
-    } finally {
-      client.release();
-    }
-  }
-
-  /**
-   * Update user password
-   */
-
-  /**
-   * Update user avatar
-   */
-  static async updateAvatar(userId: number, avatarUrl: string): Promise<void> {
-    const client = await pool.connect();
-    try {
-      await client.query(
-        'UPDATE user_profiles SET avatar_url = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2',
-        [avatarUrl, userId]
-      );
-      logger.info(`Avatar updated for user: ${userId}`);
-    } catch (error) {
-      logger.error('Error updating avatar:', error);
-      throw error;
-    } finally {
-      client.release();
-    }
-  }
-
-  /**
-   * Delete user account (soft delete)
-   */
-  static async deleteAccount(userId: number): Promise<void> {
-    const client = await pool.connect();
-    try {
-      // Soft delete - anonymize data and mark as deleted
-      await client.query(
-        `UPDATE users
-         SET email = CONCAT('deleted_', id::text, '@deleted.local'),
-             username = CONCAT('deleted_', id::text),
-             deleted_at = CURRENT_TIMESTAMP,
-             account_status = 'deleted',
-             is_active = FALSE
-         WHERE id = $1`,
-        [userId]
-      );
-      logger.warn(`Account deleted for user: ${userId}`);
-    } catch (error) {
-      logger.error('Error deleting account:', error);
-      throw error;
-    } finally {
-      client.release();
-    }
-  }
-
-  /**
-   * Create email verification token
+   * Generate a secure verification token for email verification
+   * @param userId - User ID
+   * @returns Verification token
    */
   static async createVerificationToken(userId: number): Promise<string> {
     const client = await pool.connect();
     try {
+      // Generate a secure random token (64 characters hex)
       const token = crypto.randomBytes(32).toString('hex');
-      const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
+      // Store token in database
       await client.query(
         `UPDATE users
-         SET verification_token = $1, verification_token_expires = $2
-         WHERE id = $3`,
-        [token, expires, userId]
+         SET verification_token = $1,
+             updated_at = CURRENT_TIMESTAMP
+         WHERE id = $2`,
+        [token, userId]
       );
 
       logger.info(`Verification token created for user: ${userId}`);
@@ -615,30 +479,106 @@ export class UserModel {
   }
 
   /**
-   * Verify email token and mark email as verified
+   * Verify email using token
+   * @param token - Verification token
+   * @returns True if verification successful, false otherwise
    */
   static async verifyEmailToken(token: string): Promise<boolean> {
     const client = await pool.connect();
     try {
+      // Find user with matching token
       const result = await client.query(
-        `UPDATE users
-         SET email_verified = TRUE,
-             verification_token = NULL,
-             verification_token_expires = NULL
+        `SELECT id, email FROM users
          WHERE verification_token = $1
-           AND verification_token_expires > NOW()
-           AND email_verified = FALSE
-         RETURNING id`,
+         AND email_verified = false`,
         [token]
       );
 
-      if (result.rows.length > 0) {
-        logger.info(`Email verified for user: ${result.rows[0].id}`);
-        return true;
+      if (result.rows.length === 0) {
+        logger.warn(`Invalid or already used verification token: ${token.substring(0, 10)}...`);
+        return false;
       }
-      return false;
+
+      const user = result.rows[0];
+
+      // Mark email as verified and clear token
+      await client.query(
+        `UPDATE users
+         SET email_verified = true,
+             verification_token = NULL,
+             updated_at = CURRENT_TIMESTAMP
+         WHERE id = $1`,
+        [user.id]
+      );
+
+      logger.info(`Email verified successfully for user: ${user.email}`);
+      return true;
     } catch (error) {
       logger.error('Error verifying email token:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Set email as verified for a user
+   * @param userId - User ID
+   */
+  static async setEmailVerified(userId: number): Promise<void> {
+    const client = await pool.connect();
+    try {
+      await client.query(
+        `UPDATE users
+         SET email_verified = true,
+             verification_token = NULL,
+             updated_at = CURRENT_TIMESTAMP
+         WHERE id = $1`,
+        [userId]
+      );
+
+      logger.info(`Email marked as verified for user: ${userId}`);
+    } catch (error) {
+      logger.error('Error setting email verified:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Check if user's email is verified
+   * @param userId - User ID
+   * @returns True if email is verified
+   */
+  static async isEmailVerified(userId: number): Promise<boolean> {
+    const client = await pool.connect();
+    try {
+      const result = await client.query('SELECT email_verified FROM users WHERE id = $1', [userId]);
+
+      return result.rows.length > 0 && result.rows[0].email_verified;
+    } catch (error) {
+      logger.error('Error checking email verification status:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Find user by verification token
+   * @param token - Verification token
+   * @returns User or null
+   */
+  static async findByVerificationToken(token: string): Promise<User | null> {
+    const client = await pool.connect();
+    try {
+      const result = await client.query('SELECT * FROM users WHERE verification_token = $1', [
+        token,
+      ]);
+      return result.rows[0] || null;
+    } catch (error) {
+      logger.error('Error finding user by verification token:', error);
       throw error;
     } finally {
       client.release();
