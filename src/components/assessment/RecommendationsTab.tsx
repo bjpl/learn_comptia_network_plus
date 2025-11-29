@@ -28,7 +28,7 @@ export const RecommendationsTab: React.FC<RecommendationsTabProps> = ({
             Personalized Study Recommendations
           </CardTitle>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-            Based on your performance, here's what to focus on next
+            Based on your performance, here&apos;s what to focus on next
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -70,7 +70,7 @@ export const RecommendationsTab: React.FC<RecommendationsTabProps> = ({
           ) : (
             <div className="py-8 text-center">
               <Lightbulb className="mx-auto mb-2 h-12 w-12 text-yellow-500" />
-              <p className="font-medium text-gray-700 dark:text-gray-200">You're on track!</p>
+              <p className="font-medium text-gray-700 dark:text-gray-200">You&apos;re on track!</p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Continue your current study pace and focus on weak areas.
               </p>

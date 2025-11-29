@@ -53,7 +53,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ initialConfig }) => {
     const saved = localStorage.getItem('quizProgress');
     if (saved) {
       try {
-        const progress = JSON.parse(saved);
+        const progress = JSON.parse(saved) as { quizState?: QuizState };
         if (progress.quizState && !progress.quizState.isCompleted) {
           const resume = window.confirm('Resume your previous quiz?');
           if (resume) {
@@ -64,8 +64,8 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ initialConfig }) => {
             setScreen('quiz');
           }
         }
-      } catch (error) {
-        console.error('Failed to load saved progress:', error);
+      } catch {
+        // Failed to load saved progress - ignore and start fresh
       }
     }
   }, []);

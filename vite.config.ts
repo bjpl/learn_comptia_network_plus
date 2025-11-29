@@ -56,7 +56,10 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui-vendor': ['framer-motion', 'lucide-react', 'clsx', 'tailwind-merge'],
           'state-vendor': ['zustand'],
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
+          // Split Three.js ecosystem for better caching and smaller initial load
+          'three-core': ['three'],
+          'three-fiber': ['@react-three/fiber'],
+          'three-drei': ['@react-three/drei'],
           'mui-vendor': [
             '@mui/material',
             '@mui/icons-material',

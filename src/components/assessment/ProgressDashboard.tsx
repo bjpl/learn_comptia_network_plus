@@ -13,7 +13,7 @@ import { learningObjectives, masteryThresholds } from './assessment-data';
 import { AnalysisTab } from './AnalysisTab';
 import { TimeTrackingTab } from './TimeTrackingTab';
 import { RecommendationsTab } from './RecommendationsTab';
-import type { ProgressData } from './assessment-types';
+import type { ProgressData, LOProgress } from './assessment-types';
 
 interface ProgressDashboardProps {
   progressData: ProgressData;
@@ -24,7 +24,7 @@ export const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ progressDa
 
   // Calculate domain-level progress
   const domainProgress = useMemo(() => {
-    const domains: Record<string, any[]> = {
+    const domains: Record<string, LOProgress[]> = {
       fundamentals: [],
       infrastructure: [],
       operations: [],

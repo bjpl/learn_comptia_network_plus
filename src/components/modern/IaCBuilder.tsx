@@ -350,7 +350,7 @@ ${template.tasks
           (tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab as any)}
+              onClick={() => setActiveTab(tab)}
               className={`whitespace-nowrap px-6 py-3 font-semibold transition-all ${
                 activeTab === tab
                   ? 'border-b-4 border-blue-600 text-blue-600'

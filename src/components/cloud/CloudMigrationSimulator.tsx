@@ -120,7 +120,7 @@ const CloudMigrationSimulator: React.FC<CloudMigrationSimulatorProps> = ({ class
   const renderStrategyView = () => (
     <Box className="migration-strategy-view">
       <Typography variant="h5" gutterBottom>
-        Migration Strategies: The 6 R's
+        Migration Strategies: The 6 R&apos;s
       </Typography>
       <Typography variant="body2" color="text.secondary" paragraph>
         Choose the right migration strategy based on your application requirements, timeline, and
@@ -926,8 +926,8 @@ const CloudMigrationSimulator: React.FC<CloudMigrationSimulatorProps> = ({ class
           Cloud Migration Simulator
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          Plan and simulate cloud migration with the 6 R's framework: Rehost, Replatform, Refactor,
-          Repurchase, Retire, Retain
+          Plan and simulate cloud migration with the 6 R&apos;s framework: Rehost, Replatform,
+          Refactor, Repurchase, Retire, Retain
         </Typography>
       </Box>
 
@@ -1034,10 +1034,11 @@ const CloudMigrationSimulator: React.FC<CloudMigrationSimulatorProps> = ({ class
             About Cloud Migration
           </Typography>
           <Typography variant="body2">
-            The 6 R's framework provides a systematic approach to cloud migration. Each strategy has
-            different complexity, cost, and timeline implications. Consider your application
-            requirements, business goals, and organizational readiness when selecting a strategy.
-            Most organizations use a combination of strategies across their application portfolio.
+            The 6 R&apos;s framework provides a systematic approach to cloud migration. Each
+            strategy has different complexity, cost, and timeline implications. Consider your
+            application requirements, business goals, and organizational readiness when selecting a
+            strategy. Most organizations use a combination of strategies across their application
+            portfolio.
           </Typography>
         </Alert>
       </Box>
