@@ -247,49 +247,73 @@ describe('IntegratedSimulator', () => {
     });
 
     it('should score answers on submission', async () => {
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(textarea, 'Comprehensive answer covering all criteria.');
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-      });
-
+      // Wait for textarea to be available
       await waitFor(() => {
-        // Multiple assessment points may show scores, just verify at least one exists
-        const scores = screen.getAllByText(/Score:/);
-        expect(scores.length).toBeGreaterThan(0);
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
       });
+
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(textarea, 'Comprehensive answer covering all criteria.');
+
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      await waitFor(
+        () => {
+          // Multiple assessment points may show scores, just verify at least one exists
+          const scores = screen.getAllByText(/Score:/);
+          expect(scores.length).toBeGreaterThan(0);
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should provide feedback after scoring', async () => {
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(textarea, 'Answer with relevant keywords and concepts.');
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-      });
-
+      // Wait for textarea to be available
       await waitFor(() => {
-        const feedback = screen.getAllByText(/✓|✗/);
-        expect(feedback.length).toBeGreaterThan(0);
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
       });
+
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(textarea, 'Answer with relevant keywords and concepts.');
+
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      await waitFor(
+        () => {
+          const feedback = screen.getAllByText(/✓|✗/);
+          expect(feedback.length).toBeGreaterThan(0);
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should disable textarea after scoring', async () => {
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(textarea, 'Test answer');
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-      });
-
+      // Wait for textarea to be available
       await waitFor(() => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        expect(textarea).toBeDisabled();
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
       });
+
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(textarea, 'Test answer');
+
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      await waitFor(
+        () => {
+          const disabledTextarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+          expect(disabledTextarea).toBeDisabled();
+        },
+        { timeout: 3000 }
+      );
     });
   });
 
@@ -305,10 +329,13 @@ describe('IntegratedSimulator', () => {
     });
 
     it('should toggle hints visibility', async () => {
-      await waitFor(async () => {
-        const hintsButton = screen.getByText(/Show Hints/);
-        await user.click(hintsButton);
+      // Wait for hints button to be available
+      await waitFor(() => {
+        expect(screen.getByText(/Show Hints/)).toBeInTheDocument();
       });
+
+      const hintsButton = screen.getByText(/Show Hints/);
+      await user.click(hintsButton);
 
       await waitFor(() => {
         expect(screen.getByText(/Hide Hints/)).toBeInTheDocument();
@@ -316,10 +343,13 @@ describe('IntegratedSimulator', () => {
     });
 
     it('should display hints when enabled', async () => {
-      await waitFor(async () => {
-        const hintsButton = screen.getByText(/Show Hints/);
-        await user.click(hintsButton);
+      // Wait for hints button to be available
+      await waitFor(() => {
+        expect(screen.getByText(/Show Hints/)).toBeInTheDocument();
       });
+
+      const hintsButton = screen.getByText(/Show Hints/);
+      await user.click(hintsButton);
 
       await waitFor(() => {
         const hints = document.querySelectorAll('ul li');
@@ -328,13 +358,20 @@ describe('IntegratedSimulator', () => {
     });
 
     it('should hide hints when toggled off', async () => {
-      await waitFor(async () => {
-        const showButton = screen.getByText(/Show Hints/);
-        await user.click(showButton);
-
-        const hideButton = screen.getByText(/Hide Hints/);
-        await user.click(hideButton);
+      // Wait for hints button to be available
+      await waitFor(() => {
+        expect(screen.getByText(/Show Hints/)).toBeInTheDocument();
       });
+
+      const showButton = screen.getByText(/Show Hints/);
+      await user.click(showButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Hide Hints/)).toBeInTheDocument();
+      });
+
+      const hideButton = screen.getByText(/Hide Hints/);
+      await user.click(hideButton);
 
       await waitFor(() => {
         expect(screen.getByText(/Show Hints/)).toBeInTheDocument();
@@ -365,17 +402,25 @@ describe('IntegratedSimulator', () => {
     });
 
     it('should update progress after answering', async () => {
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(textarea, 'Test answer');
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-      });
-
+      // Wait for textarea to be available
       await waitFor(() => {
-        expect(screen.getByText(/questions answered/)).toBeInTheDocument();
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
       });
+
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(textarea, 'Test answer');
+
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      await waitFor(
+        () => {
+          expect(screen.getByText(/questions answered/)).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should show total points available', async () => {
@@ -436,49 +481,73 @@ describe('IntegratedSimulator', () => {
     });
 
     it('should calculate score based on keywords', async () => {
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(textarea, 'network topology infrastructure scalability redundancy');
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-      });
-
+      // Wait for textarea to be available
       await waitFor(() => {
-        const scores = screen.getAllByText(/Score:/);
-        expect(scores.length).toBeGreaterThan(0);
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
       });
+
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(textarea, 'network topology infrastructure scalability redundancy');
+
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      await waitFor(
+        () => {
+          const scores = screen.getAllByText(/Score:/);
+          expect(scores.length).toBeGreaterThan(0);
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should show matched criteria', async () => {
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(textarea, 'Comprehensive network design with proper topology selection.');
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-      });
-
+      // Wait for textarea to be available
       await waitFor(() => {
-        const feedback = screen.getAllByText(/✓|✗/);
-        expect(feedback.length).toBeGreaterThan(0);
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
       });
+
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(textarea, 'Comprehensive network design with proper topology selection.');
+
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      await waitFor(
+        () => {
+          const feedback = screen.getAllByText(/✓|✗/);
+          expect(feedback.length).toBeGreaterThan(0);
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should identify missed criteria', async () => {
-      await waitFor(async () => {
-        const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
-        await user.type(textarea, 'Brief answer.');
-
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
-      });
-
+      // Wait for textarea to be available
       await waitFor(() => {
-        // Brief answers typically show missed criteria with ✗ symbol
-        const feedback = screen.getAllByText(/✗/);
-        expect(feedback.length).toBeGreaterThan(0);
+        expect(
+          screen.getAllByPlaceholderText(/Enter your detailed answer/i).length
+        ).toBeGreaterThan(0);
       });
+
+      const textarea = screen.getAllByPlaceholderText(/Enter your detailed answer/i)[0];
+      await user.type(textarea, 'Brief answer.');
+
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
+      await waitFor(
+        () => {
+          // Brief answers typically show missed criteria with ✗ symbol
+          const feedback = screen.getAllByText(/✗/);
+          expect(feedback.length).toBeGreaterThan(0);
+        },
+        { timeout: 3000 }
+      );
     });
   });
 
@@ -524,16 +593,22 @@ describe('IntegratedSimulator', () => {
       const cards = document.querySelectorAll('.hover\\:shadow-lg');
       await user.click(cards[0]);
 
-      await waitFor(async () => {
-        const scoreButton = screen.getByText('Score Answers');
-        await user.click(scoreButton);
+      // Wait for score button to be available
+      await waitFor(() => {
+        expect(screen.getByText('Score Answers')).toBeInTheDocument();
       });
 
+      const scoreButton = screen.getByText('Score Answers');
+      await user.click(scoreButton);
+
       // Should provide zero score feedback
-      await waitFor(() => {
-        const scores = screen.getAllByText(/Score:/);
-        expect(scores.length).toBeGreaterThan(0);
-      });
+      await waitFor(
+        () => {
+          const scores = screen.getAllByText(/Score:/);
+          expect(scores.length).toBeGreaterThan(0);
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should handle very long answers', async () => {
