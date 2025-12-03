@@ -137,7 +137,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ initialConfig }) => {
     } else {
       moveToNextQuestion(updatedAnswers);
     }
-  }, [quizState, selectedOptions, questionStartTime, config.feedbackMode]);
+  }, [quizState, selectedOptions, questionStartTime, config.feedbackMode, moveToNextQuestion]);
 
   const moveToNextQuestion = useCallback(
     (updatedAnswers: QuizUserAnswer[]) => {
@@ -287,7 +287,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({ initialConfig }) => {
   }, [quizState, config]);
 
   const resetQuiz = useCallback(() => {
-    localStorage.removeItem('quizProgress');
+    window.localStorage.removeItem('quizProgress');
     setQuizState(null);
     setSelectedOptions(new Set());
     setTimeElapsed(0);
