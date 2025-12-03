@@ -170,7 +170,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
   // Timer for timed exam mode
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
+    let timer: number | undefined;
 
     if (examMode === 'timed' && examStarted && timeRemaining > 0) {
       timer = window.setTimeout(() => setTimeRemaining((t) => t - 1), 1000);
