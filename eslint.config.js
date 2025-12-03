@@ -17,6 +17,7 @@ export default [
       'build/**',
       'node_modules/**',
       '.claude-flow/**',
+      '.claude/**',
       '*.config.js',
       '*.config.ts',
       'backend/**',

@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "deploy": "npm run build && gh-pages -d dist",
     "test": "vitest",
+    "test:unit": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "test:integration": "playwright test",
@@ -85,8 +86,8 @@
     "web-vitals": "^5.1.0"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
   },
   "keywords": [
     "comptia",

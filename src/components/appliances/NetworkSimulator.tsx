@@ -181,7 +181,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
   };
 
   // Remove device
-  const removeDevice = (deviceId: string) => {
+  const removeDevice = useCallback((deviceId: string) => {
     // Remove connections
     // Remove connections associated with device
 
@@ -195,7 +195,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
     if (selectedDevice === deviceId) {
       setSelectedDevice(null);
     }
-  };
+  }, [connections, devices, selectedDevice]);
 
   // Simulation logic
   const toggleSimulation = () => {
@@ -235,7 +235,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
       return;
     }
 
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       setSimulationState((prev) => {
         const newTime = prev.time + 1;
         const newFlows: TrafficFlow[] = [];
@@ -313,7 +313,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
       });
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
   }, [simulationState.isRunning, devices, connections]);
 
   // Find path between devices using BFS
@@ -371,7 +371,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
   };
 
   // Configuration Panel Management
-  const openDeviceConfig = (deviceId: string) => {
+  const openDeviceConfig = useCallback((deviceId: string) => {
     const device = devices.find((d) => d.id === deviceId);
     if (device) {
       setDeviceConfig({
@@ -383,7 +383,7 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
       setSelectedDevice(deviceId);
       setShowConfigPanel(true);
     }
-  };
+  }, [devices]);
 
   const updateDeviceConfig = () => {
     if (!selectedDevice || !deviceConfig) {
@@ -763,8 +763,9 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
           </div>
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium">Device Name</label>
+              <label htmlFor="device-name" className="block text-sm font-medium">Device Name</label>
               <input
+                id="device-name"
                 type="text"
                 value={deviceConfig?.name || ''}
                 onChange={(e) =>
@@ -774,8 +775,9 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Throughput</label>
+              <label htmlFor="device-throughput" className="block text-sm font-medium">Throughput</label>
               <input
+                id="device-throughput"
                 type="text"
                 value={deviceConfig?.throughput || ''}
                 onChange={(e) =>
@@ -787,8 +789,9 @@ const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({ initialDevices = []
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">Max Connections</label>
+              <label htmlFor="device-max-connections" className="block text-sm font-medium">Max Connections</label>
               <input
+                id="device-max-connections"
                 type="number"
                 value={deviceConfig?.maxConnections || 0}
                 onChange={(e) =>

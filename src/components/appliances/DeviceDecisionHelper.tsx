@@ -294,7 +294,7 @@ const DeviceDecisionHelper: React.FC<DeviceDecisionHelperProps> = ({
       <div className="mb-6">
         <div className="flex items-center gap-2">
           <div className="text-sm text-gray-600 dark:text-gray-400">Progress:</div>
-          {[...Array(5)].map((_, i) => (
+          {Array.from({ length: 5 }, (_, i) => (
             <div
               key={i}
               className={`h-2 flex-1 rounded ${i < history.length ? 'bg-blue-600' : 'bg-gray-200'}`}
