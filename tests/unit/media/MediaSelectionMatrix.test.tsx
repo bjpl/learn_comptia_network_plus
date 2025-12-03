@@ -311,10 +311,6 @@ describe('MediaSelectionMatrix', () => {
     it('should update progress bar', async () => {
       render(<MediaSelectionMatrix />);
 
-      // Progress component from shadcn/ui - look for progress indicator
-      const progressIndicator =
-        document.querySelector('[class*="Progress"]') || document.querySelector('.mt-2.w-32');
-
       const radioButtons = screen.getAllByRole('radio');
       await user.click(radioButtons[0]);
 

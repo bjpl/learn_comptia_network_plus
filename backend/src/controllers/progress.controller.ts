@@ -3,6 +3,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { ProgressModel } from '../models/progress.model';
 import { logger } from '../config/logger';
 import { sendSuccess, sendError, sendCreated, sendMessage } from '../utils/response';
+import { sanitizeForLog } from '../utils/sanitizer';
 
 export class ProgressController {
   /**
@@ -55,6 +56,8 @@ export class ProgressController {
 
       const { componentId } = req.params;
       const progress = await ProgressModel.findByUserAndComponent(req.user.userId, componentId);
+
+      logger.info(`Fetching progress for user ${sanitizeForLog(req.user.userId)}, component ${sanitizeForLog(componentId)}`);
 
       if (!progress) {
         // Return default empty progress
@@ -110,7 +113,7 @@ export class ProgressController {
         updateData
       );
 
-      logger.info(`Progress updated for user ${req.user.email}, component ${componentId}`);
+      logger.info(`Progress updated for user ${sanitizeForLog(req.user.userId)}, component ${sanitizeForLog(componentId)}`);
 
       sendSuccess(res, {
         progress: {
@@ -168,7 +171,7 @@ export class ProgressController {
         progress,
       });
 
-      logger.info(`Progress saved for user ${req.user.email}, component ${component_id}`);
+      logger.info(`Progress saved for user ${sanitizeForLog(req.user.userId)}, component ${sanitizeForLog(component_id)}`);
 
       sendCreated(res, savedProgress);
     } catch (error) {
@@ -193,7 +196,7 @@ export class ProgressController {
         return;
       }
 
-      logger.info(`Progress deleted for user ${req.user.email}, component ${component_id}`);
+      logger.info(`Progress deleted for user ${sanitizeForLog(req.user.userId)}, component ${sanitizeForLog(component_id)}`);
 
       sendMessage(res, 'Progress deleted successfully');
     } catch (error) {

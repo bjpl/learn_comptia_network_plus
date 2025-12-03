@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { pool } from '../config/database';
 import { logger } from '../config/logger';
+import { sanitizeForLog, sanitizeEmail } from '../utils/sanitizer';
 
 export interface User {
   id: number;
@@ -268,7 +269,7 @@ export class UserModel {
         [email]
       );
 
-      logger.warn(`Failed login attempt recorded for: ${email}`);
+      logger.warn(`Failed login attempt recorded for: ${sanitizeEmail(email)}`);
     } catch (error) {
       logger.error('Error incrementing failed attempts:', error);
       throw error;
@@ -313,7 +314,7 @@ export class UserModel {
         [lockedUntil, email]
       );
 
-      logger.warn(`Account locked for ${durationMinutes} minutes: ${email}`);
+      logger.warn(`Account locked for ${sanitizeForLog(durationMinutes)} minutes: ${sanitizeEmail(email)}`);
     } catch (error) {
       logger.error('Error locking account:', error);
       throw error;

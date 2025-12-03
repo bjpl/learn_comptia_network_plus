@@ -20,9 +20,6 @@ import * as userService from '../../src/services/user-service';
 import * as progressService from '../../src/services/progress-service';
 import * as assessmentService from '../../src/services/assessment-service';
 
-// Store original fetch
-const originalFetch = global.fetch;
-
 beforeAll(() => {
   // Replace global fetch mock for these integration tests
   global.fetch = vi.fn();

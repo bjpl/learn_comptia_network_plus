@@ -5,13 +5,33 @@
 import type { TwoFactorSetupData, DeviceSession } from '../types/security';
 
 /**
+ * Generate a cryptographically secure random integer between 0 and max (exclusive)
+ */
+const getSecureRandomInt = (max: number): number => {
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return array[0] % max;
+};
+
+/**
+ * Generate a cryptographically secure random hex string
+ */
+const getSecureRandomHex = (length: number): string => {
+  const array = new Uint8Array(Math.ceil(length / 2));
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0'))
+    .join('')
+    .substring(0, length);
+};
+
+/**
  * Generate a mock secret for 2FA setup
  */
 export const generateTwoFactorSecret = (): string => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
   let secret = '';
   for (let i = 0; i < 32; i++) {
-    secret += chars.charAt(Math.floor(Math.random() * chars.length));
+    secret += chars.charAt(getSecureRandomInt(chars.length));
   }
   return secret;
 };
@@ -22,7 +42,7 @@ export const generateTwoFactorSecret = (): string => {
 export const generateBackupCodes = (count: number = 10): string[] => {
   const codes: string[] = [];
   for (let i = 0; i < count; i++) {
-    const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+    const code = getSecureRandomHex(8).toUpperCase();
     codes.push(code);
   }
   return codes;
@@ -80,20 +100,18 @@ export const generateMockSessions = (count: number = 3): DeviceSession[] => {
   const now = new Date();
 
   for (let i = 0; i < count; i++) {
-    const createdDate = new Date(now.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000);
-    const lastActiveDate = new Date(now.getTime() - Math.random() * 24 * 60 * 60 * 1000);
+    const createdDate = new Date(now.getTime() - getSecureRandomInt(30 * 24 * 60 * 60 * 1000));
+    const lastActiveDate = new Date(now.getTime() - getSecureRandomInt(24 * 60 * 60 * 1000));
 
     sessions.push({
-      id: `session-${Math.random().toString(36).substring(2, 15)}`,
-      deviceType: deviceTypes[Math.floor(Math.random() * deviceTypes.length)],
-      browser: browsers[Math.floor(Math.random() * browsers.length)],
+      id: `session-${getSecureRandomHex(13)}`,
+      deviceType: deviceTypes[getSecureRandomInt(deviceTypes.length)],
+      browser: browsers[getSecureRandomInt(browsers.length)],
       location: {
-        city: cities[Math.floor(Math.random() * cities.length)],
-        country: countries[Math.floor(Math.random() * countries.length)],
+        city: cities[getSecureRandomInt(cities.length)],
+        country: countries[getSecureRandomInt(countries.length)],
       },
-      ipAddress: `${Math.floor(Math.random() * 255)}.${Math.floor(
-        Math.random() * 255
-      )}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+      ipAddress: `${getSecureRandomInt(256)}.${getSecureRandomInt(256)}.${getSecureRandomInt(256)}.${getSecureRandomInt(256)}`,
       lastActive: lastActiveDate.toISOString(),
       isCurrent: i === 0, // First session is current
       createdAt: createdDate.toISOString(),

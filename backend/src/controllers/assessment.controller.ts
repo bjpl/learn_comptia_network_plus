@@ -3,6 +3,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { AssessmentModel } from '../models/assessment.model';
 import { logger } from '../config/logger';
 import { sendSuccess, sendError, sendCreated } from '../utils/response';
+import { sanitizeForLog } from '../utils/sanitizer';
 
 export class AssessmentController {
   static async getAssessments(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
@@ -48,7 +49,7 @@ export class AssessmentController {
         time_taken,
       });
 
-      logger.info(`Assessment saved for user ${req.user.email}, type ${assessment_type}`);
+      logger.info(`Assessment saved for user ${sanitizeForLog(req.user.userId)}, type ${sanitizeForLog(assessment_type)}`);
 
       sendCreated(res, assessment);
     } catch (error) {

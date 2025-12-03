@@ -1,5 +1,6 @@
 import { pool } from '../config/database';
 import { logger } from '../config/logger';
+import { sanitizeForLog } from '../utils/sanitizer';
 
 export interface UserProgress {
   id: number;
@@ -43,7 +44,7 @@ export class ProgressModel {
       );
 
       logger.info(
-        `Progress saved for user ${progressData.user_id}, component ${progressData.component_id}`
+        `Progress saved for user ${sanitizeForLog(progressData.user_id)}, component ${sanitizeForLog(progressData.component_id)}`
       );
       return result.rows[0];
     } catch (error) {
@@ -104,7 +105,7 @@ export class ProgressModel {
         [JSON.stringify(progress), userId, componentId]
       );
 
-      logger.info(`Progress updated for user ${userId}, component ${componentId}`);
+      logger.info(`Progress updated for user ${sanitizeForLog(userId)}, component ${sanitizeForLog(componentId)}`);
       return result.rows[0] || null;
     } catch (error) {
       logger.error('Error updating progress:', error);
@@ -122,7 +123,7 @@ export class ProgressModel {
         [userId, componentId]
       );
 
-      logger.info(`Progress deleted for user ${userId}, component ${componentId}`);
+      logger.info(`Progress deleted for user ${sanitizeForLog(userId)}, component ${sanitizeForLog(componentId)}`);
       return result.rowCount !== null && result.rowCount > 0;
     } catch (error) {
       logger.error('Error deleting progress:', error);
@@ -202,7 +203,7 @@ export class ProgressModel {
         [userId, componentId, status, score, timeSpent, attempts]
       );
 
-      logger.info(`Progress upserted for user ${userId}, component ${componentId}`);
+      logger.info(`Progress upserted for user ${sanitizeForLog(userId)}, component ${sanitizeForLog(componentId)}`);
       return result.rows[0];
     } catch (error) {
       logger.error('Error upserting component progress:', error);
@@ -236,8 +237,17 @@ export class ProgressModel {
         };
       }
 
+      // Validate clientProgress keys to prevent prototype pollution
+      const safeClientProgress: Record<string, any> = {};
+      const dangerousKeys = ['__proto__', 'constructor', 'prototype'];
+      for (const [key, value] of Object.entries(clientProgress)) {
+        if (!dangerousKeys.includes(key) && typeof key === 'string') {
+          safeClientProgress[key] = value;
+        }
+      }
+
       // Merge client progress (last-write-wins based on lastVisited)
-      for (const [componentId, clientItem] of Object.entries(clientProgress)) {
+      for (const [componentId, clientItem] of Object.entries(safeClientProgress)) {
         const serverItem = merged[componentId];
 
         if (!serverItem || new Date(clientItem.lastVisited) > new Date(serverItem.lastVisited)) {
@@ -263,7 +273,7 @@ export class ProgressModel {
     const client = await pool.connect();
     try {
       await client.query('DELETE FROM user_progress WHERE user_id = $1', [userId]);
-      logger.info(`All progress deleted for user ${userId}`);
+      logger.info(`All progress deleted for user ${sanitizeForLog(userId)}`);
     } catch (error) {
       logger.error('Error deleting all progress:', error);
       throw error;

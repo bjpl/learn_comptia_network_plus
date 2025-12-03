@@ -4,6 +4,7 @@
  */
 
 import { logger } from '../config/logger';
+import { sanitizeEmail } from '../utils/sanitizer';
 
 export interface EmailOptions {
   to: string;
@@ -28,14 +29,14 @@ export class EmailService {
     // In development, just log the reset URL
     if (process.env.NODE_ENV === 'development') {
       logger.info('Password Reset Email', {
-        email,
+        email: sanitizeEmail(email),
         resetUrl,
         message: 'This is a mock email. In production, this would be sent via email service.',
       });
       console.log('\n==============================================');
       console.log('PASSWORD RESET EMAIL (DEVELOPMENT MODE)');
       console.log('==============================================');
-      console.log(`To: ${email}`);
+      console.log(`To: ${sanitizeEmail(email)}`);
       console.log(`Subject: Reset Your Password`);
       console.log(`\nReset URL: ${resetUrl}`);
       console.log('==============================================\n');
@@ -127,11 +128,11 @@ CompTIA Network+ Learning Platform
     const verifyUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${token}`;
 
     if (process.env.NODE_ENV === 'development') {
-      logger.info('Verification Email', { email, verifyUrl });
+      logger.info('Verification Email', { email: sanitizeEmail(email), verifyUrl });
       console.log('\n==============================================');
       console.log('EMAIL VERIFICATION (DEVELOPMENT MODE)');
       console.log('==============================================');
-      console.log(`To: ${email}`);
+      console.log(`To: ${sanitizeEmail(email)}`);
       console.log(`Verification URL: ${verifyUrl}`);
       console.log('==============================================\n');
 

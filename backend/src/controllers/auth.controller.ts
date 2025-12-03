@@ -5,6 +5,7 @@ import { UserModel } from '../models/user.model';
 import { EmailService } from '../services/email.service';
 import { logger } from '../config/logger';
 import { sendSuccess, sendError, sendCreated, sendMessage } from '../utils/response';
+import { sanitizeEmail } from '../utils/sanitizer';
 
 export class AuthController {
   static async register(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
@@ -35,7 +36,7 @@ export class AuthController {
       // Save refresh token
       await AuthService.saveRefreshToken(user.id, refreshToken);
 
-      logger.info(`User registered successfully: ${email}`);
+      logger.info(`User registered successfully: ${sanitizeEmail(email)}`);
 
       sendCreated(res, {
         user: {
@@ -59,7 +60,7 @@ export class AuthController {
       // Check if account is locked BEFORE any other checks
       const lockStatus = await UserModel.isAccountLocked(email);
       if (lockStatus.locked) {
-        logger.warn(`Login attempt on locked account: ${email}`);
+        logger.warn(`Login attempt on locked account: ${sanitizeEmail(email)}`);
         sendError(res, 'Account temporarily locked due to multiple failed login attempts', 423, {
           lockedUntil: lockStatus.lockedUntil,
           remainingMinutes: lockStatus.remainingMinutes,
@@ -76,7 +77,7 @@ export class AuthController {
 
         if (attempts >= 5) {
           await UserModel.lockAccount(email, 15);
-          logger.warn(`Account locked after ${attempts} failed attempts: ${email}`);
+          logger.warn(`Account locked after ${attempts} failed attempts: ${sanitizeEmail(email)}`);
         }
 
         sendError(res, 'Invalid email or password', 401);
@@ -93,7 +94,7 @@ export class AuthController {
         // Lock account if threshold exceeded
         if (attempts >= 5) {
           await UserModel.lockAccount(email, 15);
-          logger.warn(`Account locked after ${attempts} failed attempts: ${email}`);
+          logger.warn(`Account locked after ${attempts} failed attempts: ${sanitizeEmail(email)}`);
           sendError(
             res,
             'Account locked due to multiple failed login attempts. Please try again in 15 minutes.',
@@ -104,7 +105,7 @@ export class AuthController {
         }
 
         const remainingAttempts = 5 - attempts;
-        logger.warn(`Failed login attempt ${attempts}/5 for: ${email}`);
+        logger.warn(`Failed login attempt ${attempts}/5 for: ${sanitizeEmail(email)}`);
 
         sendError(res, 'Invalid email or password', 401, {
           remainingAttempts: remainingAttempts > 0 ? remainingAttempts : undefined,
@@ -128,7 +129,7 @@ export class AuthController {
       // Save refresh token
       await AuthService.saveRefreshToken(user.id, refreshToken);
 
-      logger.info(`User logged in successfully: ${email}`);
+      logger.info(`User logged in successfully: ${sanitizeEmail(email)}`);
 
       sendSuccess(res, {
         user: {
@@ -153,7 +154,7 @@ export class AuthController {
         await AuthService.deleteRefreshToken(refreshToken);
       }
 
-      logger.info(`User logged out: ${req.user?.email}`);
+      logger.info(`User logged out: ${sanitizeEmail(req.user?.email || '')}`);
 
       sendMessage(res, 'Logged out successfully');
     } catch (error) {
@@ -166,7 +167,7 @@ export class AuthController {
     try {
       const { refreshToken } = req.body;
 
-      if (!refreshToken) {
+      if (!refreshToken || typeof refreshToken !== 'string' || refreshToken.trim().length === 0) {
         sendError(res, 'Refresh token is required', 400);
         return;
       }
@@ -196,7 +197,7 @@ export class AuthController {
       await AuthService.deleteRefreshToken(refreshToken);
       await AuthService.saveRefreshToken(user.id, newRefreshToken);
 
-      logger.info(`Token refreshed for user: ${user.email}`);
+      logger.info(`Token refreshed for user: ${sanitizeEmail(user.email)}`);
 
       sendSuccess(res, {
         accessToken: newAccessToken,
@@ -261,13 +262,13 @@ export class AuthController {
         // Send password reset email
         try {
           await EmailService.sendPasswordResetEmail(email, token);
-          logger.info(`Password reset email sent to: ${email}`);
+          logger.info(`Password reset email sent to: ${sanitizeEmail(email)}`);
         } catch (emailError) {
           logger.error('Error sending password reset email:', emailError);
           // Don't expose email sending errors to user
         }
       } else {
-        logger.warn(`Password reset requested for non-existent or inactive account: ${email}`);
+        logger.warn(`Password reset requested for non-existent or inactive account: ${sanitizeEmail(email)}`);
       }
 
       // Always return success to prevent email enumeration
@@ -342,7 +343,7 @@ export class AuthController {
     try {
       const { token } = req.body;
 
-      if (!token) {
+      if (!token || typeof token !== 'string' || token.trim().length === 0) {
         sendError(res, 'Verification token is required', 400);
         return;
       }
@@ -390,7 +391,7 @@ export class AuthController {
         // Send verification email
         await EmailService.sendVerificationEmail(email, token);
 
-        logger.info(`Verification email resent to: ${email}`);
+        logger.info(`Verification email resent to: ${sanitizeEmail(email)}`);
       }
 
       sendMessage(

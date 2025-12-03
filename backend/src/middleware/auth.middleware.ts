@@ -19,12 +19,16 @@ export const authenticate = async (
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.length < 8) {
       sendError(res, 'No token provided', 401);
       return;
     }
 
-    const token = authHeader.substring(7);
+    const token = authHeader.substring(7).trim();
+    if (!token || token.length === 0) {
+      sendError(res, 'Invalid token format', 401);
+      return;
+    }
 
     try {
       const payload = AuthService.verifyAccessToken(token);

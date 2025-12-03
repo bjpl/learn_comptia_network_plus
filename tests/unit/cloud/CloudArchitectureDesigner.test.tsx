@@ -7,11 +7,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import CloudArchitectureDesigner from '../../../src/components/cloud/CloudArchitectureDesigner';
-import {
-  mockCloudComponent,
-  mockCloudDesign,
-  mockValidationResult,
-} from '../../fixtures/test-data';
+// Fixtures available for extended tests if needed
+// import { mockCloudComponent, mockCloudDesign, mockValidationResult } from '../../fixtures/test-data';
 
 expect.extend(toHaveNoViolations);
 
