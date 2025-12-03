@@ -1,0 +1,362 @@
+{
+  "code_quality_score": 6.5,
+  "maintainability_score": 5.0,
+  "analysis_date": "2025-12-02",
+  "total_lines_of_code": 79966,
+  "total_components": 79,
+  "test_coverage": "3 test files only",
+
+  "oversized_files": [
+    {
+      "path": "src/components/cloud/CloudArchitectureDesigner.tsx",
+      "loc": 3210,
+      "functions": 91,
+      "useState_hooks": 17,
+      "embedded_css_lines": "~1600",
+      "severity": "CRITICAL",
+      "recommendation": "Split into 5-7 smaller components: CanvasRenderer, ComponentLibrary, ValidationPanel, ServiceComparison, SecurityPanel. Extract CSS to separate file or use Tailwind/CSS-in-JS. Reduce state complexity with useReducer or Zustand store."
+    },
+    {
+      "path": "src/components/appliances/enhanced-appliances-data.ts",
+      "loc": 2658,
+      "severity": "HIGH",
+      "recommendation": "This is a data file - acceptable size for comprehensive dataset. Consider splitting by device category if it grows larger."
+    },
+    {
+      "path": "src/components/protocols/PortProtocolTrainer.tsx",
+      "loc": 2033,
+      "functions": 68,
+      "severity": "HIGH",
+      "recommendation": "Split into: FlashcardMode, QuizMode, MemoryPalace, AnalyticsPanel, AchievementSystem components. Extract data to separate file."
+    },
+    {
+      "path": "src/components/osi/osi-data.ts",
+      "loc": 1868,
+      "severity": "MEDIUM",
+      "recommendation": "Data file - acceptable. Consider splitting by layer if it becomes harder to maintain."
+    },
+    {
+      "path": "src/components/topologies/TopologyAnalyzer.tsx",
+      "loc": 1855,
+      "functions": 29,
+      "severity": "HIGH",
+      "recommendation": "Extract analysis logic into hooks/utilities. Split UI into TopologyAnalyzerView and AnalysisResults components."
+    },
+    {
+      "path": "src/components/cloud/CloudSummaryBuilder.tsx",
+      "loc": 1813,
+      "functions": 20,
+      "severity": "HIGH",
+      "recommendation": "Split into SummaryBuilder, TemplateSelector, ExportPanel components."
+    },
+    {
+      "path": "src/components/topologies/TopologyTransformer.tsx",
+      "loc": 1791,
+      "functions": 13,
+      "severity": "MEDIUM",
+      "recommendation": "Extract transformation logic to utility functions. Simplify component to UI orchestration."
+    },
+    {
+      "path": "src/components/topologies/TopologyAnalyzerEnhanced.tsx",
+      "loc": 1673,
+      "functions": 12,
+      "severity": "MEDIUM",
+      "recommendation": "Similar to TopologyAnalyzer - merge or remove duplication."
+    },
+    {
+      "path": "src/components/protocols/PortScannerEnhanced.tsx",
+      "loc": 1526,
+      "functions": 28,
+      "severity": "MEDIUM",
+      "recommendation": "Extract scanning logic to custom hook. Split UI into ScannerControls and ScanResults."
+    },
+    {
+      "path": "src/components/topologies/TopologyBuilder.tsx",
+      "loc": 1452,
+      "functions": 50,
+      "severity": "HIGH",
+      "recommendation": "Too many functions for single component. Split into BuilderCanvas, ComponentPalette, PropertyEditor."
+    },
+    {
+      "path": "src/components/modern/IPv6Planner.tsx",
+      "loc": 1394,
+      "functions": 28,
+      "severity": "MEDIUM",
+      "recommendation": "Extract IPv6 calculation logic to utils. Split into PlannerInput and AllocationView."
+    },
+    {
+      "path": "src/components/media/ConnectorIdentificationEnhanced.tsx",
+      "loc": 1356,
+      "functions": 47,
+      "severity": "HIGH",
+      "recommendation": "47 functions is excessive. Extract quiz logic, 3D viewer, and comparison features into separate components."
+    },
+    {
+      "path": "src/components/osi/PacketJourneySimulatorEnhanced.tsx",
+      "loc": 1340,
+      "functions": 24,
+      "severity": "MEDIUM",
+      "recommendation": "Split simulation engine from UI. Create JourneyVisualizer, HeaderInspector, and Controls components."
+    },
+    {
+      "path": "src/components/modern/IaCBuilder.tsx",
+      "loc": 1288,
+      "functions": 14,
+      "severity": "MEDIUM",
+      "recommendation": "Extract template generation to utility. Split into TemplateBuilder and CodePreview."
+    },
+    {
+      "path": "src/components/ipv4/IPv4Troubleshooter.tsx",
+      "loc": 1266,
+      "functions": 38,
+      "severity": "MEDIUM",
+      "recommendation": "Extract troubleshooting logic to custom hook. Split scenarios from UI."
+    },
+    {
+      "path": "src/data/migration-data.ts",
+      "loc": 1226,
+      "severity": "LOW",
+      "recommendation": "Data file - acceptable size."
+    },
+    {
+      "path": "src/components/cloud/CloudArchitectureEnhancements.tsx",
+      "loc": 1173,
+      "functions": 13,
+      "severity": "MEDIUM",
+      "recommendation": "Evaluate necessity - may be duplicate of CloudArchitectureDesigner features."
+    },
+    {
+      "path": "src/components/protocols/protocols-data.ts",
+      "loc": 1061,
+      "severity": "LOW",
+      "recommendation": "Data file - acceptable."
+    }
+  ],
+
+  "code_smells": [
+    {
+      "type": "GOD_COMPONENT",
+      "location": "src/components/cloud/CloudArchitectureDesigner.tsx",
+      "severity": "CRITICAL",
+      "description": "Single component with 3210 LOC, 91 functions, 17 useState hooks, and embedded CSS. Violates Single Responsibility Principle. Extremely difficult to test, maintain, or refactor."
+    },
+    {
+      "type": "EMBEDDED_CSS_IN_JSX",
+      "location": "src/components/cloud/CloudArchitectureDesigner.tsx (lines 3000-3210)",
+      "severity": "HIGH",
+      "description": "~1600 lines of inline CSS using <style jsx>. Makes component harder to read and violates separation of concerns. Should use external CSS, Tailwind, or CSS-in-JS library."
+    },
+    {
+      "type": "EXCESSIVE_STATE_HOOKS",
+      "location": "src/components/cloud/CloudArchitectureDesigner.tsx",
+      "severity": "HIGH",
+      "description": "17 separate useState hooks indicate poor state management. Should use useReducer for complex state or extract to Zustand store."
+    },
+    {
+      "type": "COMPONENT_DUPLICATION",
+      "location": "Multiple *Enhanced.tsx vs base versions",
+      "severity": "MEDIUM",
+      "description": "Found duplicate component patterns: TopologyAnalyzer vs TopologyAnalyzerEnhanced, PacketJourneySimulator vs PacketJourneySimulatorEnhanced, etc. Unclear which is canonical. Should consolidate or clearly document versioning strategy."
+    },
+    {
+      "type": "MINIMAL_MEMOIZATION",
+      "location": "src/components/cloud/CloudArchitectureDesigner.tsx",
+      "severity": "MEDIUM",
+      "description": "Only 3 uses of useCallback/useMemo in 3210-line component with 91 functions. Performance will suffer from unnecessary re-renders."
+    },
+    {
+      "type": "CONSOLE_STATEMENTS_IN_PRODUCTION",
+      "location": "Throughout codebase (76 instances)",
+      "severity": "MEDIUM",
+      "description": "76 console.log/warn statements found. While some are guarded by import.meta.env.DEV, this indicates debugging code left in production. Use proper logging service or remove."
+    },
+    {
+      "type": "MINIMAL_ERROR_HANDLING",
+      "location": "Only 58 try-catch blocks, 10 explicit throws",
+      "severity": "MEDIUM",
+      "description": "For 80k LOC codebase, error handling is insufficient. Only 58 try-catch blocks and 10 explicit error throws. Missing error boundaries for many components."
+    },
+    {
+      "type": "INSUFFICIENT_TESTS",
+      "location": "Entire codebase",
+      "severity": "CRITICAL",
+      "description": "Only 3 test files found for 79 React components. Test coverage is critically low. No evidence of unit tests for complex components like CloudArchitectureDesigner."
+    },
+    {
+      "type": "MIXED_NAMING_CONVENTIONS",
+      "location": "Component files",
+      "severity": "LOW",
+      "description": "Inconsistent 'Enhanced' suffix usage. Some components have Enhanced versions, others don't. Unclear versioning strategy."
+    },
+    {
+      "type": "FUNCTION_COUNT_PER_COMPONENT",
+      "location": "Multiple large components",
+      "severity": "HIGH",
+      "description": "Several components exceed 30 functions (CloudArchitectureDesigner: 91, PortProtocolTrainer: 68, TopologyBuilder: 50, ConnectorIdentificationEnhanced: 47). Indicates poor separation of concerns."
+    }
+  ],
+
+  "positive_patterns": [
+    "TypeScript strict mode fully enabled - excellent type safety",
+    "Comprehensive tsconfig with noUnusedLocals, noUnusedParameters, noImplicitReturns",
+    "Path aliases configured (@components, @utils, etc.) - good import organization",
+    "ESLint configured with TypeScript, React, accessibility rules",
+    "Separation of data files (*-data.ts) from logic (*-types.ts) - good organization",
+    "React hooks used consistently - no class components (only 2 found, likely legacy)",
+    "Functional components with TypeScript - modern React patterns",
+    "Error handling utilities well-structured (parseApiError, formatValidationErrors)",
+    "API client with interceptors, retry logic, token refresh - production-quality",
+    "Minimal TypeScript suppressions (@ts-ignore: only 1 instance)",
+    "Type-first approach with dedicated type files",
+    "Performance monitoring setup (web-vitals integration)",
+    "Network status handling and offline request queuing",
+    "Security considerations (DOMPurify, input sanitization)",
+    "Accessibility plugin configured (jsx-a11y)",
+    "Modern build tooling (Vite, ESLint, Prettier)",
+    "Development environment guards for console logging",
+    "Proper use of environment variables",
+    "React Router for navigation",
+    "State management library (Zustand) available"
+  ],
+
+  "technical_debt_items": [
+    {
+      "item": "Refactor CloudArchitectureDesigner.tsx",
+      "priority": "P0 - CRITICAL",
+      "estimated_effort": "3-5 days",
+      "impact": "Massive improvement to maintainability, testability, and performance",
+      "details": "This is the single largest maintainability issue. Component is untestable in current state."
+    },
+    {
+      "item": "Implement comprehensive test suite",
+      "priority": "P0 - CRITICAL",
+      "estimated_effort": "2-3 weeks",
+      "impact": "Prevent regressions, enable confident refactoring, improve code quality",
+      "details": "Only 3 test files for 79 components is unacceptable for production code."
+    },
+    {
+      "item": "Consolidate duplicate Enhanced components",
+      "priority": "P1 - HIGH",
+      "estimated_effort": "1 week",
+      "impact": "Reduce codebase size by ~5000 LOC, eliminate confusion",
+      "details": "Merge Enhanced versions with base or document clear versioning strategy."
+    },
+    {
+      "item": "Extract embedded CSS to external files",
+      "priority": "P1 - HIGH",
+      "estimated_effort": "3-4 days",
+      "impact": "Improved component readability, better separation of concerns",
+      "details": "Move inline styles to Tailwind classes or CSS modules."
+    },
+    {
+      "item": "Implement useReducer for complex state",
+      "priority": "P1 - HIGH",
+      "estimated_effort": "2-3 days",
+      "impact": "Clearer state management, easier testing, better performance",
+      "details": "Replace 15+ useState hooks in large components with useReducer."
+    },
+    {
+      "item": "Add performance optimizations",
+      "priority": "P2 - MEDIUM",
+      "estimated_effort": "1 week",
+      "impact": "Better UX, reduced re-renders, improved responsiveness",
+      "details": "Add React.memo, useCallback, useMemo to large components."
+    },
+    {
+      "item": "Standardize error handling",
+      "priority": "P2 - MEDIUM",
+      "estimated_effort": "3-4 days",
+      "impact": "Better error recovery, improved user experience",
+      "details": "Add error boundaries to all major features, standardize try-catch patterns."
+    },
+    {
+      "item": "Remove/guard console statements",
+      "priority": "P2 - MEDIUM",
+      "estimated_effort": "1 day",
+      "impact": "Cleaner production code, better logging strategy",
+      "details": "Remove or properly guard 76 console statements."
+    },
+    {
+      "item": "Document component architecture",
+      "priority": "P3 - LOW",
+      "estimated_effort": "2 days",
+      "impact": "Easier onboarding, clearer intent",
+      "details": "Add JSDoc comments to complex components, document state management strategy."
+    }
+  ],
+
+  "metrics": {
+    "total_typescript_files": 159,
+    "total_components": 79,
+    "average_component_size": 308,
+    "components_over_500_loc": 18,
+    "components_over_1000_loc": 18,
+    "largest_component_loc": 3210,
+    "test_files": 3,
+    "test_coverage_percentage": "Unknown (insufficient tests)",
+    "eslint_disables": 5,
+    "typescript_suppressions": 1,
+    "console_statements": 76,
+    "try_catch_blocks": 58,
+    "explicit_error_throws": 10,
+    "react_fc_components": 29,
+    "class_components": 2
+  },
+
+  "typescript_analysis": {
+    "strict_mode": true,
+    "no_implicit_any": true,
+    "no_unused_locals": true,
+    "no_unused_parameters": true,
+    "no_implicit_returns": true,
+    "type_coverage": "GOOD - Minimal 'any' usage detected",
+    "type_imports": "GOOD - Consistent use of type imports",
+    "interface_vs_type": "MIXED - Both used throughout codebase",
+    "overall_rating": "8/10 - Excellent TypeScript usage"
+  },
+
+  "component_patterns": {
+    "hooks_usage": "GOOD - Modern functional components with hooks",
+    "props_typing": "GOOD - Props interfaces defined for components",
+    "state_management": "POOR - Excessive useState, minimal useReducer",
+    "memoization": "POOR - Minimal use of React.memo, useCallback, useMemo",
+    "error_boundaries": "INSUFFICIENT - Only 3 ErrorBoundary components found",
+    "code_splitting": "UNKNOWN - Needs investigation",
+    "custom_hooks": "PRESENT - Some custom hooks detected",
+    "overall_rating": "5/10 - Good patterns but poor state/performance optimization"
+  },
+
+  "recommendations_priority_order": [
+    "1. IMMEDIATE: Break up CloudArchitectureDesigner.tsx - This is blocking maintainability",
+    "2. IMMEDIATE: Write tests for critical components (at least 50% coverage target)",
+    "3. HIGH: Consolidate or remove Enhanced component duplicates",
+    "4. HIGH: Replace complex useState chains with useReducer",
+    "5. HIGH: Extract embedded CSS to external files or Tailwind",
+    "6. MEDIUM: Add performance optimizations (memo, callback, useMemo)",
+    "7. MEDIUM: Standardize error handling with error boundaries",
+    "8. MEDIUM: Clean up console statements",
+    "9. LOW: Add JSDoc documentation to complex components",
+    "10. LOW: Consider code splitting for performance"
+  ],
+
+  "final_assessment": {
+    "strengths": [
+      "Excellent TypeScript configuration and usage",
+      "Modern React patterns (hooks, functional components)",
+      "Good separation of data and types",
+      "Production-quality API client and error handling utilities",
+      "Strong foundation with proper tooling (ESLint, Prettier, Vite)"
+    ],
+    "weaknesses": [
+      "Critical: Single 3210-line component is unmaintainable",
+      "Critical: Virtually no test coverage (only 3 test files)",
+      "High: Multiple oversized components (18 over 1000 LOC)",
+      "High: Poor state management patterns (excessive useState)",
+      "High: Component duplication (Enhanced vs base versions)",
+      "Medium: Minimal performance optimizations",
+      "Medium: Embedded CSS violates separation of concerns"
+    ],
+    "overall_verdict": "The codebase demonstrates strong TypeScript and tooling practices, but suffers from severe architectural issues in component design. The CloudArchitectureDesigner.tsx component alone represents a critical technical debt that blocks maintainability. The near-complete absence of tests is unacceptable for production code. Immediate refactoring is required before adding new features.",
+    "production_readiness": "NOT READY - Critical refactoring and testing required before production deployment"
+  }
+}

@@ -109,7 +109,10 @@
       "parallel_with": [],
       "validation": {
         "success_criteria": "Complete dependency graph generated",
-        "output_artifacts": ["docs/architecture/dependency-map.json", "docs/architecture/refactoring-plan.md"]
+        "output_artifacts": [
+          "docs/architecture/dependency-map.json",
+          "docs/architecture/refactoring-plan.md"
+        ]
       }
     },
     {
@@ -183,7 +186,10 @@
       "depends_on": ["A1"],
       "validation": {
         "success_criteria": "Architecture design with 7-10 sub-modules defined",
-        "output_artifacts": ["docs/architecture/cloud-designer-modules.md", "docs/architecture/module-interfaces.ts"]
+        "output_artifacts": [
+          "docs/architecture/cloud-designer-modules.md",
+          "docs/architecture/module-interfaces.ts"
+        ]
       }
     },
     {
@@ -209,7 +215,10 @@
       "depends_on": ["A4"],
       "validation": {
         "success_criteria": "Core module <800 LOC with passing tests",
-        "output_artifacts": ["src/components/cloud/core/CloudDesignerCore.tsx", "src/components/cloud/core/CanvasState.ts"]
+        "output_artifacts": [
+          "src/components/cloud/core/CloudDesignerCore.tsx",
+          "src/components/cloud/core/CanvasState.ts"
+        ]
       }
     },
     {
@@ -234,7 +243,11 @@
       "depends_on": ["A5"],
       "validation": {
         "success_criteria": "UI modules each <300 LOC",
-        "output_artifacts": ["src/components/cloud/ui/ComponentLibrary.tsx", "src/components/cloud/ui/DesignToolbar.tsx", "src/components/cloud/ui/PropertiesPanel.tsx"]
+        "output_artifacts": [
+          "src/components/cloud/ui/ComponentLibrary.tsx",
+          "src/components/cloud/ui/DesignToolbar.tsx",
+          "src/components/cloud/ui/PropertiesPanel.tsx"
+        ]
       }
     },
     {
@@ -261,7 +274,11 @@
       "depends_on": ["A6"],
       "validation": {
         "success_criteria": "Original component replaced by orchestrator <200 LOC",
-        "output_artifacts": ["src/components/cloud/features/ValidationEngine.ts", "src/components/cloud/features/ConnectivityManager.ts", "src/components/cloud/features/DeploymentZoneManager.ts"]
+        "output_artifacts": [
+          "src/components/cloud/features/ValidationEngine.ts",
+          "src/components/cloud/features/ConnectivityManager.ts",
+          "src/components/cloud/features/DeploymentZoneManager.ts"
+        ]
       }
     },
     {
@@ -334,7 +351,11 @@
       "depends_on": ["A2"],
       "validation": {
         "success_criteria": "All state in Zustand, 0 Context providers",
-        "output_artifacts": ["src/stores/themeStore.ts", "src/stores/progressStore.ts (enhanced)", "tests/unit/stores/state-migration.test.ts"]
+        "output_artifacts": [
+          "src/stores/themeStore.ts",
+          "src/stores/progressStore.ts (enhanced)",
+          "tests/unit/stores/state-migration.test.ts"
+        ]
       }
     },
     {
@@ -358,7 +379,10 @@
       "depends_on": ["A7"],
       "validation": {
         "success_criteria": "85%+ test coverage on cloud modules",
-        "output_artifacts": ["tests/integration/cloud-designer.test.tsx", "tests/e2e/cloud-architecture-flow.spec.ts"]
+        "output_artifacts": [
+          "tests/integration/cloud-designer.test.tsx",
+          "tests/e2e/cloud-architecture-flow.spec.ts"
+        ]
       }
     },
     {
@@ -382,7 +406,10 @@
       "depends_on": ["A9"],
       "validation": {
         "success_criteria": "Performance metrics documented for all routes",
-        "output_artifacts": ["docs/performance/baselines.json", "docs/performance/optimization-targets.md"]
+        "output_artifacts": [
+          "docs/performance/baselines.json",
+          "docs/performance/optimization-targets.md"
+        ]
       }
     },
     {
@@ -432,7 +459,11 @@
       "depends_on": ["A3", "A11"],
       "validation": {
         "success_criteria": "Complete deployment guide with runbook",
-        "output_artifacts": ["docs/deployment/PRODUCTION_DEPLOYMENT.md", "docs/deployment/RUNBOOK.md", "docs/deployment/MONITORING.md"]
+        "output_artifacts": [
+          "docs/deployment/PRODUCTION_DEPLOYMENT.md",
+          "docs/deployment/RUNBOOK.md",
+          "docs/deployment/MONITORING.md"
+        ]
       }
     },
     {

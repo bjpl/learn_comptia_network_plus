@@ -1,0 +1,774 @@
+{
+  "current_analysis": {
+    "total_lines": 3210,
+    "total_state_hooks": 16,
+    "estimated_functions": 46,
+    "embedded_css_lines": 1467,
+    "code_lines": 1743,
+
+    "domains_identified": [
+      {
+        "domain": "Canvas & Rendering",
+        "description": "Core canvas rendering, zooming, panning, grid system",
+        "lines": "~600",
+        "complexity": "high"
+      },
+      {
+        "domain": "Component Management",
+        "description": "Component creation, deletion, selection, properties",
+        "lines": "~400",
+        "complexity": "medium"
+      },
+      {
+        "domain": "Interaction Handlers",
+        "description": "Drag-drop, resize, mouse events, keyboard shortcuts",
+        "lines": "~500",
+        "complexity": "high"
+      },
+      {
+        "domain": "Connection System",
+        "description": "Connection creation, rendering, validation",
+        "lines": "~300",
+        "complexity": "medium"
+      },
+      {
+        "domain": "History & Undo/Redo",
+        "description": "State history management, undo/redo operations",
+        "lines": "~150",
+        "complexity": "low"
+      },
+      {
+        "domain": "Validation Engine",
+        "description": "Architecture validation, scoring, error reporting",
+        "lines": "~100",
+        "complexity": "low"
+      },
+      {
+        "domain": "Educational Panels",
+        "description": "Service comparison, security, elasticity information",
+        "lines": "~300",
+        "complexity": "low"
+      },
+      {
+        "domain": "Component Library",
+        "description": "Library sidebar, categories, drag sources",
+        "lines": "~200",
+        "complexity": "low"
+      },
+      {
+        "domain": "UI Chrome",
+        "description": "Header, toolbar, metadata display",
+        "lines": "~100",
+        "complexity": "low"
+      }
+    ],
+
+    "state_clusters": [
+      {
+        "cluster": "Design State",
+        "states": ["design", "validation"],
+        "purpose": "Core architecture design data",
+        "scope": "global"
+      },
+      {
+        "cluster": "Canvas State",
+        "states": ["canvasState", "canvasPan"],
+        "purpose": "View controls (zoom, pan, grid)",
+        "scope": "canvas-only"
+      },
+      {
+        "cluster": "Interaction State",
+        "states": ["dragState", "resizeState", "connectionState", "isDraggingFromLibrary"],
+        "purpose": "Active user interactions",
+        "scope": "canvas-only"
+      },
+      {
+        "cluster": "Selection State",
+        "states": ["selectedComponent", "hoveredComponent"],
+        "purpose": "Component selection tracking",
+        "scope": "global"
+      },
+      {
+        "cluster": "UI State",
+        "states": ["showLibrary", "activeCategory", "showServiceComparison", "showSecurityPanel", "showElasticityVisualization"],
+        "purpose": "Panel visibility toggles",
+        "scope": "layout"
+      },
+      {
+        "cluster": "History State",
+        "states": ["history"],
+        "purpose": "Undo/redo functionality",
+        "scope": "global"
+      }
+    ],
+
+    "function_groupings": [
+      {
+        "group": "Canvas Operations",
+        "functions": ["handleZoomToFit", "handleCenterView", "handleCanvasMouseDown", "handleCanvasMouseMove", "handleCanvasMouseUp", "snapToGrid"],
+        "count": 6
+      },
+      {
+        "group": "Component CRUD",
+        "functions": ["handleDrop", "handleComponentDelete", "handleDuplicateComponent", "handlePropertyChange"],
+        "count": 4
+      },
+      {
+        "group": "Drag & Drop",
+        "functions": ["handleDragStart", "handleDragEnd", "handleDragOver", "handleComponentMouseDown"],
+        "count": 4
+      },
+      {
+        "group": "Resize Operations",
+        "functions": ["handleResizeMouseDown"],
+        "count": 1
+      },
+      {
+        "group": "Connection Management",
+        "functions": ["handleConnectionModeToggle", "handleCreateConnection"],
+        "count": 2
+      },
+      {
+        "group": "History Operations",
+        "functions": ["handleUndo", "handleRedo"],
+        "count": 2
+      },
+      {
+        "group": "Validation",
+        "functions": ["validateArchitecture"],
+        "count": 1
+      },
+      {
+        "group": "Utilities",
+        "functions": ["handleExport", "getCategorizedLibrary", "handleComponentClick"],
+        "count": 3
+      },
+      {
+        "group": "Keyboard Handlers",
+        "functions": ["useEffect keyboard handler"],
+        "count": 1
+      }
+    ]
+  },
+
+  "proposed_components": [
+    {
+      "name": "CloudArchitectureDesigner",
+      "responsibility": "Main orchestrator, state management, layout coordination",
+      "estimated_loc": 200,
+      "state_needs": ["design", "validation", "selectedComponent", "showPanels"],
+      "props_interface": {
+        "initialDesign": "ArchitectureDesign | undefined",
+        "onDesignChange": "(design: ArchitectureDesign) => void",
+        "onValidate": "(result: ValidationResult) => void"
+      },
+      "file_path": "src/components/cloud/CloudArchitectureDesigner.tsx",
+      "notes": "Slim orchestrator using Zustand store for state management"
+    },
+    {
+      "name": "ArchitectureCanvas",
+      "responsibility": "Canvas rendering, grid, zoom/pan controls, component/connection rendering",
+      "estimated_loc": 400,
+      "state_needs": ["canvasState", "canvasPan", "components", "connections"],
+      "props_interface": {
+        "components": "ArchitectureComponent[]",
+        "connections": "Connection[]",
+        "selectedComponentId": "string | null",
+        "onComponentSelect": "(component: ArchitectureComponent) => void",
+        "onComponentUpdate": "(component: ArchitectureComponent) => void",
+        "onComponentDelete": "(id: string) => void",
+        "onConnectionCreate": "(from: string, to: string) => void"
+      },
+      "file_path": "src/components/cloud/canvas/ArchitectureCanvas.tsx",
+      "notes": "Manages canvas-specific state and rendering"
+    },
+    {
+      "name": "CanvasControls",
+      "responsibility": "Zoom controls, pan controls, undo/redo, view controls",
+      "estimated_loc": 150,
+      "state_needs": ["canvasState", "history"],
+      "props_interface": {
+        "zoom": "number",
+        "onZoomChange": "(zoom: number) => void",
+        "onZoomToFit": "() => void",
+        "onCenterView": "() => void",
+        "canUndo": "boolean",
+        "canRedo": "boolean",
+        "onUndo": "() => void",
+        "onRedo": "() => void"
+      },
+      "file_path": "src/components/cloud/canvas/CanvasControls.tsx",
+      "notes": "Pure UI component for canvas controls"
+    },
+    {
+      "name": "ArchitectureComponent",
+      "responsibility": "Individual component rendering with drag, resize, connections",
+      "estimated_loc": 300,
+      "state_needs": ["local: isHovered, isDragging, isResizing"],
+      "props_interface": {
+        "component": "ArchitectureComponent",
+        "isSelected": "boolean",
+        "isConnecting": "boolean",
+        "onMouseDown": "(e: MouseEvent) => void",
+        "onDelete": "() => void",
+        "onDuplicate": "() => void",
+        "onConnectionStart": "() => void",
+        "onUpdate": "(component: ArchitectureComponent) => void"
+      },
+      "file_path": "src/components/cloud/canvas/ArchitectureComponent.tsx",
+      "notes": "Self-contained component with own interaction handlers"
+    },
+    {
+      "name": "ConnectionLayer",
+      "responsibility": "SVG layer for rendering connections and connection preview",
+      "estimated_loc": 200,
+      "state_needs": ["connections", "connectionState"],
+      "props_interface": {
+        "connections": "Connection[]",
+        "components": "ArchitectureComponent[]",
+        "isConnecting": "boolean",
+        "fromId": "string | null",
+        "cursorPosition": "{ x: number, y: number }"
+      },
+      "file_path": "src/components/cloud/canvas/ConnectionLayer.tsx",
+      "notes": "Dedicated SVG rendering for connections"
+    },
+    {
+      "name": "ComponentLibrary",
+      "responsibility": "Component library sidebar with categories and drag sources",
+      "estimated_loc": 200,
+      "state_needs": ["activeCategory", "showLibrary"],
+      "props_interface": {
+        "visible": "boolean",
+        "activeCategory": "ComponentType",
+        "onCategoryChange": "(category: ComponentType) => void",
+        "onDragStart": "(item: ComponentLibraryItem) => void"
+      },
+      "file_path": "src/components/cloud/library/ComponentLibrary.tsx",
+      "notes": "Pure UI component with drag event handlers"
+    },
+    {
+      "name": "ComponentProperties",
+      "responsibility": "Properties panel for selected component",
+      "estimated_loc": 150,
+      "state_needs": ["selectedComponent"],
+      "props_interface": {
+        "component": "ArchitectureComponent | null",
+        "onPropertyChange": "(key: string, value: PropertyValue) => void",
+        "onNameChange": "(name: string) => void",
+        "availableComponents": "ArchitectureComponent[]",
+        "onCreateConnection": "(fromId: string, toId: string) => void"
+      },
+      "file_path": "src/components/cloud/properties/ComponentProperties.tsx",
+      "notes": "Form-based property editor"
+    },
+    {
+      "name": "ValidationPanel",
+      "responsibility": "Display validation results, errors, warnings, score",
+      "estimated_loc": 150,
+      "state_needs": ["validation"],
+      "props_interface": {
+        "validation": "ValidationResult | null",
+        "onClose": "() => void"
+      },
+      "file_path": "src/components/cloud/validation/ValidationPanel.tsx",
+      "notes": "Pure display component"
+    },
+    {
+      "name": "ServiceComparisonPanel",
+      "responsibility": "Educational panel for IaaS/PaaS/SaaS comparison",
+      "estimated_loc": 250,
+      "state_needs": ["none"],
+      "props_interface": {
+        "visible": "boolean",
+        "onClose": "() => void"
+      },
+      "file_path": "src/components/cloud/education/ServiceComparisonPanel.tsx",
+      "notes": "Pure educational content display"
+    },
+    {
+      "name": "SecurityPanel",
+      "responsibility": "Educational panel for cloud security concepts",
+      "estimated_loc": 200,
+      "state_needs": ["none"],
+      "props_interface": {
+        "visible": "boolean",
+        "onClose": "() => void"
+      },
+      "file_path": "src/components/cloud/education/SecurityPanel.tsx",
+      "notes": "Pure educational content display"
+    },
+    {
+      "name": "ElasticityPanel",
+      "responsibility": "Educational panel for elasticity and multi-tenancy",
+      "estimated_loc": 200,
+      "state_needs": ["none"],
+      "props_interface": {
+        "visible": "boolean",
+        "onClose": "() => void"
+      },
+      "file_path": "src/components/cloud/education/ElasticityPanel.tsx",
+      "notes": "Pure educational content display"
+    },
+    {
+      "name": "DesignerHeader",
+      "responsibility": "Header with design name, metadata, toolbar actions",
+      "estimated_loc": 150,
+      "state_needs": ["design.name", "componentCount", "connectionCount"],
+      "props_interface": {
+        "designName": "string",
+        "componentCount": "number",
+        "connectionCount": "number",
+        "showLibrary": "boolean",
+        "snapToGrid": "boolean",
+        "onDesignNameChange": "(name: string) => void",
+        "onToggleLibrary": "() => void",
+        "onTogglePanel": "(panel: PanelType) => void",
+        "onValidate": "() => void",
+        "onExport": "() => void",
+        "onSnapToGridChange": "(enabled: boolean) => void"
+      },
+      "file_path": "src/components/cloud/header/DesignerHeader.tsx",
+      "notes": "Toolbar and metadata display"
+    },
+    {
+      "name": "useDesignHistory",
+      "responsibility": "Custom hook for undo/redo history management",
+      "estimated_loc": 100,
+      "state_needs": ["history state"],
+      "props_interface": {
+        "initialState": "ArchitectureDesign",
+        "returns": "{ state, setState, undo, redo, canUndo, canRedo }"
+      },
+      "file_path": "src/components/cloud/hooks/useDesignHistory.ts",
+      "notes": "Reusable history management hook"
+    },
+    {
+      "name": "useCanvasInteractions",
+      "responsibility": "Custom hook for canvas drag, zoom, pan interactions",
+      "estimated_loc": 200,
+      "state_needs": ["dragState", "canvasPan", "zoom"],
+      "props_interface": {
+        "canvasRef": "RefObject<HTMLDivElement>",
+        "snapToGrid": "boolean",
+        "gridSize": "number",
+        "returns": "{ handlers, state }"
+      },
+      "file_path": "src/components/cloud/hooks/useCanvasInteractions.ts",
+      "notes": "Encapsulates complex canvas interaction logic"
+    },
+    {
+      "name": "useComponentDragResize",
+      "responsibility": "Custom hook for component drag and resize operations",
+      "estimated_loc": 150,
+      "state_needs": ["dragState", "resizeState"],
+      "props_interface": {
+        "component": "ArchitectureComponent",
+        "snapToGrid": "boolean",
+        "gridSize": "number",
+        "onUpdate": "(component: ArchitectureComponent) => void",
+        "returns": "{ handlers, isDragging, isResizing }"
+      },
+      "file_path": "src/components/cloud/hooks/useComponentDragResize.ts",
+      "notes": "Encapsulates drag/resize logic for reuse"
+    }
+  ],
+
+  "shared_state_design": {
+    "approach": "zustand",
+    "rationale": [
+      "Zustand is lightweight and performant for complex state",
+      "Avoids prop drilling through deep component trees",
+      "Better than Context API for frequent updates (canvas interactions)",
+      "Simpler than Redux for this use case",
+      "Built-in devtools support",
+      "No provider wrapper needed"
+    ],
+    "store_structure": {
+      "designStore": {
+        "file": "src/components/cloud/store/designStore.ts",
+        "state": {
+          "design": "ArchitectureDesign",
+          "validation": "ValidationResult | null",
+          "selectedComponentId": "string | null",
+          "hoveredComponentId": "string | null"
+        },
+        "actions": {
+          "setDesign": "(design: ArchitectureDesign) => void",
+          "updateComponent": "(component: ArchitectureComponent) => void",
+          "deleteComponent": "(id: string) => void",
+          "addComponent": "(component: ArchitectureComponent) => void",
+          "addConnection": "(connection: Connection) => void",
+          "deleteConnection": "(id: string) => void",
+          "setValidation": "(validation: ValidationResult) => void",
+          "selectComponent": "(id: string | null) => void",
+          "setHoveredComponent": "(id: string | null) => void"
+        }
+      },
+      "canvasStore": {
+        "file": "src/components/cloud/store/canvasStore.ts",
+        "state": {
+          "zoom": "number",
+          "panX": "number",
+          "panY": "number",
+          "gridSize": "number",
+          "snapToGrid": "boolean",
+          "isPanning": "boolean",
+          "isDragging": "boolean",
+          "isResizing": "boolean",
+          "isConnecting": "boolean"
+        },
+        "actions": {
+          "setZoom": "(zoom: number) => void",
+          "setPan": "(x: number, y: number) => void",
+          "setSnapToGrid": "(enabled: boolean) => void",
+          "zoomToFit": "(components: ArchitectureComponent[]) => void",
+          "centerView": "() => void",
+          "setInteractionState": "(state: InteractionState) => void"
+        }
+      },
+      "uiStore": {
+        "file": "src/components/cloud/store/uiStore.ts",
+        "state": {
+          "showLibrary": "boolean",
+          "activeCategory": "ComponentType",
+          "showServiceComparison": "boolean",
+          "showSecurityPanel": "boolean",
+          "showElasticityVisualization": "boolean"
+        },
+        "actions": {
+          "toggleLibrary": "() => void",
+          "setActiveCategory": "(category: ComponentType) => void",
+          "togglePanel": "(panel: PanelType) => void",
+          "closeAllPanels": "() => void"
+        }
+      },
+      "historyStore": {
+        "file": "src/components/cloud/store/historyStore.ts",
+        "state": {
+          "past": "ArchitectureDesign[]",
+          "present": "ArchitectureDesign",
+          "future": "ArchitectureDesign[]"
+        },
+        "actions": {
+          "pushState": "(state: ArchitectureDesign) => void",
+          "undo": "() => ArchitectureDesign | null",
+          "redo": "() => ArchitectureDesign | null",
+          "clear": "() => void"
+        }
+      }
+    }
+  },
+
+  "css_strategy": {
+    "approach": "css-modules",
+    "rationale": [
+      "Better organization than 1600 lines of inline CSS",
+      "Scoped styles prevent naming conflicts",
+      "Tree-shakeable in production builds",
+      "Better IDE support (autocomplete, refactoring)",
+      "Easier to maintain and test",
+      "No runtime overhead like styled-components",
+      "Works well with existing Tailwind (if present)"
+    ],
+    "file_structure": [
+      {
+        "file": "src/components/cloud/CloudArchitectureDesigner.module.css",
+        "sections": ["Layout", "Theme variables"],
+        "lines": 50
+      },
+      {
+        "file": "src/components/cloud/canvas/ArchitectureCanvas.module.css",
+        "sections": ["Canvas", "Grid", "Zoom controls"],
+        "lines": 200
+      },
+      {
+        "file": "src/components/cloud/canvas/ArchitectureComponent.module.css",
+        "sections": ["Component card", "Header", "Body", "Actions", "Resize handles", "Connection ports"],
+        "lines": 300
+      },
+      {
+        "file": "src/components/cloud/canvas/ConnectionLayer.module.css",
+        "sections": ["SVG styles", "Connection lines", "Arrowheads", "Labels"],
+        "lines": 100
+      },
+      {
+        "file": "src/components/cloud/library/ComponentLibrary.module.css",
+        "sections": ["Sidebar", "Category tabs", "Library items", "Drag states"],
+        "lines": 200
+      },
+      {
+        "file": "src/components/cloud/properties/ComponentProperties.module.css",
+        "sections": ["Panel", "Form inputs", "Connection section"],
+        "lines": 100
+      },
+      {
+        "file": "src/components/cloud/validation/ValidationPanel.module.css",
+        "sections": ["Panel", "Score badge", "Errors", "Warnings"],
+        "lines": 150
+      },
+      {
+        "file": "src/components/cloud/education/EducationPanels.module.css",
+        "sections": ["Panel base", "Cards", "Grids", "Service comparison", "Security", "Elasticity"],
+        "lines": 400
+      },
+      {
+        "file": "src/components/cloud/header/DesignerHeader.module.css",
+        "sections": ["Header", "Toolbar", "Buttons", "Metadata"],
+        "lines": 150
+      }
+    ],
+    "shared_styles": {
+      "file": "src/components/cloud/styles/shared.module.css",
+      "includes": ["Button variants", "Panel base styles", "Card styles", "Animation keyframes", "Color palette"],
+      "lines": 200
+    }
+  },
+
+  "migration_order": [
+    {
+      "phase": 1,
+      "name": "Setup Infrastructure",
+      "steps": [
+        "Create Zustand stores (designStore, canvasStore, uiStore, historyStore)",
+        "Create custom hooks (useDesignHistory, useCanvasInteractions, useComponentDragResize)",
+        "Create CSS modules directory structure",
+        "Extract shared CSS to modules"
+      ],
+      "estimated_time": "4 hours",
+      "risk": "low"
+    },
+    {
+      "phase": 2,
+      "name": "Extract Educational Panels",
+      "steps": [
+        "Extract ServiceComparisonPanel with CSS module",
+        "Extract SecurityPanel with CSS module",
+        "Extract ElasticityPanel with CSS module",
+        "Update parent to use new components"
+      ],
+      "estimated_time": "3 hours",
+      "risk": "low",
+      "notes": "Low risk because these are pure display components with no state dependencies"
+    },
+    {
+      "phase": 3,
+      "name": "Extract UI Chrome",
+      "steps": [
+        "Extract DesignerHeader with CSS module",
+        "Extract ValidationPanel with CSS module",
+        "Extract ComponentLibrary with CSS module",
+        "Extract ComponentProperties with CSS module",
+        "Wire up to Zustand stores"
+      ],
+      "estimated_time": "4 hours",
+      "risk": "low"
+    },
+    {
+      "phase": 4,
+      "name": "Extract Canvas Controls",
+      "steps": [
+        "Extract CanvasControls with CSS module",
+        "Implement useDesignHistory hook",
+        "Wire up zoom/pan/history controls",
+        "Test undo/redo functionality"
+      ],
+      "estimated_time": "3 hours",
+      "risk": "medium",
+      "notes": "History management is complex, needs careful testing"
+    },
+    {
+      "phase": 5,
+      "name": "Extract Connection Layer",
+      "steps": [
+        "Extract ConnectionLayer component with SVG rendering",
+        "Extract CSS module for connections",
+        "Implement connection preview logic",
+        "Test connection interactions"
+      ],
+      "estimated_time": "3 hours",
+      "risk": "medium"
+    },
+    {
+      "phase": 6,
+      "name": "Extract Architecture Component",
+      "steps": [
+        "Extract ArchitectureComponent with drag/resize",
+        "Implement useComponentDragResize hook",
+        "Extract CSS module for component cards",
+        "Test drag, resize, selection interactions"
+      ],
+      "estimated_time": "5 hours",
+      "risk": "high",
+      "notes": "Complex interaction logic, potential for regression"
+    },
+    {
+      "phase": 7,
+      "name": "Refactor Canvas",
+      "steps": [
+        "Extract ArchitectureCanvas component",
+        "Implement useCanvasInteractions hook",
+        "Wire up all child components (ArchitectureComponent, ConnectionLayer)",
+        "Extract canvas CSS module",
+        "Test all canvas interactions"
+      ],
+      "estimated_time": "6 hours",
+      "risk": "high",
+      "notes": "Most complex refactor, integrates all other components"
+    },
+    {
+      "phase": 8,
+      "name": "Final Integration & Cleanup",
+      "steps": [
+        "Refactor CloudArchitectureDesigner to orchestrator role",
+        "Remove all inline CSS",
+        "Add keyboard shortcut documentation",
+        "Performance testing and optimization",
+        "Comprehensive integration testing"
+      ],
+      "estimated_time": "4 hours",
+      "risk": "medium"
+    }
+  ],
+
+  "risk_assessment": [
+    {
+      "risk": "State synchronization bugs",
+      "severity": "high",
+      "mitigation": [
+        "Migrate incrementally, test each phase thoroughly",
+        "Use Zustand devtools to debug state changes",
+        "Write integration tests for state flows",
+        "Keep old implementation alongside during migration"
+      ]
+    },
+    {
+      "risk": "Interaction regression (drag/resize/pan)",
+      "severity": "high",
+      "mitigation": [
+        "Create comprehensive interaction test suite before refactoring",
+        "Test on multiple browsers and devices",
+        "Use visual regression testing (Chromatic or Percy)",
+        "Maintain feature parity checklist"
+      ]
+    },
+    {
+      "risk": "Performance degradation",
+      "severity": "medium",
+      "mitigation": [
+        "Profile before and after with React DevTools Profiler",
+        "Use React.memo for pure components",
+        "Optimize Zustand selectors to prevent unnecessary re-renders",
+        "Implement virtualization if needed for large designs"
+      ]
+    },
+    {
+      "risk": "CSS specificity conflicts",
+      "severity": "low",
+      "mitigation": [
+        "CSS Modules provide automatic scoping",
+        "Use BEM naming within modules for clarity",
+        "Extract shared styles carefully",
+        "Test all visual states during migration"
+      ]
+    },
+    {
+      "risk": "Type safety issues",
+      "severity": "medium",
+      "mitigation": [
+        "Define strict TypeScript interfaces for all props",
+        "Use Zustand with TypeScript typing",
+        "Leverage IDE type checking during refactor",
+        "Run type check after each phase"
+      ]
+    },
+    {
+      "risk": "Loss of functionality during migration",
+      "severity": "high",
+      "mitigation": [
+        "Create feature checklist from original component",
+        "Test each feature after migration",
+        "Use git feature branches for each phase",
+        "Keep original as reference until complete"
+      ]
+    }
+  ],
+
+  "testing_strategy": {
+    "unit_tests": [
+      "Test Zustand stores in isolation",
+      "Test custom hooks with @testing-library/react-hooks",
+      "Test pure components with @testing-library/react",
+      "Test validation logic",
+      "Test utility functions (snapToGrid, etc.)"
+    ],
+    "integration_tests": [
+      "Test component creation workflow",
+      "Test connection creation workflow",
+      "Test drag and resize interactions",
+      "Test undo/redo functionality",
+      "Test zoom/pan controls",
+      "Test keyboard shortcuts",
+      "Test validation flow"
+    ],
+    "e2e_tests": [
+      "Test complete architecture design workflow",
+      "Test export functionality",
+      "Test cross-browser compatibility",
+      "Test accessibility (keyboard navigation, screen readers)"
+    ]
+  },
+
+  "performance_targets": {
+    "initial_render": "< 100ms for empty canvas",
+    "component_add": "< 50ms per component",
+    "drag_fps": "> 50 FPS during drag operations",
+    "connection_render": "< 16ms per connection (60 FPS)",
+    "validation": "< 200ms for 50 components",
+    "undo_redo": "< 50ms per operation",
+    "bundle_size_reduction": "> 30% via tree-shaking CSS"
+  },
+
+  "success_metrics": {
+    "code_quality": [
+      "No file > 500 lines",
+      "Average component < 250 lines",
+      "Test coverage > 80%",
+      "Zero TypeScript errors",
+      "Zero ESLint warnings"
+    ],
+    "maintainability": [
+      "Clear separation of concerns",
+      "Reusable custom hooks",
+      "Organized CSS modules",
+      "Documented component APIs",
+      "Storybook stories for all components"
+    ],
+    "performance": [
+      "All performance targets met",
+      "No unnecessary re-renders (measured)",
+      "Smooth 60 FPS interactions",
+      "Bundle size reduced by 30%+"
+    ],
+    "functionality": [
+      "100% feature parity with original",
+      "All interactions working correctly",
+      "No regressions in existing tests",
+      "Keyboard accessibility maintained"
+    ]
+  },
+
+  "dependencies_to_add": {
+    "zustand": "^4.5.0",
+    "@types/react": "^18.x (ensure latest)",
+    "typescript": "^5.x (ensure latest)"
+  },
+
+  "estimated_total_effort": {
+    "development": "32 hours (4 days)",
+    "testing": "16 hours (2 days)",
+    "documentation": "8 hours (1 day)",
+    "total": "56 hours (7 days)",
+    "notes": "Assumes experienced React developer, no major blockers"
+  }
+}

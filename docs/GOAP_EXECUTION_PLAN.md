@@ -1,4 +1,5 @@
 # GOAP Remediation Execution Plan
+
 ## CompTIA Network+ Learning Platform - Production Readiness
 
 **Generated:** 2025-12-02
@@ -26,6 +27,7 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ## GOAP World State Analysis
 
 ### Current State Variables
+
 ```json
 {
   "god_component_loc": 3210,
@@ -41,6 +43,7 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ```
 
 ### Goal State Variables
+
 ```json
 {
   "god_component_loc": 0,
@@ -60,23 +63,26 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ## Optimal Action Sequence
 
 ### Phase 1: Initial Analysis & Quick Wins (8 hours - PARALLEL)
+
 **Batch B1** - Run concurrently to compress timeline
 
-| Action | Description | Hours | Priority | Output |
-|--------|-------------|-------|----------|--------|
-| **A1** | Audit codebase structure | 4 | P0 | Dependency map, refactoring plan |
-| **A2** | Create security test suite | 8 | P0 | Auth/security tests (90% coverage) |
-| **A3** | Fix dependency vulnerabilities | 3 | P0 | 0 high/moderate vulnerabilities |
-| **A8** | Consolidate Enhanced duplicates | 8 | P1 | Remove 8 duplicate components |
+| Action | Description                     | Hours | Priority | Output                             |
+| ------ | ------------------------------- | ----- | -------- | ---------------------------------- |
+| **A1** | Audit codebase structure        | 4     | P0       | Dependency map, refactoring plan   |
+| **A2** | Create security test suite      | 8     | P0       | Auth/security tests (90% coverage) |
+| **A3** | Fix dependency vulnerabilities  | 3     | P0       | 0 high/moderate vulnerabilities    |
+| **A8** | Consolidate Enhanced duplicates | 8     | P1       | Remove 8 duplicate components      |
 
 **Parallelization:** A1, A2, A3, A8 run simultaneously (max 8 hours vs 23 sequential)
 
 **Preconditions:**
+
 - ✅ Codebase accessible
 - ✅ Test framework configured
 - ✅ package.json exists
 
 **Effects:**
+
 - ✅ Refactoring plan exists
 - ✅ Auth/security utilities tested (90%+ coverage)
 - ✅ Zero high-severity vulnerabilities
@@ -85,48 +91,57 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ---
 
 ### Phase 2: Architecture Design (6 hours - SEQUENTIAL)
+
 **Batch B2** - Requires A1 completion
 
-| Action | Description | Hours | Priority | Output |
-|--------|-------------|-------|----------|--------|
-| **A4** | Design modular architecture | 6 | P0 | 7-10 module architecture, interfaces |
+| Action | Description                 | Hours | Priority | Output                               |
+| ------ | --------------------------- | ----- | -------- | ------------------------------------ |
+| **A4** | Design modular architecture | 6     | P0       | 7-10 module architecture, interfaces |
 
 **Depends On:** A1 (codebase audit)
 
 **Preconditions:**
+
 - ✅ Refactoring plan exists
 - ✅ Component dependencies mapped
 
 **Effects:**
+
 - ✅ Modular architecture designed
 - ✅ Component split plan exists
 - ✅ Module interfaces defined
 
 **Output Artifacts:**
+
 - `docs/architecture/cloud-designer-modules.md`
 - `docs/architecture/module-interfaces.ts`
 
 ---
 
 ### Phase 3: Core God Component Refactoring (36 hours - SEQUENTIAL)
+
 **Batch B3** - Critical path, must be sequential
 
 #### Step 1: Extract Core Module (12 hours)
-| Action | Description | Hours | LOC Impact | Output |
-|--------|-------------|-------|------------|--------|
-| **A5** | Refactor core (state + canvas) | 12 | 3210 → 800 | Core module, canvas state |
+
+| Action | Description                    | Hours | LOC Impact | Output                    |
+| ------ | ------------------------------ | ----- | ---------- | ------------------------- |
+| **A5** | Refactor core (state + canvas) | 12    | 3210 → 800 | Core module, canvas state |
 
 **Preconditions:**
+
 - ✅ Modular architecture designed
 - ✅ Tests passing
 - ✅ Auth/security tests in place (from A2)
 
 **Effects:**
+
 - ✅ Core module extracted (<800 LOC)
 - ✅ Canvas state isolated
 - ✅ State management centralized
 
 **Risk Mitigation:**
+
 - Comprehensive test coverage from A2
 - Incremental changes with continuous testing
 - Revert plan if tests fail
@@ -134,20 +149,24 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ---
 
 #### Step 2: Extract UI Components (10 hours)
-| Action | Description | Hours | LOC Impact | Output |
-|--------|-------------|-------|------------|--------|
-| **A6** | Extract UI (toolbar, library, panels) | 10 | 800 → 400 | 3 UI modules (<300 LOC each) |
+
+| Action | Description                           | Hours | LOC Impact | Output                       |
+| ------ | ------------------------------------- | ----- | ---------- | ---------------------------- |
+| **A6** | Extract UI (toolbar, library, panels) | 10    | 800 → 400  | 3 UI modules (<300 LOC each) |
 
 **Preconditions:**
+
 - ✅ Core module extracted
 - ✅ Module interfaces defined
 
 **Effects:**
+
 - ✅ UI components extracted
 - ✅ Component library module exists
 - ✅ Further LOC reduction
 
 **Output Artifacts:**
+
 - `src/components/cloud/ui/ComponentLibrary.tsx` (<300 LOC)
 - `src/components/cloud/ui/DesignToolbar.tsx` (<300 LOC)
 - `src/components/cloud/ui/PropertiesPanel.tsx` (<300 LOC)
@@ -155,27 +174,32 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ---
 
 #### Step 3: Extract Feature Modules (14 hours)
-| Action | Description | Hours | LOC Impact | Output |
-|--------|-------------|-------|------------|--------|
-| **A7** | Extract features (validation, connectivity, zones) | 14 | 400 → 0 | Feature modules + orchestrator |
+
+| Action | Description                                        | Hours | LOC Impact | Output                         |
+| ------ | -------------------------------------------------- | ----- | ---------- | ------------------------------ |
+| **A7** | Extract features (validation, connectivity, zones) | 14    | 400 → 0    | Feature modules + orchestrator |
 
 **Preconditions:**
+
 - ✅ UI components extracted
 - ✅ Core module extracted
 
 **Effects:**
+
 - ✅ Validation module extracted
 - ✅ Connectivity module extracted
 - ✅ Deployment module extracted
 - ✅ **God component eliminated** (replaced by <200 LOC orchestrator)
 
 **Output Artifacts:**
+
 - `src/components/cloud/features/ValidationEngine.ts` (<400 LOC)
 - `src/components/cloud/features/ConnectivityManager.ts` (<400 LOC)
 - `src/components/cloud/features/DeploymentZoneManager.ts` (<400 LOC)
 - `src/components/cloud/CloudArchitectureDesigner.tsx` (<200 LOC orchestrator)
 
 **Validation:**
+
 - Original 3,210 LOC component now split into 7-10 modules
 - Each module <500 LOC
 - All tests passing
@@ -184,34 +208,40 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ---
 
 ### Phase 4: Remaining Refactoring (20 hours - PARALLEL)
+
 **Batch B4** - Run concurrently
 
-| Action | Description | Hours | Priority | Output |
-|--------|-------------|-------|----------|--------|
-| **A9** | Refactor 17 remaining large files | 20 | P1 | All files <800 LOC |
-| **A10** | Migrate Contexts to Zustand | 10 | P1 | Unified state (Zustand only) |
+| Action  | Description                       | Hours | Priority | Output                       |
+| ------- | --------------------------------- | ----- | -------- | ---------------------------- |
+| **A9**  | Refactor 17 remaining large files | 20    | P1       | All files <800 LOC           |
+| **A10** | Migrate Contexts to Zustand       | 10    | P1       | Unified state (Zustand only) |
 
 **Parallelization:** A9 and A10 run simultaneously (20 hours vs 30 sequential)
 
 **A9 Preconditions:**
+
 - ✅ Refactoring plan exists
 - ✅ God component eliminated
 
 **A9 Effects:**
+
 - ✅ All files <800 LOC (components) or <1500 LOC (data files)
 - ✅ Modular architecture complete
 
 **A10 Preconditions:**
+
 - ✅ Zustand stores exist
 - ✅ Auth/security tests passing
 
 **A10 Effects:**
+
 - ✅ Zero Context providers (3 → 0)
 - ✅ Zustand stores increased (4 → 5)
 - ✅ Dual state system eliminated
 - ✅ State conflicts resolved
 
 **Output Artifacts:**
+
 - Refactored component modules
 - `src/stores/themeStore.ts`
 - `src/stores/progressStore.ts` (enhanced)
@@ -220,32 +250,38 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ---
 
 ### Phase 5: Testing & Performance (8 hours - PARALLEL)
+
 **Batch B5** - Run concurrently
 
-| Action | Description | Hours | Priority | Output |
-|--------|-------------|-------|----------|--------|
-| **A11** | Create integration tests (refactored modules) | 8 | P1 | 85% coverage |
-| **A12** | Performance baseline measurement | 6 | P1 | Performance baselines |
+| Action  | Description                                   | Hours | Priority | Output                |
+| ------- | --------------------------------------------- | ----- | -------- | --------------------- |
+| **A11** | Create integration tests (refactored modules) | 8     | P1       | 85% coverage          |
+| **A12** | Performance baseline measurement              | 6     | P1       | Performance baselines |
 
 **Parallelization:** A11 and A12 run simultaneously (8 hours vs 14 sequential)
 
 **A11 Preconditions:**
+
 - ✅ God component eliminated
 - ✅ Modular architecture complete
 
 **A11 Effects:**
+
 - ✅ Cloud designer integration tested
 - ✅ Test coverage at 85%+
 
 **A12 Preconditions:**
+
 - ✅ Modular architecture complete
 - ✅ Tests passing
 
 **A12 Effects:**
+
 - ✅ Performance measured
 - ✅ Performance baselines established
 
 **Output Artifacts:**
+
 - `tests/integration/cloud-designer.test.tsx`
 - `tests/e2e/cloud-architecture-flow.spec.ts`
 - `docs/performance/baselines.json`
@@ -254,33 +290,39 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ---
 
 ### Phase 6: Optimization & Documentation (8 hours - PARALLEL)
+
 **Batch B6** - Run concurrently
 
-| Action | Description | Hours | Priority | Output |
-|--------|-------------|-------|----------|--------|
-| **A13** | Optimize bundle size | 8 | P2 | Bundle <300KB gzipped |
-| **A14** | Create deployment documentation | 6 | P2 | Complete deployment guide |
+| Action  | Description                     | Hours | Priority | Output                    |
+| ------- | ------------------------------- | ----- | -------- | ------------------------- |
+| **A13** | Optimize bundle size            | 8     | P2       | Bundle <300KB gzipped     |
+| **A14** | Create deployment documentation | 6     | P2       | Complete deployment guide |
 
 **Parallelization:** A13 and A14 run simultaneously (8 hours vs 14 sequential)
 
 **A13 Preconditions:**
+
 - ✅ Modular architecture complete
 - ✅ Performance baselines established
 
 **A13 Effects:**
+
 - ✅ Bundle optimized
 - ✅ Lazy loading implemented
 - ✅ Build optimized
 
 **A14 Preconditions:**
+
 - ✅ Tests passing
 - ✅ Vulnerabilities fixed
 
 **A14 Effects:**
+
 - ✅ Documentation complete
 - ✅ Deployment guide exists
 
 **Output Artifacts:**
+
 - `vite.config.optimized.ts`
 - `docs/performance/bundle-analysis.html`
 - `docs/deployment/PRODUCTION_DEPLOYMENT.md`
@@ -290,15 +332,17 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ---
 
 ### Phase 7: Production Validation (4 hours - SEQUENTIAL)
+
 **Batch B7** - Final checkpoint
 
-| Action | Description | Hours | Priority | Output |
-|--------|-------------|-------|----------|--------|
-| **A15** | Production validation audit | 4 | P0 | Production ready certification |
+| Action  | Description                 | Hours | Priority | Output                         |
+| ------- | --------------------------- | ----- | -------- | ------------------------------ |
+| **A15** | Production validation audit | 4     | P0       | Production ready certification |
 
 **Depends On:** A13, A14 (all prior actions complete)
 
 **Preconditions:**
+
 - ✅ God component eliminated
 - ✅ Zero high-severity vulnerabilities
 - ✅ Dual state system eliminated
@@ -306,16 +350,19 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 - ✅ Documentation complete
 
 **Effects:**
+
 - ✅ **Production ready: TRUE**
 - ✅ **Deployment ready: TRUE**
 
 **Validation:**
+
 - Production readiness score 8.5+/10
 - All success metrics met
 - Lighthouse score 90+
 - Security audit passed
 
 **Output Artifacts:**
+
 - `docs/PRODUCTION_READINESS_REPORT.md`
 
 ---
@@ -323,11 +370,13 @@ This GOAP (Goal-Oriented Action Planning) strategy provides an optimal path from
 ## Critical Path Analysis
 
 ### Sequential Dependencies (86 hours)
+
 ```
 A1 (4h) → A4 (6h) → A5 (12h) → A6 (10h) → A7 (14h) → A9 (20h) → A11 (8h) → A13 (8h) → A15 (4h)
 ```
 
 ### Parallelization Savings
+
 - **Total Sequential Hours:** 131 hours
 - **Critical Path Hours:** 86 hours
 - **Parallelization Savings:** 45 hours (34% reduction)
@@ -379,18 +428,21 @@ Legend: ║ = Parallel execution
 ### High-Risk Actions
 
 #### 1. A5: Core Refactoring (12 hours)
+
 **Risk:** Breaking existing functionality during core state extraction
 
 **Likelihood:** Medium
 **Impact:** High
 
 **Mitigation:**
+
 - ✅ Comprehensive test coverage established in A2 (90%+ auth/security)
 - Incremental changes with continuous test execution
 - Feature flags for gradual rollout
 - Commit after each atomic change
 
 **Fallback:**
+
 - Revert to previous commit
 - Re-plan refactoring strategy
 - Break into smaller increments
@@ -398,18 +450,21 @@ Legend: ║ = Parallel execution
 ---
 
 #### 2. A10: State Migration (10 hours)
+
 **Risk:** UI inconsistencies and state conflicts during Context → Zustand migration
 
 **Likelihood:** Medium
 **Impact:** Medium
 
 **Mitigation:**
+
 - Create parallel Zustand stores first
 - Gradual migration with feature flags
 - Side-by-side testing of old vs new state
 - Rollout to non-critical components first
 
 **Fallback:**
+
 - Keep dual state temporarily (extend timeline)
 - Partial migration acceptable for v1.0
 - Document migration plan for v1.1
@@ -417,18 +472,21 @@ Legend: ║ = Parallel execution
 ---
 
 #### 3. A3: Dependency Updates (3 hours)
+
 **Risk:** Breaking compatibility with existing code
 
 **Likelihood:** Low
 **Impact:** High
 
 **Mitigation:**
+
 - Test in isolation environment
 - Review changelogs for breaking changes
 - Update one dependency at a time
 - Run full test suite after each update
 
 **Fallback:**
+
 - Pin specific safe versions
 - Document security exceptions
 - Schedule updates for next major version
@@ -448,15 +506,15 @@ Legend: ║ = Parallel execution
 
 ## Success Metrics
 
-| Metric | Current | Target | Measurement Method |
-|--------|---------|--------|-------------------|
-| **Largest Component LOC** | 3,210 | <500 | `find src -name "*.tsx" \| xargs wc -l \| sort -rn \| head -1` |
-| **Files >1000 LOC** | 18 | 0 | `find src -name "*.tsx" -o -name "*.ts" \| xargs wc -l \| awk '$1 > 1000'` |
-| **Test Coverage** | 79% | 85% | `npm run test:coverage` |
-| **High/Moderate Vulnerabilities** | 4 | 0 | `npm audit --audit-level=moderate` |
-| **State Management Systems** | 2 | 1 | `grep -r 'createContext' src/ \| wc -l` |
-| **Enhanced Duplicates** | 8 | 0 | `find src -name "*Enhanced*" \| wc -l` |
-| **Production Readiness Score** | 6.75/10 | 8.5+/10 | Weighted checklist assessment |
+| Metric                            | Current | Target  | Measurement Method                                                         |
+| --------------------------------- | ------- | ------- | -------------------------------------------------------------------------- |
+| **Largest Component LOC**         | 3,210   | <500    | `find src -name "*.tsx" \| xargs wc -l \| sort -rn \| head -1`             |
+| **Files >1000 LOC**               | 18      | 0       | `find src -name "*.tsx" -o -name "*.ts" \| xargs wc -l \| awk '$1 > 1000'` |
+| **Test Coverage**                 | 79%     | 85%     | `npm run test:coverage`                                                    |
+| **High/Moderate Vulnerabilities** | 4       | 0       | `npm audit --audit-level=moderate`                                         |
+| **State Management Systems**      | 2       | 1       | `grep -r 'createContext' src/ \| wc -l`                                    |
+| **Enhanced Duplicates**           | 8       | 0       | `find src -name "*Enhanced*" \| wc -l`                                     |
+| **Production Readiness Score**    | 6.75/10 | 8.5+/10 | Weighted checklist assessment                                              |
 
 ---
 
@@ -483,12 +541,12 @@ Legend: ║ = Parallel execution
 
 ## SPARC Phase Distribution
 
-| Phase | Actions | Hours | % of Effort |
-|-------|---------|-------|-------------|
-| **Specification** | A1 | 4 | 3% |
-| **Architecture** | A4 | 6 | 5% |
-| **Refinement** | A2, A3, A5-A13 | 107 | 82% |
-| **Completion** | A14, A15 | 10 | 8% |
+| Phase             | Actions        | Hours | % of Effort |
+| ----------------- | -------------- | ----- | ----------- |
+| **Specification** | A1             | 4     | 3%          |
+| **Architecture**  | A4             | 6     | 5%          |
+| **Refinement**    | A2, A3, A5-A13 | 107   | 82%         |
+| **Completion**    | A14, A15       | 10    | 8%          |
 
 **Key Insight:** 82% of effort is in Refinement phase (actual refactoring and testing), aligning with typical software engineering project distribution.
 
@@ -498,18 +556,19 @@ Legend: ║ = Parallel execution
 
 ### Recommended Agent Assignment
 
-| Agent | Actions | Rationale |
-|-------|---------|-----------|
-| **code-analyzer** | A1 | Specialized in dependency analysis and codebase structure |
-| **tester** | A2, A11 | Expert in test creation and coverage analysis |
-| **security-manager** | A3 | Specialized in vulnerability remediation |
-| **system-architect** | A4 | Expert in modular architecture design |
-| **coder** | A5-A9 | Core refactoring implementation |
-| **performance-benchmarker** | A12, A13 | Performance optimization specialist |
-| **api-docs** | A14 | Documentation specialist |
-| **production-validator** | A15 | Final production readiness validation |
+| Agent                       | Actions  | Rationale                                                 |
+| --------------------------- | -------- | --------------------------------------------------------- |
+| **code-analyzer**           | A1       | Specialized in dependency analysis and codebase structure |
+| **tester**                  | A2, A11  | Expert in test creation and coverage analysis             |
+| **security-manager**        | A3       | Specialized in vulnerability remediation                  |
+| **system-architect**        | A4       | Expert in modular architecture design                     |
+| **coder**                   | A5-A9    | Core refactoring implementation                           |
+| **performance-benchmarker** | A12, A13 | Performance optimization specialist                       |
+| **api-docs**                | A14      | Documentation specialist                                  |
+| **production-validator**    | A15      | Final production readiness validation                     |
 
 ### Coordination Pattern
+
 - **Topology:** Hierarchical
 - **Max Concurrent Agents:** 4 (during parallel batches)
 - **Communication:** Zustand memory coordination hooks
@@ -527,6 +586,7 @@ Legend: ║ = Parallel execution
    npx claude-flow sparc run spec-pseudocode "Remediate production blockers per GOAP plan"
    ```
 3. **Spawn parallel agents for B1:**
+
    ```bash
    # Coordination setup
    npx claude-flow swarm init --topology hierarchical --max-agents 4
@@ -559,6 +619,7 @@ Legend: ║ = Parallel execution
 ## Production Readiness Scorecard
 
 ### Before Remediation (6.75/10)
+
 - [ ] God component eliminated
 - [x] Basic test coverage (79%)
 - [ ] No high-severity vulnerabilities (4 exist)
@@ -573,6 +634,7 @@ Legend: ║ = Parallel execution
 **Score:** 4.5/10 blockers + 2.25/10 partial = **6.75/10**
 
 ### After Remediation (8.5+/10)
+
 - [x] God component eliminated (A7)
 - [x] Excellent test coverage (85%+) (A2, A11)
 - [x] No high-severity vulnerabilities (A3)

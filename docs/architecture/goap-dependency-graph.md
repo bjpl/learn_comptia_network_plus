@@ -1,4 +1,5 @@
 # GOAP Action Dependency Graph
+
 ## Remediation Plan Visual Dependencies
 
 This document visualizes the dependency relationships between all 15 GOAP actions for the CompTIA Network+ Learning Platform remediation.
@@ -140,24 +141,28 @@ Total: 86 hours (10.75 workdays)
 ### Parallelization Opportunities (45 Hours Saved)
 
 **Batch B1 (saves 15h):**
+
 - A2, A3, A8 run in parallel with A1
 - Sequential: 4 + 8 + 3 + 8 = 23h
 - Parallel: max(4, 8, 3, 8) = 8h
 - **Savings: 15h**
 
 **Batch B4 (saves 10h):**
+
 - A9, A10 run in parallel
 - Sequential: 20 + 10 = 30h
 - Parallel: max(20, 10) = 20h
 - **Savings: 10h**
 
 **Batch B5 (saves 6h):**
+
 - A11, A12 run in parallel
 - Sequential: 8 + 6 = 14h
 - Parallel: max(8, 6) = 8h
 - **Savings: 6h**
 
 **Batch B6 (saves 6h):**
+
 - A13, A14 run in parallel
 - Sequential: 8 + 6 = 14h
 - Parallel: max(8, 6) = 8h
@@ -169,23 +174,23 @@ Total: 86 hours (10.75 workdays)
 
 ## Action Precondition Matrix
 
-| Action | Preconditions | Effects | Enables |
-|--------|---------------|---------|---------|
-| **A1** | • Codebase accessible | • Refactoring plan exists<br>• Dependency map exists | A4 |
-| **A2** | • Auth utils exist<br>• Test framework configured | • Auth/security tested (90%)<br>• Test coverage +3% | A5, A10 (risk protection) |
-| **A3** | • package.json exists<br>• npm audit run | • Zero high-severity vulns<br>• Dependencies updated | A14, A15 |
-| **A4** | • Refactoring plan exists (A1) | • Architecture designed<br>• Module interfaces defined | A5 |
-| **A5** | • Architecture designed (A4)<br>• Tests passing (A2) | • Core module extracted<br>• LOC: 3210 → 800 | A6 |
-| **A6** | • Core extracted (A5) | • UI components extracted<br>• LOC: 800 → 400 | A7 |
-| **A7** | • UI extracted (A6) | • **God component eliminated**<br>• LOC: 400 → 0 | A9, A11 |
-| **A8** | • None (independent) | • No duplicate components | Cleaner codebase |
-| **A9** | • God component gone (A7) | • All files <800 LOC<br>• Modular architecture complete | A11, A12 |
-| **A10** | • Tests protect migration (A2) | • Unified state (Zustand only)<br>• Zero Context providers | A15 |
-| **A11** | • Modular complete (A7, A9) | • 85% test coverage<br>• Integration tests exist | A13, A15 |
-| **A12** | • Modular complete (A9) | • Performance baselines<br>• Metrics documented | A13 |
-| **A13** | • Baselines exist (A12) | • Bundle optimized<br>• Lazy loading implemented | A15 |
-| **A14** | • Tests passing (A11)<br>• Vulns fixed (A3) | • Documentation complete<br>• Deployment guide exists | A15 |
-| **A15** | • **ALL ACTIONS COMPLETE** | • **PRODUCTION READY**<br>• **DEPLOYMENT READY** | DEPLOY |
+| Action  | Preconditions                                        | Effects                                                    | Enables                   |
+| ------- | ---------------------------------------------------- | ---------------------------------------------------------- | ------------------------- |
+| **A1**  | • Codebase accessible                                | • Refactoring plan exists<br>• Dependency map exists       | A4                        |
+| **A2**  | • Auth utils exist<br>• Test framework configured    | • Auth/security tested (90%)<br>• Test coverage +3%        | A5, A10 (risk protection) |
+| **A3**  | • package.json exists<br>• npm audit run             | • Zero high-severity vulns<br>• Dependencies updated       | A14, A15                  |
+| **A4**  | • Refactoring plan exists (A1)                       | • Architecture designed<br>• Module interfaces defined     | A5                        |
+| **A5**  | • Architecture designed (A4)<br>• Tests passing (A2) | • Core module extracted<br>• LOC: 3210 → 800               | A6                        |
+| **A6**  | • Core extracted (A5)                                | • UI components extracted<br>• LOC: 800 → 400              | A7                        |
+| **A7**  | • UI extracted (A6)                                  | • **God component eliminated**<br>• LOC: 400 → 0           | A9, A11                   |
+| **A8**  | • None (independent)                                 | • No duplicate components                                  | Cleaner codebase          |
+| **A9**  | • God component gone (A7)                            | • All files <800 LOC<br>• Modular architecture complete    | A11, A12                  |
+| **A10** | • Tests protect migration (A2)                       | • Unified state (Zustand only)<br>• Zero Context providers | A15                       |
+| **A11** | • Modular complete (A7, A9)                          | • 85% test coverage<br>• Integration tests exist           | A13, A15                  |
+| **A12** | • Modular complete (A9)                              | • Performance baselines<br>• Metrics documented            | A13                       |
+| **A13** | • Baselines exist (A12)                              | • Bundle optimized<br>• Lazy loading implemented           | A15                       |
+| **A14** | • Tests passing (A11)<br>• Vulns fixed (A3)          | • Documentation complete<br>• Deployment guide exists      | A15                       |
+| **A15** | • **ALL ACTIONS COMPLETE**                           | • **PRODUCTION READY**<br>• **DEPLOYMENT READY**           | DEPLOY                    |
 
 ---
 
@@ -196,11 +201,13 @@ Total: 86 hours (10.75 workdays)
 **Risk:** 36 hours of sequential refactoring on critical component
 
 **Impact if Failed:**
+
 - Entire god component refactoring fails
 - 36+ hours of work potentially lost
 - Critical path extends by additional days
 
 **Mitigation Strategy:**
+
 1. **Before A5:** Ensure A2 (test suite) provides 90%+ coverage
 2. **During A5-A7:**
    - Commit after each atomic change
@@ -210,6 +217,7 @@ Total: 86 hours (10.75 workdays)
 3. **Fallback:** Revert to pre-A5 state, re-plan with smaller increments
 
 **Protection Mechanisms:**
+
 - A2 (test suite) runs BEFORE A5 to catch regressions immediately
 - A1 (audit) identifies risky dependencies upfront
 - Incremental commits allow granular rollback
@@ -221,11 +229,13 @@ Total: 86 hours (10.75 workdays)
 **Risk:** UI inconsistencies during Context → Zustand migration
 
 **Impact if Failed:**
+
 - State conflicts between dual systems
 - UI flickering or data loss
 - User experience degradation
 
 **Mitigation Strategy:**
+
 1. **Before A10:** A2 tests validate state consistency
 2. **During A10:**
    - Create parallel Zustand stores (don't remove Context yet)
@@ -234,6 +244,7 @@ Total: 86 hours (10.75 workdays)
 3. **Fallback:** Keep dual state system temporarily, document for v1.1
 
 **Protection Mechanisms:**
+
 - A2 tests catch state inconsistencies
 - Parallel execution with A9 (not dependent on A9 completion)
 - Can partially succeed (migrate some, not all)
@@ -243,6 +254,7 @@ Total: 86 hours (10.75 workdays)
 ## Batch Execution Strategy
 
 ### Batch B1: Initial Analysis & Quick Wins (Day 1-2)
+
 **Agents:** code-analyzer, tester, security-manager, coder (4 concurrent)
 
 ```
@@ -264,6 +276,7 @@ End 5:00 PM (Day 2)
 ---
 
 ### Batch B2: Architecture Design (Day 2-3)
+
 **Agents:** system-architect (1 sequential)
 
 ```
@@ -278,6 +291,7 @@ End 2:00 PM (Day 3)
 ---
 
 ### Batch B3: God Component Refactoring (Day 3-5)
+
 **Agents:** coder (1 sequential - critical path)
 
 ```
@@ -302,6 +316,7 @@ End 10:00 PM (Day 6)
 ---
 
 ### Batch B4: Remaining Refactoring (Day 6-7)
+
 **Agents:** coder, coder (2 concurrent)
 
 ```
@@ -319,6 +334,7 @@ End 4:00 PM (Day 8)
 ---
 
 ### Batch B5: Testing & Performance (Day 8)
+
 **Agents:** tester, performance-benchmarker (2 concurrent)
 
 ```
@@ -334,6 +350,7 @@ End 12:00 AM (Day 9)
 ---
 
 ### Batch B6: Optimization & Documentation (Day 9)
+
 **Agents:** performance-benchmarker, api-docs (2 concurrent)
 
 ```
@@ -349,6 +366,7 @@ End 4:00 PM (Day 9)
 ---
 
 ### Batch B7: Production Validation (Day 10)
+
 **Agents:** production-validator (1 final checkpoint)
 
 ```
@@ -442,24 +460,29 @@ GOAL STATE (8.5+/10) ✓
 ## Next Action Recommendations
 
 ### Immediate (Today)
+
 1. Review GOAP plan with team
 2. Initialize coordination topology
 3. Spawn Batch B1 agents (4 concurrent)
 
 ### Day 2-3
+
 4. Complete Batch B1 (analysis + quick wins)
 5. Architecture design review (A4)
 6. Begin god component refactoring (A5)
 
 ### Day 4-6
+
 7. Complete god component elimination (A5-A7)
 8. Validate all tests passing
 
 ### Day 7-8
+
 9. Remaining refactoring (A9-A10)
 10. Integration tests + performance baselines (A11-A12)
 
 ### Day 9-10
+
 11. Bundle optimization + documentation (A13-A14)
 12. Production validation (A15)
 13. **Deploy to production** ✓
