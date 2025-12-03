@@ -334,7 +334,9 @@ export const useCloudDesignerStore = create<CloudDesignerStore>()(
 
         updateComponent: (id, updates) => {
           set((state) => {
-            const component = state.design.components.find((c) => c.id === id);
+            const component = state.design.components.find(
+              (c: ArchitectureComponent) => c.id === id
+            );
             if (component) {
               Object.assign(component, updates);
               state.design.metadata.modified = new Date();
@@ -345,9 +347,11 @@ export const useCloudDesignerStore = create<CloudDesignerStore>()(
 
         removeComponent: (id) => {
           set((state) => {
-            state.design.components = state.design.components.filter((c) => c.id !== id);
+            state.design.components = state.design.components.filter(
+              (c: ArchitectureComponent) => c.id !== id
+            );
             state.design.connections = state.design.connections.filter(
-              (conn) => conn.from !== id && conn.to !== id
+              (conn: Connection) => conn.from !== id && conn.to !== id
             );
             state.design.metadata.modified = new Date();
 
@@ -369,7 +373,9 @@ export const useCloudDesignerStore = create<CloudDesignerStore>()(
 
         removeConnection: (id) => {
           set((state) => {
-            state.design.connections = state.design.connections.filter((c) => c.id !== id);
+            state.design.connections = state.design.connections.filter(
+              (c: Connection) => c.id !== id
+            );
             state.design.metadata.modified = new Date();
           });
           get().pushHistory(get().design);
@@ -554,7 +560,8 @@ export const useCloudDesignerStore = create<CloudDesignerStore>()(
 
           // Update component
           get().updateComponent(resizeState.componentId, {
-            position: { x: newX, y: newY },
+            x: newX,
+            y: newY,
             width: newWidth,
             height: newHeight,
           });
@@ -606,7 +613,7 @@ export const useCloudDesignerStore = create<CloudDesignerStore>()(
         },
 
         endConnection: (toId) => {
-          const { connectionState, design } = get();
+          const { connectionState } = get();
 
           if (toId && connectionState.fromId && toId !== connectionState.fromId) {
             // Create new connection
@@ -615,9 +622,7 @@ export const useCloudDesignerStore = create<CloudDesignerStore>()(
               from: connectionState.fromId,
               to: toId,
               type: 'network',
-              protocol: 'TCP/IP',
-              bandwidth: '1 Gbps',
-              latency: '< 10ms',
+              label: 'TCP/IP | 1 Gbps',
             };
 
             get().addConnection(newConnection);
