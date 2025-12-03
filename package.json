@@ -29,7 +29,6 @@
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@types/dompurify": "^3.0.5",
-    "agentdb": "^1.6.1",
     "clsx": "^2.1.1",
     "dompurify": "^3.3.0",
     "framer-motion": "^12.23.24",
