@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../stores/appStore';
 import { useTheme } from '../../contexts/ThemeContext';
-import { useProgress } from '../../contexts/ProgressContext';
+import { useProgressStore } from '../../stores/progressStore';
 import { useAuth } from '../../contexts/AuthContext';
 import { getUserDisplayName, getUserInitials } from '../../utils/auth';
 
@@ -13,7 +13,8 @@ export const Header: React.FC = () => {
   const searchQuery = useAppStore((state) => state.searchQuery);
   const setSearchQuery = useAppStore((state) => state.setSearchQuery);
   const { theme, toggleTheme } = useTheme();
-  const { overallProgress } = useProgress();
+  const getOverallProgress = useProgressStore((state) => state.getOverallProgress);
+  const overallProgress = getOverallProgress();
   const { isAuthenticated, user, logout } = useAuth();
 
   const [userMenuOpen, setUserMenuOpen] = useState(false);

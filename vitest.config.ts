@@ -15,12 +15,14 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
+      include: ['src/**/*.{ts,tsx}'],
       exclude: ['node_modules/', 'tests/', '**/*.config.*', '**/*.d.ts', '**/dist/**'],
-      all: true,
-      lines: 90,
-      functions: 90,
-      branches: 90,
-      statements: 90,
+      thresholds: {
+        lines: 90,
+        functions: 90,
+        branches: 90,
+        statements: 90,
+      },
     },
     include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
     exclude: ['**/node_modules/**', '**/dist/**', 'tests/e2e/**'],
@@ -28,7 +30,7 @@ export default defineConfig({
     hookTimeout: 10000,
     teardownTimeout: 10000,
     isolate: true,
-    reporters: ['verbose', 'json', 'html'],
+    reporters: ['default', 'json', 'html'],
     outputFile: {
       json: './tests/reports/test-results.json',
       html: './tests/reports/test-results.html',

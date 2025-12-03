@@ -1,0 +1,714 @@
+{
+  "plan_metadata": {
+    "created": "2025-12-02",
+    "project": "CompTIA Network+ Learning Platform",
+    "current_state_score": 6.75,
+    "target_state_score": 8.5,
+    "planner": "GOAP Strategist",
+    "methodology": "SPARC with GOAP Planning"
+  },
+
+  "world_state": {
+    "code_quality": {
+      "god_component_exists": true,
+      "god_component_loc": 3210,
+      "files_exceeding_1000_loc": 18,
+      "duplicate_enhanced_components": 8,
+      "modular_architecture": false,
+      "separation_of_concerns": false
+    },
+    "testing": {
+      "auth_utils_tested": false,
+      "security_utils_tested": false,
+      "test_coverage_percent": 79,
+      "integration_tests_exist": true,
+      "e2e_tests_exist": true,
+      "flaky_tests_count": 0
+    },
+    "security": {
+      "high_severity_vulnerabilities": 2,
+      "moderate_vulnerabilities": 2,
+      "dependencies_audited": true,
+      "secrets_hardcoded": false,
+      "input_sanitization": true
+    },
+    "state_management": {
+      "dual_state_system": true,
+      "zustand_stores": 4,
+      "context_providers": 3,
+      "state_conflicts": true,
+      "unified_state": false
+    },
+    "architecture": {
+      "production_ready": false,
+      "build_optimized": true,
+      "performance_measured": false,
+      "documentation_complete": false,
+      "deployment_ready": false
+    }
+  },
+
+  "goal_state": {
+    "code_quality": {
+      "god_component_exists": false,
+      "god_component_loc": 0,
+      "files_exceeding_1000_loc": 0,
+      "duplicate_enhanced_components": 0,
+      "modular_architecture": true,
+      "separation_of_concerns": true
+    },
+    "testing": {
+      "auth_utils_tested": true,
+      "security_utils_tested": true,
+      "test_coverage_percent": 85,
+      "integration_tests_exist": true,
+      "e2e_tests_exist": true,
+      "flaky_tests_count": 0
+    },
+    "security": {
+      "high_severity_vulnerabilities": 0,
+      "moderate_vulnerabilities": 0,
+      "dependencies_audited": true,
+      "secrets_hardcoded": false,
+      "input_sanitization": true
+    },
+    "state_management": {
+      "dual_state_system": false,
+      "zustand_stores": 5,
+      "context_providers": 0,
+      "state_conflicts": false,
+      "unified_state": true
+    },
+    "architecture": {
+      "production_ready": true,
+      "build_optimized": true,
+      "performance_measured": true,
+      "documentation_complete": true,
+      "deployment_ready": true
+    }
+  },
+
+  "actions": [
+    {
+      "id": "A1",
+      "name": "audit_codebase_structure",
+      "description": "Comprehensive analysis of codebase to identify all refactoring needs",
+      "preconditions": {
+        "codebase_accessible": true
+      },
+      "effects": {
+        "refactoring_plan_exists": true,
+        "component_dependencies_mapped": true,
+        "refactoring_risks_identified": true
+      },
+      "cost_hours": 4,
+      "priority": "P0",
+      "sparc_phase": "Specification",
+      "execution_type": "code",
+      "tools": ["grep", "ast_parser", "dependency_analyzer"],
+      "parallel_with": [],
+      "validation": {
+        "success_criteria": "Complete dependency graph generated",
+        "output_artifacts": ["docs/architecture/dependency-map.json", "docs/architecture/refactoring-plan.md"]
+      }
+    },
+    {
+      "id": "A2",
+      "name": "create_security_test_suite",
+      "description": "Write comprehensive tests for auth and security utilities (0% -> 90% coverage)",
+      "preconditions": {
+        "auth_utils_exist": true,
+        "security_utils_exist": true,
+        "test_framework_configured": true
+      },
+      "effects": {
+        "auth_utils_tested": true,
+        "security_utils_tested": true,
+        "test_coverage_percent": 82
+      },
+      "cost_hours": 8,
+      "priority": "P0",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["vitest", "testing-library", "coverage-analyzer"],
+      "parallel_with": ["A1"],
+      "validation": {
+        "success_criteria": "All auth/security utils have 90%+ test coverage",
+        "output_artifacts": ["tests/unit/utils/auth.test.ts", "tests/unit/utils/security.test.ts"]
+      }
+    },
+    {
+      "id": "A3",
+      "name": "fix_dependency_vulnerabilities",
+      "description": "Resolve 2 high + 2 moderate severity npm vulnerabilities",
+      "preconditions": {
+        "package_json_exists": true,
+        "npm_audit_run": true
+      },
+      "effects": {
+        "high_severity_vulnerabilities": 0,
+        "moderate_vulnerabilities": 0,
+        "dependencies_updated": true
+      },
+      "cost_hours": 3,
+      "priority": "P0",
+      "sparc_phase": "Refinement",
+      "execution_type": "code",
+      "tools": ["npm", "audit-fix", "compatibility-checker"],
+      "parallel_with": ["A1", "A2"],
+      "validation": {
+        "success_criteria": "npm audit shows 0 high/moderate vulnerabilities",
+        "output_artifacts": ["package-lock.json", "docs/security/vulnerability-resolution.md"]
+      }
+    },
+    {
+      "id": "A4",
+      "name": "design_modular_architecture",
+      "description": "Create architecture for splitting CloudArchitectureDesigner (3210 LOC -> <500 LOC modules)",
+      "preconditions": {
+        "refactoring_plan_exists": true,
+        "component_dependencies_mapped": true
+      },
+      "effects": {
+        "modular_architecture_designed": true,
+        "component_split_plan_exists": true,
+        "module_interfaces_defined": true
+      },
+      "cost_hours": 6,
+      "priority": "P0",
+      "sparc_phase": "Architecture",
+      "execution_type": "llm",
+      "tools": ["architectural_analyzer", "component_splitter"],
+      "parallel_with": [],
+      "depends_on": ["A1"],
+      "validation": {
+        "success_criteria": "Architecture design with 7-10 sub-modules defined",
+        "output_artifacts": ["docs/architecture/cloud-designer-modules.md", "docs/architecture/module-interfaces.ts"]
+      }
+    },
+    {
+      "id": "A5",
+      "name": "refactor_cloud_designer_core",
+      "description": "Split CloudArchitectureDesigner into core module (state management + canvas)",
+      "preconditions": {
+        "modular_architecture_designed": true,
+        "component_split_plan_exists": true,
+        "tests_passing": true
+      },
+      "effects": {
+        "core_module_extracted": true,
+        "canvas_state_isolated": true,
+        "god_component_loc": 800
+      },
+      "cost_hours": 12,
+      "priority": "P0",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["ast_transformer", "code_splitter", "test_runner"],
+      "parallel_with": [],
+      "depends_on": ["A4"],
+      "validation": {
+        "success_criteria": "Core module <800 LOC with passing tests",
+        "output_artifacts": ["src/components/cloud/core/CloudDesignerCore.tsx", "src/components/cloud/core/CanvasState.ts"]
+      }
+    },
+    {
+      "id": "A6",
+      "name": "refactor_cloud_designer_ui_components",
+      "description": "Extract UI components (toolbar, library, panels) from CloudArchitectureDesigner",
+      "preconditions": {
+        "core_module_extracted": true,
+        "module_interfaces_defined": true
+      },
+      "effects": {
+        "ui_components_extracted": true,
+        "component_library_module_exists": true,
+        "god_component_loc": 400
+      },
+      "cost_hours": 10,
+      "priority": "P0",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["component_extractor", "ui_generator"],
+      "parallel_with": [],
+      "depends_on": ["A5"],
+      "validation": {
+        "success_criteria": "UI modules each <300 LOC",
+        "output_artifacts": ["src/components/cloud/ui/ComponentLibrary.tsx", "src/components/cloud/ui/DesignToolbar.tsx", "src/components/cloud/ui/PropertiesPanel.tsx"]
+      }
+    },
+    {
+      "id": "A7",
+      "name": "refactor_cloud_designer_features",
+      "description": "Extract feature modules (validation, connectivity, deployment zones)",
+      "preconditions": {
+        "ui_components_extracted": true,
+        "core_module_extracted": true
+      },
+      "effects": {
+        "validation_module_extracted": true,
+        "connectivity_module_extracted": true,
+        "deployment_module_extracted": true,
+        "god_component_loc": 0,
+        "god_component_exists": false
+      },
+      "cost_hours": 14,
+      "priority": "P0",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["feature_extractor", "module_bundler"],
+      "parallel_with": [],
+      "depends_on": ["A6"],
+      "validation": {
+        "success_criteria": "Original component replaced by orchestrator <200 LOC",
+        "output_artifacts": ["src/components/cloud/features/ValidationEngine.ts", "src/components/cloud/features/ConnectivityManager.ts", "src/components/cloud/features/DeploymentZoneManager.ts"]
+      }
+    },
+    {
+      "id": "A8",
+      "name": "consolidate_enhanced_duplicates",
+      "description": "Merge or eliminate 8 'Enhanced' component duplicates",
+      "preconditions": {
+        "refactoring_plan_exists": true
+      },
+      "effects": {
+        "duplicate_enhanced_components": 0,
+        "component_naming_consistent": true
+      },
+      "cost_hours": 8,
+      "priority": "P1",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["component_merger", "duplicate_detector"],
+      "parallel_with": ["A2", "A3"],
+      "validation": {
+        "success_criteria": "No duplicate component functionality",
+        "output_artifacts": ["docs/architecture/component-consolidation.md"]
+      }
+    },
+    {
+      "id": "A9",
+      "name": "refactor_large_files",
+      "description": "Split remaining 17 files exceeding 1000 LOC",
+      "preconditions": {
+        "refactoring_plan_exists": true,
+        "god_component_exists": false
+      },
+      "effects": {
+        "files_exceeding_1000_loc": 0,
+        "modular_architecture": true
+      },
+      "cost_hours": 20,
+      "priority": "P1",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["file_splitter", "dependency_resolver"],
+      "parallel_with": [],
+      "depends_on": ["A7"],
+      "validation": {
+        "success_criteria": "All components <800 LOC, data files <1500 LOC",
+        "output_artifacts": ["Refactored component modules"]
+      }
+    },
+    {
+      "id": "A10",
+      "name": "migrate_contexts_to_zustand",
+      "description": "Migrate 3 Context providers to Zustand stores for unified state",
+      "preconditions": {
+        "zustand_stores_exist": true,
+        "context_providers_identified": true
+      },
+      "effects": {
+        "context_providers": 0,
+        "zustand_stores": 5,
+        "dual_state_system": false,
+        "unified_state": true,
+        "state_conflicts": false
+      },
+      "cost_hours": 10,
+      "priority": "P1",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["state_migrator", "zustand"],
+      "parallel_with": [],
+      "depends_on": ["A2"],
+      "validation": {
+        "success_criteria": "All state in Zustand, 0 Context providers",
+        "output_artifacts": ["src/stores/themeStore.ts", "src/stores/progressStore.ts (enhanced)", "tests/unit/stores/state-migration.test.ts"]
+      }
+    },
+    {
+      "id": "A11",
+      "name": "create_integration_tests_refactored",
+      "description": "Create integration tests for refactored CloudArchitectureDesigner modules",
+      "preconditions": {
+        "god_component_exists": false,
+        "modular_architecture": true
+      },
+      "effects": {
+        "cloud_designer_integration_tested": true,
+        "test_coverage_percent": 85
+      },
+      "cost_hours": 8,
+      "priority": "P1",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["vitest", "testing-library", "playwright"],
+      "parallel_with": [],
+      "depends_on": ["A7"],
+      "validation": {
+        "success_criteria": "85%+ test coverage on cloud modules",
+        "output_artifacts": ["tests/integration/cloud-designer.test.tsx", "tests/e2e/cloud-architecture-flow.spec.ts"]
+      }
+    },
+    {
+      "id": "A12",
+      "name": "performance_baseline_measurement",
+      "description": "Establish performance baselines for all major components",
+      "preconditions": {
+        "modular_architecture": true,
+        "tests_passing": true
+      },
+      "effects": {
+        "performance_measured": true,
+        "performance_baselines_established": true
+      },
+      "cost_hours": 6,
+      "priority": "P1",
+      "sparc_phase": "Refinement",
+      "execution_type": "code",
+      "tools": ["web-vitals", "lighthouse", "performance_profiler"],
+      "parallel_with": ["A11"],
+      "depends_on": ["A9"],
+      "validation": {
+        "success_criteria": "Performance metrics documented for all routes",
+        "output_artifacts": ["docs/performance/baselines.json", "docs/performance/optimization-targets.md"]
+      }
+    },
+    {
+      "id": "A13",
+      "name": "optimize_bundle_size",
+      "description": "Optimize bundle size with code splitting and lazy loading",
+      "preconditions": {
+        "modular_architecture": true,
+        "performance_baselines_established": true
+      },
+      "effects": {
+        "bundle_optimized": true,
+        "lazy_loading_implemented": true,
+        "build_optimized": true
+      },
+      "cost_hours": 8,
+      "priority": "P2",
+      "sparc_phase": "Refinement",
+      "execution_type": "hybrid",
+      "tools": ["vite", "rollup", "bundle_analyzer"],
+      "parallel_with": [],
+      "depends_on": ["A12"],
+      "validation": {
+        "success_criteria": "Initial bundle <300KB gzipped",
+        "output_artifacts": ["vite.config.optimized.ts", "docs/performance/bundle-analysis.html"]
+      }
+    },
+    {
+      "id": "A14",
+      "name": "create_deployment_documentation",
+      "description": "Create comprehensive deployment and production readiness docs",
+      "preconditions": {
+        "production_ready": false,
+        "tests_passing": true,
+        "vulnerabilities_fixed": true
+      },
+      "effects": {
+        "documentation_complete": true,
+        "deployment_guide_exists": true
+      },
+      "cost_hours": 6,
+      "priority": "P2",
+      "sparc_phase": "Completion",
+      "execution_type": "llm",
+      "tools": ["documentation_generator"],
+      "parallel_with": ["A13"],
+      "depends_on": ["A3", "A11"],
+      "validation": {
+        "success_criteria": "Complete deployment guide with runbook",
+        "output_artifacts": ["docs/deployment/PRODUCTION_DEPLOYMENT.md", "docs/deployment/RUNBOOK.md", "docs/deployment/MONITORING.md"]
+      }
+    },
+    {
+      "id": "A15",
+      "name": "production_validation_audit",
+      "description": "Final production readiness validation and checklist completion",
+      "preconditions": {
+        "god_component_exists": false,
+        "high_severity_vulnerabilities": 0,
+        "dual_state_system": false,
+        "test_coverage_percent": 85,
+        "documentation_complete": true
+      },
+      "effects": {
+        "production_ready": true,
+        "deployment_ready": true
+      },
+      "cost_hours": 4,
+      "priority": "P0",
+      "sparc_phase": "Completion",
+      "execution_type": "hybrid",
+      "tools": ["production_validator", "lighthouse", "security_scanner"],
+      "parallel_with": [],
+      "depends_on": ["A13", "A14"],
+      "validation": {
+        "success_criteria": "Production readiness score 8.5+/10",
+        "output_artifacts": ["docs/PRODUCTION_READINESS_REPORT.md"]
+      }
+    }
+  ],
+
+  "optimal_sequence": [
+    "A1",
+    ["A2", "A3", "A8"],
+    "A4",
+    "A5",
+    "A6",
+    "A7",
+    ["A9", "A10"],
+    ["A11", "A12"],
+    ["A13", "A14"],
+    "A15"
+  ],
+
+  "parallel_batches": [
+    {
+      "batch_id": "B1",
+      "name": "Initial Analysis & Quick Wins",
+      "actions": ["A1", "A2", "A3", "A8"],
+      "can_run_parallel": true,
+      "estimated_hours": 8,
+      "description": "Parallel execution of independent analysis and security fixes"
+    },
+    {
+      "batch_id": "B2",
+      "name": "Architecture Design",
+      "actions": ["A4"],
+      "can_run_parallel": false,
+      "estimated_hours": 6,
+      "description": "Sequential architecture planning based on analysis"
+    },
+    {
+      "batch_id": "B3",
+      "name": "Core Refactoring",
+      "actions": ["A5", "A6", "A7"],
+      "can_run_parallel": false,
+      "estimated_hours": 36,
+      "description": "Sequential refactoring of god component"
+    },
+    {
+      "batch_id": "B4",
+      "name": "Remaining Refactoring",
+      "actions": ["A9", "A10"],
+      "can_run_parallel": true,
+      "estimated_hours": 20,
+      "description": "Parallel large file splitting and state migration"
+    },
+    {
+      "batch_id": "B5",
+      "name": "Testing & Performance",
+      "actions": ["A11", "A12"],
+      "can_run_parallel": true,
+      "estimated_hours": 8,
+      "description": "Parallel integration testing and performance measurement"
+    },
+    {
+      "batch_id": "B6",
+      "name": "Optimization & Documentation",
+      "actions": ["A13", "A14"],
+      "can_run_parallel": true,
+      "estimated_hours": 8,
+      "description": "Parallel bundle optimization and documentation"
+    },
+    {
+      "batch_id": "B7",
+      "name": "Production Validation",
+      "actions": ["A15"],
+      "can_run_parallel": false,
+      "estimated_hours": 4,
+      "description": "Final validation checkpoint"
+    }
+  ],
+
+  "critical_path": [
+    "A1 (4h)",
+    "A4 (6h)",
+    "A5 (12h)",
+    "A6 (10h)",
+    "A7 (14h)",
+    "A9 (20h)",
+    "A11 (8h)",
+    "A13 (8h)",
+    "A15 (4h)"
+  ],
+
+  "total_estimated_hours": 131,
+  "critical_path_hours": 86,
+  "parallelization_savings_hours": 45,
+  "estimated_calendar_days": 11,
+
+  "risk_analysis": {
+    "high_risk_actions": [
+      {
+        "action_id": "A5",
+        "risk": "Breaking existing functionality during core refactor",
+        "mitigation": "Comprehensive test coverage before refactoring (A2), incremental changes with continuous testing",
+        "fallback": "Revert to previous commit, re-plan refactoring strategy"
+      },
+      {
+        "action_id": "A10",
+        "risk": "State migration causing UI inconsistencies",
+        "mitigation": "Create parallel Zustand stores first, gradual migration with feature flags",
+        "fallback": "Keep dual state temporarily, extended migration timeline"
+      },
+      {
+        "action_id": "A3",
+        "risk": "Dependency updates breaking compatibility",
+        "mitigation": "Test in isolation, check changelogs, update one dependency at a time",
+        "fallback": "Pin specific versions, document security exceptions"
+      }
+    ],
+    "dependencies_risks": [
+      "A7 depends on A6 depends on A5 - sequential bottleneck (36 hours)",
+      "A15 depends on everything - late discovery of issues"
+    ],
+    "mitigation_strategies": [
+      "Run A2, A3, A8 in parallel with A1 to compress timeline",
+      "Run A11, A12 in parallel to save 6-8 hours",
+      "Implement feature flags for gradual rollout of refactored modules",
+      "Continuous integration testing at each checkpoint"
+    ]
+  },
+
+  "success_metrics": {
+    "code_quality": {
+      "metric": "Largest component LOC",
+      "current": 3210,
+      "target": 500,
+      "measurement": "wc -l on all .tsx files"
+    },
+    "test_coverage": {
+      "metric": "Test coverage percentage",
+      "current": 79,
+      "target": 85,
+      "measurement": "vitest --coverage"
+    },
+    "security": {
+      "metric": "High/moderate vulnerabilities",
+      "current": 4,
+      "target": 0,
+      "measurement": "npm audit"
+    },
+    "state_management": {
+      "metric": "State management systems",
+      "current": 2,
+      "target": 1,
+      "measurement": "grep -r 'createContext' src/"
+    },
+    "production_readiness": {
+      "metric": "Production readiness score",
+      "current": 6.75,
+      "target": 8.5,
+      "measurement": "Weighted checklist assessment"
+    }
+  },
+
+  "replanning_triggers": [
+    {
+      "trigger": "Test coverage drops below 75% during refactoring",
+      "action": "Pause refactoring, add missing tests, reassess approach"
+    },
+    {
+      "trigger": "Refactored module exceeds 800 LOC",
+      "action": "Further decompose module, update architecture plan"
+    },
+    {
+      "trigger": "New high-severity vulnerability discovered",
+      "action": "Immediately prioritize vulnerability fix, adjust timeline"
+    },
+    {
+      "trigger": "State migration causes >10% performance degradation",
+      "action": "Profile performance, optimize hot paths, consider partial rollback"
+    },
+    {
+      "trigger": "Critical path exceeds 100 hours",
+      "action": "Identify additional parallelization opportunities, consider scope reduction"
+    }
+  ],
+
+  "sparc_phase_distribution": {
+    "Specification": {
+      "actions": ["A1"],
+      "hours": 4,
+      "percentage": 3
+    },
+    "Architecture": {
+      "actions": ["A4"],
+      "hours": 6,
+      "percentage": 5
+    },
+    "Refinement": {
+      "actions": ["A2", "A3", "A5", "A6", "A7", "A8", "A9", "A10", "A11", "A12", "A13"],
+      "hours": 107,
+      "percentage": 82
+    },
+    "Completion": {
+      "actions": ["A14", "A15"],
+      "hours": 10,
+      "percentage": 8
+    }
+  },
+
+  "agent_coordination": {
+    "recommended_agents": [
+      {
+        "agent": "code-analyzer",
+        "actions": ["A1"],
+        "rationale": "Specialized in dependency analysis and codebase structure"
+      },
+      {
+        "agent": "tester",
+        "actions": ["A2", "A11"],
+        "rationale": "Expert in test creation and coverage analysis"
+      },
+      {
+        "agent": "security-manager",
+        "actions": ["A3"],
+        "rationale": "Specialized in vulnerability remediation"
+      },
+      {
+        "agent": "system-architect",
+        "actions": ["A4"],
+        "rationale": "Expert in modular architecture design"
+      },
+      {
+        "agent": "coder",
+        "actions": ["A5", "A6", "A7", "A8", "A9"],
+        "rationale": "Core refactoring implementation"
+      },
+      {
+        "agent": "performance-benchmarker",
+        "actions": ["A12", "A13"],
+        "rationale": "Specialized in performance optimization"
+      },
+      {
+        "agent": "api-docs",
+        "actions": ["A14"],
+        "rationale": "Documentation specialist"
+      },
+      {
+        "agent": "production-validator",
+        "actions": ["A15"],
+        "rationale": "Final production readiness validation"
+      }
+    ],
+    "coordination_pattern": "hierarchical",
+    "max_concurrent_agents": 4
+  }
+}

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useProgress } from '../contexts/ProgressContext';
 import { useProgressStore } from '../stores/progressStore';
 
 const Dashboard: React.FC = () => {
-  const { overallProgress } = useProgress();
+  const getOverallProgress = useProgressStore((state) => state.getOverallProgress);
+  const overallProgress = getOverallProgress();
   const getCategoryProgress = useProgressStore((state) => state.getCategoryProgress);
 
   const categories = [
