@@ -28,11 +28,16 @@ export const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState('');
   const [copiedCodes, setCopiedCodes] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!isEnabled && !setupData) {
-      const data = setupTwoFactor(userEmail);
-      setSetupData(data);
+      // Setup 2FA is now async
+      setIsLoading(true);
+      setupTwoFactor(userEmail)
+        .then(setSetupData)
+        .catch(console.error)
+        .finally(() => setIsLoading(false));
     }
   }, [userEmail, isEnabled, setupData]);
 
@@ -120,7 +125,7 @@ export const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({
           </div>
         )}
 
-        {step === 'qr-code' && setupData && (
+        {step === 'qr-code' && (
           <div className="twofa-step">
             <div className="step-indicator">
               <span className="step active">1</span>
@@ -130,13 +135,17 @@ export const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({
             </div>
 
             <h2>Scan QR Code</h2>
-            <p>
-              Use an authenticator app (Google Authenticator, Authy, etc.) to scan this QR code:
-            </p>
+            {isLoading ? (
+              <p>Loading QR code...</p>
+            ) : setupData ? (
+              <>
+                <p>
+                  Use an authenticator app (Google Authenticator, Authy, etc.) to scan this QR code:
+                </p>
 
-            <div className="qr-code-container">
-              <img src={setupData.qrCodeUrl} alt="2FA QR Code" className="qr-code" />
-            </div>
+                <div className="qr-code-container">
+                  <img src={setupData.qrCodeUrl} alt="2FA QR Code" className="qr-code" />
+                </div>
 
             <div className="secret-key">
               <p>Or enter this key manually:</p>
@@ -146,14 +155,16 @@ export const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({
               </button>
             </div>
 
-            <div className="twofa-actions">
-              <button className="btn-secondary" onClick={onClose}>
-                Cancel
-              </button>
-              <button className="btn-primary" onClick={() => setStep('backup-codes')}>
-                Next
-              </button>
-            </div>
+                <div className="twofa-actions">
+                  <button className="btn-secondary" onClick={onClose} disabled={isLoading}>
+                    Cancel
+                  </button>
+                  <button className="btn-primary" onClick={() => setStep('backup-codes')} disabled={isLoading}>
+                    Next
+                  </button>
+                </div>
+              </>
+            ) : null}
           </div>
         )}
 

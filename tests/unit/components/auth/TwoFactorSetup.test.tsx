@@ -63,13 +63,20 @@ const defaultProps = {
 };
 
 const setupMocks = () => {
-  mockedSetupTwoFactor.mockReturnValue(mockSetupData);
+  mockedSetupTwoFactor.mockResolvedValue(mockSetupData);
   mockedValidateTwoFactorCode.mockReturnValue(false);
   mockClipboardWriteText.mockResolvedValue(undefined);
 };
 
-const renderTwoFactorSetup = (props = {}) => {
-  return render(<TwoFactorSetup {...defaultProps} {...props} />);
+const renderTwoFactorSetup = async (props = {}) => {
+  const result = render(<TwoFactorSetup {...defaultProps} {...props} />);
+  // Wait for async setup to complete
+  if (!props.isEnabled) {
+    await waitFor(() => {
+      expect(mockedSetupTwoFactor).toHaveBeenCalled();
+    });
+  }
+  return result;
 };
 
 // ============================================
@@ -84,26 +91,28 @@ describe('TwoFactorSetup Component', () => {
   });
 
   describe('Initial Rendering - Setup Flow', () => {
-    it('should render modal with close button', () => {
-      renderTwoFactorSetup();
+    it('should render modal with close button', async () => {
+      await await renderTwoFactorSetup();
 
       expect(screen.getByRole('button', { name: /close modal/i })).toBeInTheDocument();
     });
 
-    it('should call setupTwoFactor on mount when not enabled', () => {
-      renderTwoFactorSetup();
+    it('should call setupTwoFactor on mount when not enabled', async () => {
+      await await renderTwoFactorSetup();
 
-      expect(mockedSetupTwoFactor).toHaveBeenCalledWith('test@example.com');
+      await waitFor(() => {
+        expect(mockedSetupTwoFactor).toHaveBeenCalledWith('test@example.com');
+      });
     });
 
-    it('should start on QR code step when 2FA not enabled', () => {
-      renderTwoFactorSetup();
+    it('should start on QR code step when 2FA not enabled', async () => {
+      await await renderTwoFactorSetup();
 
       expect(screen.getByRole('heading', { name: /scan qr code/i })).toBeInTheDocument();
     });
 
-    it('should show step indicator on QR code step', () => {
-      const { container } = renderTwoFactorSetup();
+    it('should show step indicator on QR code step', async () => {
+      const { container } = await await renderTwoFactorSetup();
 
       const steps = container.querySelectorAll('.step');
       expect(steps).toHaveLength(4);
@@ -112,28 +121,28 @@ describe('TwoFactorSetup Component', () => {
   });
 
   describe('QR Code Step', () => {
-    it('should display QR code image', () => {
-      renderTwoFactorSetup();
+    it('should display QR code image', async () => {
+      await renderTwoFactorSetup();
 
       const qrImage = screen.getByAltText('2FA QR Code');
       expect(qrImage).toBeInTheDocument();
       expect(qrImage).toHaveAttribute('src', mockSetupData.qrCodeUrl);
     });
 
-    it('should display secret key', () => {
-      renderTwoFactorSetup();
+    it('should display secret key', async () => {
+      await renderTwoFactorSetup();
 
       expect(screen.getByText(mockSetupData.secret)).toBeInTheDocument();
     });
 
-    it('should have copy key button', () => {
-      renderTwoFactorSetup();
+    it('should have copy key button', async () => {
+      await renderTwoFactorSetup();
 
       expect(screen.getByRole('button', { name: /copy key/i })).toBeInTheDocument();
     });
 
     it('should copy secret to clipboard when clicking copy', async () => {
-      renderTwoFactorSetup();
+      await renderTwoFactorSetup();
 
       const copyButton = screen.getByRole('button', { name: /copy key/i });
       await userEvent.click(copyButton);
@@ -141,8 +150,8 @@ describe('TwoFactorSetup Component', () => {
       expect(mockClipboardWriteText).toHaveBeenCalledWith(mockSetupData.secret);
     });
 
-    it('should have cancel and next buttons', () => {
-      renderTwoFactorSetup();
+    it('should have cancel and next buttons', async () => {
+      await renderTwoFactorSetup();
 
       expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
@@ -150,7 +159,7 @@ describe('TwoFactorSetup Component', () => {
 
     it('should call onClose when clicking cancel', async () => {
       const onClose = vi.fn();
-      renderTwoFactorSetup({ onClose });
+      await renderTwoFactorSetup({ onClose });
 
       await userEvent.click(screen.getByRole('button', { name: /cancel/i }));
 
@@ -158,7 +167,7 @@ describe('TwoFactorSetup Component', () => {
     });
 
     it('should navigate to backup codes step when clicking next', async () => {
-      renderTwoFactorSetup();
+      await renderTwoFactorSetup();
 
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
 
@@ -168,7 +177,7 @@ describe('TwoFactorSetup Component', () => {
 
   describe('Backup Codes Step', () => {
     const navigateToBackupCodes = async () => {
-      renderTwoFactorSetup();
+      await renderTwoFactorSetup();
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
     };
 
@@ -260,7 +269,7 @@ describe('TwoFactorSetup Component', () => {
     });
 
     it('should update step indicator', async () => {
-      const { container } = renderTwoFactorSetup();
+      const { container } = await renderTwoFactorSetup();
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
 
       const steps = container.querySelectorAll('.step');
@@ -271,7 +280,7 @@ describe('TwoFactorSetup Component', () => {
 
   describe('Verify Step', () => {
     const navigateToVerify = async () => {
-      renderTwoFactorSetup();
+      await renderTwoFactorSetup();
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
     };
@@ -409,7 +418,7 @@ describe('TwoFactorSetup Component', () => {
   describe('Success Step', () => {
     const navigateToSuccess = async () => {
       mockedValidateTwoFactorCode.mockReturnValue(true);
-      renderTwoFactorSetup();
+      await renderTwoFactorSetup();
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       const input = screen.getByLabelText(/verification code/i);
@@ -430,7 +439,7 @@ describe('TwoFactorSetup Component', () => {
     });
 
     it('should show all steps as completed', async () => {
-      const { container } = renderTwoFactorSetup();
+      const { container } = await renderTwoFactorSetup();
       mockedValidateTwoFactorCode.mockReturnValue(true);
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
@@ -454,6 +463,12 @@ describe('TwoFactorSetup Component', () => {
       const onComplete = vi.fn();
       mockedValidateTwoFactorCode.mockReturnValue(true);
       render(<TwoFactorSetup {...defaultProps} onComplete={onComplete} />);
+
+      // Wait for async setup
+      await waitFor(() => {
+        expect(mockedSetupTwoFactor).toHaveBeenCalled();
+      });
+
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       const input = screen.getByLabelText(/verification code/i);
@@ -467,26 +482,26 @@ describe('TwoFactorSetup Component', () => {
   });
 
   describe('Disable Step', () => {
-    it('should start on disable step when 2FA is enabled', () => {
-      renderTwoFactorSetup({ isEnabled: true });
+    it('should start on disable step when 2FA is enabled', async () => {
+      await renderTwoFactorSetup({ isEnabled: true });
 
       expect(screen.getByRole('heading', { name: /disable two-factor authentication/i })).toBeInTheDocument();
     });
 
-    it('should not call setupTwoFactor when already enabled', () => {
-      renderTwoFactorSetup({ isEnabled: true });
+    it('should not call setupTwoFactor when already enabled', async () => {
+      await renderTwoFactorSetup({ isEnabled: true });
 
       expect(mockedSetupTwoFactor).not.toHaveBeenCalled();
     });
 
-    it('should show warning about reduced security', () => {
-      renderTwoFactorSetup({ isEnabled: true });
+    it('should show warning about reduced security', async () => {
+      await renderTwoFactorSetup({ isEnabled: true });
 
       expect(screen.getByText(/make your account less secure/i)).toBeInTheDocument();
     });
 
-    it('should have cancel and disable buttons', () => {
-      renderTwoFactorSetup({ isEnabled: true });
+    it('should have cancel and disable buttons', async () => {
+      await renderTwoFactorSetup({ isEnabled: true });
 
       expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /disable 2fa/i })).toBeInTheDocument();
@@ -494,7 +509,7 @@ describe('TwoFactorSetup Component', () => {
 
     it('should call onClose when clicking cancel', async () => {
       const onClose = vi.fn();
-      renderTwoFactorSetup({ isEnabled: true, onClose });
+      await renderTwoFactorSetup({ isEnabled: true, onClose });
 
       await userEvent.click(screen.getByRole('button', { name: /cancel/i }));
 
@@ -504,7 +519,7 @@ describe('TwoFactorSetup Component', () => {
     it('should remove localStorage status and call onComplete when disabling', async () => {
       localStorage.setItem('twoFactorStatus', JSON.stringify({ enabled: true }));
       const onComplete = vi.fn();
-      renderTwoFactorSetup({ isEnabled: true, onComplete });
+      await renderTwoFactorSetup({ isEnabled: true, onComplete });
 
       await userEvent.click(screen.getByRole('button', { name: /disable 2fa/i }));
 
@@ -514,9 +529,9 @@ describe('TwoFactorSetup Component', () => {
   });
 
   describe('Modal Behavior', () => {
-    it('should call onClose when clicking overlay', () => {
+    it('should call onClose when clicking overlay', async () => {
       const onClose = vi.fn();
-      const { container } = renderTwoFactorSetup({ onClose });
+      const { container } = await renderTwoFactorSetup({ onClose });
 
       const overlay = container.querySelector('.modal-overlay');
       fireEvent.click(overlay!);
@@ -524,9 +539,9 @@ describe('TwoFactorSetup Component', () => {
       expect(onClose).toHaveBeenCalled();
     });
 
-    it('should not call onClose when clicking modal content', () => {
+    it('should not call onClose when clicking modal content', async () => {
       const onClose = vi.fn();
-      const { container } = renderTwoFactorSetup({ onClose });
+      const { container } = await renderTwoFactorSetup({ onClose });
 
       const modalContent = container.querySelector('.modal-content');
       fireEvent.click(modalContent!);
@@ -536,7 +551,7 @@ describe('TwoFactorSetup Component', () => {
 
     it('should call onClose when clicking close button', async () => {
       const onClose = vi.fn();
-      renderTwoFactorSetup({ onClose });
+      await renderTwoFactorSetup({ onClose });
 
       await userEvent.click(screen.getByRole('button', { name: /close modal/i }));
 
@@ -545,40 +560,40 @@ describe('TwoFactorSetup Component', () => {
   });
 
   describe('CSS Classes', () => {
-    it('should have twofa-modal class on content', () => {
-      const { container } = renderTwoFactorSetup();
+    it('should have twofa-modal class on content', async () => {
+      const { container } = await renderTwoFactorSetup();
       expect(container.querySelector('.twofa-modal')).toBeInTheDocument();
     });
 
-    it('should have twofa-step class on step content', () => {
-      const { container } = renderTwoFactorSetup();
+    it('should have twofa-step class on step content', async () => {
+      const { container } = await renderTwoFactorSetup();
       expect(container.querySelector('.twofa-step')).toBeInTheDocument();
     });
 
-    it('should have step-indicator class', () => {
-      const { container } = renderTwoFactorSetup();
+    it('should have step-indicator class', async () => {
+      const { container } = await renderTwoFactorSetup();
       expect(container.querySelector('.step-indicator')).toBeInTheDocument();
     });
 
-    it('should have qr-code-container class', () => {
-      const { container } = renderTwoFactorSetup();
+    it('should have qr-code-container class', async () => {
+      const { container } = await renderTwoFactorSetup();
       expect(container.querySelector('.qr-code-container')).toBeInTheDocument();
     });
 
-    it('should have secret-key class', () => {
-      const { container } = renderTwoFactorSetup();
+    it('should have secret-key class', async () => {
+      const { container } = await renderTwoFactorSetup();
       expect(container.querySelector('.secret-key')).toBeInTheDocument();
     });
 
     it('should have backup-codes class on backup step', async () => {
-      const { container } = renderTwoFactorSetup();
+      const { container } = await renderTwoFactorSetup();
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
 
       expect(container.querySelector('.backup-codes')).toBeInTheDocument();
     });
 
     it('should have verification-input class on verify step', async () => {
-      const { container } = renderTwoFactorSetup();
+      const { container } = await renderTwoFactorSetup();
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
 
@@ -587,7 +602,7 @@ describe('TwoFactorSetup Component', () => {
 
     it('should have success-icon class on success step', async () => {
       mockedValidateTwoFactorCode.mockReturnValue(true);
-      const { container } = renderTwoFactorSetup();
+      const { container } = await renderTwoFactorSetup();
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       await userEvent.click(screen.getByRole('button', { name: /next/i }));
       const input = screen.getByLabelText(/verification code/i);

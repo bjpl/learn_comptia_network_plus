@@ -1,291 +1,126 @@
 /**
  * Input Sanitization Utilities
- * XSS prevention and input cleaning functions
+ * XSS prevention and input cleaning
  */
 
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 
-/**
- * DOMPurify configuration for different contexts
- */
-const ALLOWED_TAGS_BASIC = ['b', 'i', 'em', 'strong', 'u', 'br', 'p'];
-const ALLOWED_TAGS_RICH = [
-  'b',
-  'i',
-  'em',
-  'strong',
-  'u',
-  'br',
-  'p',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'ul',
-  'ol',
-  'li',
-  'code',
-  'pre',
-  'blockquote',
-  'a',
-  'span',
-  'div',
-];
-const ALLOWED_ATTR_BASIC: string[] = [];
-const ALLOWED_ATTR_RICH = ['href', 'title', 'target', 'rel', 'class'];
-
-/**
- * Sanitize HTML content with basic formatting
- * Allows only safe inline formatting tags
- */
-export const sanitizeHtmlBasic = (dirty: string): string => {
-  if (!dirty || typeof dirty !== 'string') {
-    return '';
-  }
-
-  return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: ALLOWED_TAGS_BASIC,
-    ALLOWED_ATTR: ALLOWED_ATTR_BASIC,
-    KEEP_CONTENT: true,
-    RETURN_TRUSTED_TYPE: false,
+export function sanitizeHtmlBasic(html: string): string {
+  if (!html) return '';
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br'],
+    ALLOWED_ATTR: []
   });
-};
+}
 
-/**
- * Sanitize HTML content with rich formatting
- * Allows more tags for user-generated content like notes
- */
-export const sanitizeHtmlRich = (dirty: string): string => {
-  if (!dirty || typeof dirty !== 'string') {
-    return '';
-  }
-
-  return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: ALLOWED_TAGS_RICH,
-    ALLOWED_ATTR: ALLOWED_ATTR_RICH,
-    KEEP_CONTENT: true,
-    RETURN_TRUSTED_TYPE: false,
-    ALLOWED_URI_REGEXP:
-      /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
-    ADD_ATTR: ['target'],
+export function sanitizeHtmlRich(html: string): string {
+  if (!html) return '';
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br', 'ul', 'ol', 'li', 'a', 'code', 'pre'],
+    ALLOWED_ATTR: ['href']
   });
-};
+}
 
-/**
- * Strip all HTML tags from content
- * Use for plain text contexts
- */
-export const stripHtml = (dirty: string): string => {
-  if (!dirty || typeof dirty !== 'string') {
-    return '';
-  }
+export function stripHtml(html: string): string {
+  if (!html) return '';
+  return DOMPurify.sanitize(html, { ALLOWED_TAGS: [] });
+}
 
-  return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: [],
-    ALLOWED_ATTR: [],
-    KEEP_CONTENT: true,
+export function sanitizeInput(input: string): string {
+  if (!input) return '';
+  return input.replace(/[<>'"&]/g, (char) => {
+    const entities: Record<string, string> = {
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '&': '&amp;'
+    };
+    return entities[char] || char;
   });
-};
+}
 
-/**
- * Sanitize plain text input
- * Removes dangerous characters and trims content
- */
-export const sanitizeInput = (input: string, maxLength: number = 1000): string => {
-  if (!input || typeof input !== 'string') {
-    return '';
-  }
+export function sanitizeEmail(email: string): string {
+  if (!email) return '';
+  return email.toLowerCase().trim().replace(/[^a-z0-9@._-]/g, '');
+}
 
-  return (
-    input
-      .trim()
-      .replace(/[<>]/g, '') // Remove angle brackets
-      // eslint-disable-next-line no-control-regex
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove control characters
-      .slice(0, maxLength)
-  );
-};
-
-/**
- * Sanitize email address
- * Basic sanitization, should be used with validation
- */
-export const sanitizeEmail = (email: string): string => {
-  if (!email || typeof email !== 'string') {
-    return '';
-  }
-
-  return email
-    .toLowerCase()
-    .trim()
-    .replace(/[<>'"]/g, '')
-    .slice(0, 254); // RFC 5321 max email length
-};
-
-/**
- * Sanitize URL
- * Removes dangerous protocols and malformed URLs
- */
-export const sanitizeUrl = (url: string): string => {
-  if (!url || typeof url !== 'string') {
-    return '';
-  }
-
-  const trimmed = url.trim();
-
-  // Check for dangerous protocols
-  const dangerousProtocols = ['javascript:', 'data:', 'vbscript:', 'file:'];
-  const lowerUrl = trimmed.toLowerCase();
-
-  for (const protocol of dangerousProtocols) {
-    if (lowerUrl.startsWith(protocol)) {
-      return '';
-    }
-  }
-
-  // Allow only http, https, mailto
-  if (!lowerUrl.match(/^(https?:\/\/|mailto:)/)) {
-    // If no protocol, assume https
-    if (!lowerUrl.includes(':')) {
-      return `https://${trimmed}`;
-    }
-    return '';
-  }
-
-  return trimmed.slice(0, 500);
-};
-
-/**
- * Sanitize filename
- * Removes path traversal and dangerous characters
- */
-export const sanitizeFilename = (filename: string): string => {
-  if (!filename || typeof filename !== 'string') {
-    return '';
-  }
-
-  return filename
-    .trim()
-    .replace(/[^a-zA-Z0-9._-]/g, '_') // Replace dangerous chars with underscore
-    .replace(/\.\./g, '_') // Prevent path traversal
-    .replace(/^\.+/, '') // Remove leading dots
-    .slice(0, 255); // Max filename length
-};
-
-/**
- * Sanitize SQL LIKE pattern
- * Escapes special characters for SQL LIKE queries
- */
-export const sanitizeLikePattern = (pattern: string): string => {
-  if (!pattern || typeof pattern !== 'string') {
-    return '';
-  }
-
-  return pattern
-    .replace(/[%_\\]/g, '\\$&') // Escape LIKE wildcards
-    .slice(0, 100);
-};
-
-/**
- * Sanitize JSON string
- * Validates and sanitizes JSON input
- */
-export const sanitizeJson = (jsonString: string): string | null => {
-  if (!jsonString || typeof jsonString !== 'string') {
-    return null;
-  }
-
+export function sanitizeUrl(url: string): string {
+  if (!url) return '';
   try {
-    const parsed: unknown = JSON.parse(jsonString);
-    // Re-stringify to ensure clean JSON
-    return JSON.stringify(parsed);
+    const parsed = new URL(url);
+    return parsed.href;
   } catch {
-    return null;
-  }
-};
-
-/**
- * Escape HTML entities
- * Use when you need to display user input as text
- */
-export const escapeHtml = (text: string): string => {
-  if (!text || typeof text !== 'string') {
     return '';
   }
+}
 
-  const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;',
-  };
+export function sanitizeFilename(filename: string): string {
+  if (!filename) return '';
+  return filename
+    .replace(/\.\./g, '') // Remove path traversal
+    .replace(/^\.+/, '') // Remove leading dots
+    .replace(/[^a-zA-Z0-9._-]/g, '_') // Replace special chars
+    .substring(0, 255); // Limit length
+}
 
-  return text.replace(/[&<>"'/]/g, (char) => map[char] || char);
-};
+export function sanitizeLikePattern(pattern: string): string {
+  if (!pattern) return '';
+  return pattern.replace(/[%_\\]/g, '\\$&');
+}
 
-/**
- * Sanitize search query
- * Special handling for search inputs
- */
-export const sanitizeSearchQuery = (query: string): string => {
-  if (!query || typeof query !== 'string') {
-    return '';
+export function sanitizeJson(data: any): any {
+  if (typeof data === 'string') {
+    return sanitizeInput(data);
   }
+  if (Array.isArray(data)) {
+    return data.map(sanitizeJson);
+  }
+  if (data && typeof data === 'object') {
+    const result: any = {};
+    for (const [key, value] of Object.entries(data)) {
+      result[key] = sanitizeJson(value);
+    }
+    return result;
+  }
+  return data;
+}
 
-  return (
-    query
-      .trim()
-      .replace(/[<>]/g, '')
-      // eslint-disable-next-line no-control-regex
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-      .replace(/\s+/g, ' ') // Normalize whitespace
-      .slice(0, 200)
-  ); // Reasonable search query length
-};
+export function escapeHtml(text: string): string {
+  return sanitizeInput(text);
+}
 
-/**
- * Sanitize user note content
- * For user-generated notes with rich text
- */
-export const sanitizeNoteContent = (content: string): string => {
+export function sanitizeSearchQuery(query: string): string {
+  if (!query) return '';
+  return query.trim().replace(/[<>'"]/g, '');
+}
+
+export function sanitizeNoteContent(content: string): string {
   return sanitizeHtmlRich(content);
-};
+}
 
-/**
- * Sanitize assessment answer
- * For quiz/assessment text answers
- */
-export const sanitizeAssessmentAnswer = (answer: string): string => {
-  return sanitizeInput(answer, 5000); // Allow longer answers
-};
+export function sanitizeAssessmentAnswer(answer: string): string {
+  return sanitizeInput(answer);
+}
 
-/**
- * Batch sanitization for objects
- * Sanitizes all string values in an object
- */
-export const sanitizeObject = <T extends Record<string, unknown>>(
+export function sanitizeObject<T extends Record<string, any>>(
   obj: T,
-  sanitizer: (value: string) => string = sanitizeInput
-): T => {
-  const sanitized: Record<string, unknown> = {};
+  sanitizer?: (value: string) => string
+): T {
+  const defaultSanitizer = sanitizer || sanitizeInput;
+  const result: any = {};
 
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
-      sanitized[key] = sanitizer(value);
+      result[key] = defaultSanitizer(value);
     } else if (Array.isArray(value)) {
-      sanitized[key] = value.map((item: unknown) =>
-        typeof item === 'string' ? sanitizer(item) : item
-      );
-    } else if (value !== null && typeof value === 'object') {
-      sanitized[key] = sanitizeObject(value as Record<string, unknown>, sanitizer);
+      result[key] = value.map(v => typeof v === 'string' ? defaultSanitizer(v) : v);
+    } else if (value && typeof value === 'object') {
+      result[key] = sanitizeObject(value, sanitizer);
     } else {
-      sanitized[key] = value;
+      result[key] = value;
     }
   }
 
-  return sanitized as T;
-};
+  return result as T;
+}

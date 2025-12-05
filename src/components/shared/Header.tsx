@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../stores/appStore';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useProgressStore } from '../../stores/progressStore';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuthStore } from '../../stores/authStore';
 import { getUserDisplayName, getUserInitials } from '../../utils/auth';
 
 export const Header: React.FC = () => {
@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const getOverallProgress = useProgressStore((state) => state.getOverallProgress);
   const overallProgress = getOverallProgress();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);

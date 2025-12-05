@@ -3,6 +3,14 @@
  */
 
 import type { TwoFactorSetupData, DeviceSession } from '../types/security';
+import {
+  generateTOTPSecret,
+  generateTOTPUri,
+  generateQRCode,
+  verifyTOTP,
+  generateBackupCodes as generateTOTPBackupCodes,
+  verifyBackupCode,
+} from './totp';
 
 /**
  * Generate a cryptographically secure random integer between 0 and max (exclusive)
@@ -25,52 +33,27 @@ const getSecureRandomHex = (length: number): string => {
 };
 
 /**
- * Generate a mock secret for 2FA setup
+ * Generate a TOTP secret for 2FA setup
  */
 export const generateTwoFactorSecret = (): string => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-  let secret = '';
-  for (let i = 0; i < 32; i++) {
-    secret += chars.charAt(getSecureRandomInt(chars.length));
-  }
-  return secret;
+  return generateTOTPSecret();
 };
 
 /**
  * Generate backup codes for 2FA
  */
 export const generateBackupCodes = (count: number = 10): string[] => {
-  const codes: string[] = [];
-  for (let i = 0; i < count; i++) {
-    const code = getSecureRandomHex(8).toUpperCase();
-    codes.push(code);
-  }
-  return codes;
+  return generateTOTPBackupCodes(count);
 };
 
 /**
- * Generate QR code URL for 2FA setup
- * In a real app, this would use a proper QR code library
+ * Setup 2FA for a user (async version with real QR code generation)
  */
-export const generateQRCodeUrl = (secret: string, email: string): string => {
-  const issuer = 'CompTIA Network+ Learning';
-  const otpauthUrl = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(
-    email
-  )}?secret=${secret}&issuer=${encodeURIComponent(issuer)}`;
-
-  // Using a public QR code API for demo purposes
-  return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-    otpauthUrl
-  )}`;
-};
-
-/**
- * Setup 2FA for a user
- */
-export const setupTwoFactor = (email: string): TwoFactorSetupData => {
-  const secret = generateTwoFactorSecret();
-  const qrCodeUrl = generateQRCodeUrl(secret, email);
-  const backupCodes = generateBackupCodes();
+export const setupTwoFactor = async (email: string): Promise<TwoFactorSetupData> => {
+  const secret = generateTOTPSecret();
+  const uri = generateTOTPUri(secret, email);
+  const qrCodeUrl = await generateQRCode(uri);
+  const backupCodes = generateTOTPBackupCodes();
 
   return {
     secret,
@@ -80,11 +63,21 @@ export const setupTwoFactor = (email: string): TwoFactorSetupData => {
 };
 
 /**
- * Validate a 2FA code (mock implementation)
+ * Validate a 2FA code (production implementation)
  */
-export const validateTwoFactorCode = (code: string, _secret: string): boolean => {
-  // For demo purposes, accept any 6-digit code
-  return /^\d{6}$/.test(code);
+export const validateTwoFactorCode = (code: string, secret: string): boolean => {
+  return verifyTOTP(code, secret);
+};
+
+/**
+ * Validate a backup code
+ * @returns Object with validity and remaining codes
+ */
+export const validateBackupCode = (
+  code: string,
+  storedCodes: string[]
+): { isValid: boolean; remainingCodes: string[] } => {
+  return verifyBackupCode(code, storedCodes);
 };
 
 /**

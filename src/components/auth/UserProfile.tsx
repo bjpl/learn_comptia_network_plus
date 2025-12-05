@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuthStore } from '../../stores/authStore';
 import {
   getUserDisplayName,
   getUserInitials,
@@ -31,7 +31,7 @@ interface PasswordErrors {
 }
 
 export const UserProfile: React.FC = () => {
-  const { user, updateUser, logout } = useAuth();
+  const { user, updateUser, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);

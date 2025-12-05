@@ -23,6 +23,7 @@ interface AuthState {
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  updateUser: (updates: Partial<User>) => void;
   clearError: () => void;
   setError: (error: string) => void;
 
@@ -169,6 +170,18 @@ export const useAuthStore = create<AuthState>()(
               error: apiError.userMessage,
             });
           }
+        }
+      },
+
+      /**
+       * Update user data locally
+       */
+      updateUser: (updates: Partial<User>) => {
+        const { user } = get();
+        if (user) {
+          set({
+            user: { ...user, ...updates },
+          });
         }
       },
 

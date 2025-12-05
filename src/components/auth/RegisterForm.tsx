@@ -5,14 +5,14 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuthStore } from '../../stores/authStore';
 import { validateEmail, validatePasswordStrength } from '../../utils/auth';
 import type { RegisterData } from '../../types/auth';
 import './AuthForms.css';
 
 export const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
-  const { register, error: authError } = useAuth();
+  const { register, error: authError } = useAuthStore();
 
   const [formData, setFormData] = useState<RegisterData>({
     email: '',

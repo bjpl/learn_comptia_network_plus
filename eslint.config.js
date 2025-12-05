@@ -20,8 +20,10 @@ export default [
       '.claude/**',
       '*.config.js',
       '*.config.ts',
+      'config/**',
       'backend/**',
       'tests/**',
+      'examples/**',
     ],
   },
 
@@ -39,20 +41,69 @@ export default [
         },
       },
       globals: {
-        // Browser globals
+        // Browser globals - Web APIs
         window: 'readonly',
         document: 'readonly',
         navigator: 'readonly',
         console: 'readonly',
-        // ES2022 globals
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        setTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearTimeout: 'readonly',
+        clearInterval: 'readonly',
+        setImmediate: 'readonly',
+        clearImmediate: 'readonly',
+        fetch: 'readonly',
+        alert: 'readonly',
+        confirm: 'readonly',
+        prompt: 'readonly',
+
+        // Animation and timing APIs
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
+        performance: 'readonly',
+
+        // Crypto API
+        crypto: 'readonly',
+
+        // Base64 encoding/decoding
+        btoa: 'readonly',
+        atob: 'readonly',
+
+        // Web Worker globals
+        self: 'readonly',
+        postMessage: 'readonly',
+
+        // DOM/HTML globals
+        HTMLElement: 'readonly',
+        HTMLAnchorElement: 'readonly',
+        HTMLFormElement: 'readonly',
+        Event: 'readonly',
+        MouseEvent: 'readonly',
+        KeyboardEvent: 'readonly',
+        DragEvent: 'readonly',
+
+        // ES2022+ globals
         globalThis: 'readonly',
-        // Node globals
+        Promise: 'readonly',
+        Map: 'readonly',
+        Set: 'readonly',
+        WeakMap: 'readonly',
+        WeakSet: 'readonly',
+
+        // Node.js globals
         process: 'readonly',
         __dirname: 'readonly',
         __filename: 'readonly',
         Buffer: 'readonly',
         module: 'readonly',
         require: 'readonly',
+        NodeJS: 'readonly',
+
+        // React globals (for TypeScript)
+        React: 'readonly',
+        JSX: 'readonly',
       },
     },
     plugins: {

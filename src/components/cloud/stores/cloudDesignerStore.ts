@@ -312,8 +312,7 @@ export const useCloudDesignerStore = create<CloudDesignerStore>()(
 
         setDesign: (design) => {
           set((state) => {
-            state.design = design;
-            state.design.metadata.modified = new Date();
+            state.design = { ...design, metadata: { ...design.metadata, modified: new Date() } };
           });
         },
 

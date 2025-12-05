@@ -1,24 +1,14 @@
 /**
  * Authentication Hooks
- * Provides unified access to authentication state and actions
+ * Direct re-export of Zustand auth store
  */
 
-// Re-export useAuth from context for backward compatibility
-export { useAuth } from '../contexts/AuthContext';
-
-// Export direct Zustand store hook for new code (recommended)
+// Export Zustand store as the primary authentication hook
 export { useAuthStore } from '../stores/authStore';
 
 /**
  * Usage:
  *
- * // Backward compatible (uses Context wrapper):
- * import { useAuth } from '../hooks/useAuth';
- * const { user, login, logout } = useAuth();
- *
- * // Direct Zustand store (recommended for new code):
  * import { useAuthStore } from '../hooks/useAuth';
- * const { user, login, logout } = useAuthStore();
- *
- * // Both provide the same interface and share the same state
+ * const { user, login, logout, isAuthenticated } = useAuthStore();
  */

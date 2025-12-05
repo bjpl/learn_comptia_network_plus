@@ -122,6 +122,11 @@ export class AuthController {
       // Reset failed login attempts on successful login
       await UserModel.resetFailedAttempts(user.id);
 
+      // Check if password hash needs to be upgraded (non-blocking)
+      AuthService.checkAndRehashPassword(user.id, password, user.password_hash).catch((err) => {
+        logger.error('Failed to upgrade password hash:', err);
+      });
+
       // Generate tokens
       const accessToken = AuthService.generateAccessToken(user);
       const refreshToken = AuthService.generateRefreshToken(user);

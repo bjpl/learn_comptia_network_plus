@@ -57,11 +57,11 @@ export function validateIPv4(ip: string): ValidationResult {
   if (octets[0] === 127) {
     warnings.push('Loopback address (127.0.0.0/8)');
   }
-  if (octets[0] === 255) {
-    errors.push('Invalid address (first octet cannot be 255)');
-  }
+  // Check for broadcast address first (all 255s is valid but special)
   if (octets.every((o) => o === 255)) {
     warnings.push('Broadcast address (255.255.255.255)');
+  } else if (octets[0] === 255) {
+    errors.push('Invalid address (first octet cannot be 255)');
   }
 
   // Private address ranges
@@ -122,9 +122,9 @@ export function validateIPv6(ip: string): ValidationResult {
     warnings.push('Unspecified address (all zeros)');
   }
 
-  // Check for proper compression
-  const doubleColonCount = (ip.match(/::/g) || []).length;
-  if (doubleColonCount > 1) {
+  // Check for multiple :: compressions
+  const colonGroups = ip.split('::');
+  if (colonGroups.length > 2) {
     errors.push('Multiple :: compressions are not allowed');
   }
 

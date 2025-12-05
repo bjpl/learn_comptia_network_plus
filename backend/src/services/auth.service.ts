@@ -1,7 +1,7 @@
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { pool } from '../config/database';
 import { logger } from '../config/logger';
+import { hashPassword, verifyPassword, needsRehash } from '../utils/password';
 
 // Require JWT secrets - fail fast if not configured
 if (!process.env.JWT_SECRET) {
@@ -33,14 +33,48 @@ export interface TokenPayload {
 }
 
 export class AuthService {
-  private static SALT_ROUNDS = 10;
-
+  /**
+   * Hash a password using bcrypt with 12 rounds (production security)
+   * @deprecated Use hashPassword from utils/password.ts instead
+   */
   static async hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, this.SALT_ROUNDS);
+    return hashPassword(password);
   }
 
+  /**
+   * Compare a password against a bcrypt hash
+   * @deprecated Use verifyPassword from utils/password.ts instead
+   */
   static async comparePassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
+    return verifyPassword(password, hash);
+  }
+
+  /**
+   * Check if a password hash needs to be upgraded and rehash if necessary
+   * This should be called after successful login to upgrade old hashes
+   */
+  static async checkAndRehashPassword(
+    userId: number,
+    password: string,
+    currentHash: string
+  ): Promise<void> {
+    const needsUpgrade = await needsRehash(currentHash);
+
+    if (needsUpgrade) {
+      logger.info(`Upgrading password hash for user ${userId} to 12 rounds`);
+      const newHash = await hashPassword(password);
+
+      const client = await pool.connect();
+      try {
+        await client.query('UPDATE users SET password_hash = $1 WHERE id = $2', [newHash, userId]);
+        logger.info(`Password hash upgraded successfully for user ${userId}`);
+      } catch (error) {
+        logger.error('Error upgrading password hash:', error);
+        // Don't throw - this is a non-critical operation
+      } finally {
+        client.release();
+      }
+    }
   }
 
   static generateAccessToken(user: User): string {

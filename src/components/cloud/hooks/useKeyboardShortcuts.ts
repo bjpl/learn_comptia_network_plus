@@ -140,20 +140,11 @@ export const useKeyboardShortcuts = (config: KeyboardShortcutsConfig): void => {
         return;
       }
 
-      // Enter: Log component properties (placeholder for properties panel)
+      // Enter: Show component properties (placeholder for properties panel)
       if (e.key === 'Enter' && selectedComponent) {
         e.preventDefault();
-        // Future: Could open a properties panel modal
-        console.log('Component properties:', {
-          id: selectedComponent.id,
-          type: selectedComponent.type,
-          subtype: selectedComponent.subtype,
-          name: selectedComponent.name,
-          position: { x: selectedComponent.x, y: selectedComponent.y },
-          dimensions: { width: selectedComponent.width, height: selectedComponent.height },
-          properties: selectedComponent.properties,
-          connections: selectedComponent.connections,
-        });
+        // Future: Could open a properties panel modal showing component details
+        // Component: {id, type, subtype, name, position, dimensions, properties, connections}
         return;
       }
     };

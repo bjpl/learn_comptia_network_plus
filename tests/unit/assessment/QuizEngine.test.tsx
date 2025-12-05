@@ -89,7 +89,7 @@ describe('QuizEngine', () => {
     it('should render setup screen by default', () => {
       render(<QuizEngine />);
 
-      expect(screen.getByText(/Quiz Configuration/i)).toBeInTheDocument();
+      expect(screen.getByText(/CompTIA Network+ Practice Quiz/i)).toBeInTheDocument();
     });
 
     it('should display domain selection options', () => {
@@ -121,15 +121,15 @@ describe('QuizEngine', () => {
 
       render(<QuizEngine initialConfig={initialConfig} />);
 
-      expect(screen.getByText(/Quiz Configuration/i)).toBeInTheDocument();
+      expect(screen.getByText(/CompTIA Network+ Practice Quiz/i)).toBeInTheDocument();
     });
   });
 
   // ===========================================================================
-  // Quiz Configuration Tests
+  // CompTIA Network+ Practice Quiz Tests
   // ===========================================================================
 
-  describe('Quiz Configuration', () => {
+  describe('CompTIA Network+ Practice Quiz', () => {
     it('should allow selecting domains', async () => {
       render(<QuizEngine />);
 

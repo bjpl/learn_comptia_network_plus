@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuthStore } from '../../stores/authStore';
 import { validateEmail } from '../../utils/auth';
 import './AuthForms.css';
 
@@ -16,7 +16,7 @@ interface LocationState {
 export const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, error: authError } = useAuth();
+  const { login, error: authError } = useAuthStore();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -72,7 +72,7 @@ export const LoginForm: React.FC = () => {
       // Redirect to previous location or home
       navigate(from, { replace: true });
     } catch (error) {
-      // Error is handled by AuthContext
+      // Error is handled by authStore
       console.error('Login error:', error);
     } finally {
       setIsSubmitting(false);

@@ -321,11 +321,7 @@ class ApiClient {
           attemptCount++;
           const delay = calculateRetryDelay(attemptCount, API_CONFIG.RETRY.RETRY_DELAY);
 
-          // eslint-disable-next-line no-console
-          console.log(
-            `🔄 Retrying request (attempt ${attemptCount}/${maxRetries}) after ${delay}ms...`
-          );
-
+          // Retry request after delay
           await new Promise((resolve) => setTimeout(resolve, delay));
           return makeRequest();
         }
@@ -336,8 +332,7 @@ class ApiClient {
 
     // Check network status
     if (!networkStatusManager.getStatus()) {
-      // eslint-disable-next-line no-console
-      console.log('📦 Queuing request (offline)...');
+      // Queue request for when network is available
       return networkStatusManager.queueRequest(() => makeRequest()) as Promise<ApiResponse<T>>;
     }
 

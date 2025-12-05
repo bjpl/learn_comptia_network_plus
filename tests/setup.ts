@@ -194,7 +194,7 @@ global.URL.revokeObjectURL = vi.fn();
 // Mock HTMLAnchorElement.click for download tests
 HTMLAnchorElement.prototype.click = vi.fn();
 
-// Mock crypto for token generation
+// Mock crypto for token generation and hashing
 Object.defineProperty(global, 'crypto', {
   value: {
     randomUUID: () => 'test-uuid-' + Math.random().toString(36).substr(2, 9),
@@ -203,6 +203,25 @@ Object.defineProperty(global, 'crypto', {
         arr[i] = Math.floor(Math.random() * 256);
       }
       return arr;
+    },
+    subtle: {
+      digest: async (algorithm: string, data: BufferSource) => {
+        // Mock SHA-256 hashing for tests
+        const text = new TextDecoder().decode(data);
+        let hash = 0;
+        for (let i = 0; i < text.length; i++) {
+          const char = text.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash; // Convert to 32-bit integer
+        }
+        // Create a 32-byte buffer (256 bits for SHA-256)
+        const buffer = new ArrayBuffer(32);
+        const view = new DataView(buffer);
+        for (let i = 0; i < 8; i++) {
+          view.setUint32(i * 4, hash + i, false);
+        }
+        return buffer;
+      },
     },
   },
 });
@@ -246,46 +265,81 @@ vi.mock('../src/services/auth-service', () => ({
 // Mock Auth Utils
 // =========================================================================
 
-vi.mock('../src/utils/auth', () => ({
-  // Storage keys constant - REQUIRED
-  STORAGE_KEYS: {
-    TOKEN: 'auth_token',
-    REFRESH_TOKEN: 'auth_refresh_token',
-    USER: 'auth_user',
-    REMEMBER_ME: 'auth_remember_me',
-    LAST_ACTIVITY: 'auth_last_activity',
-  },
-  SESSION_CONFIG: {
-    INACTIVITY_TIMEOUT: 30 * 60 * 1000,
-    REFRESH_INTERVAL: 14 * 60 * 1000,
-  },
-  // Auth data functions
-  getAuthData: vi.fn(() => null),
-  storeAuthData: vi.fn(),
-  clearAuthData: vi.fn(),
-  // Token functions
-  isTokenExpired: vi.fn(() => false),
-  generateMockToken: vi.fn((userId) => `mock-token-${userId}`),
-  decodeMockToken: vi.fn(() => ({ exp: Date.now() / 1000 + 3600, sub: 'test-user-1' })),
-  // Activity tracking
-  updateLastActivity: vi.fn(),
-  isInactive: vi.fn(() => false),
-  // Validation functions
-  validatePasswordStrength: vi.fn((password) => ({
-    score: password.length >= 12 ? 4 : password.length >= 8 ? 3 : 2,
-    feedback: password.length >= 12 ? ['Strong password'] : ['Password could be stronger'],
-    isValid: password.length >= 8,
-  })),
-  validateEmail: vi.fn((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)),
-  // Utility functions
-  hashPassword: vi.fn(async (password) => `hashed-${password}`),
-  generateUserId: vi.fn(() => 'test-user-' + Math.random().toString(36).substr(2, 9)),
-  mockApiDelay: vi.fn(() => Promise.resolve()),
-  getUserDisplayName: vi.fn((user) => user?.username || user?.email || 'User'),
-  getUserInitials: vi.fn((user) =>
-    (user?.username || user?.email || 'U').substring(0, 2).toUpperCase()
-  ),
-}));
+// Import the REAL auth utilities dynamically for mocking
+vi.mock('../src/utils/auth', async () => {
+  const actual = await vi.importActual<typeof import('../src/utils/auth')>('../src/utils/auth');
+
+  return {
+    // Export all actual implementations
+    ...actual,
+
+    // Only override storage functions to work with test mocks
+    getAuthData: vi.fn(() => {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const userStr = localStorage.getItem('auth_user') || sessionStorage.getItem('auth_user');
+
+      if (!token || !userStr) return null;
+
+      try {
+        const user = JSON.parse(userStr);
+        // Validate user object structure (same as real implementation)
+        if (!user || typeof user !== 'object' ||
+            typeof user.id !== 'string' ||
+            typeof user.email !== 'string') {
+          return null;
+        }
+        return { user, token };
+      } catch {
+        return null;
+      }
+    }),
+
+    storeAuthData: vi.fn((response: any, rememberMe: boolean = false) => {
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem('auth_token', response.token);
+      storage.setItem('auth_user', JSON.stringify(response.user));
+      if (response.refreshToken) {
+        storage.setItem('auth_refresh_token', response.refreshToken);
+      }
+      if (rememberMe) {
+        localStorage.setItem('auth_remember_me', 'true');
+      }
+      localStorage.setItem('auth_last_activity', Date.now().toString());
+    }),
+
+    clearAuthData: vi.fn(() => {
+      const keys = ['auth_token', 'auth_refresh_token', 'auth_user', 'auth_remember_me', 'auth_last_activity'];
+      keys.forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
+    }),
+
+    updateLastActivity: vi.fn(() => {
+      localStorage.setItem('auth_last_activity', Date.now().toString());
+    }),
+
+    isInactive: vi.fn(() => {
+      const lastActivity = localStorage.getItem('auth_last_activity');
+      if (!lastActivity) return false;
+      const elapsed = Date.now() - parseInt(lastActivity, 10);
+      return elapsed > (30 * 60 * 1000); // 30 minutes
+    }),
+
+    // Keep ALL other functions from actual implementation
+    // These will use the REAL implementations:
+    // - validatePasswordStrength
+    // - validateEmail
+    // - generateMockToken
+    // - decodeMockToken
+    // - isTokenExpired
+    // - hashPassword
+    // - generateUserId
+    // - getUserDisplayName
+    // - getUserInitials
+    // - mockApiDelay
+  };
+});
 
 global.fetch = vi.fn((url, init) => {
   const urlString = typeof url === 'string' ? url : url.toString();
