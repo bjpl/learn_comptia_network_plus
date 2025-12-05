@@ -50,7 +50,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleSidebar}
-            className="rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 lg:hidden"
+            className="rounded-lg p-2 transition-colors hover:bg-gray-100 lg:hidden dark:hover:bg-gray-700"
             aria-label="Toggle sidebar"
           >
             <svg
@@ -88,7 +88,7 @@ export const Header: React.FC = () => {
             >
               <span className="text-sm font-bold text-white">N+</span>
             </div>
-            <span className="hidden text-xl font-bold text-gray-900 dark:text-white sm:block">
+            <span className="hidden text-xl font-bold text-gray-900 sm:block dark:text-white">
               Network+ Study
             </span>
           </Link>
@@ -103,7 +103,7 @@ export const Header: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search topics, concepts..."
-              className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 pl-10 text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-blue-400"
+              className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 pl-10 text-gray-900 placeholder-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-blue-400"
               aria-label="Search topics and concepts"
               aria-describedby="search-hint"
             />
@@ -111,7 +111,7 @@ export const Header: React.FC = () => {
               Search through learning topics, networking concepts, and protocols
             </span>
             <svg
-              className="absolute left-3 top-2.5 h-5 w-5 text-gray-400 dark:text-gray-300"
+              className="absolute top-2.5 left-3 h-5 w-5 text-gray-400 dark:text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -130,7 +130,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Progress indicator */}
           <div
-            className="hidden items-center gap-2 rounded-lg bg-gray-100 px-3 py-1.5 dark:bg-gray-700 sm:flex"
+            className="hidden items-center gap-2 rounded-lg bg-gray-100 px-3 py-1.5 sm:flex dark:bg-gray-700"
             role="status"
             aria-label={`Overall progress: ${overallProgress.percentage.toFixed(0)}% complete`}
           >
@@ -188,7 +188,7 @@ export const Header: React.FC = () => {
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500">
                   <span className="text-sm font-medium text-white">{getUserInitials(user)}</span>
                 </div>
-                <span className="hidden text-sm font-medium text-gray-700 dark:text-gray-200 sm:block">
+                <span className="hidden text-sm font-medium text-gray-700 sm:block dark:text-gray-200">
                   {getUserDisplayName(user)}
                 </span>
                 <svg

@@ -147,19 +147,23 @@ export const TwoFactorSetup: React.FC<TwoFactorSetupProps> = ({
                   <img src={setupData.qrCodeUrl} alt="2FA QR Code" className="qr-code" />
                 </div>
 
-            <div className="secret-key">
-              <p>Or enter this key manually:</p>
-              <code>{setupData.secret}</code>
-              <button className="btn-link" onClick={() => copyToClipboard(setupData.secret)}>
-                Copy Key
-              </button>
-            </div>
+                <div className="secret-key">
+                  <p>Or enter this key manually:</p>
+                  <code>{setupData.secret}</code>
+                  <button className="btn-link" onClick={() => copyToClipboard(setupData.secret)}>
+                    Copy Key
+                  </button>
+                </div>
 
                 <div className="twofa-actions">
                   <button className="btn-secondary" onClick={onClose} disabled={isLoading}>
                     Cancel
                   </button>
-                  <button className="btn-primary" onClick={() => setStep('backup-codes')} disabled={isLoading}>
+                  <button
+                    className="btn-primary"
+                    onClick={() => setStep('backup-codes')}
+                    disabled={isLoading}
+                  >
                     Next
                   </button>
                 </div>

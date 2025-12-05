@@ -370,7 +370,7 @@ export function getPortInfo(port: number): PortInfo {
 
   return {
     number: port,
-     
+
     protocol, // Type-safe via type guard above
     service,
     isWellKnown: port >= 0 && port <= 1023,

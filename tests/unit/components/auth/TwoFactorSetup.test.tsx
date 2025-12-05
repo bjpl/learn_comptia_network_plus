@@ -39,16 +39,7 @@ URL.revokeObjectURL = mockRevokeObjectURL;
 const mockSetupData = {
   secret: 'ABCDEFGHIJKLMNOP',
   qrCodeUrl: 'data:image/png;base64,mockQRCode',
-  backupCodes: [
-    'ABC123',
-    'DEF456',
-    'GHI789',
-    'JKL012',
-    'MNO345',
-    'PQR678',
-    'STU901',
-    'VWX234',
-  ],
+  backupCodes: ['ABC123', 'DEF456', 'GHI789', 'JKL012', 'MNO345', 'PQR678', 'STU901', 'VWX234'],
 };
 
 // ============================================
@@ -384,7 +375,9 @@ describe('TwoFactorSetup Component', () => {
       await userEvent.type(input, '123456');
       await userEvent.click(screen.getByRole('button', { name: /verify/i }));
 
-      expect(screen.getByRole('heading', { name: /two-factor authentication enabled/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /two-factor authentication enabled/i })
+      ).toBeInTheDocument();
     });
 
     it('should store 2FA status in localStorage on success', async () => {
@@ -429,7 +422,9 @@ describe('TwoFactorSetup Component', () => {
     it('should show success message', async () => {
       await navigateToSuccess();
 
-      expect(screen.getByRole('heading', { name: /two-factor authentication enabled/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /two-factor authentication enabled/i })
+      ).toBeInTheDocument();
     });
 
     it('should show success icon', async () => {
@@ -485,7 +480,9 @@ describe('TwoFactorSetup Component', () => {
     it('should start on disable step when 2FA is enabled', async () => {
       await renderTwoFactorSetup({ isEnabled: true });
 
-      expect(screen.getByRole('heading', { name: /disable two-factor authentication/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /disable two-factor authentication/i })
+      ).toBeInTheDocument();
     });
 
     it('should not call setupTwoFactor when already enabled', async () => {

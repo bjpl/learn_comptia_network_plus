@@ -211,7 +211,7 @@ Object.defineProperty(global, 'crypto', {
         let hash = 0;
         for (let i = 0; i < text.length; i++) {
           const char = text.charCodeAt(i);
-          hash = ((hash << 5) - hash) + char;
+          hash = (hash << 5) - hash + char;
           hash = hash & hash; // Convert to 32-bit integer
         }
         // Create a 32-byte buffer (256 bits for SHA-256)
@@ -283,9 +283,12 @@ vi.mock('../src/utils/auth', async () => {
       try {
         const user = JSON.parse(userStr);
         // Validate user object structure (same as real implementation)
-        if (!user || typeof user !== 'object' ||
-            typeof user.id !== 'string' ||
-            typeof user.email !== 'string') {
+        if (
+          !user ||
+          typeof user !== 'object' ||
+          typeof user.id !== 'string' ||
+          typeof user.email !== 'string'
+        ) {
           return null;
         }
         return { user, token };
@@ -308,8 +311,14 @@ vi.mock('../src/utils/auth', async () => {
     }),
 
     clearAuthData: vi.fn(() => {
-      const keys = ['auth_token', 'auth_refresh_token', 'auth_user', 'auth_remember_me', 'auth_last_activity'];
-      keys.forEach(key => {
+      const keys = [
+        'auth_token',
+        'auth_refresh_token',
+        'auth_user',
+        'auth_remember_me',
+        'auth_last_activity',
+      ];
+      keys.forEach((key) => {
         localStorage.removeItem(key);
         sessionStorage.removeItem(key);
       });
@@ -323,7 +332,7 @@ vi.mock('../src/utils/auth', async () => {
       const lastActivity = localStorage.getItem('auth_last_activity');
       if (!lastActivity) return false;
       const elapsed = Date.now() - parseInt(lastActivity, 10);
-      return elapsed > (30 * 60 * 1000); // 30 minutes
+      return elapsed > 30 * 60 * 1000; // 30 minutes
     }),
 
     // Keep ALL other functions from actual implementation

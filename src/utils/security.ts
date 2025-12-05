@@ -27,7 +27,7 @@ const getSecureRandomInt = (max: number): number => {
 const getSecureRandomHex = (length: number): string => {
   const array = new Uint8Array(Math.ceil(length / 2));
   crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0'))
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, '0'))
     .join('')
     .substring(0, length);
 };

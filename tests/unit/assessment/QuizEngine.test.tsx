@@ -318,10 +318,7 @@ describe('QuizEngine', () => {
       await user.click(startButton);
 
       await waitFor(() => {
-        expect(localStorageMock.setItem).toHaveBeenCalledWith(
-          'quizProgress',
-          expect.any(String)
-        );
+        expect(localStorageMock.setItem).toHaveBeenCalledWith('quizProgress', expect.any(String));
       });
     });
 
@@ -466,9 +463,9 @@ describe('QuizEngine', () => {
       });
 
       // Multiple select questions allow multiple clicks
-      const options = screen.getAllByRole('button').filter((btn) =>
-        btn.textContent && !btn.textContent.match(/Start|Submit|Next|Previous/i)
-      );
+      const options = screen
+        .getAllByRole('button')
+        .filter((btn) => btn.textContent && !btn.textContent.match(/Start|Submit|Next|Previous/i));
       expect(options.length).toBeGreaterThan(0);
     });
   });
@@ -544,9 +541,7 @@ describe('QuizEngine', () => {
   describe('Edge Cases', () => {
     it('should handle empty question bank gracefully', async () => {
       // Mock empty questions
-      const { getRandomQuestions } = await import(
-        '../../../src/components/assessment/quiz-data'
-      );
+      const { getRandomQuestions } = await import('../../../src/components/assessment/quiz-data');
       (getRandomQuestions as ReturnType<typeof vi.fn>).mockReturnValueOnce([]);
 
       window.alert = vi.fn();
@@ -555,9 +550,7 @@ describe('QuizEngine', () => {
       const startButton = screen.getByRole('button', { name: /Start Quiz/i });
       await user.click(startButton);
 
-      expect(window.alert).toHaveBeenCalledWith(
-        expect.stringMatching(/no questions/i)
-      );
+      expect(window.alert).toHaveBeenCalledWith(expect.stringMatching(/no questions/i));
     });
 
     it('should handle localStorage errors gracefully', () => {

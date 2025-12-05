@@ -67,9 +67,7 @@ export const useSpacedRepetition = () => {
         accuracy: 0,
       };
 
-      const newBox = correct
-        ? Math.min(currentProg.box + 1, 4)
-        : Math.max(currentProg.box - 1, 0);
+      const newBox = correct ? Math.min(currentProg.box + 1, 4) : Math.max(currentProg.box - 1, 0);
 
       const correctCount = currentProg.correctCount + (correct ? 1 : 0);
       const incorrectCount = currentProg.incorrectCount + (correct ? 0 : 1);

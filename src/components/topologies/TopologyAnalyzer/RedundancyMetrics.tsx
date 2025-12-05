@@ -20,9 +20,8 @@ export const RedundancyMetricsComponent: React.FC<RedundancyMetricsProps> = ({
 
       <div className="sr-only" aria-live="polite">
         Redundancy analysis for {topologyName}: Overall redundancy score{' '}
-        {redundancyData.overallRedundancy} percent. Path redundancy{' '}
-        {redundancyData.pathRedundancy} percent. Link redundancy {redundancyData.linkRedundancy}{' '}
-        percent.
+        {redundancyData.overallRedundancy} percent. Path redundancy {redundancyData.pathRedundancy}{' '}
+        percent. Link redundancy {redundancyData.linkRedundancy} percent.
         {redundancyData.criticalPaths.length > 0 &&
           ` ${redundancyData.criticalPaths.length} critical paths identified.`}
       </div>

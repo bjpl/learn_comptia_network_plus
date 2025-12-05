@@ -136,9 +136,7 @@ export const TwoFactorVerification: React.FC<TwoFactorVerificationProps> = ({
                   {error}
                 </span>
               )}
-              <p className="help-text">
-                Enter the 6-digit code from your authenticator app
-              </p>
+              <p className="help-text">Enter the 6-digit code from your authenticator app</p>
             </div>
 
             <div className="twofa-actions">
@@ -196,12 +194,8 @@ export const TwoFactorVerification: React.FC<TwoFactorVerificationProps> = ({
                   {error}
                 </span>
               )}
-              <p className="help-text">
-                Enter one of your backup codes (format: XXXX-XXXX)
-              </p>
-              <p className="warning-text">
-                Note: Each backup code can only be used once
-              </p>
+              <p className="help-text">Enter one of your backup codes (format: XXXX-XXXX)</p>
+              <p className="warning-text">Note: Each backup code can only be used once</p>
             </div>
 
             <div className="twofa-actions">
@@ -213,11 +207,7 @@ export const TwoFactorVerification: React.FC<TwoFactorVerificationProps> = ({
               >
                 Cancel
               </button>
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={!code.trim() || isVerifying}
-              >
+              <button type="submit" className="btn-primary" disabled={!code.trim() || isVerifying}>
                 {isVerifying ? 'Verifying...' : 'Verify'}
               </button>
             </div>

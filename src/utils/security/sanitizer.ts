@@ -9,7 +9,7 @@ export function sanitizeHtmlBasic(html: string): string {
   if (!html) return '';
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br'],
-    ALLOWED_ATTR: []
+    ALLOWED_ATTR: [],
   });
 }
 
@@ -17,7 +17,7 @@ export function sanitizeHtmlRich(html: string): string {
   if (!html) return '';
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br', 'ul', 'ol', 'li', 'a', 'code', 'pre'],
-    ALLOWED_ATTR: ['href']
+    ALLOWED_ATTR: ['href'],
   });
 }
 
@@ -34,7 +34,7 @@ export function sanitizeInput(input: string): string {
       '>': '&gt;',
       '"': '&quot;',
       "'": '&#x27;',
-      '&': '&amp;'
+      '&': '&amp;',
     };
     return entities[char] || char;
   });
@@ -42,7 +42,10 @@ export function sanitizeInput(input: string): string {
 
 export function sanitizeEmail(email: string): string {
   if (!email) return '';
-  return email.toLowerCase().trim().replace(/[^a-z0-9@._-]/g, '');
+  return email
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9@._-]/g, '');
 }
 
 export function sanitizeUrl(url: string): string {
@@ -114,7 +117,7 @@ export function sanitizeObject<T extends Record<string, any>>(
     if (typeof value === 'string') {
       result[key] = defaultSanitizer(value);
     } else if (Array.isArray(value)) {
-      result[key] = value.map(v => typeof v === 'string' ? defaultSanitizer(v) : v);
+      result[key] = value.map((v) => (typeof v === 'string' ? defaultSanitizer(v) : v));
     } else if (value && typeof value === 'object') {
       result[key] = sanitizeObject(value, sanitizer);
     } else {

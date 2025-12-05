@@ -99,7 +99,9 @@ export const RegisterForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {return;}
+    if (!validateForm()) {
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -117,14 +119,14 @@ export const RegisterForm: React.FC = () => {
     const { name, value, type, checked } = e.target;
     const newValue = type === 'checkbox' ? checked : value;
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: newValue,
     }));
 
     // Clear error for this field
     if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
 
     // Update password strength on password change
@@ -138,16 +140,28 @@ export const RegisterForm: React.FC = () => {
   };
 
   const getPasswordStrengthColor = (score: number): string => {
-    if (score <= 1) {return '#ef4444';} // red
-    if (score === 2) {return '#f59e0b';} // orange
-    if (score === 3) {return '#eab308';} // yellow
+    if (score <= 1) {
+      return '#ef4444';
+    } // red
+    if (score === 2) {
+      return '#f59e0b';
+    } // orange
+    if (score === 3) {
+      return '#eab308';
+    } // yellow
     return '#22c55e'; // green
   };
 
   const getPasswordStrengthLabel = (score: number): string => {
-    if (score <= 1) {return 'Weak';}
-    if (score === 2) {return 'Fair';}
-    if (score === 3) {return 'Good';}
+    if (score <= 1) {
+      return 'Weak';
+    }
+    if (score === 2) {
+      return 'Fair';
+    }
+    if (score === 3) {
+      return 'Good';
+    }
     return 'Strong';
   };
 
@@ -181,9 +195,7 @@ export const RegisterForm: React.FC = () => {
                 disabled={isSubmitting}
                 aria-invalid={!!errors.firstName}
               />
-              {errors.firstName && (
-                <span className="error-message">{errors.firstName}</span>
-              )}
+              {errors.firstName && <span className="error-message">{errors.firstName}</span>}
             </div>
 
             <div className="form-group">
@@ -200,9 +212,7 @@ export const RegisterForm: React.FC = () => {
                 disabled={isSubmitting}
                 aria-invalid={!!errors.lastName}
               />
-              {errors.lastName && (
-                <span className="error-message">{errors.lastName}</span>
-              )}
+              {errors.lastName && <span className="error-message">{errors.lastName}</span>}
             </div>
           </div>
 
@@ -220,9 +230,7 @@ export const RegisterForm: React.FC = () => {
               disabled={isSubmitting}
               aria-invalid={!!errors.email}
             />
-            {errors.email && (
-              <span className="error-message">{errors.email}</span>
-            )}
+            {errors.email && <span className="error-message">{errors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -239,9 +247,7 @@ export const RegisterForm: React.FC = () => {
               disabled={isSubmitting}
               aria-invalid={!!errors.username}
             />
-            {errors.username && (
-              <span className="error-message">{errors.username}</span>
-            )}
+            {errors.username && <span className="error-message">{errors.username}</span>}
           </div>
 
           <div className="form-group">
@@ -268,9 +274,7 @@ export const RegisterForm: React.FC = () => {
                 {showPassword ? '👁️' : '👁️‍🗨️'}
               </button>
             </div>
-            {errors.password && (
-              <span className="error-message">{errors.password}</span>
-            )}
+            {errors.password && <span className="error-message">{errors.password}</span>}
             {passwordStrength && formData.password && (
               <div className="password-strength">
                 <div className="strength-bar-container">
@@ -332,16 +336,10 @@ export const RegisterForm: React.FC = () => {
                 </Link>
               </span>
             </label>
-            {errors.acceptTerms && (
-              <span className="error-message">{errors.acceptTerms}</span>
-            )}
+            {errors.acceptTerms && <span className="error-message">{errors.acceptTerms}</span>}
           </div>
 
-          <button
-            type="submit"
-            className="btn-primary btn-full"
-            disabled={isSubmitting}
-          >
+          <button type="submit" className="btn-primary btn-full" disabled={isSubmitting}>
             {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>

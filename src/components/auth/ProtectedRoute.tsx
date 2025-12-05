@@ -55,7 +55,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       <div className="auth-error-page">
         <h1>Email Verification Required</h1>
         <p>Please verify your email address to access this page.</p>
-        <button className="btn-primary" onClick={() => window.location.href = '/verify-email'}>
+        <button className="btn-primary" onClick={() => (window.location.href = '/verify-email')}>
           Verify Email
         </button>
       </div>

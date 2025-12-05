@@ -375,9 +375,9 @@ export enum StorageKey {
 }
 
 /**
- * User preferences
+ * Basic user preferences
  */
-export interface UserPreferences {
+export interface BasicUserPreferences {
   theme: 'light' | 'dark' | 'auto';
   fontSize: 'small' | 'medium' | 'large';
   animationsEnabled: boolean;
@@ -494,3 +494,152 @@ export type Callback<T = void, TArgs extends unknown[] = unknown[]> = (...args: 
 // Re-export auth and security types for convenience
 export type { User, UserRole, LoginCredentials, RegisterData, PasswordStrength } from './auth';
 export type { TwoFactorSetupData, DeviceSession, TwoFactorStatus } from './security';
+
+// Re-export sanitization types (eliminates `any` types)
+export type {
+  SanitizableValue,
+  SanitizableObject,
+  SanitizableData,
+  SanitizerFunction,
+  HtmlSanitizeConfig,
+  DOMPurifyConfig,
+  SanitizationResult,
+  BatchSanitizationResult,
+} from './sanitization.types';
+
+// Re-export topology types (comprehensive topology system types)
+export type {
+  TransformOptions,
+  TopologyBuilderConfig,
+  AnalysisResult,
+  PerformanceMetrics,
+  BottleneckInfo,
+  NodePosition,
+  LayoutAlgorithm,
+  LayoutConfig,
+  TopologyComparisonResult,
+  TrafficFlowState,
+  PacketState,
+  TopologyValidationResult,
+  TopologyValidationError,
+  TopologyValidationWarning,
+  TopologyExportFormat,
+  TopologyExportOptions,
+} from './topology.types';
+
+// Re-export protocol types (port/protocol training and scanning)
+export type {
+  PortDefinition,
+  ProtocolInfo,
+  PortScanConfig,
+  ExtendedScanResult,
+  VulnerabilityInfo,
+  TrainingSession,
+  SpacedRepetitionConfig,
+  LearningAnalytics,
+  WeakArea,
+  MnemonicDevice,
+  QuizGenerationOptions,
+  ProtocolComparison,
+  ComparisonDimension,
+  UseCaseRecommendation,
+  ScanProgress,
+} from './protocol.types';
+
+// Re-export cloud types (cloud migration and architecture)
+export type {
+  CloudMigrationScenario,
+  EnvironmentInfo,
+  InfrastructureInventory,
+  ServerInfo,
+  StorageInfo,
+  NetworkInfo,
+  DatabaseInfo,
+  ApplicationInventory,
+  DataInventory,
+  DataCategory,
+  DependencyMap,
+  ComplianceRequirement,
+  CloudProvider,
+  MigrationGoal,
+  MigrationStep,
+  ResourceRequirement,
+  MigrationTask,
+  ChecklistItem,
+  RiskAssessment,
+  ServiceComparison,
+  CloudServiceOption,
+  PricingInfo,
+  SLAInfo,
+  CostOptimizationRecommendation,
+  Milestone,
+  MigrationBudget,
+} from './cloud.types';
+
+// Re-export network types (IPv6, packet simulation, routing)
+export type {
+  IPv6Config,
+  IPv6SubnetPlan,
+  IPv6Subnet,
+  SubnetHierarchy,
+  IPv6AddressingScheme,
+  IPv6AllocationPlan,
+  SiteAllocation,
+  JourneyStep,
+  Layer1Info,
+  Layer2Info,
+  Layer3Info,
+  Layer4Info,
+  Layer7Info,
+  Decision,
+  Modification,
+  PacketRoute,
+  NetworkEndpoint,
+  NetworkPathAnalysis,
+  PathBottleneck,
+  LatencyBreakdown,
+  NetworkTopologyMap,
+  NetworkDeviceInfo,
+  NetworkInterface,
+  NetworkLink,
+  RoutingTable,
+  Route,
+  ARPTable,
+  ARPEntry,
+  PacketCaptureFilter,
+  SimulationConfig,
+} from './network.types';
+
+// Re-export common types (shared utilities and state management)
+export type {
+  ProgressData,
+  LearningObjectiveProgress,
+  StudySession,
+  PerformanceMetrics as CommonPerformanceMetrics,
+  FieldState,
+  PaginationState,
+  SortConfig,
+  FilterConfig,
+  SearchConfig,
+  LoadingState,
+  ErrorState,
+  ToastNotification,
+  ModalState,
+  KeyboardShortcut,
+  ThemeConfig,
+  AccessibilitySettings,
+  ExtendedUserPreferences,
+  NotificationPreferences,
+  PrivacyPreferences,
+  LearningPreferences,
+  CacheEntry,
+  APIResponse,
+  RetryConfig,
+  DebounceConfig,
+  ThrottleConfig,
+  FeatureFlag,
+  FeatureFlagCondition,
+  AnalyticsEvent,
+  ExportOptions,
+  ImportResult,
+} from './common.types';

@@ -884,10 +884,11 @@ export const useConnections = () => useCloudDesignerStore((state) => state.desig
 // Canvas Selectors
 export const useCanvasState = () => useCloudDesignerStore((state) => state.canvasState);
 export const useZoom = () => useCloudDesignerStore((state) => state.canvasState.zoom);
-export const usePan = () => useCloudDesignerStore((state) => ({
-  panX: state.canvasState.panX,
-  panY: state.canvasState.panY,
-}));
+export const usePan = () =>
+  useCloudDesignerStore((state) => ({
+    panX: state.canvasState.panX,
+    panY: state.canvasState.panY,
+  }));
 
 // Interaction Selectors
 export const useDragState = () => useCloudDesignerStore((state) => state.dragState);
@@ -907,49 +908,54 @@ export const useCanRedo = () => useCloudDesignerStore((state) => state.canRedo()
 // ACTION HOOKS (For direct access to actions)
 // ============================================================================
 
-export const useDesignActions = () => useCloudDesignerStore((state) => ({
-  setDesign: state.setDesign,
-  updateDesign: state.updateDesign,
-  addComponent: state.addComponent,
-  updateComponent: state.updateComponent,
-  removeComponent: state.removeComponent,
-  addConnection: state.addConnection,
-  removeConnection: state.removeConnection,
-}));
+export const useDesignActions = () =>
+  useCloudDesignerStore((state) => ({
+    setDesign: state.setDesign,
+    updateDesign: state.updateDesign,
+    addComponent: state.addComponent,
+    updateComponent: state.updateComponent,
+    removeComponent: state.removeComponent,
+    addConnection: state.addConnection,
+    removeConnection: state.removeConnection,
+  }));
 
-export const useCanvasActions = () => useCloudDesignerStore((state) => ({
-  setZoom: state.setZoom,
-  setPan: state.setPan,
-  toggleSnapToGrid: state.toggleSnapToGrid,
-  setGridSize: state.setGridSize,
-  resetCanvas: state.resetCanvas,
-}));
+export const useCanvasActions = () =>
+  useCloudDesignerStore((state) => ({
+    setZoom: state.setZoom,
+    setPan: state.setPan,
+    toggleSnapToGrid: state.toggleSnapToGrid,
+    setGridSize: state.setGridSize,
+    resetCanvas: state.resetCanvas,
+  }));
 
-export const useInteractionActions = () => useCloudDesignerStore((state) => ({
-  startDrag: state.startDrag,
-  updateDrag: state.updateDrag,
-  endDrag: state.endDrag,
-  startResize: state.startResize,
-  updateResize: state.updateResize,
-  endResize: state.endResize,
-  startConnection: state.startConnection,
-  updateConnection: state.updateConnection,
-  endConnection: state.endConnection,
-}));
+export const useInteractionActions = () =>
+  useCloudDesignerStore((state) => ({
+    startDrag: state.startDrag,
+    updateDrag: state.updateDrag,
+    endDrag: state.endDrag,
+    startResize: state.startResize,
+    updateResize: state.updateResize,
+    endResize: state.endResize,
+    startConnection: state.startConnection,
+    updateConnection: state.updateConnection,
+    endConnection: state.endConnection,
+  }));
 
-export const useHistoryActions = () => useCloudDesignerStore((state) => ({
-  undo: state.undo,
-  redo: state.redo,
-  pushHistory: state.pushHistory,
-  clearHistory: state.clearHistory,
-}));
+export const useHistoryActions = () =>
+  useCloudDesignerStore((state) => ({
+    undo: state.undo,
+    redo: state.redo,
+    pushHistory: state.pushHistory,
+    clearHistory: state.clearHistory,
+  }));
 
-export const useUIActions = () => useCloudDesignerStore((state) => ({
-  selectComponent: state.selectComponent,
-  hoverComponent: state.hoverComponent,
-  setValidation: state.setValidation,
-  toggleLibrary: state.toggleLibrary,
-  toggleServiceComparison: state.toggleServiceComparison,
-  toggleSecurityPanel: state.toggleSecurityPanel,
-  toggleElasticityVisualization: state.toggleElasticityVisualization,
-}));
+export const useUIActions = () =>
+  useCloudDesignerStore((state) => ({
+    selectComponent: state.selectComponent,
+    hoverComponent: state.hoverComponent,
+    setValidation: state.setValidation,
+    toggleLibrary: state.toggleLibrary,
+    toggleServiceComparison: state.toggleServiceComparison,
+    toggleSecurityPanel: state.toggleSecurityPanel,
+    toggleElasticityVisualization: state.toggleElasticityVisualization,
+  }));
