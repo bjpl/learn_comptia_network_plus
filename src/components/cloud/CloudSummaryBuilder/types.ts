@@ -1,40 +1,59 @@
 /**
- * Type definitions for CloudSummaryBuilder
+ * Type definitions for CloudSummaryBuilder component
  */
 
-export interface CloudSummary {
-  deploymentModel?: string;
-  deploymentJustification?: string;
-  serviceModel?: string;
-  serviceExamples?: string[];
-  connectivityMethod?: string;
-  connectivityReasoning?: string;
-  nfvImplementation?: string;
-  vpcConfiguration?: {
-    subnets: string[];
-    securityGroups: string[];
-    networkLists: string[];
-  };
-  cloudGateways?: {
-    internetGateway: boolean;
-    natGateway: boolean;
-    usage: string;
-  };
-  scalabilityFeatures?: {
-    type: string;
-    description: string;
-    triggers: string[];
-  };
-  elasticityImplementation?: string;
-  multitenancyConsiderations?: string[];
+export interface CloudTerm {
+  [key: string]: string;
 }
 
-export interface ScoreBreakdown {
-  modelsAndConcepts: number;
-  conciseness: number;
-  coverage: number;
-  total: number;
-  feedback: string[];
+export interface CloudTermCategory {
+  [category: string]: CloudTerm;
+}
+
+export interface ServiceComparisonRow {
+  aspect: string;
+  SaaS: string;
+  PaaS: string;
+  IaaS: string;
+}
+
+export interface UseCaseMatch {
+  scenario: string;
+  deployment: string;
+  service: string;
+  examples: string;
+}
+
+export interface CostProfile {
+  compute: number;
+  storage: number;
+  bandwidth: number;
+  monthly: string;
+}
+
+export interface CostCalculatorInputs {
+  [profileName: string]: CostProfile;
+}
+
+export interface ExamQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correct: string;
+  explanation: string;
 }
 
 export type TabType = 'builder' | 'terms' | 'comparison' | 'usecase' | 'cost' | 'exam';
+
+export interface UserAnswers {
+  [questionId: string]: string;
+}
+
+export interface BuilderState {
+  wordCount: number;
+  showIdealSolution: boolean;
+  activeTab: TabType;
+  selectedTermCategory: keyof CloudTermCategory;
+  userAnswers: UserAnswers;
+  costProfile: keyof CostCalculatorInputs;
+}

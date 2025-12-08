@@ -1,107 +1,92 @@
 /**
- * Main PortProtocolTrainer component (refactored)
- * Orchestrates flashcard learning, quiz mode, memory palace, and analytics
+ * Port Protocol Trainer - Main orchestrator component
+ * Features:
+ * - Spaced repetition (Leitner system)
+ * - Flashcard mode
+ * - Quiz mode
+ * - Memory palace with mnemonics
+ * - Performance analytics
+ * - Gamification (achievements, levels, XP)
  */
 
-import React, { useState, useMemo } from 'react';
-import { FlashcardSystem } from './FlashcardSystem';
-import { QuizEngine } from './QuizEngine';
-import { ProgressTracker } from './ProgressTracker';
-import { AnalyticsView } from './AnalyticsView';
-import { MemoryPalace } from './MemoryPalace';
+import React, { useState } from 'react';
+import type { TrainingMode } from './types';
 import { useSpacedRepetition } from './hooks/useSpacedRepetition';
-import { generateQuizQuestions } from './utils';
-import type { TrainingMode, QuizQuestion, QuizResult } from './types';
+import { useQuizEngine } from './hooks/useQuizEngine';
+import { useTrainingStats } from './hooks/useTrainingStats';
+import { FlashcardMode } from './components/FlashcardMode';
+import { QuizMode } from './components/QuizMode';
+import { MemoryPalace } from './components/MemoryPalace';
+import { Analytics } from './components/Analytics';
 import './styles.css';
 
 export const PortProtocolTrainer: React.FC = () => {
   const [mode, setMode] = useState<TrainingMode>('flashcards');
-  const { progress, stats, dueCards, reviewCard, addQuizScore } = useSpacedRepetition();
 
-  // Flashcard state
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
+  // Hooks for state management
+  const {
+    progress,
+    currentCard,
+    currentProgress,
+    currentCardIndex,
+    dueCards,
+    showAnswer,
+    setShowAnswer,
+    handleCardReview: handleSpacedRepetitionReview,
+  } = useSpacedRepetition();
 
-  // Quiz state
-  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [quizResults, setQuizResults] = useState<QuizResult[]>([]);
-  const [quizStartTime, setQuizStartTime] = useState(0);
-  const [questionStartTime, setQuestionStartTime] = useState(0);
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState<string>('');
+  const {
+    quizQuestions,
+    currentQuestionIndex,
+    quizResults,
+    quizCompleted,
+    selectedAnswer,
+    setSelectedAnswer,
+    startQuiz: startQuizEngine,
+    handleQuizAnswer: handleQuizEngineAnswer,
+  } = useQuizEngine();
 
-  const currentCard = useMemo(() => {
-    if (mode === 'flashcards' && dueCards.length > 0) {
-      return dueCards[currentCardIndex % dueCards.length];
-    }
-    return null;
-  }, [mode, dueCards, currentCardIndex]);
+  const { stats, updateStatsAfterReview, updateStatsAfterQuiz } = useTrainingStats();
 
-  const currentProgress = useMemo(() => {
-    if (currentCard) {
-      return progress.get(currentCard.id);
-    }
-    return undefined;
-  }, [currentCard, progress]);
-
+  /**
+   * Handle card review and update stats
+   */
   const handleCardReview = (correct: boolean) => {
-    if (!currentCard) {
-      return;
-    }
+    const currentProg = progress.get(currentCard?.id || '') || {
+      cardId: currentCard?.id || '',
+      box: 0,
+      lastReviewed: 0,
+      nextReview: 0,
+      correctCount: 0,
+      incorrectCount: 0,
+      accuracy: 0,
+    };
 
-    reviewCard(currentCard, correct);
-    setShowAnswer(false);
-
-    if (dueCards.length > 0) {
-      setCurrentCardIndex((prev) => (prev + 1) % dueCards.length);
-    }
+    const previousBox = currentProg.box;
+    handleSpacedRepetitionReview(correct);
+    updateStatsAfterReview(correct, previousBox, progress);
   };
 
+  /**
+   * Start quiz and switch to quiz mode
+   */
   const startQuiz = () => {
-    const questions = generateQuizQuestions(10);
-    setQuizQuestions(questions);
-    setCurrentQuestionIndex(0);
-    setQuizResults([]);
-    setQuizCompleted(false);
-    setSelectedAnswer('');
-    setQuizStartTime(Date.now());
-    setQuestionStartTime(Date.now());
+    startQuizEngine(10);
     setMode('quiz');
   };
 
+  /**
+   * Handle quiz answer and check for completion
+   */
   const handleQuizAnswer = (answer: string) => {
-    if (!quizQuestions[currentQuestionIndex]) {
-      return;
-    }
-
     setSelectedAnswer(answer);
-
     setTimeout(() => {
-      const question = quizQuestions[currentQuestionIndex];
-      const correct = answer === question.correctAnswer;
-      const timeSpent = Date.now() - questionStartTime;
-
-      const result: QuizResult = {
-        questionId: question.id,
-        correct,
-        timeSpent,
-        selectedAnswer: answer,
-      };
-
-      const newResults = [...quizResults, result];
-      setQuizResults(newResults);
-
-      if (currentQuestionIndex < quizQuestions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setSelectedAnswer('');
-        setQuestionStartTime(Date.now());
-      } else {
-        const score = (newResults.filter((r) => r.correct).length / newResults.length) * 100;
-        const totalTime = Date.now() - quizStartTime;
-
-        addQuizScore(score, totalTime);
-        setQuizCompleted(true);
+      const result = handleQuizEngineAnswer(answer);
+      if (result && quizResults.length === quizQuestions.length - 1) {
+        // Quiz just completed
+        const score = ((quizResults.length + (result.correct ? 1 : 0)) / quizQuestions.length) * 100;
+        const totalTime = [...quizResults, result].reduce((sum, r) => sum + r.timeSpent, 0);
+        updateStatsAfterQuiz(score, totalTime);
       }
     }, 300);
   };
@@ -112,7 +97,30 @@ export const PortProtocolTrainer: React.FC = () => {
         <h1>⚡ ULTIMATE Port/Protocol Trainer</h1>
         <p>CompTIA Network+ N10-008 Exam Preparation</p>
 
-        <ProgressTracker stats={stats} />
+        <div className="trainer-stats-bar">
+          <div className="stat-item">
+            <span className="stat-label">Level {stats.level}</span>
+            <div className="xp-bar">
+              <div
+                className="xp-fill"
+                style={{
+                  width: `${((stats.xp % 100) / 100) * 100}%`,
+                }}
+              />
+            </div>
+            <span className="stat-value">{stats.xp % 100}/100 XP</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-label">Streak</span>
+            <span className="stat-value">{stats.studyStreak} 🔥</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-label">Mastered</span>
+            <span className="stat-value">
+              {stats.masteredCards}/{stats.totalCards}
+            </span>
+          </div>
+        </div>
       </header>
 
       <nav className="mode-selector">
@@ -141,31 +149,31 @@ export const PortProtocolTrainer: React.FC = () => {
 
       <main className="trainer-content">
         {mode === 'flashcards' && (
-          <FlashcardSystem
+          <FlashcardMode
             currentCard={currentCard}
             currentProgress={currentProgress}
             currentCardIndex={currentCardIndex}
             dueCardsCount={dueCards.length}
             showAnswer={showAnswer}
-            onReveal={() => setShowAnswer(true)}
-            onReview={handleCardReview}
+            onRevealAnswer={() => setShowAnswer(true)}
+            onCardReview={handleCardReview}
             onStartQuiz={startQuiz}
           />
         )}
         {mode === 'quiz' && (
-          <QuizEngine
+          <QuizMode
             quizQuestions={quizQuestions}
             currentQuestionIndex={currentQuestionIndex}
             quizResults={quizResults}
             quizCompleted={quizCompleted}
             selectedAnswer={selectedAnswer}
-            onSelectAnswer={handleQuizAnswer}
-            onRetry={startQuiz}
+            onAnswerSelect={handleQuizAnswer}
+            onStartQuiz={startQuiz}
             onBackToFlashcards={() => setMode('flashcards')}
           />
         )}
         {mode === 'memory-palace' && <MemoryPalace />}
-        {mode === 'analytics' && <AnalyticsView stats={stats} progress={progress} />}
+        {mode === 'analytics' && <Analytics stats={stats} progress={progress} />}
       </main>
     </div>
   );

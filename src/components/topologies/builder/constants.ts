@@ -2,7 +2,7 @@
  * Constants for Topology Builder
  */
 
-import type { DeviceType, DeviceSpec, TopologyTemplate } from './types';
+import type { DeviceType, DeviceSpec, TopologyTemplate, ConnectionType } from './types';
 
 export const deviceSpecs: Record<DeviceType, DeviceSpec> = {
   router: { label: 'Router', cost: 500, icon: '🔀' },
@@ -15,13 +15,25 @@ export const deviceSpecs: Record<DeviceType, DeviceSpec> = {
   cloud: { label: 'Cloud', cost: 0, icon: '☁️' },
 };
 
-export const connectionCosts = {
+export const connectionCosts: Record<ConnectionType, number> = {
   ethernet: 2,
   fiber: 5,
   wireless: 50,
-} as const;
+};
 
-export const templates: TopologyTemplate[] = [
+// Canvas dimensions
+export const CANVAS_DEVICE_SIZE = 80;
+export const DEVICE_GRID_OFFSET_X = 80;
+export const DEVICE_GRID_OFFSET_Y = 100;
+export const DEVICE_START_X = 300;
+export const DEVICE_START_Y = 200;
+export const DEVICES_PER_ROW = 5;
+
+// Re-export templates from data directory
+export { templates } from './data/deviceTypes';
+
+// Legacy export for backwards compatibility
+const legacyTemplates: TopologyTemplate[] = [
   {
     id: 'small-office',
     name: 'Small Office',
@@ -191,3 +203,6 @@ export const templates: TopologyTemplate[] = [
     ],
   },
 ];
+
+// Use imported templates as default
+export default legacyTemplates;

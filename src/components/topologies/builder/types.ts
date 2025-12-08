@@ -52,3 +52,29 @@ export interface DeviceSpec {
   cost: number;
   icon: string;
 }
+
+export type ConnectionType = 'ethernet' | 'fiber' | 'wireless';
+
+export interface TopologyBuilderProps {
+  className?: string;
+}
+
+export interface BuilderState {
+  devices: BuilderDevice[];
+  connections: BuilderConnection[];
+  selectedDevice: string | null;
+  dragging: string | null;
+  connecting: string | null;
+  showTemplates: boolean;
+  showValidation: boolean;
+  showCost: boolean;
+  showHints: boolean;
+  history: Array<{ devices: BuilderDevice[]; connections: BuilderConnection[] }>;
+  historyIndex: number;
+}
+
+export interface CostSummary {
+  devices: number;
+  connections: number;
+  total: number;
+}

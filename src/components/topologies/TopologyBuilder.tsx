@@ -1,8 +1,29 @@
 /**
- * TopologyBuilder Component
- * Interactive network topology design tool with drag-and-drop, validation, and templates
+ * TopologyBuilder Component (Legacy Entry Point)
+ *
+ * This file is maintained for backwards compatibility.
+ * The actual implementation has been decomposed into modular components
+ * located in ./builder/ directory.
+ *
+ * @deprecated Import from './builder' instead
  */
 
+// Re-export everything from the refactored builder
+export {
+  TopologyBuilder,
+  type DeviceType,
+  type DetectedTopologyType,
+  type BuilderDevice,
+  type BuilderConnection,
+  type TopologyTemplate,
+  type ValidationIssue,
+  type TopologyBuilderProps
+} from './builder';
+
+export { default } from './builder';
+
+// Legacy implementation below (kept for reference, not used)
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useCallback, useRef, useMemo } from 'react';
 
 // Types

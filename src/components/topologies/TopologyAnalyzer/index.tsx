@@ -1,45 +1,68 @@
 /**
- * TopologyAnalyzer main component (refactored)
- * Imports necessary data and sub-components, keeps main file under 500 lines
+ * TopologyAnalyzer Component - Main Orchestrator
+ * Advanced topology analysis tool with SPOF detection, redundancy analysis, and exam scenarios
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { topologyDefinitions, threeTierModel, trafficFlowAnimations } from '../topologies-data';
-import type {
-  TopologyType,
-  TopologyDefinition,
-  ComparisonMetrics,
-  TrafficFlowType,
-} from '../topologies-types';
-import { SPOFAnalysisComponent } from './SPOFAnalysis';
-import { RedundancyMetricsComponent } from './RedundancyMetrics';
-import { ExamQuestionsComponent } from './ExamQuestions';
-import type { SPOFAnalysis, RedundancyMetrics, ExamQuestion } from './types';
+import { topologyDefinitions } from '../topologies-data';
+import type { TopologyType } from '../topologies-types';
+import type { TopologyAnalyzerProps } from './types';
 
-interface TopologyAnalyzerProps {
-  className?: string;
-}
+// Hooks
+import { useSPOFAnalysis } from './hooks/useSPOFAnalysis';
+import { useRedundancyAnalysis } from './hooks/useRedundancyAnalysis';
+import { useComparisonMetrics } from './hooks/useComparisonMetrics';
+
+// Components
+import { TopologyCard } from './components/TopologyCard';
+import { TopologyComparison } from './components/TopologyComparison';
+import { SPOFAnalysisPanel } from './components/SPOFAnalysisPanel';
+import { RedundancyMetrics } from './components/RedundancyMetrics';
+import { ExamQuestions } from './components/ExamQuestions';
+import { TrafficFlowVisualization } from './components/TrafficFlowVisualization';
+import { ThreeTierModel } from './components/ThreeTierModel';
+
+// Data
+import { generateExamQuestions } from './data/examQuestions';
+
+// Styles
+import './styles.css';
 
 export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = '' }) => {
   const [selectedTopologies, setSelectedTopologies] = useState<TopologyType[]>(['star', 'mesh']);
   const [nodeCount, setNodeCount] = useState(4);
-  const [showTrafficFlow, setShowTrafficFlow] = useState(false);
-  const [activeTrafficType, setActiveTrafficType] = useState<TrafficFlowType>('north-south');
-  const [showThreeTier, setShowThreeTier] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [showExamQuestions, setShowExamQuestions] = useState(false);
-  const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
+
+  // Hooks
+  const { analyzeSPOF } = useSPOFAnalysis();
+  const { analyzeRedundancy } = useRedundancyAnalysis();
 
   const selectedTopologyData = useMemo(() => {
     return topologyDefinitions.filter((t) => selectedTopologies.includes(t.id));
   }, [selectedTopologies]);
 
+  const comparisonMetrics = useComparisonMetrics(selectedTopologyData);
+
+  const examQuestions = useMemo(() => {
+    return generateExamQuestions(selectedTopologyData);
+  }, [selectedTopologyData]);
+
+  const toggleTopology = (topology: TopologyType) => {
+    setSelectedTopologies((prev) =>
+      prev.includes(topology) ? prev.filter((t) => t !== topology) : [...prev, topology].slice(-3)
+    );
+  };
+
   // Keyboard navigation handler
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      // Tab to cycle topology selections
       if (e.key === 'Tab') {
         e.preventDefault();
-        if (topologyDefinitions.length === 0) return;
+        if (topologyDefinitions.length === 0) {
+          return;
+        }
         const currentIndex = topologyDefinitions.findIndex(
           (t) => t.id === selectedTopologies[selectedTopologies.length - 1]
         );
@@ -51,12 +74,16 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
           toggleTopology(nextTopology);
         }
       }
+
+      // Space to toggle selection
       if (e.key === ' ') {
         e.preventDefault();
         if (selectedTopologies.length > 0) {
           toggleTopology(selectedTopologies[selectedTopologies.length - 1]);
         }
       }
+
+      // Arrow keys for slider control
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault();
         const step = e.shiftKey ? 5 : 1;
@@ -66,145 +93,16 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
           setNodeCount((prev) => Math.min(20, prev + step));
         }
       }
+
+      // Number keys 1-9 to set node count
       if (e.key >= '1' && e.key <= '9') {
         e.preventDefault();
         const num = parseInt(e.key, 10);
         setNodeCount(Math.max(3, Math.min(20, num)));
       }
     },
-    [selectedTopologies, topologyDefinitions]
+    [selectedTopologies]
   );
-
-  const comparisonMetrics = useMemo((): ComparisonMetrics[] => {
-    return selectedTopologyData.map((topology) => {
-      const chars = topology.characteristics;
-      return {
-        topology: topology.id,
-        scores: {
-          faultTolerance:
-            chars.faultTolerance.level === 'very-high'
-              ? 100
-              : chars.faultTolerance.level === 'high'
-                ? 75
-                : chars.faultTolerance.level === 'medium'
-                  ? 50
-                  : 25,
-          scalability:
-            chars.scalability.level === 'high'
-              ? 90
-              : chars.scalability.level === 'medium'
-                ? 60
-                : 30,
-          cost:
-            chars.cost.initial === 'low'
-              ? 90
-              : chars.cost.initial === 'medium'
-                ? 60
-                : chars.cost.initial === 'high'
-                  ? 30
-                  : 10,
-          performance: 100 - chars.trafficFlow.bottlenecks.length * 20,
-          complexity: chars.scalability.limitations.length < 3 ? 80 : 40,
-        },
-        nodeCount: topology.nodes.length,
-        edgeCount: topology.edges.length,
-        avgPathLength: topology.edges.length / topology.nodes.length,
-      };
-    });
-  }, [selectedTopologyData]);
-
-  const calculateCables = (topology: TopologyDefinition) => {
-    return topology.characteristics.cableRequirements.forNodes(nodeCount);
-  };
-
-  const toggleTopology = (topology: TopologyType) => {
-    setSelectedTopologies((prev) =>
-      prev.includes(topology) ? prev.filter((t) => t !== topology) : [...prev, topology].slice(-3)
-    );
-  };
-
-  const analyzeSPOF = useCallback((topology: TopologyDefinition): SPOFAnalysis[] => {
-    const analysis: SPOFAnalysis[] = [];
-    topology.nodes.forEach((node) => {
-      const connectedEdges = topology.edges.filter(
-        (e) => e.source === node.id || e.target === node.id
-      );
-      const affectedNodes = connectedEdges.map((e) => (e.source === node.id ? e.target : e.source));
-      const redundancy = connectedEdges.length;
-
-      analysis.push({
-        nodeId: node.id,
-        label: node.label,
-        isSPOF: redundancy === 1 && node.type !== 'host',
-        impact: redundancy === 1 ? 'Critical' : redundancy === 2 ? 'High' : 'Low',
-        affectedNodes,
-        redundancy,
-      });
-    });
-    return analysis;
-  }, []);
-
-  const analyzeRedundancy = useCallback((topology: TopologyDefinition): RedundancyMetrics => {
-    const nodeCount = topology.nodes.length;
-    const edgeCount = topology.edges.length;
-    const minConnectivity = nodeCount - 1;
-    const pathRedundancy =
-      edgeCount > minConnectivity ? ((edgeCount - minConnectivity) / minConnectivity) * 100 : 0;
-    const redundantLinks = topology.edges.filter((e) => e.type === 'redundant').length;
-    const linkRedundancy = (redundantLinks / edgeCount) * 100;
-    const overallRedundancy = (pathRedundancy + linkRedundancy) / 2;
-    const criticalPaths: string[] = [];
-    topology.nodes.forEach((node) => {
-      const connections = topology.edges.filter(
-        (e) => e.source === node.id || e.target === node.id
-      );
-      if (connections.length === 1) {
-        criticalPaths.push(`${node.label} (1 connection)`);
-      }
-    });
-
-    return {
-      pathRedundancy: Math.round(pathRedundancy),
-      linkRedundancy: Math.round(linkRedundancy),
-      overallRedundancy: Math.round(overallRedundancy),
-      criticalPaths,
-    };
-  }, []);
-
-  const generateExamQuestions = useCallback((): ExamQuestion[] => {
-    const questions: ExamQuestion[] = [];
-    selectedTopologyData.forEach((topology) => {
-      if (topology.id === 'star') {
-        questions.push({
-          id: 'star-1',
-          difficulty: 'easy',
-          question: 'In a star topology, what happens when the central hub fails?',
-          options: [
-            'Only devices connected to that hub are affected',
-            'The entire network becomes disconnected',
-            'Other hubs in the network are unaffected',
-            'Traffic automatically reroutes through backup links',
-          ],
-          correctAnswer: 1,
-          explanation:
-            'Star topologies have a single point of failure. When the central device fails, all nodes lose connectivity.',
-          topologyType: 'star',
-        });
-      } else if (topology.id === 'mesh') {
-        questions.push({
-          id: 'mesh-1',
-          difficulty: 'hard',
-          question: 'How many cables are required for a full mesh topology with 6 nodes?',
-          options: ['5', '6', '15', '30'],
-          correctAnswer: 2,
-          explanation:
-            'Full mesh uses formula n(n-1)/2 = 6(5)/2 = 15 cables for direct connections between all nodes.',
-          topologyType: 'mesh',
-        });
-      }
-    });
-    return questions;
-  }, [selectedTopologyData]);
 
   return (
     <div
@@ -214,7 +112,7 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
       role="application"
       aria-label="Network Topology Comparison Analyzer"
     >
-      {/* Header and Selection UI */}
+      {/* Header */}
       <div className="analyzer-header">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
@@ -273,50 +171,66 @@ export const TopologyAnalyzer: React.FC<TopologyAnalyzerProps> = ({ className = 
         />
       </div>
 
-      {/* SPOF and Redundancy Analysis */}
-      {showAnalysis && (
-        <div className="analysis-details">
-          <h3>Topology Analysis</h3>
-          {selectedTopologyData.map((topology) => {
-            const spofData = analyzeSPOF(topology);
-            const redundancyData = analyzeRedundancy(topology);
-            return (
-              <div key={topology.id} className="topology-analysis">
-                <h4>{topology.name} - Detailed Analysis</h4>
-                <SPOFAnalysisComponent topologyName={topology.name} spofData={spofData} />
-                <RedundancyMetricsComponent
-                  topologyName={topology.name}
-                  redundancyData={redundancyData}
-                />
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {/* Comparison Grid */}
+      <div className="comparison-grid">
+        {selectedTopologyData.map((topology) => (
+          <TopologyCard key={topology.id} topology={topology} nodeCount={nodeCount} />
+        ))}
+      </div>
 
-      {/* Exam Questions */}
-      {showExamQuestions && (
-        <ExamQuestionsComponent
-          questions={generateExamQuestions()}
-          userAnswers={userAnswers}
-          onAnswerSelect={(questionId, answerIndex) =>
-            setUserAnswers({ ...userAnswers, [questionId]: answerIndex })
-          }
-        />
-      )}
+      {/* Radar Chart Comparison */}
+      <TopologyComparison
+        selectedTopologyData={selectedTopologyData}
+        comparisonMetrics={comparisonMetrics}
+      />
 
-      {/* Toggle buttons for analysis and exam questions sections would go here */}
+      {/* Three-Tier Model Explorer */}
+      <ThreeTierModel />
+
+      {/* Topology Analysis Section */}
       <div className="analysis-section-container">
         <button className="toggle-btn" onClick={() => setShowAnalysis(!showAnalysis)}>
           {showAnalysis ? 'Hide' : 'Show'} Detailed Topology Analysis
         </button>
+
+        {showAnalysis && (
+          <div className="analysis-details">
+            <h3>Topology Analysis</h3>
+
+            {selectedTopologyData.map((topology) => {
+              const spofData = analyzeSPOF(topology);
+              const redundancyData = analyzeRedundancy(topology);
+
+              return (
+                <div key={topology.id} className="topology-analysis">
+                  <h4>{topology.name} - Detailed Analysis</h4>
+
+                  <SPOFAnalysisPanel topologyName={topology.name} spofData={spofData} />
+                  <RedundancyMetrics topologyName={topology.name} redundancyData={redundancyData} />
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
+      {/* Exam Questions Section */}
       <div className="exam-section-container">
         <button className="toggle-btn" onClick={() => setShowExamQuestions(!showExamQuestions)}>
           {showExamQuestions ? 'Hide' : 'Show'} Exam Questions
         </button>
+
+        {showExamQuestions && (
+          <div className="exam-details">
+            <h3>CompTIA Network+ Exam Scenarios</h3>
+            <p className="intro-text">Test your knowledge with topology-specific exam questions</p>
+            <ExamQuestions questions={examQuestions} />
+          </div>
+        )}
       </div>
+
+      {/* Traffic Flow Visualizer */}
+      <TrafficFlowVisualization />
     </div>
   );
 };

@@ -1524,3 +1524,35 @@ export const PortScannerEnhanced: React.FC = () => {
 };
 
 export default PortScannerEnhanced;
+
+/**
+ * BACKWARD COMPATIBILITY NOTE:
+ *
+ * This file has been decomposed into a modular structure in the port-scanner/ directory:
+ *
+ * Original file: 1526 lines
+ *
+ * Refactored structure (in port-scanner/):
+ * ├── index.tsx (main orchestrator, 120 lines)
+ * ├── components/
+ * │   ├── ScannerControls.tsx (48 lines)
+ * │   ├── ScanResultsTable.tsx (65 lines)
+ * │   ├── ProtocolDetailsPanel.tsx (80 lines)
+ * │   ├── DefenseControls.tsx (100 lines)
+ * │   └── ScanTypeInfo.tsx (65 lines)
+ * ├── hooks/
+ * │   ├── useScanState.ts (70 lines)
+ * │   └── usePortAnalysis.ts (100 lines)
+ * ├── data/
+ * │   └── portDefinitions.ts (15 lines)
+ * ├── utils/
+ * │   └── scanCalculations.ts (300 lines)
+ * ├── types.ts (60 lines)
+ * ├── constants.ts (130 lines)
+ * └── styles.ts (400 lines)
+ *
+ * The refactored version (PortScannerEnhancedRefactored) is available at:
+ * ./port-scanner/index.tsx or import from './PortScannerEnhancedRefactored'
+ *
+ * This original file is kept for backward compatibility and reference.
+ */

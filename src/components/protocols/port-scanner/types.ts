@@ -50,3 +50,10 @@ export interface ScanExplanation {
   pros: string[];
   cons: string[];
 }
+
+export interface PortInfo {
+  port: number;
+  service: string;
+  banner: string;
+  risk: 'low' | 'medium' | 'high' | 'critical';
+}

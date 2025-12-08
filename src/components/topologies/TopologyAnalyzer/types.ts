@@ -1,7 +1,13 @@
 /**
- * Type definitions for TopologyAnalyzer
- * Extracted from original TopologyAnalyzer.tsx
+ * TopologyAnalyzer Types
+ * Type definitions specific to the TopologyAnalyzer component
  */
+
+import type { TopologyType } from '../topologies-types';
+
+export interface TopologyAnalyzerProps {
+  className?: string;
+}
 
 export interface SPOFAnalysis {
   nodeId: string;
@@ -26,5 +32,5 @@ export interface ExamQuestion {
   options: string[];
   correctAnswer: number;
   explanation: string;
-  topologyType: string;
+  topologyType: TopologyType;
 }
