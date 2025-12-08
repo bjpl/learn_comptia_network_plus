@@ -3,7 +3,7 @@
  * Handles connection creation and management UI
  */
 
-import React from 'react';
+import type React from 'react';
 import type { BuilderConnection, BuilderDevice } from '../types';
 
 interface ConnectionManagerProps {

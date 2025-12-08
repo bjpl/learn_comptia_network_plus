@@ -4,7 +4,7 @@
 
 import { useState, useCallback } from 'react';
 import type { ScanType, ScanResult, DefenseConfig } from '../port-scanner/types';
-import { COMMON_PORTS } from '../port-scanner/constants';
+import { COMMON_PORTS } from '../port-scanner/data/portDefinitions';
 
 export const useScanState = () => {
   const [selectedScanType, setSelectedScanType] = useState<ScanType>('syn-scan');
@@ -28,7 +28,7 @@ export const useScanState = () => {
     idsEnabled: false,
     rateLimitEnabled: false,
     portKnocking: false,
-    rules: COMMON_PORTS.slice(0, 5).map((p) => ({
+    rules: COMMON_PORTS.slice(0, 5).map((p: { port: number }) => ({
       id: `rule-${p.port}`,
       port: p.port,
       action: 'allow' as const,

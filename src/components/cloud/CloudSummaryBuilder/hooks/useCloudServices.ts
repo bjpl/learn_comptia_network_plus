@@ -4,8 +4,8 @@
 
 import { useState } from 'react';
 import type { TabType, UserAnswers, CloudTermCategory, CostCalculatorInputs } from '../types';
-import { CLOUD_TERMS, COST_CALCULATOR_INPUTS } from '../data/cloudServices';
-import { EXAM_QUESTIONS } from '../data/templates';
+import { CLOUD_TERMS } from '../data/cloudServices';
+import { EXAM_QUESTIONS, COST_CALCULATOR_INPUTS } from '../data/templates';
 import { getQuestionScore } from '../utils/diagramCalculations';
 
 export const useCloudServices = () => {

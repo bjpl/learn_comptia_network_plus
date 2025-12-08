@@ -7,14 +7,13 @@
  */
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { DeviceToolbox } from './DeviceToolbox';
-import { BuilderCanvas } from './BuilderCanvas';
-import { InfoPanel } from './InfoPanel';
-import { useBuilderState } from '../hooks/useBuilderState';
-import { detectTopologyType, validateTopology, calculateTotalCost } from '../utils/topologyValidation';
+import { DeviceToolbox } from './components/DeviceToolbox';
+import { BuilderCanvas } from './components/BuilderCanvas';
+import { InfoPanel } from './components/InfoPanel';
+import { useBuilderState } from './hooks/useBuilderState';
+import { detectTopologyType, validateTopology, calculateTotalCost } from './utils/topologyValidation';
 import { deviceSpecs, templates } from './constants';
 import type { DeviceType, TopologyTemplate } from './types';
-import './styles.css';
 
 interface TopologyBuilderProps {
   className?: string;
