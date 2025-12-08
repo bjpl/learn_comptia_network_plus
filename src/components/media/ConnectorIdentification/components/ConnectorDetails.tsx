@@ -5,10 +5,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, XCircle } from 'lucide-react';
-import type { Connector } from '../../media-types';
+import type { Connector3DModel } from '../../media-types';
 
 interface ConnectorDetailsProps {
-  connector: Connector;
+  connector: Connector3DModel;
   isCorrect: boolean;
 }
 
@@ -40,7 +40,7 @@ export function ConnectorDetails({ connector, isCorrect }: ConnectorDetailsProps
           <div>
             <div className="mb-2 text-sm font-medium">Typical Uses:</div>
             <ul className="list-inside list-disc space-y-1">
-              {connector.typicalUse.map((use, idx) => (
+              {connector.typicalUse.map((use: string, idx: number) => (
                 <li key={idx} className="text-sm text-gray-700">
                   {use}
                 </li>
@@ -51,7 +51,7 @@ export function ConnectorDetails({ connector, isCorrect }: ConnectorDetailsProps
           <div>
             <div className="mb-2 text-sm font-medium">Key Features:</div>
             <div className="flex flex-wrap gap-2">
-              {connector.keyFeatures.map((feature, idx) => (
+              {connector.keyFeatures.map((feature: string, idx: number) => (
                 <Badge key={idx} variant="outline">
                   {feature}
                 </Badge>

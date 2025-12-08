@@ -1,5 +1,5 @@
 import React from 'react';
-import type { AnimationState, ProtocolType, ViewMode } from '../types';
+import type { AnimationState, ProtocolType, ViewMode, OSILayerNumber } from '../types';
 import { LAYER_NAMES } from '../constants';
 
 interface AnimationControlsProps {
@@ -190,7 +190,7 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({
         className="text-gray-600 dark:text-gray-400"
         style={{ marginTop: '10px', fontSize: '14px' }}
       >
-        <strong>Current Layer:</strong> Layer {currentLayer} ({LAYER_NAMES[currentLayer]}) |
+        <strong>Current Layer:</strong> Layer {currentLayer} ({LAYER_NAMES[currentLayer as OSILayerNumber]}) |
         <strong> Direction:</strong>{' '}
         {direction === 'encapsulation'
           ? 'Encapsulation (Adding Headers)'

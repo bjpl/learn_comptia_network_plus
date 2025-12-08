@@ -11,7 +11,7 @@ import { useDeviceManagement } from './hooks/useDeviceManagement';
 import { useConnectionManagement } from './hooks/useConnectionManagement';
 import { detectTopologyType, validateTopology, calculateTotalCost } from './utils/topologyValidation';
 import { templates } from './data/deviceTypes';
-import type { TopologyBuilderProps, TopologyTemplate } from './types';
+import type { TopologyBuilderProps, TopologyTemplate, BuilderDevice } from './types';
 
 export const TopologyBuilder: React.FC<TopologyBuilderProps> = ({ className = '' }) => {
   const builderState = useBuilderState();
@@ -47,7 +47,7 @@ export const TopologyBuilder: React.FC<TopologyBuilderProps> = ({ className = ''
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setDevices((prev) => prev.map((device) => device.id === dragging
+    setDevices((prev: BuilderDevice[]) => prev.map((device: BuilderDevice) => device.id === dragging
       ? { ...device, position: { x: Math.max(0, Math.min(x, rect.width - 80)), y: Math.max(0, Math.min(y, rect.height - 80)) } }
       : device
     ));

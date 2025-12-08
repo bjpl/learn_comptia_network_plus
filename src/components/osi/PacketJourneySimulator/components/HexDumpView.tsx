@@ -1,5 +1,4 @@
 import React from 'react';
-import type { OSILayerNumber } from '../types';
 import { ENCAPSULATION_EXAMPLE } from '../../osi-data';
 
 export const HexDumpView: React.FC = () => {

@@ -82,7 +82,7 @@ export function useConnectorState() {
 
 export function useWiringState() {
   const [wiringStandard, setWiringStandard] = useState<'T568A' | 'T568B'>('T568B');
-  const [draggedWires, setDraggedWires] = useState<typeof import('../../media-data').Pin[]>([]);
+  const [draggedWires, setDraggedWires] = useState<import('../../media-types').Pin[]>([]);
   const [wiringComplete, setWiringComplete] = useState(false);
   const [wiringAttempts, setWiringAttempts] = useState(0);
 

@@ -111,7 +111,7 @@ export const useQuizEngine = () => {
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [quizResults, setQuizResults] = useState<QuizResult[]>([]);
-  const [quizStartTime, setQuizStartTime] = useState(0);
+  const [_quizStartTime, setQuizStartTime] = useState(0);
   const [questionStartTime, setQuestionStartTime] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');

@@ -43,7 +43,7 @@ export const TopologyAnalyzerEnhanced: React.FC<TopologyAnalyzerProps> = ({ clas
     );
   };
 
-  const handleAnalyze = (topology: TopologyType) => {
+  const handleAnalyze = (_topology: TopologyType) => {
     setShowAnalysis(true);
     setTimeout(() => {
       document

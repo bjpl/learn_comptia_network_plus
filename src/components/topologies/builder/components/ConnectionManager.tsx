@@ -15,12 +15,7 @@ interface ConnectionManagerProps {
   showCost: boolean;
 }
 
-export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
-  connections,
-  devices,
-  connecting,
-  showCost,
-}) => {
+export const ConnectionManager: React.FC<ConnectionManagerProps> = () => {
   // This component is primarily used for rendering connections within the canvas
   // The actual connection rendering is handled by BuilderCanvas
   // This is a placeholder for future connection management UI features

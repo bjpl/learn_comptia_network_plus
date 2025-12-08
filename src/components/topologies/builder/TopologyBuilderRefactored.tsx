@@ -13,7 +13,7 @@ import { InfoPanel } from './components/InfoPanel';
 import { useBuilderState } from './hooks/useBuilderState';
 import { detectTopologyType, validateTopology, calculateTotalCost } from './utils/topologyValidation';
 import { deviceSpecs, templates } from './constants';
-import type { DeviceType, TopologyTemplate } from './types';
+import type { DeviceType, TopologyTemplate, BuilderDevice } from './types';
 
 interface TopologyBuilderProps {
   className?: string;
@@ -82,8 +82,8 @@ export const TopologyBuilder: React.FC<TopologyBuilderProps> = ({ className = ''
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      setDevices((prev) =>
-        prev.map((device) =>
+      setDevices((prev: BuilderDevice[]) =>
+        prev.map((device: BuilderDevice) =>
           device.id === dragging
             ? {
                 ...device,

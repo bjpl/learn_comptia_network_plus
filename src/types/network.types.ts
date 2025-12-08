@@ -6,7 +6,6 @@
 // Re-export existing IPv4 types
 export type {
   SubnetRequirement,
-  SubnetAllocation,
   SubnetScenario,
   SubnetDesignResult,
   ProblemType,

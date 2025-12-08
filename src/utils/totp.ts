@@ -4,6 +4,7 @@
  */
 
 import { authenticator } from 'otplib';
+import { HashAlgorithms } from '@otplib/core';
 import QRCode from 'qrcode';
 
 // Configure TOTP settings
@@ -11,7 +12,7 @@ authenticator.options = {
   window: 1, // Allow 1 step before/after for time sync issues (30 seconds each side)
   step: 30, // 30-second time step (standard)
   digits: 6, // 6-digit codes (standard)
-  algorithm: 'sha1', // SHA1 algorithm (standard for TOTP)
+  algorithm: HashAlgorithms.SHA1, // SHA1 algorithm (standard for TOTP)
 };
 
 /**

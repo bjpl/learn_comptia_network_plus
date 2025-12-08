@@ -17,8 +17,8 @@ export interface UseBuilderStateReturn {
   showHints: boolean;
   history: Array<{ devices: BuilderDevice[]; connections: BuilderConnection[] }>;
   historyIndex: number;
-  setDevices: (devices: BuilderDevice[]) => void;
-  setConnections: (connections: BuilderConnection[]) => void;
+  setDevices: React.Dispatch<React.SetStateAction<BuilderDevice[]>>;
+  setConnections: React.Dispatch<React.SetStateAction<BuilderConnection[]>>;
   setSelectedDevice: (id: string | null) => void;
   setDragging: (id: string | null) => void;
   setConnecting: (id: string | null) => void;
@@ -30,6 +30,8 @@ export interface UseBuilderStateReturn {
   undo: () => void;
   redo: () => void;
   clearCanvas: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
 }
 
 export function useBuilderState(): UseBuilderStateReturn {
@@ -83,6 +85,9 @@ export function useBuilderState(): UseBuilderStateReturn {
     saveToHistory([], []);
   }, [saveToHistory]);
 
+  const canUndo = historyIndex > 0;
+  const canRedo = historyIndex < history.length - 1;
+
   return {
     devices,
     connections,
@@ -108,5 +113,7 @@ export function useBuilderState(): UseBuilderStateReturn {
     undo,
     redo,
     clearCanvas,
+    canUndo,
+    canRedo,
   };
 }

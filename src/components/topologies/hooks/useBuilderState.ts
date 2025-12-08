@@ -5,7 +5,28 @@
 import { useState, useCallback } from 'react';
 import type { BuilderDevice, BuilderConnection } from '../builder/types';
 
-export const useBuilderState = () => {
+export interface UseBuilderStateReturn {
+  devices: BuilderDevice[];
+  setDevices: React.Dispatch<React.SetStateAction<BuilderDevice[]>>;
+  connections: BuilderConnection[];
+  setConnections: React.Dispatch<React.SetStateAction<BuilderConnection[]>>;
+  selectedDevice: string | null;
+  setSelectedDevice: React.Dispatch<React.SetStateAction<string | null>>;
+  dragging: string | null;
+  setDragging: React.Dispatch<React.SetStateAction<string | null>>;
+  connecting: string | null;
+  setConnecting: React.Dispatch<React.SetStateAction<string | null>>;
+  saveToHistory: (devs: BuilderDevice[], conns: BuilderConnection[]) => void;
+  undo: () => void;
+  redo: () => void;
+  clearCanvas: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  history: Array<{ devices: BuilderDevice[]; connections: BuilderConnection[] }>;
+  historyIndex: number;
+}
+
+export const useBuilderState = (): UseBuilderStateReturn => {
   const [devices, setDevices] = useState<BuilderDevice[]>([]);
   const [connections, setConnections] = useState<BuilderConnection[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
@@ -72,5 +93,7 @@ export const useBuilderState = () => {
     clearCanvas,
     canUndo,
     canRedo,
+    history,
+    historyIndex,
   };
 };
