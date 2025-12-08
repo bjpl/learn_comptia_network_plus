@@ -77,7 +77,7 @@
     "jsdom": "^27.0.1",
     "lint-staged": "^15.2.11",
     "postcss": "^8.4.49",
-    "prettier": "^3.4.2",
+    "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "rollup-plugin-visualizer": "^6.0.5",
     "sharp": "^0.34.4",
