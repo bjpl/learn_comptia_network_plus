@@ -40,7 +40,8 @@ describe('Network Validation Utilities', () => {
       });
 
       it('should validate edge case valid addresses', () => {
-        const edgeIPs = ['0.0.0.0', '255.255.255.254', '127.0.0.1'];
+        // Note: 255.255.255.254 removed as 255.x.x.x addresses are now invalid
+        const edgeIPs = ['0.0.0.0', '127.0.0.1'];
 
         edgeIPs.forEach((ip) => {
           const result = validateIPv4(ip);
@@ -90,9 +91,10 @@ describe('Network Validation Utilities', () => {
         expect(result.warnings).toContain('Address starts with 0 (network address)');
       });
 
-      it('should warn about broadcast address', () => {
+      it('should reject broadcast address (255 in first octet)', () => {
         const result = validateIPv4('255.255.255.255');
-        expect(result.warnings).toContain('Broadcast address (255.255.255.255)');
+        expect(result.isValid).toBe(false);
+        expect(result.errors[0]).toContain('first octet cannot be 255');
       });
 
       it('should suggest private IP ranges', () => {

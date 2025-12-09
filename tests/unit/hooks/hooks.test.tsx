@@ -70,6 +70,10 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  // CRITICAL: Clear all pending timers BEFORE restoring real timers
+  // This prevents timer pollution between test files
+  vi.clearAllTimers();
+
   // Restore real timers
   vi.useRealTimers();
 

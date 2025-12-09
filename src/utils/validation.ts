@@ -57,13 +57,15 @@ export function validateIPv4(ip: string): ValidationResult {
   if (octets[0] === 127) {
     warnings.push('Loopback address (127.0.0.0/8)');
   }
-  // Check for broadcast address - all 255s is technically invalid for host addresses
-  // but 255.x.x.x is generally invalid except for broadcast
-  if (octets.every((o) => o === 255)) {
-    warnings.push('Broadcast address (255.255.255.255)');
+  // Reject 255.x.x.x addresses as invalid host addresses (first octet of 255 is reserved)
+  // Only 255.255.255.255 (broadcast) is a valid special case, but still not a valid host
+  if (octets[0] === 255) {
+    if (octets.every((o) => o === 255)) {
+      errors.push('Broadcast address (255.255.255.255) - first octet cannot be 255 for host addresses');
+    } else {
+      errors.push('Invalid address - first octet cannot be 255 for host addresses');
+    }
   }
-  // Note: We allow 255.x.x.x for subnet masks, but not as host addresses in typical use
-  // The test expects 255.255.255.254 to be valid, so we only warn, not error
 
   // Private address ranges
   const isPrivate =

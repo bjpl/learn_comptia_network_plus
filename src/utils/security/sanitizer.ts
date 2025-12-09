@@ -72,7 +72,7 @@ export function sanitizeLikePattern(pattern: string): string {
   return pattern.replace(/[%_\\]/g, '\\$&');
 }
 
-export function sanitizeJson(data: any): any {
+export function sanitizeJson(data: unknown): unknown {
   if (typeof data === 'string') {
     return sanitizeInput(data);
   }
@@ -80,7 +80,7 @@ export function sanitizeJson(data: any): any {
     return data.map(sanitizeJson);
   }
   if (data && typeof data === 'object') {
-    const result: any = {};
+    const result: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(data)) {
       result[key] = sanitizeJson(value);
     }
@@ -106,12 +106,12 @@ export function sanitizeAssessmentAnswer(answer: string): string {
   return sanitizeInput(answer);
 }
 
-export function sanitizeObject<T extends Record<string, any>>(
+export function sanitizeObject<T extends Record<string, unknown>>(
   obj: T,
   sanitizer?: (value: string) => string
 ): T {
   const defaultSanitizer = sanitizer || sanitizeInput;
-  const result: any = {};
+  const result: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(obj)) {
     if (typeof value === 'string') {
@@ -119,7 +119,7 @@ export function sanitizeObject<T extends Record<string, any>>(
     } else if (Array.isArray(value)) {
       result[key] = value.map((v) => (typeof v === 'string' ? defaultSanitizer(v) : v));
     } else if (value && typeof value === 'object') {
-      result[key] = sanitizeObject(value, sanitizer);
+      result[key] = sanitizeObject(value as Record<string, unknown>, sanitizer);
     } else {
       result[key] = value;
     }

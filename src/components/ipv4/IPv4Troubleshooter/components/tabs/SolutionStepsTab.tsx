@@ -1,0 +1,111 @@
+/**
+ * Solution Steps Tab component
+ */
+import React from 'react';
+import {
+  CardContent,
+  Box,
+  Button,
+  Stepper,
+  Step,
+  StepLabel,
+  StepContent,
+  Paper,
+  Typography,
+  Alert,
+} from '@mui/material';
+import { PlayArrow, Refresh, CheckCircle, Lightbulb } from '@mui/icons-material';
+import type { TroubleshootingScenario } from '../../../ipv4-types';
+
+interface SolutionStepsTabProps {
+  scenario: TroubleshootingScenario;
+  activeStep: number;
+  showSolution: boolean;
+  onToggleSolution: () => void;
+  onStepChange: (step: number) => void;
+  onReset: () => void;
+}
+
+export const SolutionStepsTab: React.FC<SolutionStepsTabProps> = ({
+  scenario,
+  activeStep,
+  showSolution,
+  onToggleSolution,
+  onStepChange,
+  onReset,
+}) => (
+  <CardContent>
+    <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+      <Button variant="contained" startIcon={<PlayArrow />} onClick={onToggleSolution}>
+        {showSolution ? 'Hide' : 'Show'} Solution
+      </Button>
+      <Button variant="outlined" startIcon={<Refresh />} onClick={onReset}>
+        Reset
+      </Button>
+    </Box>
+
+    {showSolution && scenario.solution && (
+      <Stepper activeStep={activeStep} orientation="vertical">
+        {scenario.solution.map((step, index) => (
+          <Step key={step.id}>
+            <StepLabel>
+              <Typography variant="subtitle2">{step.description}</Typography>
+            </StepLabel>
+            <StepContent>
+              <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+                <Typography variant="body2" paragraph>
+                  <strong>Action:</strong> {step.action}
+                </Typography>
+                <Typography variant="body2" paragraph>
+                  <strong>Expected Result:</strong> {step.expectedResult}
+                </Typography>
+                <Alert severity="info" icon={<Lightbulb />}>
+                  <Typography variant="body2">{step.explanation}</Typography>
+                </Alert>
+                {step.diagnostic && (
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
+                      Related Diagnostic:
+                    </Typography>
+                    <Paper
+                      variant="outlined"
+                      sx={{
+                        p: 1,
+                        mt: 1,
+                        bgcolor: '#1e1e1e',
+                        color: '#d4d4d4',
+                        fontFamily: 'monospace',
+                        fontSize: '0.75rem',
+                      }}
+                    >
+                      <pre style={{ margin: 0 }}>{step.diagnostic.output}</pre>
+                    </Paper>
+                  </Box>
+                )}
+              </Paper>
+              <Box sx={{ mb: 2 }}>
+                <Button
+                  variant="contained"
+                  onClick={() => onStepChange(index + 1)}
+                  sx={{ mr: 1 }}
+                >
+                  {index === scenario.solution!.length - 1 ? 'Finish' : 'Continue'}
+                </Button>
+                {index > 0 && <Button onClick={() => onStepChange(index - 1)}>Back</Button>}
+              </Box>
+            </StepContent>
+          </Step>
+        ))}
+      </Stepper>
+    )}
+
+    {activeStep === scenario.solution?.length && showSolution && (
+      <Alert severity="success" icon={<CheckCircle />} sx={{ mt: 2 }}>
+        <Typography variant="subtitle2">Troubleshooting Complete!</Typography>
+        <Typography variant="body2">
+          You have successfully identified and resolved the {scenario.problemType} issue.
+        </Typography>
+      </Alert>
+    )}
+  </CardContent>
+);

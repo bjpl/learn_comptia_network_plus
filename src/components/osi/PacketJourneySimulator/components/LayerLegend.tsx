@@ -1,14 +1,14 @@
 import React from 'react';
-import type { OSILayerNumber } from '../types';
-import { LAYER_COLORS, LAYER_NAMES } from '../constants';
+import type { OSILayerNumber } from '../../osi-types';
+import { LAYER_COLORS, LAYER_NAMES } from '../../osi-data';
 
 export const LayerLegend: React.FC = () => {
   return (
     <div
-      className="bg-white dark:bg-gray-800"
       style={{
         marginTop: '30px',
         padding: '15px',
+        backgroundColor: '#fff',
         borderRadius: '8px',
         border: '1px solid #ddd',
       }}

@@ -1,111 +1,66 @@
-import React, { useState, useMemo } from 'react';
-import type { ViewMode, PacketJourneySimulatorProps } from './types';
-import { useJourneyState } from './hooks/useJourneyState';
+import React, { useState } from 'react';
+import type { OSILayerNumber } from '../osi-types';
+import type { PacketJourneySimulatorProps } from './types';
 import { usePacketAnimation } from './hooks/usePacketAnimation';
-import { calculateFragmentation } from './utils/packetCalculations';
-import { AnimationControls } from './components/AnimationControls';
-import { JourneyVisualization } from './components/JourneyVisualization';
-import { LayerDetails } from './components/LayerDetails';
-import { PacketBuilder } from './components/PacketBuilder';
-import { EncapsulationView } from './components/EncapsulationView';
-import { TCPFlagsView } from './components/TCPFlagsView';
-import { MTUView } from './components/MTUView';
-import { HexDumpView } from './components/HexDumpView';
-import { LayerLegend } from './components/LayerLegend';
-import { ENCAPSULATION_EXAMPLE } from '../osi-data';
+import {
+  AnimationControls,
+  StatusDisplay,
+  DevicePanel,
+  PacketVisualization,
+  InspectionPanel,
+  LayerLegend,
+} from './components';
 
 export const PacketJourneySimulator: React.FC<PacketJourneySimulatorProps> = ({ onComplete }) => {
-  const [viewMode, setViewMode] = useState<ViewMode>('journey');
+  const [inspectedLayer, setInspectedLayer] = useState<OSILayerNumber | null>(null);
 
   const {
-    selectedProtocol,
-    setSelectedProtocol,
-    selectedMTU,
-    setSelectedMTU,
-    tcpScenario,
-    setTcpScenario,
-    tcpFlags,
     animationState,
-    setAnimationState,
     packetState,
-    setPacketState,
-    inspectedLayer,
-    setInspectedLayer,
-    toggleTCPFlag,
-    loadTCPScenario,
+    togglePlayPause,
+    resetAnimation,
+    changeSpeed,
     changeProtocol,
-  } = useJourneyState();
-
-  const { togglePlayPause, resetAnimation, changeSpeed } = usePacketAnimation({
-    animationState,
-    setAnimationState,
-    setPacketState,
-    selectedProtocol,
-    tcpFlags,
-    selectedMTU,
-    onComplete,
-  });
-
-  const fragmentationInfo = useMemo(() => {
-    const payloadSize = ENCAPSULATION_EXAMPLE.originalData.length;
-    return calculateFragmentation(payloadSize, selectedMTU);
-  }, [selectedMTU]);
+  } = usePacketAnimation({ onComplete });
 
   return (
     <div
-      className="packet-journey-simulator-enhanced"
+      className="packet-journey-simulator"
       style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}
     >
-      <AnimationControls
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        selectedProtocol={selectedProtocol}
-        setSelectedProtocol={setSelectedProtocol}
-        animationState={animationState}
-        togglePlayPause={togglePlayPause}
-        resetAnimation={resetAnimation}
-        changeSpeed={changeSpeed}
-        changeProtocol={changeProtocol}
-        currentLayer={packetState.currentLayer}
-        direction={packetState.direction}
-        currentStep={animationState.currentStep}
-      />
+      <div className="header" style={{ marginBottom: '20px' }}>
+        <h2>Packet Journey Simulator</h2>
+        <AnimationControls
+          animationState={animationState}
+          onTogglePlayPause={togglePlayPause}
+          onReset={resetAnimation}
+          onChangeSpeed={changeSpeed}
+          onChangeProtocol={changeProtocol}
+        />
+        <StatusDisplay animationState={animationState} packetState={packetState} />
+      </div>
 
-      {viewMode === 'journey' && (
-        <JourneyVisualization
+      <div
+        className="visualization-panels"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 2fr 1fr',
+          gap: '20px',
+          marginTop: '30px',
+        }}
+      >
+        <DevicePanel type="source" packetState={packetState} />
+        <PacketVisualization
           packetState={packetState}
+          animationState={animationState}
           inspectedLayer={inspectedLayer}
-          setInspectedLayer={setInspectedLayer}
-          isPlaying={animationState.isPlaying}
+          onLayerClick={setInspectedLayer}
         />
-      )}
+        <DevicePanel type="destination" packetState={packetState} />
+      </div>
 
-      {viewMode === 'headers' && <PacketBuilder packetState={packetState} />}
-
-      {viewMode === 'hexdump' && <HexDumpView />}
-
-      {viewMode === 'tcp-flags' && (
-        <TCPFlagsView
-          tcpFlags={tcpFlags}
-          tcpScenario={tcpScenario}
-          toggleTCPFlag={toggleTCPFlag}
-          loadTCPScenario={loadTCPScenario}
-          setTcpScenario={setTcpScenario}
-        />
-      )}
-
-      {viewMode === 'mtu' && (
-        <MTUView
-          selectedMTU={selectedMTU}
-          setSelectedMTU={setSelectedMTU}
-          fragmentationInfo={fragmentationInfo}
-        />
-      )}
-
-      {viewMode === 'scenarios' && <EncapsulationView />}
-
-      {inspectedLayer !== null && viewMode === 'journey' && (
-        <LayerDetails
+      {inspectedLayer !== null && (
+        <InspectionPanel
           inspectedLayer={inspectedLayer}
           packetState={packetState}
           onClose={() => setInspectedLayer(null)}
