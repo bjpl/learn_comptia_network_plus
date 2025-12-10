@@ -15,7 +15,7 @@ export interface ModeConfig {
 }
 
 export interface TroubleshootingScenariosEnhancedProps {
-  onProgressUpdate?: (correct: number, total: number) => void;
+  onProgressUpdate?: (progress: { completed: number; total: number }) => void;
 }
 
 export interface StatCardProps {

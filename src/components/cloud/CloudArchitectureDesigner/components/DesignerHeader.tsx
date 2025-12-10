@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import styles from '../CloudArchitectureDesigner.module.css';
+import styles from '../../CloudArchitectureDesigner.module.css';
 
 interface DesignerHeaderProps {
   designName: string;
@@ -58,9 +58,13 @@ export const DesignerHeader: React.FC<DesignerHeaderProps> = ({
             placeholder="Architecture name"
           />
           <div className={styles.metadata}>
-            <span>{componentCount} component{componentCount !== 1 ? 's' : ''}</span>
+            <span>
+              {componentCount} component{componentCount !== 1 ? 's' : ''}
+            </span>
             <span>•</span>
-            <span>{connectionCount} connection{connectionCount !== 1 ? 's' : ''}</span>
+            <span>
+              {connectionCount} connection{connectionCount !== 1 ? 's' : ''}
+            </span>
           </div>
         </div>
       </div>

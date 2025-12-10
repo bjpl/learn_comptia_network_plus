@@ -2,7 +2,10 @@
  * ARP Table Tab content
  */
 import React from 'react';
-import { CardContent, Box, Button, Typography, Alert } from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import { Storage } from '@mui/icons-material';
 import { ARPTableComponent } from './ARPTableComponent';
 import type { ARPEntry } from '../types';
@@ -19,7 +22,7 @@ export const ARPTableTab: React.FC<ARPTableTabProps> = ({
   arpTable,
 }) => (
   <CardContent>
-    <Box sx={{ mb: 2 }}>
+    <div style={{ marginBottom: '16px' }}>
       <Typography variant="h6" gutterBottom className="text-gray-900 dark:text-white">
         ARP Table Simulator
       </Typography>
@@ -27,12 +30,12 @@ export const ARPTableTab: React.FC<ARPTableTabProps> = ({
         Address Resolution Protocol (ARP) table maps IP addresses to MAC addresses. Invalid entries
         can prevent communication.
       </Typography>
-    </Box>
-    <Box sx={{ mb: 2 }}>
+    </div>
+    <div style={{ marginBottom: '16px' }}>
       <Button variant="contained" onClick={onToggleTable} startIcon={<Storage />}>
         {showARPTable ? 'Hide' : 'Show'} ARP Table
       </Button>
-    </Box>
+    </div>
     {showARPTable && <ARPTableComponent arpTable={arpTable} />}
     <Alert severity="warning" sx={{ mt: 2 }}>
       <Typography variant="body2">

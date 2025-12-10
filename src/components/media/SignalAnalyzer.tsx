@@ -1,2 +1,2 @@
 // Re-export the modular SignalAnalyzer component
-export { default } from './SignalAnalyzer';
+export { default } from './SignalAnalyzer/index';

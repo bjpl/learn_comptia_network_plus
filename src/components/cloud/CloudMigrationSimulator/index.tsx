@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box } from '@mui/material';
 import { useTransformationState } from './hooks/useTransformationState';
 import {
   MigrationHeader,
@@ -39,8 +38,7 @@ const CloudMigrationSimulator: React.FC<CloudMigrationSimulatorProps> = ({ class
   } = useTransformationState();
 
   return (
-    // @ts-expect-error - Complex MUI className union type
-    <Box className={`cloud-migration-simulator ${className}`}>
+    <div className={`cloud-migration-simulator ${className}`}>
       <MigrationHeader />
 
       <ScenarioSelection
@@ -52,7 +50,7 @@ const CloudMigrationSimulator: React.FC<CloudMigrationSimulatorProps> = ({ class
 
       <ViewNavigation currentView={view} onViewChange={setView} />
 
-      <Box className="migration-content">
+      <div className="migration-content">
         {view === 'overview' && (
           <OverviewView
             scenario={scenario}
@@ -96,10 +94,10 @@ const CloudMigrationSimulator: React.FC<CloudMigrationSimulatorProps> = ({ class
             overallProgress={overallProgress}
           />
         )}
-      </Box>
+      </div>
 
       <EducationalFooter />
-    </Box>
+    </div>
   );
 };
 

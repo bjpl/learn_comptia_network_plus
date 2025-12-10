@@ -30,7 +30,6 @@ const IaCBuilder: React.FC = () => {
     codeEditorContent,
     setCodeEditorContent,
     selectedLanguage,
-    showValidation,
     setShowValidation,
     handleTemplateSelect,
     handleLanguageChange,

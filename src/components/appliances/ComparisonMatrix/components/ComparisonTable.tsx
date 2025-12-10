@@ -1,39 +1,10 @@
 import React from 'react';
 import type { SortField, SortDirection } from '../types';
+import type { ComparisonDevice } from '../../appliances-types';
 import { getCategoryBadgeColor, getFeatureIcon } from '../utils';
 
-interface NetworkDevice {
-  id: string;
-  name: string;
-  model: string;
-  category: string;
-  manufacturer?: string;
-  type: string;
-  specs: {
-    throughput: string;
-    maxConnections: number;
-    memoryGB?: number;
-    powerConsumption: string;
-  };
-  features: {
-    layer3Routing: boolean;
-    vpnSupport: boolean;
-    deepPacketInspection: boolean;
-    highAvailability: boolean;
-  };
-  pricing: {
-    initialCost: number;
-    totalCostYear1: number;
-    totalCost3Years: number;
-    totalCost5Years: number;
-  };
-  useCase: string[];
-  pros: string[];
-  cons: string[];
-}
-
 interface ComparisonTableProps {
-  sortedDevices: NetworkDevice[];
+  sortedDevices: ComparisonDevice[];
   sortField: SortField;
   sortDirection: SortDirection;
   onSort: (field: SortField) => void;
@@ -60,7 +31,9 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="font-bold text-gray-900 dark:text-gray-100">{device.name}</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">{device.model}</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-300">
+                      {device.model || 'N/A'}
+                    </div>
                     <span
                       className={`mt-1 inline-block rounded px-2 py-1 text-xs ${getCategoryBadgeColor(device.category)}`}
                     >
@@ -183,9 +156,7 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({
             ))}
           </tr>
           <tr>
-            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">
-              VPN Support
-            </td>
+            <td className="border p-3 font-medium text-gray-900 dark:text-gray-100">VPN Support</td>
             {sortedDevices.map((device) => (
               <td key={device.id} className="border p-3 text-center">
                 {getFeatureIcon(device.features.vpnSupport)}

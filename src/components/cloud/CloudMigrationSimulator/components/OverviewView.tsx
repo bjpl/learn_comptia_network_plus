@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box, Card, CardContent, Typography, Grid, Chip } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Chip from '@mui/material/Chip';
 import {
   Timeline as TimelineIcon,
   Assessment as AssessmentIcon,
@@ -25,7 +29,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   onPremTotal,
   checkedItems,
 }) => (
-  <Box className="migration-overview">
+  <div className="migration-overview">
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Card>
@@ -165,16 +169,18 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       <Grid item xs={12}>
         <Card>
           <CardContent>
-            <Box display="flex" alignItems="center" gap={2} mb={2}>
+            <div
+              style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}
+            >
               <Typography variant="h2">{strategy.icon}</Typography>
-              <Box>
+              <div>
                 <Typography variant="h6">{strategy.name}</Typography>
-                <Box display="flex" gap={1}>
+                <div style={{ display: 'flex', gap: '8px' }}>
                   <Chip label={`Complexity: ${strategy.complexity}`} size="small" />
                   <Chip label={`Timeline: ${strategy.timeframe}`} size="small" color="primary" />
-                </Box>
-              </Box>
-            </Box>
+                </div>
+              </div>
+            </div>
             <Typography variant="body2" color="text.secondary">
               {strategy.description}
             </Typography>
@@ -182,5 +188,5 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         </Card>
       </Grid>
     </Grid>
-  </Box>
+  </div>
 );

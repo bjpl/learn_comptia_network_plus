@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Box, Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import { Lightbulb, Refresh } from '@mui/icons-material';
 
 interface ActionButtonsProps {
@@ -22,7 +22,7 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
   onReset,
 }) => {
   return (
-    <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+    <div style={{ marginBottom: '24px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
       <Button variant="outlined" startIcon={<Lightbulb />} onClick={onToggleHints}>
         {showHints ? 'Hide' : 'Show'} Hints
       </Button>
@@ -32,6 +32,6 @@ export const ActionButtons: React.FC<ActionButtonsProps> = ({
       <Button variant="outlined" startIcon={<Refresh />} onClick={onReset}>
         Reset
       </Button>
-    </Box>
+    </div>
   );
 };

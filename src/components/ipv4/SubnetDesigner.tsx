@@ -3,4 +3,4 @@
  * Re-export of modular SubnetDesigner component
  */
 
-export { default } from './SubnetDesigner';
+export { default } from './SubnetDesigner/index';

@@ -1,25 +1,19 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  LinearProgress,
-  Stepper,
-  Step,
-  StepLabel,
-  StepContent,
-  Card,
-  CardContent,
-  List,
-  ListItem,
-  FormControlLabel,
-  Checkbox,
-  Chip,
-  Button,
-} from '@mui/material';
-import {
-  CheckCircle as CheckCircleIcon,
-  Warning as WarningIcon,
-} from '@mui/icons-material';
+import Typography from '@mui/material/Typography';
+import LinearProgress from '@mui/material/LinearProgress';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepContent from '@mui/material/StepContent';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
+import Button from '@mui/material/Button';
+import { CheckCircle as CheckCircleIcon, Warning as WarningIcon } from '@mui/icons-material';
 import { calculatePhaseProgress, calculateRiskSeverity } from '../../../../data/migration-data';
 import type { ChecklistItems } from '../types';
 
@@ -40,12 +34,12 @@ export const PhasesView: React.FC<PhasesViewProps> = ({
   onToggleItem,
   overallProgress,
 }) => (
-  <Box className="migration-phases-view">
+  <div className="migration-phases-view">
     <Typography variant="h5" gutterBottom>
       Migration Phases: {scenario.name}
     </Typography>
 
-    <Box mb={3}>
+    <div style={{ marginBottom: '24px' }}>
       <Typography variant="body2" color="text.secondary" gutterBottom>
         Overall Progress
       </Typography>
@@ -57,7 +51,7 @@ export const PhasesView: React.FC<PhasesViewProps> = ({
       <Typography variant="caption" color="text.secondary">
         {overallProgress}% Complete
       </Typography>
-    </Box>
+    </div>
 
     <Stepper activeStep={activePhase} orientation="vertical">
       {scenario.phases.map((phase: any, index: number) => {
@@ -111,12 +105,12 @@ export const PhasesView: React.FC<PhasesViewProps> = ({
                             />
                           }
                           label={
-                            <Box>
+                            <div>
                               <Typography variant="body2">{item.task}</Typography>
                               <Typography variant="caption" color="text.secondary">
                                 {item.description} • {item.responsible}
                               </Typography>
-                            </Box>
+                            </div>
                           }
                         />
                       </ListItem>
@@ -137,8 +131,8 @@ export const PhasesView: React.FC<PhasesViewProps> = ({
                         const severity = calculateRiskSeverity(risk.probability, risk.impact);
                         return (
                           <ListItem key={risk.id} dense>
-                            <Box>
-                              <Box display="flex" alignItems="center" gap={1}>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <Typography variant="body2">{risk.risk}</Typography>
                                 <Chip
                                   label={`P: ${risk.probability}`}
@@ -169,11 +163,11 @@ export const PhasesView: React.FC<PhasesViewProps> = ({
                                     severity >= 6 ? 'error' : severity >= 4 ? 'warning' : 'default'
                                   }
                                 />
-                              </Box>
+                              </div>
                               <Typography variant="caption" color="text.secondary">
                                 Mitigation: {risk.mitigation}
                               </Typography>
-                            </Box>
+                            </div>
                           </ListItem>
                         );
                       })}
@@ -182,7 +176,7 @@ export const PhasesView: React.FC<PhasesViewProps> = ({
                 </Card>
               )}
 
-              <Box display="flex" gap={1} mt={2}>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
                 {index > 0 && (
                   <Button size="small" onClick={() => onPhaseChange(index - 1)}>
                     Previous
@@ -193,11 +187,11 @@ export const PhasesView: React.FC<PhasesViewProps> = ({
                     Next Phase
                   </Button>
                 )}
-              </Box>
+              </div>
             </StepContent>
           </Step>
         );
       })}
     </Stepper>
-  </Box>
+  </div>
 );

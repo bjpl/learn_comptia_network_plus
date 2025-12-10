@@ -2,7 +2,7 @@
  * PracticeView Component
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import type { TroubleshootingScenario, ScenarioResponse } from '../../osi-types';
 import type { ModeConfig } from '../types';
 import { TROUBLESHOOTING_SCENARIOS } from '../../osi-data';
@@ -136,7 +136,9 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
           <ExplanationInput
             value={currentResponse.explanation || ''}
-            onChange={(value) => onCurrentResponseChange({ ...currentResponse, explanation: value })}
+            onChange={(value) =>
+              onCurrentResponseChange({ ...currentResponse, explanation: value })
+            }
           />
 
           <SolutionInput
@@ -200,7 +202,10 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
         {/* Show result if answered and immediate feedback enabled */}
         {responses.has(currentScenario.id) && modeConfig.immediateFeedback && (
-          <ResultFeedback response={responses.get(currentScenario.id)!} scenario={currentScenario} />
+          <ResultFeedback
+            response={responses.get(currentScenario.id)!}
+            scenario={currentScenario}
+          />
         )}
       </div>
 

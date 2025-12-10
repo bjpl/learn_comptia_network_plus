@@ -3,4 +3,4 @@
  * Main implementation is in ./IPv4Troubleshooting/index.tsx
  */
 
-export { default } from './IPv4Troubleshooting';
+export { default } from './IPv4Troubleshooting/index';

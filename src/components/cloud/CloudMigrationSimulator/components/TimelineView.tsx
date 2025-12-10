@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box, Typography, Chip, Card, CardContent, Grid } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
 import { calculateTimelineData } from '../utils/calculationHelpers';
 import type { ChecklistItems } from '../types';
 
@@ -18,7 +22,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
   const totalWeeks = timelineData[timelineData.length - 1]?.endWeek || 0;
 
   return (
-    <Box className="migration-timeline-view">
+    <div className="migration-timeline-view">
       <Typography variant="h5" gutterBottom>
         Migration Timeline
       </Typography>
@@ -27,38 +31,49 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
         {Math.ceil(totalWeeks / 4)} months)
       </Typography>
 
-      <Box className="timeline-gantt" sx={{ mt: 3 }}>
+      <div className="timeline-gantt" style={{ marginTop: '24px' }}>
         {timelineData.map((item) => {
           const widthPercent = (item.phase.duration / totalWeeks) * 100;
           const leftPercent = (item.startWeek / totalWeeks) * 100;
 
           return (
-            <Box key={item.phase.id} mb={3}>
-              <Box display="flex" justifyContent="space-between" mb={1}>
+            <div key={item.phase.id} style={{ marginBottom: '24px' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}
+              >
                 <Typography variant="subtitle2">{item.phase.name}</Typography>
                 <Typography variant="caption" color="text.secondary">
                   Week {item.startWeek} - {item.endWeek} ({item.phase.duration} weeks)
                 </Typography>
-              </Box>
-              <Box position="relative" height={60} bgcolor="grey.100" borderRadius={1}>
-                <Box
-                  position="absolute"
-                  left={`${leftPercent}%`}
-                  width={`${widthPercent}%`}
-                  height="100%"
-                  bgcolor="primary.main"
-                  borderRadius={1}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  sx={{ opacity: 0.8 }}
+              </div>
+              <div
+                style={{
+                  position: 'relative',
+                  height: '60px',
+                  backgroundColor: '#f5f5f5',
+                  borderRadius: '4px',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${leftPercent}%`,
+                    width: `${widthPercent}%`,
+                    height: '100%',
+                    backgroundColor: '#1976d2',
+                    borderRadius: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: 0.8,
+                  }}
                 >
-                  <Typography variant="caption" color="white" fontWeight="bold">
+                  <Typography variant="caption" style={{ color: 'white', fontWeight: 'bold' }}>
                     {item.progress}%
                   </Typography>
-                </Box>
-              </Box>
-              <Box display="flex" gap={1} mt={1}>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                 <Chip label={`${item.phase.checklist.length} tasks`} size="small" />
                 <Chip label={`${item.phase.risks.length} risks`} size="small" color="warning" />
                 {item.phase.dependencies.length > 0 && (
@@ -68,13 +83,13 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
                     color="secondary"
                   />
                 )}
-              </Box>
-            </Box>
+              </div>
+            </div>
           );
         })}
-      </Box>
+      </div>
 
-      <Box mt={4}>
+      <div style={{ marginTop: '32px' }}>
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -110,7 +125,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
             </Grid>
           </CardContent>
         </Card>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };

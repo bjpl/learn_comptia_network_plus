@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import {
   Assessment as AssessmentIcon,
   Settings as SettingsIcon,
@@ -15,7 +15,7 @@ interface ViewNavigationProps {
 }
 
 export const ViewNavigation: React.FC<ViewNavigationProps> = ({ currentView, onViewChange }) => (
-  <Box mb={3} display="flex" gap={1} flexWrap="wrap">
+  <div style={{ marginBottom: '24px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
     <Button
       variant={currentView === 'overview' ? 'contained' : 'outlined'}
       onClick={() => onViewChange('overview')}
@@ -58,5 +58,5 @@ export const ViewNavigation: React.FC<ViewNavigationProps> = ({ currentView, onV
     >
       Timeline
     </Button>
-  </Box>
+  </div>
 );

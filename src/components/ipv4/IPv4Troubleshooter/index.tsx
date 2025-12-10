@@ -5,7 +5,11 @@
  */
 
 import React from 'react';
-import { Box, Typography, Card, Tabs, Tab, CardContent } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import CardContent from '@mui/material/CardContent';
 import {
   BugReport,
   Router,
@@ -26,11 +30,7 @@ import { EducationalReference } from './components/EducationalReference';
 import { ValidatorTab } from './components/ValidatorTab';
 import { RoutingTableTab } from './components/RoutingTableTab';
 import { ARPTableTab } from './components/ARPTableTab';
-import {
-  ProblemOverviewTab,
-  DiagnosticsTab,
-  SolutionStepsTab,
-} from './components/tabs';
+import { ProblemOverviewTab, DiagnosticsTab, SolutionStepsTab } from './components/tabs';
 
 const IPv4Troubleshooter: React.FC = () => {
   const {
@@ -128,14 +128,14 @@ const IPv4Troubleshooter: React.FC = () => {
 
         <TabPanel value={tabValue} index={4}>
           <CardContent>
-            <Box sx={{ mb: 2 }}>
+            <div style={{ marginBottom: '16px' }}>
               <Typography variant="h6" gutterBottom className="text-gray-900 dark:text-white">
                 Step-by-Step Troubleshooting Guide
               </Typography>
               <Typography variant="body2" className="text-gray-700 dark:text-gray-300" paragraph>
                 Follow these methodical steps to diagnose IPv4 connectivity issues
               </Typography>
-            </Box>
+            </div>
             <TroubleshootingWizard wizardStep={wizardStep} setWizardStep={setWizardStep} />
           </CardContent>
         </TabPanel>

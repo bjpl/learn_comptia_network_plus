@@ -20,7 +20,7 @@ export function useScenarioSubmission(
   isExamMode: boolean,
   timeLimit: number | null,
   setTimeRemaining: React.Dispatch<React.SetStateAction<number | null>>,
-  onProgressUpdate?: (correct: number, total: number) => void
+  onProgressUpdate?: (progress: { completed: number; total: number }) => void
 ) {
   const submitResponse = useCallback(() => {
     if (
@@ -50,7 +50,7 @@ export function useScenarioSubmission(
           r.selectedLayer
       ).length + (fullResponse.selectedLayer === currentScenario.correctLayer ? 1 : 0);
 
-    onProgressUpdate?.(correctCount, responses.size + 1);
+    onProgressUpdate?.({ completed: correctCount, total: responses.size + 1 });
 
     // Move to next scenario if not at end
     if (currentScenarioIndex < filteredScenarios.length - 1) {

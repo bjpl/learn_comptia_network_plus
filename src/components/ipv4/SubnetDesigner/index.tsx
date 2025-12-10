@@ -5,7 +5,11 @@
  */
 
 import React from 'react';
-import { Box, Button, Typography, Alert, Card, CardContent } from '@mui/material';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import { Calculate, Refresh } from '@mui/icons-material';
 import { subnetScenarios } from '../ipv4-data';
 import { useSubnetDesign } from './hooks/useSubnetDesign';
@@ -36,7 +40,7 @@ const SubnetDesigner: React.FC = () => {
   const { binaryConverter, setBinaryConverter } = useBinaryConverter();
 
   return (
-    <Box sx={{ p: 3 }}>
+    <div style={{ padding: '24px' }}>
       <Typography variant="h4" gutterBottom className="text-gray-900 dark:text-white">
         Scenario-Based Subnet Designer
       </Typography>
@@ -55,7 +59,7 @@ const SubnetDesigner: React.FC = () => {
       <RequirementsTable scenario={selectedScenario} allocations={allocations} />
 
       {/* Action Buttons */}
-      <Box sx={{ mb: 3, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+      <div style={{ marginBottom: '24px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
         <Button variant="contained" startIcon={<Calculate />} onClick={handleAutoAllocate}>
           Auto-Allocate (VLSM)
         </Button>
@@ -68,7 +72,7 @@ const SubnetDesigner: React.FC = () => {
         <Button variant="outlined" onClick={() => setShowSolution(!showSolution)}>
           {showSolution ? 'Hide' : 'Show'} Solution
         </Button>
-      </Box>
+      </div>
 
       {/* Hints */}
       {showHints && selectedScenario.hints && (
@@ -112,7 +116,7 @@ const SubnetDesigner: React.FC = () => {
         binaryConverter={binaryConverter}
         setBinaryConverter={setBinaryConverter}
       />
-    </Box>
+    </div>
   );
 };
 

@@ -3,4 +3,4 @@
  * Re-export from modularized implementation
  */
 
-export { default } from './IPv4Troubleshooter';
+export { default } from './IPv4Troubleshooter/index';

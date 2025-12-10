@@ -2,18 +2,15 @@
  * Solution Steps Tab component
  */
 import React from 'react';
-import {
-  CardContent,
-  Box,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  StepContent,
-  Paper,
-  Typography,
-  Alert,
-} from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepContent from '@mui/material/StepContent';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import { PlayArrow, Refresh, CheckCircle, Lightbulb } from '@mui/icons-material';
 import type { TroubleshootingScenario } from '../../../ipv4-types';
 
@@ -35,14 +32,14 @@ export const SolutionStepsTab: React.FC<SolutionStepsTabProps> = ({
   onReset,
 }) => (
   <CardContent>
-    <Box sx={{ mb: 2, display: 'flex', gap: 2 }}>
+    <div style={{ marginBottom: '16px', display: 'flex', gap: '16px' }}>
       <Button variant="contained" startIcon={<PlayArrow />} onClick={onToggleSolution}>
         {showSolution ? 'Hide' : 'Show'} Solution
       </Button>
       <Button variant="outlined" startIcon={<Refresh />} onClick={onReset}>
         Reset
       </Button>
-    </Box>
+    </div>
 
     {showSolution && scenario.solution && (
       <Stepper activeStep={activeStep} orientation="vertical">
@@ -63,7 +60,7 @@ export const SolutionStepsTab: React.FC<SolutionStepsTabProps> = ({
                   <Typography variant="body2">{step.explanation}</Typography>
                 </Alert>
                 {step.diagnostic && (
-                  <Box sx={{ mt: 2 }}>
+                  <div style={{ marginTop: '16px' }}>
                     <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                       Related Diagnostic:
                     </Typography>
@@ -80,19 +77,15 @@ export const SolutionStepsTab: React.FC<SolutionStepsTabProps> = ({
                     >
                       <pre style={{ margin: 0 }}>{step.diagnostic.output}</pre>
                     </Paper>
-                  </Box>
+                  </div>
                 )}
               </Paper>
-              <Box sx={{ mb: 2 }}>
-                <Button
-                  variant="contained"
-                  onClick={() => onStepChange(index + 1)}
-                  sx={{ mr: 1 }}
-                >
+              <div style={{ marginBottom: '16px' }}>
+                <Button variant="contained" onClick={() => onStepChange(index + 1)} sx={{ mr: 1 }}>
                   {index === scenario.solution!.length - 1 ? 'Finish' : 'Continue'}
                 </Button>
                 {index > 0 && <Button onClick={() => onStepChange(index - 1)}>Back</Button>}
-              </Box>
+              </div>
             </StepContent>
           </Step>
         ))}

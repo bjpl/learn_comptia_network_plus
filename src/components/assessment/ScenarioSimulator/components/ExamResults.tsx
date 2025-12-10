@@ -20,7 +20,6 @@ interface ExamResultsProps {
 
 export const ExamResults: React.FC<ExamResultsProps> = ({
   scoreAnalysis,
-  timeLimit,
   onReturnToScenarios,
   onRetakeExam,
 }) => {
@@ -121,9 +120,7 @@ export const ExamResults: React.FC<ExamResultsProps> = ({
           </Alert>
 
           <div className="flex gap-2">
-            <Button onClick={onReturnToScenarios}>
-              Return to Scenarios
-            </Button>
+            <Button onClick={onReturnToScenarios}>Return to Scenarios</Button>
             {scoreAnalysis.passStatus === 'fail' && (
               <Button variant="outline" onClick={onRetakeExam}>
                 Retake Exam

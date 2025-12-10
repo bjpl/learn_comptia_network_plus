@@ -3,15 +3,12 @@
  */
 
 import React from 'react';
-import {
-  Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Grid,
-  Divider,
-} from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Divider from '@mui/material/Divider';
 import { ExpandMore, Info } from '@mui/icons-material';
 import { BinaryConverter } from './BinaryConverter';
 import { SubnetCheatSheet } from './SubnetCheatSheet';
@@ -29,7 +26,7 @@ export const EducationalAccordions: React.FC<EducationalAccordionsProps> = ({
   return (
     <>
       {/* Binary Converter Tool */}
-      <Box sx={{ mt: 3 }}>
+      <div style={{ marginTop: '24px' }}>
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Info sx={{ mr: 1 }} />
@@ -42,10 +39,10 @@ export const EducationalAccordions: React.FC<EducationalAccordionsProps> = ({
             />
           </AccordionDetails>
         </Accordion>
-      </Box>
+      </div>
 
       {/* Subnet Cheat Sheet */}
-      <Box sx={{ mt: 3 }}>
+      <div style={{ marginTop: '24px' }}>
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Info sx={{ mr: 1 }} />
@@ -55,10 +52,10 @@ export const EducationalAccordions: React.FC<EducationalAccordionsProps> = ({
             <SubnetCheatSheet />
           </AccordionDetails>
         </Accordion>
-      </Box>
+      </div>
 
       {/* Educational Info */}
-      <Box sx={{ mt: 3 }}>
+      <div style={{ marginTop: '24px' }}>
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Typography variant="h6">IPv4 Concepts Reference</Typography>
@@ -117,7 +114,7 @@ export const EducationalAccordions: React.FC<EducationalAccordionsProps> = ({
             </Grid>
           </AccordionDetails>
         </Accordion>
-      </Box>
+      </div>
     </>
   );
 };

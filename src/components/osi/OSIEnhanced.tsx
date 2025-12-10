@@ -4,4 +4,4 @@
  * Comprehensive CompTIA Network+ N10-008 Exam Preparation
  */
 
-export { OSIEnhanced, default } from './OSIEnhanced';
+export { default, OSIEnhanced } from './OSIEnhanced/index';

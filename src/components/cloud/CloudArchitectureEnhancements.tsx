@@ -10,7 +10,7 @@ export {
   SecurityHintsPanel,
   TutorialGuide,
   HelpIcon,
-} from './CloudArchitectureEnhancements';
+} from './CloudArchitectureEnhancements/components/index';
 
 export type {
   TooltipPopupProps,
@@ -22,4 +22,4 @@ export type {
   Tooltip,
   ArchitectureTemplate,
   ArchitectureDesign,
-} from './CloudArchitectureEnhancements';
+} from './CloudArchitectureEnhancements/types/index';

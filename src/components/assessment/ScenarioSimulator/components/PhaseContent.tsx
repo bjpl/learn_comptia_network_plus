@@ -10,7 +10,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Lightbulb, ChevronRight, ChevronLeft, Circle, AlertCircle } from 'lucide-react';
 import type { IntegratedScenario, UserAnswer } from '../types';
-import type { AssessmentPoint } from '../../assessment-types';
 
 interface PhaseContentProps {
   scenario: IntegratedScenario;
@@ -49,9 +48,7 @@ export const PhaseContent: React.FC<PhaseContentProps> = ({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-gray-900 dark:text-gray-100">
-            {currentPhase.title}
-          </CardTitle>
+          <CardTitle className="text-gray-900 dark:text-gray-100">{currentPhase.title}</CardTitle>
           <Button variant="ghost" size="sm" onClick={onToggleHints}>
             <Lightbulb className={`mr-2 h-4 w-4 ${showHints ? 'text-yellow-500' : ''}`} />
             {showHints ? 'Hide' : 'Show'} Hints
@@ -86,10 +83,7 @@ export const PhaseContent: React.FC<PhaseContentProps> = ({
                 <div className="mb-3 flex items-start justify-between">
                   <div>
                     <div className="mb-1 flex items-center gap-2">
-                      <Badge
-                        variant="outline"
-                        className="dark:border-gray-600 dark:text-gray-300"
-                      >
+                      <Badge variant="outline" className="dark:border-gray-600 dark:text-gray-300">
                         LO {ap.loCode}
                       </Badge>
                       <span className="text-sm text-gray-700 dark:text-gray-300">
@@ -144,7 +138,7 @@ export const PhaseContent: React.FC<PhaseContentProps> = ({
                   >
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription className="text-gray-700 dark:text-gray-300">
-                      <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 dark:text-gray-300">
+                      <pre className="font-sans text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300">
                         {existingAnswer.feedback}
                       </pre>
                     </AlertDescription>
@@ -157,11 +151,7 @@ export const PhaseContent: React.FC<PhaseContentProps> = ({
 
         {/* Navigation */}
         <div className="flex items-center justify-between border-t pt-4">
-          <Button
-            variant="outline"
-            onClick={onPrevPhase}
-            disabled={currentPhaseIndex === 0}
-          >
+          <Button variant="outline" onClick={onPrevPhase} disabled={currentPhaseIndex === 0}>
             <ChevronLeft className="mr-2 h-4 w-4" />
             Previous Phase
           </Button>

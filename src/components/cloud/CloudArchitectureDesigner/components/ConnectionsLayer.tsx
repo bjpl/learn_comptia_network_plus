@@ -4,7 +4,7 @@
 
 import React from 'react';
 import type { Connection, ArchitectureComponent } from '../types';
-import styles from '../CloudArchitectureDesigner.module.css';
+import styles from '../../CloudArchitectureDesigner.module.css';
 
 interface ConnectionsLayerProps {
   connections: Connection[];
@@ -56,25 +56,29 @@ export const ConnectionsLayer = React.forwardRef<SVGSVGElement, ConnectionsLayer
             </g>
           );
         })}
-        {connectionState.isConnecting && connectionState.fromId && (() => {
-          const from = components.find((c) => c.id === connectionState.fromId);
-          if (!from) return null;
-          const x1 = from.x + from.width / 2;
-          const y1 = from.y + from.height / 2;
-          const dist = Math.sqrt((connectionState.cursorX - x1) ** 2 + (connectionState.cursorY - y1) ** 2);
-          const offset = Math.min(dist * 0.4, 100);
-          const path = `M ${x1} ${y1} C ${x1 + offset} ${y1}, ${connectionState.cursorX - offset} ${connectionState.cursorY}, ${connectionState.cursorX} ${connectionState.cursorY}`;
-          return (
-            <path
-              d={path}
-              stroke="#3b82f6"
-              strokeWidth="2"
-              strokeDasharray="5,5"
-              fill="none"
-              opacity="0.6"
-            />
-          );
-        })()}
+        {connectionState.isConnecting &&
+          connectionState.fromId &&
+          (() => {
+            const from = components.find((c) => c.id === connectionState.fromId);
+            if (!from) return null;
+            const x1 = from.x + from.width / 2;
+            const y1 = from.y + from.height / 2;
+            const dist = Math.sqrt(
+              (connectionState.cursorX - x1) ** 2 + (connectionState.cursorY - y1) ** 2
+            );
+            const offset = Math.min(dist * 0.4, 100);
+            const path = `M ${x1} ${y1} C ${x1 + offset} ${y1}, ${connectionState.cursorX - offset} ${connectionState.cursorY}, ${connectionState.cursorX} ${connectionState.cursorY}`;
+            return (
+              <path
+                d={path}
+                stroke="#3b82f6"
+                strokeWidth="2"
+                strokeDasharray="5,5"
+                fill="none"
+                opacity="0.6"
+              />
+            );
+          })()}
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
             <polygon points="0 0, 10 3, 0 6" fill="#3b82f6" />

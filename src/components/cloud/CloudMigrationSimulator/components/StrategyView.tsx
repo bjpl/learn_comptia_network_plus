@@ -1,23 +1,17 @@
 import React from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Chip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-} from '@mui/material';
-import {
-  ExpandMore as ExpandMoreIcon,
-  CheckCircle as CheckCircleIcon,
-} from '@mui/icons-material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Chip from '@mui/material/Chip';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import { ExpandMore as ExpandMoreIcon, CheckCircle as CheckCircleIcon } from '@mui/icons-material';
 import { migrationStrategies } from '../../../../data/migration-data';
 
 interface StrategyViewProps {
@@ -29,7 +23,7 @@ export const StrategyView: React.FC<StrategyViewProps> = ({
   selectedStrategy,
   onStrategySelect,
 }) => (
-  <Box className="migration-strategy-view">
+  <div className="migration-strategy-view">
     <Typography variant="h5" gutterBottom>
       Migration Strategies: The 6 R&apos;s
     </Typography>
@@ -47,19 +41,21 @@ export const StrategyView: React.FC<StrategyViewProps> = ({
             sx={{ cursor: 'pointer', height: '100%' }}
           >
             <CardContent>
-              <Box display="flex" alignItems="center" gap={1} mb={2}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}
+              >
                 <Typography variant="h2" component="span">
                   {strat.icon}
                 </Typography>
-                <Box>
+                <div>
                   <Typography variant="h6">{strat.name}</Typography>
-                  <Box display="flex" gap={1} mt={0.5}>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
                     <Chip label={`Complexity: ${strat.complexity}`} size="small" />
                     <Chip label={`Cost: ${strat.costImpact}`} size="small" color="primary" />
                     <Chip label={strat.timeframe} size="small" color="secondary" />
-                  </Box>
-                </Box>
-              </Box>
+                  </div>
+                </div>
+              </div>
 
               <Typography variant="body2" color="text.secondary" paragraph>
                 {strat.description}
@@ -98,12 +94,7 @@ export const StrategyView: React.FC<StrategyViewProps> = ({
                       </ListItem>
                     ))}
                   </List>
-                  <Typography
-                    variant="subtitle2"
-                    color="warning.main"
-                    gutterBottom
-                    sx={{ mt: 1 }}
-                  >
+                  <Typography variant="subtitle2" color="warning.main" gutterBottom sx={{ mt: 1 }}>
                     Challenges:
                   </Typography>
                   <List dense>
@@ -120,5 +111,5 @@ export const StrategyView: React.FC<StrategyViewProps> = ({
         </Grid>
       ))}
     </Grid>
-  </Box>
+  </div>
 );

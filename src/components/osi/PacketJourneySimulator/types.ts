@@ -1,4 +1,6 @@
 export type OSILayerNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type AnimationSpeed = 0.5 | 1 | 2;
+export type Protocol = 'TCP' | 'UDP';
 export type ViewMode = 'journey' | 'headers' | 'hexdump' | 'scenarios' | 'tcp-flags' | 'mtu';
 export type ProtocolType =
   | 'HTTP'

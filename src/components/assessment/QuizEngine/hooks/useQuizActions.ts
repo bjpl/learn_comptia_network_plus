@@ -2,7 +2,7 @@
  * Quiz action handlers hook
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import type { QuizState, UserAnswer as QuizUserAnswer } from '../../quiz-types';
 import type { QuizConfig, ScreenType } from '../types';
 import { getRandomQuestions } from '../../quiz-data';
@@ -87,7 +87,14 @@ export const useQuizActions = ({
         setShowExplanation(false);
       }
     },
-    [quizState, setQuizState, setScreen, setSelectedOptions, setQuestionStartTime, setShowExplanation]
+    [
+      quizState,
+      setQuizState,
+      setScreen,
+      setSelectedOptions,
+      setQuestionStartTime,
+      setShowExplanation,
+    ]
   );
 
   const retryIncorrect = useCallback(() => {
@@ -116,7 +123,15 @@ export const useQuizActions = ({
     setQuestionStartTime(Date.now());
     setSelectedOptions(new Set());
     setScreen('quiz');
-  }, [quizState, config, setQuizState, setTimeElapsed, setQuestionStartTime, setSelectedOptions, setScreen]);
+  }, [
+    quizState,
+    config,
+    setQuizState,
+    setTimeElapsed,
+    setQuestionStartTime,
+    setSelectedOptions,
+    setScreen,
+  ]);
 
   const resetQuiz = useCallback(() => {
     window.localStorage.removeItem('quizProgress');

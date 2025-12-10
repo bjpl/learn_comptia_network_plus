@@ -6,4 +6,4 @@
  * Original: 763 lines → Decomposed into modular architecture
  */
 
-export { CloudSummaryBuilderEnhanced, default } from './CloudSummaryBuilderEnhanced';
+export { default, CloudSummaryBuilderEnhanced } from './CloudSummaryBuilderEnhanced/index';

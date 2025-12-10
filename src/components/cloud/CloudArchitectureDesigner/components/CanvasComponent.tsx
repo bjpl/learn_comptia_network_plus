@@ -4,7 +4,7 @@
 
 import React from 'react';
 import type { ArchitectureComponent } from '../types';
-import styles from '../CloudArchitectureDesigner.module.css';
+import styles from '../../CloudArchitectureDesigner.module.css';
 
 interface CanvasComponentProps {
   component: ArchitectureComponent;
@@ -17,7 +17,11 @@ interface CanvasComponentProps {
   onConnectionToggle: (componentId: string) => void;
   onDuplicate: (componentId: string) => void;
   onDelete: (componentId: string) => void;
-  onResizeMouseDown: (e: React.MouseEvent, component: ArchitectureComponent, handle: 'se' | 'ne' | 'sw' | 'nw') => void;
+  onResizeMouseDown: (
+    e: React.MouseEvent,
+    component: ArchitectureComponent,
+    handle: 'se' | 'ne' | 'sw' | 'nw'
+  ) => void;
 }
 
 export const CanvasComponent: React.FC<CanvasComponentProps> = ({

@@ -15,4 +15,4 @@
  * Original size: 1288 lines
  * New main file: 122 lines (90.5% reduction)
  */
-export { default } from './IaCBuilder';
+export { default } from './IaCBuilder/index';

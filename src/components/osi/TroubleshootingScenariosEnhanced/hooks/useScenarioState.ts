@@ -3,13 +3,13 @@
  */
 
 import { useState, useCallback, useMemo } from 'react';
-import type { TroubleshootingScenario, ScenarioResponse } from '../../osi-types';
+import type { ScenarioResponse } from '../../osi-types';
 import { TROUBLESHOOTING_SCENARIOS } from '../../osi-data';
 
 export function useScenarioState(
   filterDifficulty: string,
   filterCategory: string,
-  onProgressUpdate?: (correct: number, total: number) => void
+  _onProgressUpdate?: (progress: { completed: number; total: number }) => void
 ) {
   const [currentScenarioIndex, setCurrentScenarioIndex] = useState<number>(0);
   const [responses, setResponses] = useState<Map<string, ScenarioResponse>>(new Map());
@@ -35,7 +35,7 @@ export function useScenarioState(
   }, [currentScenarioIndex, filteredScenarios]);
 
   const goToScenario = useCallback(
-    (index: number, timeLimit: number | null) => {
+    (index: number, _timeLimit?: number | null) => {
       if (index >= 0 && index < filteredScenarios.length) {
         setCurrentScenarioIndex(index);
         const existingResponse = responses.get(filteredScenarios[index].id);

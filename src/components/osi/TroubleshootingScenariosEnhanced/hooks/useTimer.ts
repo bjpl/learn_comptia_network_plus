@@ -2,13 +2,13 @@
  * Custom hook for managing timers
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 export function useTimer(
   isExamMode: boolean,
   timeLimit: number | null,
-  currentScenarioIndex: number,
-  onTimeUp: () => void
+  currentScenarioIndex?: number,
+  onTimeUp?: () => void
 ) {
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 
@@ -19,7 +19,7 @@ export function useTimer(
         setTimeRemaining((prev) => {
           if (prev === null || prev <= 0) {
             clearInterval(timer);
-            if (prev === 0) {
+            if (prev === 0 && onTimeUp) {
               onTimeUp();
             }
             return 0;

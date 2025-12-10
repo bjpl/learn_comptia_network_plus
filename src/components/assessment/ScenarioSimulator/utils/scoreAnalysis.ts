@@ -3,7 +3,7 @@
  */
 
 import type { AssessmentPoint } from '../../assessment-types';
-import type { IntegratedScenario, UserAnswer, ScoreAnalysis, QuestionType } from '../types';
+import type { IntegratedScenario, UserAnswer, ScoreAnalysis } from '../types';
 
 export const calculateScoreAnalysis = (
   allAnswers: UserAnswer[],

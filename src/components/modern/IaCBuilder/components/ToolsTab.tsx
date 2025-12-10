@@ -1,26 +1,4 @@
 import React from 'react';
-import type { IaCPlatform } from '../../modern-types';
-
-const platformInfo: Record<IaCPlatform, { description: string; color: string }> = {
-  ansible: { description: 'Agentless automation with YAML', color: 'bg-red-100 text-red-700' },
-  terraform: {
-    description: 'Infrastructure as Code with HCL',
-    color: 'bg-purple-100 text-purple-700',
-  },
-  puppet: {
-    description: 'Declarative configuration management',
-    color: 'bg-orange-100 text-orange-700',
-  },
-  chef: {
-    description: 'Ruby-based infrastructure automation',
-    color: 'bg-blue-100 text-blue-700',
-  },
-  saltstack: {
-    description: 'Event-driven automation platform',
-    color: 'bg-teal-100 text-teal-700',
-  },
-  cloudformation: { description: 'AWS native IaC', color: 'bg-yellow-100 text-yellow-700' },
-};
 
 export const ToolsTab: React.FC = () => {
   return (
@@ -60,9 +38,7 @@ export const ToolsTab: React.FC = () => {
           <tbody>
             <tr className="border-b border-gray-100 hover:bg-blue-50">
               <td className="px-4 py-3 font-semibold text-red-600">Ansible</td>
-              <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
-                Imperative/Procedural
-              </td>
+              <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Procedural</td>
               <td className="px-4 py-3 text-gray-900 dark:text-gray-100">YAML</td>
               <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agentless (SSH)</td>
               <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
@@ -89,9 +65,7 @@ export const ToolsTab: React.FC = () => {
             </tr>
             <tr className="border-b border-gray-100 hover:bg-blue-50">
               <td className="px-4 py-3 font-semibold text-blue-600">Chef</td>
-              <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
-                Imperative/Declarative
-              </td>
+              <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Declarative</td>
               <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Ruby</td>
               <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agent-based</td>
               <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
@@ -100,13 +74,9 @@ export const ToolsTab: React.FC = () => {
             </tr>
             <tr className="hover:bg-teal-50">
               <td className="px-4 py-3 font-semibold text-teal-600">SaltStack</td>
-              <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
-                Imperative/Declarative
-              </td>
+              <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Imperative/Declarative</td>
               <td className="px-4 py-3 text-gray-900 dark:text-gray-100">YAML</td>
-              <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
-                Agent-based (minion)
-              </td>
+              <td className="px-4 py-3 text-gray-900 dark:text-gray-100">Agent-based (minion)</td>
               <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
                 Event-driven automation
               </td>

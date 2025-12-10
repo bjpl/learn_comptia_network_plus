@@ -1,17 +1,14 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  TableContainer,
-  Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Chip,
-  Alert,
-} from '@mui/material';
+import Typography from '@mui/material/Typography';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import TableBody from '@mui/material/TableBody';
+import Chip from '@mui/material/Chip';
+import Alert from '@mui/material/Alert';
 import { getSortedRisks } from '../utils/calculationHelpers';
 
 interface RisksViewProps {
@@ -22,7 +19,7 @@ export const RisksView: React.FC<RisksViewProps> = ({ scenario }) => {
   const sortedRisks = getSortedRisks(scenario);
 
   return (
-    <Box className="migration-risks-view">
+    <div className="migration-risks-view">
       <Typography variant="h5" gutterBottom>
         Risk Assessment Matrix
       </Typography>
@@ -77,7 +74,9 @@ export const RisksView: React.FC<RisksViewProps> = ({ scenario }) => {
                   <Chip
                     label={risk.severity}
                     size="small"
-                    color={risk.severity >= 6 ? 'error' : risk.severity >= 4 ? 'warning' : 'success'}
+                    color={
+                      risk.severity >= 6 ? 'error' : risk.severity >= 4 ? 'warning' : 'success'
+                    }
                   />
                 </TableCell>
                 <TableCell>{risk.mitigation}</TableCell>
@@ -87,7 +86,7 @@ export const RisksView: React.FC<RisksViewProps> = ({ scenario }) => {
         </Table>
       </TableContainer>
 
-      <Box mt={3}>
+      <div style={{ marginTop: '24px' }}>
         <Alert severity="info">
           <Typography variant="subtitle2" gutterBottom>
             Risk Severity Scale
@@ -100,7 +99,7 @@ export const RisksView: React.FC<RisksViewProps> = ({ scenario }) => {
             mitigation
           </Typography>
         </Alert>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };

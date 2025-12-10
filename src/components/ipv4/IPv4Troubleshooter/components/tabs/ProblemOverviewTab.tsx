@@ -2,19 +2,16 @@
  * Problem Overview Tab component
  */
 import React from 'react';
-import {
-  CardContent,
-  Grid,
-  Paper,
-  Typography,
-  Alert,
-  Box,
-  Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import { Warning, Error as ErrorIcon, Lightbulb } from '@mui/icons-material';
 import type { TroubleshootingScenario } from '../../../ipv4-types';
 
@@ -70,11 +67,11 @@ export const ProblemOverviewTab: React.FC<ProblemOverviewTabProps> = ({
       </Grid>
     </Grid>
 
-    <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
+    <div style={{ marginTop: '24px', display: 'flex', gap: '16px' }}>
       <Button variant="outlined" startIcon={<Lightbulb />} onClick={onToggleHints}>
         {showHints ? 'Hide' : 'Show'} Hints
       </Button>
-    </Box>
+    </div>
 
     {showHints && scenario.hints && (
       <Alert severity="info" sx={{ mt: 2 }}>

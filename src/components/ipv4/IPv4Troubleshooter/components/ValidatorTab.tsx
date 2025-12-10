@@ -2,14 +2,11 @@
  * IP Configuration Validator Tab content
  */
 import React from 'react';
-import {
-  CardContent,
-  Box,
-  Grid,
-  TextField,
-  Typography,
-  Alert,
-} from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import type { ValidationResult } from '../types';
 
 interface ValidatorTabProps {
@@ -32,14 +29,14 @@ export const ValidatorTab: React.FC<ValidatorTabProps> = ({
   validationResults,
 }) => (
   <CardContent>
-    <Box sx={{ mb: 2 }}>
+    <div style={{ marginBottom: '16px' }}>
       <Typography variant="h6" gutterBottom className="text-gray-900 dark:text-white">
         IP Configuration Validator
       </Typography>
       <Typography variant="body2" className="text-gray-700 dark:text-gray-300" paragraph>
         Validate your IP configuration against common issues and best practices
       </Typography>
-    </Box>
+    </div>
     <Grid container spacing={2}>
       <Grid item xs={12} md={6}>
         <TextField
@@ -70,7 +67,7 @@ export const ValidatorTab: React.FC<ValidatorTabProps> = ({
       </Grid>
     </Grid>
 
-    <Box sx={{ mt: 3 }}>
+    <div style={{ marginTop: '24px' }}>
       <Typography variant="subtitle2" sx={{ mb: 2 }}>
         Validation Results:
       </Typography>
@@ -91,6 +88,6 @@ export const ValidatorTab: React.FC<ValidatorTabProps> = ({
           </Typography>
         </Alert>
       ))}
-    </Box>
+    </div>
   </CardContent>
 );

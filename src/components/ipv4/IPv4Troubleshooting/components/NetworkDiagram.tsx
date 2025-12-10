@@ -3,7 +3,11 @@
  */
 
 import React from 'react';
-import { Card, CardContent, Typography, Paper, Grid, Box } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
 import { Computer, Storage, Router, NetworkCheck } from '@mui/icons-material';
 import type { Device } from '../../ipv4-types';
 import type { DeviceType } from '../types';
@@ -67,9 +71,9 @@ export const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ devices }) => {
                           : 'success.contrastText',
                   }}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}>
                     {getDeviceIcon(device.type as DeviceType)}
-                  </Box>
+                  </div>
                   <Typography variant="subtitle2" fontWeight="bold">
                     {device.name}
                   </Typography>

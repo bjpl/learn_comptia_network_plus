@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import styles from '../CloudArchitectureDesigner.module.css';
+import styles from '../../CloudArchitectureDesigner.module.css';
 
 interface CanvasControlsProps {
   zoom: number;
@@ -32,8 +32,12 @@ export const CanvasControls: React.FC<CanvasControlsProps> = ({
         <button onClick={onZoomOut}>-</button>
       </div>
       <div className={styles['history-controls']}>
-        <button onClick={onUndo} disabled={!canUndo}>↶</button>
-        <button onClick={onRedo} disabled={!canRedo}>↷</button>
+        <button onClick={onUndo} disabled={!canUndo}>
+          ↶
+        </button>
+        <button onClick={onRedo} disabled={!canRedo}>
+          ↷
+        </button>
       </div>
     </div>
   );

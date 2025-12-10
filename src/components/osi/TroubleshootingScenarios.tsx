@@ -1,3 +1,3 @@
 // Re-export from modular implementation
-export { TroubleshootingScenarios, default } from './TroubleshootingScenarios';
+export { default, TroubleshootingScenarios } from './TroubleshootingScenarios/index';
 export type { TroubleshootingScenariosProps } from './TroubleshootingScenarios/types';

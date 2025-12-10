@@ -1,19 +1,9 @@
 import React from 'react';
+import type { ComparisonDevice } from '../../appliances-types';
 import { parseThroughput } from '../utils';
 
-interface NetworkDevice {
-  id: string;
-  name: string;
-  specs: {
-    throughput: string;
-  };
-  pricing: {
-    totalCostYear1: number;
-  };
-}
-
 interface ComparisonSummaryProps {
-  sortedDevices: NetworkDevice[];
+  sortedDevices: ComparisonDevice[];
 }
 
 export const ComparisonSummary: React.FC<ComparisonSummaryProps> = ({ sortedDevices }) => {

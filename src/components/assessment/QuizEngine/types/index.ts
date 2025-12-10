@@ -2,15 +2,17 @@
  * Type definitions for QuizEngine component
  */
 
+import type { Domain, Difficulty, FeedbackMode } from '../../quiz-types';
+
 export interface QuizEngineProps {
   initialConfig?: Partial<QuizConfig>;
 }
 
 export interface QuizConfig {
   numberOfQuestions: number;
-  domains: string[];
-  difficulties: string[];
-  feedbackMode: 'immediate' | 'review-at-end';
+  domains: Domain[];
+  difficulties: Difficulty[];
+  feedbackMode: FeedbackMode;
   randomize: boolean;
   retryIncorrectOnly: boolean;
 }

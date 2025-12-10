@@ -3,16 +3,13 @@
  */
 
 import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Paper,
-  Typography,
-  Box,
-} from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import { Terminal } from '@mui/icons-material';
 import type { DiagnosticOutput } from '../../ipv4-types';
 
@@ -30,10 +27,10 @@ export const DiagnosticDialog: React.FC<DiagnosticDialogProps> = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <Terminal sx={{ mr: 1 }} />
           {diagnostic?.command}
-        </Box>
+        </div>
       </DialogTitle>
       <DialogContent>
         <Paper

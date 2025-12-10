@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { NetworkSimulatorProps } from './types';
+import type { NetworkSimulatorProps, NetworkConnection } from './types';
 import { getTroubleshootingScenarios } from '../simulator-scenarios';
 import { saveNetworkToFile } from './utils/networkStorage';
 import { useSimulationState } from './hooks/useSimulationState';
@@ -18,7 +18,7 @@ import { Instructions } from './components/Instructions';
 
 const NetworkSimulatorMain: React.FC<NetworkSimulatorProps> = ({ initialDevices = [] }) => {
   const [devices, setDevices] = useState(initialDevices);
-  const [connections, setConnections] = useState([]);
+  const [connections, setConnections] = useState<NetworkConnection[]>([]);
   const [showScenarios, setShowScenarios] = useState(false);
 
   // Custom hooks for state management
@@ -93,7 +93,7 @@ const NetworkSimulatorMain: React.FC<NetworkSimulatorProps> = ({ initialDevices 
 
   return (
     <div
-      className="rounded-lg bg-white p-6 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="rounded-lg bg-white p-6 shadow-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
       tabIndex={0}
       onKeyDown={handleKeyDown}
       role="application"

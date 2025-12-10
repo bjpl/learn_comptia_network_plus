@@ -73,10 +73,9 @@ export const TransformationTab: React.FC<TransformationTabProps> = ({
       />
 
       <StepProgress
-        steps={selectedTransformation.steps}
+        transformation={selectedTransformation}
         currentStep={currentStep}
         isAnimating={isAnimating}
-        currentStepData={currentStepData}
         onStepChange={onStepChange}
       />
 

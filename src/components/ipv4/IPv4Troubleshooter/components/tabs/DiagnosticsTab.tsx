@@ -2,18 +2,15 @@
  * Diagnostics Tab component
  */
 import React from 'react';
-import {
-  CardContent,
-  Grid,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Box,
-  Paper,
-  Typography,
-  List,
-  ListItem,
-} from '@mui/material';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 import { ExpandMore, Terminal } from '@mui/icons-material';
 import type { TroubleshootingScenario } from '../../../ipv4-types';
 import { diagnosticCommands } from '../../../ipv4-data';
@@ -32,7 +29,7 @@ export const DiagnosticsTab: React.FC<DiagnosticsTabProps> = ({ scenario }) => (
         <Grid item xs={12} key={index}>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
-              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                 <Terminal sx={{ mr: 1 }} />
                 <Typography variant="subtitle2">
                   <code>{diagnostic.command}</code>
@@ -44,7 +41,7 @@ export const DiagnosticsTab: React.FC<DiagnosticsTabProps> = ({ scenario }) => (
                 >
                   {new Date(diagnostic.timestamp).toLocaleString()}
                 </Typography>
-              </Box>
+              </div>
             </AccordionSummary>
             <AccordionDetails>
               <Paper
@@ -67,7 +64,7 @@ export const DiagnosticsTab: React.FC<DiagnosticsTabProps> = ({ scenario }) => (
     </Grid>
 
     {/* Command Reference */}
-    <Box sx={{ mt: 3 }}>
+    <div style={{ marginTop: '24px' }}>
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography variant="subtitle2">Diagnostic Commands Reference</Typography>
@@ -113,6 +110,6 @@ export const DiagnosticsTab: React.FC<DiagnosticsTabProps> = ({ scenario }) => (
           </Grid>
         </AccordionDetails>
       </Accordion>
-    </Box>
+    </div>
   </CardContent>
 );

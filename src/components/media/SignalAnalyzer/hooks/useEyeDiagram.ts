@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { clearCanvas, drawLabel, drawDashedLine } from '../utils/canvasHelpers';
+import { clearCanvas, drawLabel } from '../utils/canvasHelpers';
 import type { EyeDiagramMetrics } from '../types';
 
 export function useEyeDiagram(

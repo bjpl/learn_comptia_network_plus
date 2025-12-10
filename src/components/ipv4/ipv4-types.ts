@@ -137,3 +137,10 @@ export interface VLSMAllocation {
   allocated: boolean;
   overlap?: boolean;
 }
+
+// ============================================================================
+// Type Aliases for Convenience
+// ============================================================================
+
+export type Device = NetworkDevice;
+export type SolutionStep = TroubleshootingStep;

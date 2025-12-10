@@ -1,14 +1,11 @@
 import React from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  TextField,
-  Divider,
-  LinearProgress,
-} from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Divider from '@mui/material/Divider';
+import LinearProgress from '@mui/material/LinearProgress';
 import {
   Cloud as CloudIcon,
   Storage as StorageIcon,
@@ -35,7 +32,7 @@ export const CostsView: React.FC<CostsViewProps> = ({
   const savingsPercent = calculateSavingsPercent(savings, onPremTotal);
 
   return (
-    <Box className="migration-costs-view">
+    <div className="migration-costs-view">
       <Typography variant="h5" gutterBottom>
         Cost Comparison: TCO Calculator
       </Typography>
@@ -51,9 +48,9 @@ export const CostsView: React.FC<CostsViewProps> = ({
                 <StorageIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
                 On-Premises Costs
               </Typography>
-              <Box mb={2}>
+              <div style={{ marginBottom: '16px' }}>
                 {Object.entries(customCostModel.onPremise).map(([key, value]) => (
-                  <Box key={key} mb={2}>
+                  <div key={key} style={{ marginBottom: '16px' }}>
                     <TextField
                       fullWidth
                       size="small"
@@ -65,9 +62,9 @@ export const CostsView: React.FC<CostsViewProps> = ({
                         startAdornment: <MoneyIcon fontSize="small" sx={{ mr: 1 }} />,
                       }}
                     />
-                  </Box>
+                  </div>
                 ))}
-              </Box>
+              </div>
               <Divider sx={{ my: 2 }} />
               <Typography variant="h6" color="primary">
                 Total: ${onPremTotal.toLocaleString()}
@@ -83,9 +80,9 @@ export const CostsView: React.FC<CostsViewProps> = ({
                 <CloudIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
                 Cloud Costs
               </Typography>
-              <Box mb={2}>
+              <div style={{ marginBottom: '16px' }}>
                 {Object.entries(customCostModel.cloud).map(([key, value]) => (
-                  <Box key={key} mb={2}>
+                  <div key={key} style={{ marginBottom: '16px' }}>
                     <TextField
                       fullWidth
                       size="small"
@@ -97,9 +94,9 @@ export const CostsView: React.FC<CostsViewProps> = ({
                         startAdornment: <MoneyIcon fontSize="small" sx={{ mr: 1 }} />,
                       }}
                     />
-                  </Box>
+                  </div>
                 ))}
-              </Box>
+              </div>
               <Divider sx={{ my: 2 }} />
               <Typography variant="h6" color="success.main">
                 Total: ${cloudTotal.toLocaleString()}
@@ -132,46 +129,46 @@ export const CostsView: React.FC<CostsViewProps> = ({
               <Typography variant="h6" gutterBottom>
                 Cost Breakdown Comparison
               </Typography>
-              <Box display="flex" gap={2} mb={2}>
-                <Box flex={1}>
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+                <div style={{ flex: 1 }}>
                   <Typography variant="subtitle2" gutterBottom>
                     On-Premises
                   </Typography>
                   {Object.entries(customCostModel.onPremise).map(([key, value]) => {
                     const percent = getCostPercentage(value, onPremTotal);
                     return (
-                      <Box key={key} mb={1}>
-                        <Box display="flex" justifyContent="space-between">
+                      <div key={key} style={{ marginBottom: '8px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <Typography variant="caption">{key}</Typography>
                           <Typography variant="caption">{percent.toFixed(1)}%</Typography>
-                        </Box>
+                        </div>
                         <LinearProgress variant="determinate" value={percent} />
-                      </Box>
+                      </div>
                     );
                   })}
-                </Box>
-                <Box flex={1}>
+                </div>
+                <div style={{ flex: 1 }}>
                   <Typography variant="subtitle2" gutterBottom>
                     Cloud
                   </Typography>
                   {Object.entries(customCostModel.cloud).map(([key, value]) => {
                     const percent = getCostPercentage(value, cloudTotal);
                     return (
-                      <Box key={key} mb={1}>
-                        <Box display="flex" justifyContent="space-between">
+                      <div key={key} style={{ marginBottom: '8px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <Typography variant="caption">{key}</Typography>
                           <Typography variant="caption">{percent.toFixed(1)}%</Typography>
-                        </Box>
+                        </div>
                         <LinearProgress variant="determinate" value={percent} color="success" />
-                      </Box>
+                      </div>
                     );
                   })}
-                </Box>
-              </Box>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
-    </Box>
+    </div>
   );
 };

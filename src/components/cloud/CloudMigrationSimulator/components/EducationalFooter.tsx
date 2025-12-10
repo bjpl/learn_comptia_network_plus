@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Alert, Typography } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
 
 export const EducationalFooter: React.FC = () => (
-  <Box mt={4}>
+  <div style={{ marginTop: '32px' }}>
     <Alert severity="info">
       <Typography variant="subtitle2" gutterBottom>
         About Cloud Migration
@@ -14,5 +15,5 @@ export const EducationalFooter: React.FC = () => (
         organizations use a combination of strategies across their application portfolio.
       </Typography>
     </Alert>
-  </Box>
+  </div>
 );

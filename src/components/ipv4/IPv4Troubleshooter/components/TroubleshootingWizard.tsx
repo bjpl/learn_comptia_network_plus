@@ -2,20 +2,17 @@
  * Step-by-step troubleshooting wizard component
  */
 import React from 'react';
-import {
-  Box,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  StepContent,
-  Typography,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Alert,
-} from '@mui/material';
+import Button from '@mui/material/Button';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepContent from '@mui/material/StepContent';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Alert from '@mui/material/Alert';
 import { ChecklistRtl } from '@mui/icons-material';
 import { wizardSteps } from '../utils/wizardData';
 
@@ -28,7 +25,7 @@ export const TroubleshootingWizard: React.FC<TroubleshootingWizardProps> = ({
   wizardStep,
   setWizardStep,
 }) => (
-  <Box>
+  <div>
     <Stepper activeStep={wizardStep} orientation="vertical">
       {wizardSteps.map((step, index) => (
         <Step key={index}>
@@ -49,12 +46,12 @@ export const TroubleshootingWizard: React.FC<TroubleshootingWizardProps> = ({
                 </ListItem>
               ))}
             </List>
-            <Box sx={{ mt: 2 }}>
+            <div style={{ marginTop: '16px' }}>
               <Button variant="contained" onClick={() => setWizardStep(index + 1)} sx={{ mr: 1 }}>
                 {index === wizardSteps.length - 1 ? 'Complete' : 'Next'}
               </Button>
               {index > 0 && <Button onClick={() => setWizardStep(index - 1)}>Back</Button>}
-            </Box>
+            </div>
           </StepContent>
         </Step>
       ))}
@@ -64,5 +61,5 @@ export const TroubleshootingWizard: React.FC<TroubleshootingWizardProps> = ({
         Troubleshooting wizard completed. All steps have been reviewed.
       </Alert>
     )}
-  </Box>
+  </div>
 );

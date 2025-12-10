@@ -3,18 +3,15 @@
  */
 
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Chip,
-  Box,
-  Typography,
-} from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
 import { BugReport } from '@mui/icons-material';
 import type { TroubleshootingScenario } from '../../ipv4-types';
 import { getDifficultyColor, getProblemTypeColor } from '../utils';
@@ -72,14 +69,14 @@ export const ScenarioSelector: React.FC<ScenarioSelectorProps> = ({
           </Grid>
         </Grid>
 
-        <Box sx={{ mt: 2 }}>
+        <div style={{ marginTop: '16px' }}>
           <Typography variant="h6" className="text-gray-900 dark:text-white">
             {selectedScenario.title}
           </Typography>
           <Typography variant="body2" className="text-gray-700 dark:text-gray-300">
             {selectedScenario.description}
           </Typography>
-        </Box>
+        </div>
       </CardContent>
     </Card>
   );

@@ -16,10 +16,15 @@ import {
 import { calculateScore, formatScoreOutput } from '../utils/scoring';
 import { formatRemediationHeader, getRemediationByRisk } from '../utils/remediation';
 
+interface ScannerState {
+  scanning: boolean;
+  currentPort: number;
+}
+
 export const useCommandHandler = (
   selectedNetwork: VirtualNetwork,
   setSelectedNetwork: (network: VirtualNetwork) => void,
-  scannerState: any,
+  _state: ScannerState,
   startScanning: () => void,
   updateScanProgress: (port: number, service: any) => void,
   completeScan: () => void,
@@ -54,7 +59,9 @@ export const useCommandHandler = (
       }
     }
 
-    addOutput(formatScanHeader(targetNetwork.name, targetNetwork.difficulty, targetNetwork.description));
+    addOutput(
+      formatScanHeader(targetNetwork.name, targetNetwork.difficulty, targetNetwork.description)
+    );
     startScanning();
 
     // Simulate scanning with delays

@@ -3,19 +3,16 @@
  */
 
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Stepper,
-  Step,
-  StepLabel,
-  StepContent,
-  Box,
-  Button,
-  Paper,
-  Alert,
-} from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import StepContent from '@mui/material/StepContent';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Alert from '@mui/material/Alert';
 import { CheckCircle } from '@mui/icons-material';
 import type { SolutionStep } from '../../ipv4-types';
 import { getTimeElapsed } from '../utils';
@@ -51,20 +48,18 @@ export const SolutionSteps: React.FC<SolutionStepsProps> = ({
             <Step key={step.id} completed={completedSteps.has(index)}>
               <StepLabel
                 optional={
-                  showSolution && (
-                    <Typography variant="caption">Step {step.stepNumber}</Typography>
-                  )
+                  showSolution && <Typography variant="caption">Step {step.stepNumber}</Typography>
                 }
                 StepIconComponent={() =>
                   completedSteps.has(index) ? (
                     <CheckCircle color="success" />
                   ) : (
-                    <Box
-                      sx={{
+                    <div
+                      style={{
                         width: 24,
                         height: 24,
                         borderRadius: '50%',
-                        bgcolor: activeStep === index ? 'primary.main' : 'grey.300',
+                        backgroundColor: activeStep === index ? '#1976d2' : '#d3d3d3',
                         color: 'white',
                         display: 'flex',
                         alignItems: 'center',
@@ -72,7 +67,7 @@ export const SolutionSteps: React.FC<SolutionStepsProps> = ({
                       }}
                     >
                       {step.stepNumber}
-                    </Box>
+                    </div>
                   )
                 }
               >
@@ -81,7 +76,7 @@ export const SolutionSteps: React.FC<SolutionStepsProps> = ({
                 </Typography>
               </StepLabel>
               <StepContent>
-                <Box sx={{ mb: 2 }}>
+                <div style={{ marginBottom: '16px' }}>
                   <Typography variant="body2" paragraph>
                     <strong>Action:</strong> {step.action}
                   </Typography>
@@ -114,7 +109,7 @@ export const SolutionSteps: React.FC<SolutionStepsProps> = ({
                   >
                     {completedSteps.has(index) ? 'Completed' : 'Mark Complete'}
                   </Button>
-                </Box>
+                </div>
               </StepContent>
             </Step>
           ))}

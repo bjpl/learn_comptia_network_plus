@@ -2,7 +2,11 @@
  * Network topology diagram component
  */
 import React from 'react';
-import { Box, Paper, Typography, Grid, Chip, Divider } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
 import type { TroubleshootingScenario } from '../../ipv4-types';
 import { getDeviceIcon, getStatusColor } from '../utils/iconHelpers';
 import { classifyIPAddress } from '../utils/ipHelpers';
@@ -18,7 +22,10 @@ export const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ scenario }) => {
   };
 
   return (
-    <Paper variant="outlined" sx={{ p: 3, minHeight: 300, position: 'relative', bgcolor: '#f5f5f5' }}>
+    <Paper
+      variant="outlined"
+      sx={{ p: 3, minHeight: 300, position: 'relative', bgcolor: '#f5f5f5' }}
+    >
       <Typography variant="subtitle2" gutterBottom>
         Network Topology
       </Typography>
@@ -33,7 +40,7 @@ export const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ scenario }) => {
                 borderColor: `${getStatusColor(device.status)}.main`,
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                 {DeviceIcon(device.type)}
                 <Typography variant="subtitle2" sx={{ ml: 1 }}>
                   {device.name}
@@ -44,20 +51,37 @@ export const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ scenario }) => {
                   color={getStatusColor(device.status) as 'success' | 'error' | 'default'}
                   sx={{ ml: 'auto' }}
                 />
-              </Box>
+              </div>
               <Divider sx={{ my: 1 }} />
-              <Typography variant="caption" display="block" className="text-gray-800 dark:text-gray-200">
+              <Typography
+                variant="caption"
+                display="block"
+                className="text-gray-800 dark:text-gray-200"
+              >
                 <strong>IP:</strong> <code>{device.ipAddress}</code>
               </Typography>
-              <Typography variant="caption" display="block" className="text-gray-800 dark:text-gray-200">
+              <Typography
+                variant="caption"
+                display="block"
+                className="text-gray-800 dark:text-gray-200"
+              >
                 <strong>Mask:</strong> <code>{device.subnetMask}</code>
               </Typography>
               {device.gateway && (
-                <Typography variant="caption" display="block" className="text-gray-800 dark:text-gray-200">
+                <Typography
+                  variant="caption"
+                  display="block"
+                  className="text-gray-800 dark:text-gray-200"
+                >
                   <strong>Gateway:</strong> <code>{device.gateway}</code>
                 </Typography>
               )}
-              <Typography variant="caption" display="block" sx={{ mt: 1 }} className="text-gray-800 dark:text-gray-200">
+              <Typography
+                variant="caption"
+                display="block"
+                sx={{ mt: 1 }}
+                className="text-gray-800 dark:text-gray-200"
+              >
                 <strong>Type:</strong> {classifyIPAddress(device.ipAddress)}
               </Typography>
             </Paper>
@@ -67,7 +91,7 @@ export const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ scenario }) => {
 
       {/* Connection indicators */}
       {scenario.connections.length > 0 && (
-        <Box sx={{ mt: 2 }}>
+        <div style={{ marginTop: '16px' }}>
           <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
             Connections:
           </Typography>
@@ -86,7 +110,7 @@ export const NetworkDiagram: React.FC<NetworkDiagramProps> = ({ scenario }) => {
               sx={{ m: 0.5 }}
             />
           ))}
-        </Box>
+        </div>
       )}
     </Paper>
   );

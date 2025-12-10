@@ -3,7 +3,7 @@
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import type { AnimationState, Packet, Node } from '../types';
+import type { AnimationState, Node } from '../types';
 import type { TrafficType } from '../../protocols-types';
 import { getPacketColor } from '../utils/colorHelpers';
 import { drawNetworkConnections, drawNode, drawPacket } from '../utils/canvasHelpers';

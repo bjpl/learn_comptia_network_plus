@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TRANSCEIVERS } from '../media-data';
 import { generateUseCases } from './constants/data';

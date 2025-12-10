@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import type { TroubleshootingScenario } from '../ipv4-types';
 import { troubleshootingScenarios } from '../ipv4-data';
 import { useTroubleshootingState } from './hooks';
@@ -37,7 +37,7 @@ const IPv4Troubleshooting: React.FC = () => {
   } = useTroubleshootingState(selectedScenario);
 
   return (
-    <Box sx={{ p: 3 }}>
+    <div style={{ padding: '24px' }}>
       <Typography variant="h4" gutterBottom className="text-gray-900 dark:text-white">
         IPv4 Troubleshooting Scenarios
       </Typography>
@@ -102,7 +102,7 @@ const IPv4Troubleshooting: React.FC = () => {
         diagnostic={state.selectedDiagnostic}
         onClose={() => setShowDiagnosticDialog(false)}
       />
-    </Box>
+    </div>
   );
 };
 

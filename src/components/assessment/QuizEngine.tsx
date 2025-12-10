@@ -3,5 +3,5 @@
  * Legacy file maintained for backward compatibility
  */
 
-export { QuizEngine, QuizEngine as default } from './QuizEngine';
+export { default, QuizEngine } from './QuizEngine/index';
 export type { QuizEngineProps } from './QuizEngine/types';

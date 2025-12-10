@@ -3,7 +3,11 @@
  */
 
 import React from 'react';
-import { Card, CardContent, Typography, Grid, Paper, Box } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import { Terminal } from '@mui/icons-material';
 import type { DiagnosticOutput } from '../../ipv4-types';
 
@@ -30,12 +34,12 @@ export const DiagnosticOutputs: React.FC<DiagnosticOutputsProps> = ({
                 sx={{ p: 2, cursor: 'pointer', '&:hover': { bgcolor: 'action.hover' } }}
                 onClick={() => onShowDiagnostic(diagnostic)}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
                   <Terminal sx={{ mr: 1 }} color="primary" />
                   <Typography variant="subtitle2" fontWeight="bold">
                     {diagnostic.command}
                   </Typography>
-                </Box>
+                </div>
                 <Typography variant="caption" className="text-gray-700 dark:text-gray-300">
                   Click to view output
                 </Typography>

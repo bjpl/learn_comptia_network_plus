@@ -23,13 +23,8 @@ import {
   useCanvasInteractions,
   useConnectionHandlers,
 } from './hooks';
-import {
-  DesignerHeader,
-  CanvasControls,
-  ConnectionsLayer,
-  CanvasComponent,
-} from './components';
-import styles from './CloudArchitectureDesigner.module.css';
+import { DesignerHeader, CanvasControls, ConnectionsLayer, CanvasComponent } from './components';
+import styles from '../CloudArchitectureDesigner.module.css';
 
 export const CloudArchitectureDesigner: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -44,7 +39,9 @@ export const CloudArchitectureDesigner: React.FC = () => {
   const showLibrary = useCloudDesignerStore((state) => state.showLibrary);
   const showServiceComparison = useCloudDesignerStore((state) => state.showServiceComparison);
   const showSecurityPanel = useCloudDesignerStore((state) => state.showSecurityPanel);
-  const showElasticityVisualization = useCloudDesignerStore((state) => state.showElasticityVisualization);
+  const showElasticityVisualization = useCloudDesignerStore(
+    (state) => state.showElasticityVisualization
+  );
   const isDraggingFromLibrary = useCloudDesignerStore((state) => state.isDraggingFromLibrary);
   const connectionState = useCloudDesignerStore((state) => state.connectionState);
   const canvasPan = useCloudDesignerStore((state) => state.canvasPan);
@@ -57,7 +54,9 @@ export const CloudArchitectureDesigner: React.FC = () => {
   const setValidation = useCloudDesignerStore((state) => state.setValidation);
   const toggleServiceComparison = useCloudDesignerStore((state) => state.toggleServiceComparison);
   const toggleSecurityPanel = useCloudDesignerStore((state) => state.toggleSecurityPanel);
-  const toggleElasticityVisualization = useCloudDesignerStore((state) => state.toggleElasticityVisualization);
+  const toggleElasticityVisualization = useCloudDesignerStore(
+    (state) => state.toggleElasticityVisualization
+  );
   const hoverComponent = useCloudDesignerStore((state) => state.hoverComponent);
 
   // Utility function
@@ -75,7 +74,10 @@ export const CloudArchitectureDesigner: React.FC = () => {
     handleNameChange,
     handleCreateConnection,
   } = useComponentHandlers();
-  const { handleDragStart, handleDragEnd, handleDragOver, handleDrop } = useDragAndDrop(canvasRef, snapToGrid);
+  const { handleDragStart, handleDragEnd, handleDragOver, handleDrop } = useDragAndDrop(
+    canvasRef,
+    snapToGrid
+  );
   const {
     handleComponentMouseDown,
     handleCanvasMouseMove,
@@ -119,15 +121,21 @@ export const CloudArchitectureDesigner: React.FC = () => {
       />
 
       <div className={styles.workspace}>
-        {showLibrary && <ComponentLibraryPanel onDragStart={handleDragStart} onDragEnd={handleDragEnd} />}
+        {showLibrary && (
+          <ComponentLibraryPanel onDragStart={handleDragStart} onDragEnd={handleDragEnd} />
+        )}
 
         <div className={styles['canvas-container']}>
           <CanvasControls
             zoom={canvasState.zoom}
             canUndo={canUndo}
             canRedo={canRedo}
-            onZoomIn={() => setCanvasState({ ...canvasState, zoom: Math.min(2, canvasState.zoom + 0.1) })}
-            onZoomOut={() => setCanvasState({ ...canvasState, zoom: Math.max(0.5, canvasState.zoom - 0.1) })}
+            onZoomIn={() =>
+              setCanvasState({ ...canvasState, zoom: Math.min(2, canvasState.zoom + 0.1) })
+            }
+            onZoomOut={() =>
+              setCanvasState({ ...canvasState, zoom: Math.max(0.5, canvasState.zoom - 0.1) })
+            }
             onUndo={handleUndo}
             onRedo={handleRedo}
           />
@@ -144,7 +152,10 @@ export const CloudArchitectureDesigner: React.FC = () => {
             onWheel={(e) => {
               if (e.ctrlKey) {
                 e.preventDefault();
-                const newZoom = Math.max(0.5, Math.min(2, canvasState.zoom + (e.deltaY > 0 ? -0.1 : 0.1)));
+                const newZoom = Math.max(
+                  0.5,
+                  Math.min(2, canvasState.zoom + (e.deltaY > 0 ? -0.1 : 0.1))
+                );
                 setCanvasState({ ...canvasState, zoom: newZoom });
               }
             }}
