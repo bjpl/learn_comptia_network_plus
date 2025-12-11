@@ -107,7 +107,11 @@ export const getFullUrl = (endpoint: string): string => {
 
 /**
  * Check if should use mock API
+ * Returns true when:
+ * - USE_MOCK_API flag is set
+ * - Running in test environment
+ * - Network calls are disabled (production/static deployment)
  */
 export const shouldUseMockAPI = (): boolean => {
-  return FEATURE_FLAGS.USE_MOCK_API || API_CONFIG.ENV === 'test';
+  return FEATURE_FLAGS.USE_MOCK_API || FEATURE_FLAGS.DISABLE_NETWORK_CALLS || API_CONFIG.ENV === 'test';
 };
