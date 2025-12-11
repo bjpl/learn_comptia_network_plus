@@ -1,0 +1,8 @@
+
+> comptia-network-plus-learning-platform@1.0.0 test:coverage
+> vitest run --coverage
+
+
+[1m[46m RUN [49m[22m [36mv4.0.15 [39m[90m/mnt/c/Users/brand/Development/Project_Workspace/active-development/learn_comptia_network+[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+

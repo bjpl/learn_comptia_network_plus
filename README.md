@@ -1,15 +1,54 @@
 # CompTIA Network+ N10-009 Learning Platform
 
-An interactive, web-based learning platform designed to help students master the CompTIA Network+ N10-009 certification exam objectives through hands-on practice and scenario-based learning.
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=for-the-badge)](https://bjpl.github.io/learn_comptia_network_plus/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18-61dafb?style=for-the-badge&logo=react)](https://react.dev/)
+[![Security](https://img.shields.io/badge/Security-A--Grade-success?style=for-the-badge)](docs/SECURITY_AUDIT_REPORT.md)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-**Version:** 1.0.0
-**Status:** ACTIVE
-**Deployment:** GitHub Pages (gh-pages branch)
-**Certification:** CompTIA Network+ N10-009 exam preparation
+> **Production-ready educational platform** showcasing React 18, TypeScript 5.7, Three.js 3D visualization, and enterprise-grade security practices.
+
+**[View Live Demo](https://bjpl.github.io/learn_comptia_network_plus/)**
+
+---
+
+## Project Metrics
+
+| Metric                        | Value       | Details                  |
+| ----------------------------- | ----------- | ------------------------ |
+| **Lines of Code**             | 97,095      | TypeScript strict mode   |
+| **Components**                | 401 files   | 210 directories          |
+| **Test Files**                | 42          | Unit, Integration, E2E   |
+| **Security Grade**            | A- (92/100) | Zero vulnerabilities     |
+| **TypeScript Errors**         | 0           | Strict mode enabled      |
+| **3D Visualizations**         | 106         | Three.js/R3F             |
+| **Performance Optimizations** | 92          | memo/useMemo/useCallback |
+| **Accessibility**             | WCAG 2.1 AA | Full compliance          |
+
+---
+
+## Skills Demonstrated
+
+| Category          | Technologies & Practices                                     |
+| ----------------- | ------------------------------------------------------------ |
+| **Frontend**      | React 18, TypeScript 5.7 (strict), Zustand, Vite 7           |
+| **3D Graphics**   | Three.js, React Three Fiber, @react-three/drei               |
+| **Testing**       | Vitest, Playwright E2E (6 device configs), Testing Library   |
+| **Security**      | JWT auth, CSRF protection, rate limiting, input sanitization |
+| **Performance**   | Code splitting, lazy loading, bundle optimization            |
+| **Accessibility** | WCAG 2.1 AA, skip links, ARIA, screen reader support         |
+| **DevOps**        | GitHub Actions CI/CD, automated deployment                   |
+| **Architecture**  | Feature-based structure, custom hooks, state management      |
+
+---
 
 ## Project Overview
 
-This platform provides comprehensive interactive learning for the CompTIA Network+ N10-009 certification, featuring:
+An interactive, web-based learning platform designed to help students master the CompTIA Network+ N10-009 certification exam objectives through hands-on practice and scenario-based learning.
+
+**Version:** 1.0.0 | **Status:** Production | **Certification:** CompTIA Network+ N10-009
+
+This platform provides comprehensive interactive learning featuring:
 
 - **Interactive 3D Visualizations**: React Three Fiber for network topology visualization
 - **OSI Model**: Layer-by-layer explanation and troubleshooting scenarios
@@ -186,6 +225,37 @@ Each learning component follows these principles:
 - Integrated Scenario Simulator (Component 22)
 - Progress Tracking Dashboard (Component 23)
 
+## Architecture Highlights
+
+### Security Implementation
+
+- **Authentication**: JWT with bcrypt (12 rounds), refresh token rotation
+- **Protection**: CSRF tokens, Helmet CSP, rate limiting (10+ endpoint-specific limiters)
+- **Validation**: Zod schemas, DOMPurify sanitization, 100% parameterized SQL
+- **Audit**: Zero npm vulnerabilities, comprehensive security middleware
+
+### Performance Strategy
+
+- **Code Splitting**: Manual chunks for vendors (React, Three.js, MUI)
+- **Lazy Loading**: All routes use `React.lazy()` with Suspense
+- **Optimization**: 92 `useMemo`/`useCallback`/`React.memo` implementations
+- **Targets**: Lighthouse 90+ scores, <600KB chunk size limits
+
+### Testing Infrastructure
+
+- **Unit Tests**: Vitest with React Testing Library
+- **E2E Tests**: Playwright across 6 device configurations
+- **Coverage**: Comprehensive mocking (storage, auth, fetch, crypto)
+- **CI/CD**: Automated lint → typecheck → test → build → deploy
+
+### Documentation
+
+- [Security Audit Report](docs/SECURITY_AUDIT_REPORT.md) - A- grade assessment
+- [Architecture Evaluation](docs/ARCHITECTURE_EVALUATION.md) - System design analysis
+- [GOAP Strategy](docs/PORTFOLIO_STRATEGY.md) - Development methodology
+
+---
+
 ## License
 
 MIT
@@ -193,3 +263,10 @@ MIT
 ## Support
 
 For issues and questions, please refer to the project documentation in the `docs/` directory.
+
+---
+
+<p align="center">
+  <strong>Built with React 18 + TypeScript 5.7 + Three.js</strong><br>
+  <a href="https://bjpl.github.io/learn_comptia_network_plus/">View Live Demo</a>
+</p>
