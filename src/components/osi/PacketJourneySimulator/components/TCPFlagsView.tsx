@@ -27,18 +27,19 @@ export const TCPFlagsView: React.FC<TCPFlagsViewProps> = ({
           border: '1px solid #ddd',
         }}
       >
-        <h3 style={{ marginTop: 0 }}>TCP Flag Visualizer</h3>
+        <h3 className="text-gray-900 dark:text-gray-100" style={{ marginTop: 0 }}>TCP Flag Visualizer</h3>
 
         {/* Scenario Selector */}
         <div style={{ marginBottom: '20px' }}>
-          <h4>Common Scenarios:</h4>
+          <h4 className="text-gray-900 dark:text-gray-100">Common Scenarios:</h4>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <button
               onClick={() => loadTCPScenario('handshake')}
+              className={tcpScenario !== 'handshake' ? 'text-gray-900 dark:text-gray-100' : ''}
               style={{
                 padding: '8px 16px',
-                backgroundColor: tcpScenario === 'handshake' ? '#4CAF50' : '#e0e0e0',
-                color: tcpScenario === 'handshake' ? 'white' : '#000',
+                backgroundColor: tcpScenario === 'handshake' ? '#4CAF50' : undefined,
+                color: tcpScenario === 'handshake' ? 'white' : undefined,
                 border: 'none',
                 borderRadius: '4px',
                 cursor: 'pointer',
@@ -48,10 +49,11 @@ export const TCPFlagsView: React.FC<TCPFlagsViewProps> = ({
             </button>
             <button
               onClick={() => loadTCPScenario('termination')}
+              className={tcpScenario !== 'termination' ? 'text-gray-900 dark:text-gray-100' : ''}
               style={{
                 padding: '8px 16px',
-                backgroundColor: tcpScenario === 'termination' ? '#4CAF50' : '#e0e0e0',
-                color: tcpScenario === 'termination' ? 'white' : '#000',
+                backgroundColor: tcpScenario === 'termination' ? '#4CAF50' : undefined,
+                color: tcpScenario === 'termination' ? 'white' : undefined,
                 border: 'none',
                 borderRadius: '4px',
                 cursor: 'pointer',
@@ -61,10 +63,11 @@ export const TCPFlagsView: React.FC<TCPFlagsViewProps> = ({
             </button>
             <button
               onClick={() => setTcpScenario('custom')}
+              className={tcpScenario !== 'custom' ? 'text-gray-900 dark:text-gray-100' : ''}
               style={{
                 padding: '8px 16px',
-                backgroundColor: tcpScenario === 'custom' ? '#4CAF50' : '#e0e0e0',
-                color: tcpScenario === 'custom' ? 'white' : '#000',
+                backgroundColor: tcpScenario === 'custom' ? '#4CAF50' : undefined,
+                color: tcpScenario === 'custom' ? 'white' : undefined,
                 border: 'none',
                 borderRadius: '4px',
                 cursor: 'pointer',
@@ -88,17 +91,18 @@ export const TCPFlagsView: React.FC<TCPFlagsViewProps> = ({
             <div
               key={flag.abbreviation}
               onClick={() => toggleTCPFlag(flag.abbreviation as keyof TCPFlagState)}
+              className={!tcpFlags[flag.abbreviation as keyof TCPFlagState] ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600' : ''}
               style={{
                 padding: '15px',
                 backgroundColor: tcpFlags[flag.abbreviation as keyof TCPFlagState]
                   ? '#4CAF50'
-                  : '#f5f5f5',
-                color: tcpFlags[flag.abbreviation as keyof TCPFlagState] ? 'white' : '#000',
+                  : undefined,
+                color: tcpFlags[flag.abbreviation as keyof TCPFlagState] ? 'white' : undefined,
                 borderRadius: '8px',
                 border: '2px solid',
                 borderColor: tcpFlags[flag.abbreviation as keyof TCPFlagState]
                   ? '#388E3C'
-                  : '#ddd',
+                  : undefined,
                 cursor: 'pointer',
                 transition: 'all 0.3s',
                 textAlign: 'center',
@@ -122,14 +126,14 @@ export const TCPFlagsView: React.FC<TCPFlagsViewProps> = ({
         {/* TCP Handshake Visualization */}
         {tcpScenario === 'handshake' && (
           <div
+            className="bg-gray-100 dark:bg-gray-700"
             style={{
               marginTop: '30px',
               padding: '20px',
-              backgroundColor: '#f9f9f9',
               borderRadius: '8px',
             }}
           >
-            <h4>TCP 3-Way Handshake Sequence</h4>
+            <h4 className="text-gray-900 dark:text-gray-100">TCP 3-Way Handshake Sequence</h4>
             <div
               style={{
                 display: 'flex',
@@ -198,10 +202,10 @@ export const TCPFlagsView: React.FC<TCPFlagsViewProps> = ({
 
         {/* Flag Descriptions */}
         <div
+          className="bg-blue-100 dark:bg-blue-900 text-gray-900 dark:text-gray-100"
           style={{
             marginTop: '30px',
             padding: '15px',
-            backgroundColor: '#e3f2fd',
             borderRadius: '8px',
           }}
         >

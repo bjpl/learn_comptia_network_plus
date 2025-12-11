@@ -15,6 +15,36 @@
   }
 }
 
+/* WCAG AA Compliant Placeholder Text Contrast for Dark Mode */
+/* Minimum 4.5:1 contrast ratio for normal text */
+.dark input::placeholder,
+.dark textarea::placeholder,
+.dark select::placeholder {
+  color: rgb(156 163 175) !important; /* gray-400 - visible on dark backgrounds */
+  opacity: 1;
+}
+
+/* Form inputs in dark mode need proper backgrounds and text */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+  color: rgb(243 244 246) !important; /* gray-100 */
+  border-color: rgb(75 85 99) !important; /* gray-600 */
+}
+
+/* Option elements in dark mode dropdowns */
+.dark option {
+  background-color: rgb(31 41 55); /* gray-800 */
+  color: rgb(243 244 246); /* gray-100 */
+}
+
+/* Ensure selected state in checkboxes/radios is visible */
+.dark input[type="checkbox"],
+.dark input[type="radio"] {
+  accent-color: rgb(59 130 246); /* blue-500 */
+}
+
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;

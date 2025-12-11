@@ -12,13 +12,14 @@ interface ModeToggleProps {
 export const ModeToggle: React.FC<ModeToggleProps> = ({ isExamMode, onModeChange }) => {
   return (
     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-      <span style={{ fontSize: '14px', fontWeight: 'bold' }}>Mode:</span>
+      <span className="text-gray-900 dark:text-gray-100" style={{ fontSize: '14px', fontWeight: 'bold' }}>Mode:</span>
       <button
         onClick={() => onModeChange(false)}
+        className={isExamMode ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300' : ''}
         style={{
           padding: '8px 16px',
-          backgroundColor: !isExamMode ? '#4CAF50' : '#f5f5f5',
-          color: !isExamMode ? '#fff' : '#666',
+          backgroundColor: !isExamMode ? '#4CAF50' : undefined,
+          color: !isExamMode ? '#fff' : undefined,
           border: 'none',
           borderRadius: '4px',
           fontWeight: 'bold',
@@ -29,10 +30,11 @@ export const ModeToggle: React.FC<ModeToggleProps> = ({ isExamMode, onModeChange
       </button>
       <button
         onClick={() => onModeChange(true)}
+        className={!isExamMode ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300' : ''}
         style={{
           padding: '8px 16px',
-          backgroundColor: isExamMode ? '#f44336' : '#f5f5f5',
-          color: isExamMode ? '#fff' : '#666',
+          backgroundColor: isExamMode ? '#f44336' : undefined,
+          color: isExamMode ? '#fff' : undefined,
           border: 'none',
           borderRadius: '4px',
           fontWeight: 'bold',

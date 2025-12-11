@@ -28,7 +28,7 @@ export const ScenarioNavigationGrid: React.FC<ScenarioNavigationGridProps> = ({
         border: '1px solid #ddd',
       }}
     >
-      <h4 style={{ marginTop: 0 }}>
+      <h4 className="text-gray-900 dark:text-gray-100" style={{ marginTop: 0 }}>
         Scenario Progress ({currentIndex + 1} of {scenarios.length})
       </h4>
       <div
@@ -47,6 +47,7 @@ export const ScenarioNavigationGrid: React.FC<ScenarioNavigationGridProps> = ({
             <button
               key={scenario.id}
               onClick={() => onSelect(index)}
+              className={!(response || index === currentIndex) ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100' : ''}
               style={{
                 padding: '10px',
                 backgroundColor: response
@@ -55,8 +56,8 @@ export const ScenarioNavigationGrid: React.FC<ScenarioNavigationGridProps> = ({
                     : '#f44336'
                   : index === currentIndex
                     ? '#2196F3'
-                    : '#f5f5f5',
-                color: response || index === currentIndex ? 'white' : '#000',
+                    : undefined,
+                color: response || index === currentIndex ? 'white' : undefined,
                 border: 'none',
                 borderRadius: '4px',
                 cursor: 'pointer',

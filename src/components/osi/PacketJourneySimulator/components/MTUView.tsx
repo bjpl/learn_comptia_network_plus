@@ -23,20 +23,21 @@ export const MTUView: React.FC<MTUViewProps> = ({
           border: '1px solid #ddd',
         }}
       >
-        <h3 style={{ marginTop: 0 }}>MTU and Fragmentation Scenarios</h3>
+        <h3 className="text-gray-900 dark:text-gray-100" style={{ marginTop: 0 }}>MTU and Fragmentation Scenarios</h3>
 
         {/* MTU Selector */}
         <div style={{ marginBottom: '20px' }}>
-          <h4>Select MTU Size:</h4>
+          <h4 className="text-gray-900 dark:text-gray-100">Select MTU Size:</h4>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '15px' }}>
             {Object.entries(MTU_VALUES).map(([key, { size, description }]) => (
               <button
                 key={key}
                 onClick={() => setSelectedMTU(size)}
+                className={selectedMTU !== size ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100' : ''}
                 style={{
                   padding: '8px 16px',
-                  backgroundColor: selectedMTU === size ? '#FF9800' : '#e0e0e0',
-                  color: selectedMTU === size ? 'white' : '#000',
+                  backgroundColor: selectedMTU === size ? '#FF9800' : undefined,
+                  color: selectedMTU === size ? 'white' : undefined,
                   border: 'none',
                   borderRadius: '4px',
                   cursor: 'pointer',
@@ -52,6 +53,7 @@ export const MTUView: React.FC<MTUViewProps> = ({
           <div style={{ marginTop: '15px' }}>
             <label
               htmlFor="mtu-slider"
+              className="text-gray-900 dark:text-gray-100"
               style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}
             >
               Custom MTU:
@@ -82,15 +84,15 @@ export const MTUView: React.FC<MTUViewProps> = ({
 
         {/* Fragmentation Analysis */}
         <div
+          className={fragmentationInfo.needsFragmentation ? 'bg-orange-100 dark:bg-orange-900/30' : 'bg-green-100 dark:bg-green-900/30'}
           style={{
             padding: '20px',
-            backgroundColor: fragmentationInfo.needsFragmentation ? '#fff3e0' : '#e8f5e9',
             borderRadius: '8px',
             border: '2px solid',
             borderColor: fragmentationInfo.needsFragmentation ? '#FF9800' : '#4CAF50',
           }}
         >
-          <h4 style={{ marginTop: 0 }}>Fragmentation Analysis</h4>
+          <h4 className="text-gray-900 dark:text-gray-100" style={{ marginTop: 0 }}>Fragmentation Analysis</h4>
           <div
             style={{
               display: 'grid',
@@ -167,10 +169,10 @@ export const MTUView: React.FC<MTUViewProps> = ({
 
         {/* MTU Common Values */}
         <div
+          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           style={{
             marginTop: '20px',
             padding: '15px',
-            backgroundColor: '#f5f5f5',
             borderRadius: '8px',
           }}
         >

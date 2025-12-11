@@ -59,10 +59,11 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({
           <button
             key={speed}
             onClick={() => onChangeSpeed(speed as AnimationSpeed)}
+            className={animationState.speed !== speed ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100' : ''}
             style={{
               padding: '10px 15px',
-              backgroundColor: animationState.speed === speed ? '#FF9800' : '#e0e0e0',
-              color: animationState.speed === speed ? 'white' : '#000',
+              backgroundColor: animationState.speed === speed ? '#FF9800' : undefined,
+              color: animationState.speed === speed ? 'white' : undefined,
               border: 'none',
               borderRadius: '4px',
               cursor: 'pointer',
@@ -78,10 +79,11 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({
           <button
             key={proto}
             onClick={() => onChangeProtocol(proto)}
+            className={animationState.protocol !== proto ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100' : ''}
             style={{
               padding: '10px 15px',
-              backgroundColor: animationState.protocol === proto ? '#9C27B0' : '#e0e0e0',
-              color: animationState.protocol === proto ? 'white' : '#000',
+              backgroundColor: animationState.protocol === proto ? '#9C27B0' : undefined,
+              color: animationState.protocol === proto ? 'white' : undefined,
               border: 'none',
               borderRadius: '4px',
               cursor: 'pointer',

@@ -15,7 +15,7 @@ export const RealWorldExamples: React.FC<RealWorldExamplesProps> = ({
 
   return (
     <div>
-      <h3 style={{ marginBottom: '20px' }}>Real-World Networking Scenarios</h3>
+      <h3 className="text-gray-900 dark:text-gray-100" style={{ marginBottom: '20px' }}>Real-World Networking Scenarios</h3>
       <div
         style={{
           display: 'grid',
@@ -28,10 +28,10 @@ export const RealWorldExamples: React.FC<RealWorldExamplesProps> = ({
           <button
             key={idx}
             onClick={() => setSelectedExample(idx)}
-            className={selectedExample !== idx ? 'text-gray-800 dark:text-gray-200' : ''}
+            className={selectedExample !== idx ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200' : ''}
             style={{
               padding: '12px',
-              backgroundColor: selectedExample === idx ? LAYER_COLORS[example.layer] : '#f0f0f0',
+              backgroundColor: selectedExample === idx ? LAYER_COLORS[example.layer] : undefined,
               color: selectedExample === idx ? 'white' : undefined,
               border: 'none',
               borderRadius: '4px',
@@ -56,8 +56,8 @@ export const RealWorldExamples: React.FC<RealWorldExamplesProps> = ({
           <h4 className="text-gray-800 dark:text-gray-200" style={{ marginBottom: '10px' }}>
             Layer {currentExample.layer}: {currentExample.title}
           </h4>
-          <p style={{ marginBottom: '15px', lineHeight: '1.6' }}>{currentExample.scenario}</p>
-          <div style={{ marginTop: '15px' }}>
+          <p className="text-gray-800 dark:text-gray-200" style={{ marginBottom: '15px', lineHeight: '1.6' }}>{currentExample.scenario}</p>
+          <div className="text-gray-900 dark:text-gray-100" style={{ marginTop: '15px' }}>
             <strong>Key Protocols:</strong>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '10px' }}>
               {currentExample.protocols.map((protocol) => (

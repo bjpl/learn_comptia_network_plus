@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <div style={{ marginBottom: '30px' }}>
-      <h2 style={{ marginBottom: '15px' }}>OSI Layer Explanation Builder</h2>
+      <h2 className="text-gray-900 dark:text-gray-100" style={{ marginBottom: '15px' }}>OSI Layer Explanation Builder</h2>
       <p className="text-gray-700 dark:text-gray-300" style={{ marginBottom: '20px' }}>
         Master the OSI model through interactive learning. Choose your preferred learning mode
         below.
@@ -59,13 +59,13 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Stats Bar */}
       <div style={{ display: 'flex', gap: '20px', marginTop: '15px', flexWrap: 'wrap' }}>
         <div
-          className="bg-gray-100 dark:bg-gray-800"
+          className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           style={{ padding: '10px 15px', borderRadius: '4px' }}
         >
           Hints Used: {hintsUsed}/3
         </div>
         <div
-          className="bg-gray-100 dark:bg-gray-800"
+          className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           style={{ padding: '10px 15px', borderRadius: '4px' }}
         >
           Current Score: {score}%

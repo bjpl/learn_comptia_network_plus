@@ -31,10 +31,11 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
 
   return (
     <div
+      className="border-gray-300 dark:border-gray-600"
       style={{
         display: 'flex',
         gap: '4px',
-        borderBottom: '2px solid #e0e0e0',
+        borderBottom: '2px solid',
       }}
     >
       {tabs.map((tab) => (
@@ -42,10 +43,11 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
           key={tab.key}
           onClick={() => !tab.disabled && onViewModeChange(tab.key)}
           disabled={tab.disabled}
+          className={viewMode !== tab.key ? (tab.disabled ? 'text-gray-400 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300') : ''}
           style={{
             padding: '12px 24px',
             backgroundColor: viewMode === tab.key ? '#2196F3' : 'transparent',
-            color: viewMode === tab.key ? '#fff' : tab.disabled ? '#ccc' : '#666',
+            color: viewMode === tab.key ? '#fff' : undefined,
             border: 'none',
             borderBottom: viewMode === tab.key ? 'none' : '2px solid transparent',
             borderRadius: '8px 8px 0 0',

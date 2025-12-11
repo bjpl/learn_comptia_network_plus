@@ -51,11 +51,12 @@ export const LayerCard: React.FC<LayerCardProps> = ({
       </div>
 
       {isExpanded && (
-        <div className="layer-content bg-gray-50 dark:bg-gray-900" style={{ padding: '20px' }}>
+        <div className="layer-content bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100" style={{ padding: '20px' }}>
           {/* Primary Function Selector */}
           <div className="section" style={{ marginBottom: '20px' }}>
             <label
               htmlFor={`primary-function-${layer.number}`}
+              className="text-gray-900 dark:text-gray-100"
               style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}
             >
               Primary Function:
@@ -64,12 +65,14 @@ export const LayerCard: React.FC<LayerCardProps> = ({
               id={`primary-function-${layer.number}`}
               value={layer.primaryFunction}
               onChange={(e) => onUpdate(layer.number, { primaryFunction: e.target.value })}
+              className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
               style={{
                 width: '100%',
                 padding: '10px',
                 fontSize: '14px',
                 borderRadius: '4px',
-                border: '1px solid #ddd',
+                borderWidth: '1px',
+                borderStyle: 'solid',
               }}
             >
               <option value="">Select a function...</option>
@@ -83,7 +86,7 @@ export const LayerCard: React.FC<LayerCardProps> = ({
 
           {/* Protocol Checkbox Grid */}
           <div className="section" style={{ marginBottom: '20px' }}>
-            <div style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
+            <div className="text-gray-900 dark:text-gray-100" style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>
               Protocols (select 2-3 correct ones):
             </div>
             <div
@@ -98,17 +101,20 @@ export const LayerCard: React.FC<LayerCardProps> = ({
                 .map((protocol) => (
                   <label
                     key={protocol.name}
+                    className={`${
+                      layer.selectedProtocols.includes(protocol.name)
+                        ? 'bg-blue-100 dark:bg-blue-900 border-blue-300 dark:border-blue-700'
+                        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600'
+                    } text-gray-900 dark:text-gray-100`}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
                       padding: '8px',
-                      backgroundColor: layer.selectedProtocols.includes(protocol.name)
-                        ? '#e3f2fd'
-                        : 'white',
                       borderRadius: '4px',
                       cursor: 'pointer',
-                      border: '1px solid #ddd',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
                     }}
                   >
                     <input
@@ -126,6 +132,7 @@ export const LayerCard: React.FC<LayerCardProps> = ({
           <div className="section" style={{ marginBottom: '20px' }}>
             <label
               htmlFor={`pdu-${layer.number}`}
+              className="text-gray-900 dark:text-gray-100"
               style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}
             >
               Protocol Data Unit (PDU):
@@ -136,12 +143,14 @@ export const LayerCard: React.FC<LayerCardProps> = ({
               value={layer.pdu}
               onChange={(e) => onUpdate(layer.number, { pdu: e.target.value })}
               placeholder="Enter the PDU name (e.g., Packet, Frame, Segment, Bits, Data)"
+              className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 placeholder:text-gray-500 dark:placeholder:text-gray-400"
               style={{
                 width: '100%',
                 padding: '10px',
                 fontSize: '14px',
                 borderRadius: '4px',
-                border: '1px solid #ddd',
+                borderWidth: '1px',
+                borderStyle: 'solid',
               }}
             />
           </div>
@@ -150,6 +159,7 @@ export const LayerCard: React.FC<LayerCardProps> = ({
           <div className="section">
             <label
               htmlFor={`interaction-${layer.number}`}
+              className="text-gray-900 dark:text-gray-100"
               style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}
             >
               Layer Interaction Explanation (minimum 150 words):
@@ -160,12 +170,14 @@ export const LayerCard: React.FC<LayerCardProps> = ({
               onChange={(e) => onUpdate(layer.number, { interactionExplanation: e.target.value })}
               placeholder="Explain how this layer interacts with the layers above and below it..."
               rows={6}
+              className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600 placeholder:text-gray-500 dark:placeholder:text-gray-400"
               style={{
                 width: '100%',
                 padding: '10px',
                 fontSize: '14px',
                 borderRadius: '4px',
-                border: '1px solid #ddd',
+                borderWidth: '1px',
+                borderStyle: 'solid',
                 fontFamily: 'inherit',
                 resize: 'vertical',
               }}
