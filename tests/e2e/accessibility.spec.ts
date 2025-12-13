@@ -1,11 +1,12 @@
 /**
  * E2E accessibility tests using Playwright and axe-core
+ * @accessibility
  */
 
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-test.describe('Accessibility Tests', () => {
+test.describe('Accessibility Tests @accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
@@ -87,13 +88,15 @@ test.describe('Accessibility Tests', () => {
           return {
             tag: el?.tagName,
             type: el?.getAttribute('type'),
-            role: el?.getAttribute('role')
+            role: el?.getAttribute('role'),
           };
         });
 
         // All focusable elements should be interactive
         if (focusedElement.tag) {
-          expect(['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'DIV']).toContain(focusedElement.tag);
+          expect(['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA', 'DIV']).toContain(
+            focusedElement.tag
+          );
         }
       }
 
@@ -107,7 +110,7 @@ test.describe('Accessibility Tests', () => {
       await expect(focusedElement).toBeVisible();
 
       // Check for focus styling
-      const outlineWidth = await focusedElement.evaluate(el => {
+      const outlineWidth = await focusedElement.evaluate((el) => {
         const styles = window.getComputedStyle(el);
         return parseInt(styles.outlineWidth) || parseInt(styles.borderWidth);
       });
@@ -178,17 +181,17 @@ test.describe('Accessibility Tests', () => {
 
   test.describe('Screen Reader Support', () => {
     test('should have proper heading hierarchy', async ({ page }) => {
-      const headings = await page.$$eval('h1, h2, h3, h4, h5, h6', elements =>
-        elements.map(el => ({
+      const headings = await page.$$eval('h1, h2, h3, h4, h5, h6', (elements) =>
+        elements.map((el) => ({
           level: parseInt(el.tagName[1]),
-          text: el.textContent?.trim()
+          text: el.textContent?.trim(),
         }))
       );
 
       expect(headings.length).toBeGreaterThan(0);
 
       // Should have exactly one h1
-      const h1Count = headings.filter(h => h.level === 1).length;
+      const h1Count = headings.filter((h) => h.level === 1).length;
       expect(h1Count).toBe(1);
 
       // Heading levels should not skip
@@ -205,7 +208,7 @@ test.describe('Accessibility Tests', () => {
     test('should have landmark regions', async ({ page }) => {
       const landmarks = await page.$$eval(
         '[role="main"], [role="navigation"], [role="complementary"], [role="contentinfo"], main, nav, aside, footer',
-        elements => elements.map(el => el.getAttribute('role') || el.tagName.toLowerCase())
+        (elements) => elements.map((el) => el.getAttribute('role') || el.tagName.toLowerCase())
       );
 
       expect(landmarks).toContain('main');
@@ -213,29 +216,27 @@ test.describe('Accessibility Tests', () => {
     });
 
     test('should have descriptive link text', async ({ page }) => {
-      const links = await page.$$eval('a', elements =>
-        elements.map(el => el.textContent?.trim() || '')
+      const links = await page.$$eval('a', (elements) =>
+        elements.map((el) => el.textContent?.trim() || '')
       );
 
       // No "click here" or "read more" without context
-      const genericLinks = links.filter(text =>
-        /^(click here|read more|link)$/i.test(text)
-      );
+      const genericLinks = links.filter((text) => /^(click here|read more|link)$/i.test(text));
 
       expect(genericLinks.length).toBe(0);
     });
 
     test('should have alt text for images', async ({ page }) => {
-      const images = await page.$$eval('img', imgs =>
-        imgs.map(img => ({
+      const images = await page.$$eval('img', (imgs) =>
+        imgs.map((img) => ({
           src: img.src,
           alt: img.alt,
-          role: img.getAttribute('role')
+          role: img.getAttribute('role'),
         }))
       );
 
       // All images should have alt text or role="presentation"
-      images.forEach(img => {
+      images.forEach((img) => {
         if (img.role !== 'presentation') {
           expect(img.alt).toBeTruthy();
         }
@@ -245,18 +246,18 @@ test.describe('Accessibility Tests', () => {
     test('should label form inputs', async ({ page }) => {
       await page.click('text=Cloud Architecture Designer');
 
-      const inputs = await page.$$eval('input, select, textarea', elements =>
-        elements.map(el => ({
+      const inputs = await page.$$eval('input, select, textarea', (elements) =>
+        elements.map((el) => ({
           type: el.getAttribute('type'),
           id: el.id,
           ariaLabel: el.getAttribute('aria-label'),
           ariaLabelledBy: el.getAttribute('aria-labelledby'),
-          hasLabel: !!document.querySelector(`label[for="${el.id}"]`)
+          hasLabel: !!document.querySelector(`label[for="${el.id}"]`),
         }))
       );
 
       // All inputs should have labels
-      inputs.forEach(input => {
+      inputs.forEach((input) => {
         const hasAccessibleName = input.ariaLabel || input.ariaLabelledBy || input.hasLabel;
         expect(hasAccessibleName).toBeTruthy();
       });
@@ -305,8 +306,10 @@ test.describe('Accessibility Tests', () => {
 
       if (await selectedRow.isVisible()) {
         // Should have visual indicator beyond color
-        const hasIcon = await selectedRow.locator('svg, .icon').count() > 0;
-        const hasCheckbox = await selectedRow.locator('input[type="radio"], input[type="checkbox"]').isChecked();
+        const hasIcon = (await selectedRow.locator('svg, .icon').count()) > 0;
+        const hasCheckbox = await selectedRow
+          .locator('input[type="radio"], input[type="checkbox"]')
+          .isChecked();
 
         expect(hasIcon || hasCheckbox).toBeTruthy();
       }
@@ -337,11 +340,13 @@ test.describe('Accessibility Tests', () => {
       await page.setViewportSize({ width: 640, height: 480 });
 
       // Check for text overflow
-      const overflowElements = await page.$$eval('*', elements =>
-        elements.filter(el => {
-          const styles = window.getComputedStyle(el);
-          return styles.overflow === 'hidden' && el.scrollHeight > el.clientHeight;
-        }).length
+      const overflowElements = await page.$$eval(
+        '*',
+        (elements) =>
+          elements.filter((el) => {
+            const styles = window.getComputedStyle(el);
+            return styles.overflow === 'hidden' && el.scrollHeight > el.clientHeight;
+          }).length
       );
 
       // Some overflow is acceptable for scrollable containers
@@ -429,21 +434,23 @@ test.describe('Accessibility Tests', () => {
             removeListener: () => {},
             addEventListener: () => {},
             removeEventListener: () => {},
-            dispatchEvent: () => true
-          })
+            dispatchEvent: () => true,
+          }),
         });
       });
 
       await page.reload();
 
       // Check that animations are reduced/disabled
-      const animatedElements = await page.$$eval('*', elements =>
-        elements.filter(el => {
-          const styles = window.getComputedStyle(el);
-          const duration = parseFloat(styles.animationDuration);
-          const transition = parseFloat(styles.transitionDuration);
-          return duration > 0 || transition > 0;
-        }).length
+      const animatedElements = await page.$$eval(
+        '*',
+        (elements) =>
+          elements.filter((el) => {
+            const styles = window.getComputedStyle(el);
+            const duration = parseFloat(styles.animationDuration);
+            const transition = parseFloat(styles.transitionDuration);
+            return duration > 0 || transition > 0;
+          }).length
       );
 
       // With reduced motion, animated elements should be minimal
@@ -462,18 +469,18 @@ test.describe('Accessibility Tests', () => {
       await page.click('text=Media Selection Matrix');
 
       // Check button sizes
-      const buttons = await page.$$eval('button, a', elements =>
-        elements.map(el => {
+      const buttons = await page.$$eval('button, a', (elements) =>
+        elements.map((el) => {
           const rect = el.getBoundingClientRect();
           return {
             width: rect.width,
-            height: rect.height
+            height: rect.height,
           };
         })
       );
 
       // Touch targets should be at least 44x44px (WCAG 2.1)
-      const smallTargets = buttons.filter(b => b.width < 44 || b.height < 44);
+      const smallTargets = buttons.filter((b) => b.width < 44 || b.height < 44);
 
       // Some small targets acceptable for dense UIs
       expect(smallTargets.length).toBeLessThan(buttons.length * 0.2);

@@ -12,7 +12,9 @@ export default defineConfig({
     ['list'],
   ],
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: process.env.CI
+      ? 'http://localhost:4173/learn_comptia_network_plus'
+      : 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -44,8 +46,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    command: process.env.CI ? 'npm run preview -- --port 4173' : 'npm run dev',
+    url: process.env.CI
+      ? 'http://localhost:4173/learn_comptia_network_plus/'
+      : 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
