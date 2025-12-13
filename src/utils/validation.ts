@@ -61,7 +61,9 @@ export function validateIPv4(ip: string): ValidationResult {
   // Only 255.255.255.255 (broadcast) is a valid special case, but still not a valid host
   if (octets[0] === 255) {
     if (octets.every((o) => o === 255)) {
-      errors.push('Broadcast address (255.255.255.255) - first octet cannot be 255 for host addresses');
+      errors.push(
+        'Broadcast address (255.255.255.255) - first octet cannot be 255 for host addresses'
+      );
     } else {
       errors.push('Invalid address - first octet cannot be 255 for host addresses');
     }
@@ -102,6 +104,13 @@ export function validateIPv6(ip: string): ValidationResult {
   const warnings: string[] = [];
   const suggestions: string[] = [];
 
+  // Check for multiple :: compressions BEFORE regex check
+  const colonGroups = ip.split('::');
+  if (colonGroups.length > 2) {
+    errors.push('Multiple :: compressions are not allowed');
+    return { isValid: false, errors, warnings, suggestions };
+  }
+
   // IPv6 regex pattern (simplified)
   const ipv6Pattern =
     /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
@@ -123,12 +132,6 @@ export function validateIPv6(ip: string): ValidationResult {
   }
   if (ip === '::') {
     warnings.push('Unspecified address (all zeros)');
-  }
-
-  // Check for multiple :: compressions
-  const colonGroups = ip.split('::');
-  if (colonGroups.length > 2) {
-    errors.push('Multiple :: compressions are not allowed');
   }
 
   return {

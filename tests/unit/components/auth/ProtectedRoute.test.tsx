@@ -7,35 +7,50 @@ import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute, AuthLoadingScreen } from '../../../../src/components/auth/ProtectedRoute';
-import { useAuth } from '../../../../src/contexts/AuthContext';
+import { useAuthStore } from '../../../../src/stores/authStore';
 import {
   mockStudent,
   mockAdmin,
   mockUnverifiedUser,
-  createAuthenticatedState,
-  createLoadingState,
-  createMockAuthState,
   setupAuthMocks,
 } from '../../../helpers/auth-test-utils';
 import { UserRole } from '../../../../src/types/auth';
+import type { User } from '../../../../src/types/auth';
 
-// Mock the useAuth hook
-vi.mock('../../../../src/contexts/AuthContext', () => ({
-  useAuth: vi.fn(),
+// Mock the useAuthStore hook
+vi.mock('../../../../src/stores/authStore', () => ({
+  useAuthStore: vi.fn(),
 }));
 
-const mockedUseAuth = useAuth as Mock;
+const mockedUseAuthStore = useAuthStore as unknown as Mock;
+
+// Helper to create auth store state
+const createAuthState = (
+  overrides: {
+    isAuthenticated?: boolean;
+    isLoading?: boolean;
+    user?: User | null;
+    error?: string | null;
+  } = {}
+) => ({
+  isAuthenticated: false,
+  isLoading: false,
+  user: null,
+  token: null,
+  error: null,
+  ...overrides,
+});
 
 // Helper to render ProtectedRoute with router context
 const renderProtectedRoute = (
-  authState: ReturnType<typeof createMockAuthState>,
+  authState: ReturnType<typeof createAuthState>,
   options: {
     roles?: UserRole[];
     requireEmailVerified?: boolean;
     initialPath?: string;
   } = {}
 ) => {
-  mockedUseAuth.mockReturnValue(authState);
+  mockedUseAuthStore.mockReturnValue(authState);
 
   const { roles, requireEmailVerified, initialPath = '/protected' } = options;
 
@@ -43,7 +58,10 @@ const renderProtectedRoute = (
     <MemoryRouter initialEntries={[initialPath]}>
       <Routes>
         <Route path="/login" element={<div data-testid="login-page">Login Page</div>} />
-        <Route path="/verify-email" element={<div data-testid="verify-email-page">Verify Email</div>} />
+        <Route
+          path="/verify-email"
+          element={<div data-testid="verify-email-page">Verify Email</div>}
+        />
         <Route
           path="/protected"
           element={
@@ -65,21 +83,21 @@ describe('ProtectedRoute Component', () => {
 
   describe('Loading State', () => {
     it('should show loading spinner while checking auth', () => {
-      renderProtectedRoute(createLoadingState());
+      renderProtectedRoute(createAuthState({ isLoading: true }));
 
       expect(screen.getByText('Loading...')).toBeInTheDocument();
-      expect(screen.getByClassName ? screen.queryByTestId('protected-content') : null).not.toBeInTheDocument();
+      expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
     });
 
     it('should render spinner element during loading', () => {
-      const { container } = renderProtectedRoute(createLoadingState());
+      const { container } = renderProtectedRoute(createAuthState({ isLoading: true }));
 
       const spinner = container.querySelector('.spinner');
       expect(spinner).toBeInTheDocument();
     });
 
     it('should show auth-loading wrapper during loading', () => {
-      const { container } = renderProtectedRoute(createLoadingState());
+      const { container } = renderProtectedRoute(createAuthState({ isLoading: true }));
 
       const loadingWrapper = container.querySelector('.auth-loading');
       expect(loadingWrapper).toBeInTheDocument();
@@ -88,14 +106,14 @@ describe('ProtectedRoute Component', () => {
 
   describe('Unauthenticated Access', () => {
     it('should redirect to login when not authenticated', () => {
-      renderProtectedRoute(createMockAuthState({ isAuthenticated: false, user: null }));
+      renderProtectedRoute(createAuthState({ isAuthenticated: false, user: null }));
 
       expect(screen.getByTestId('login-page')).toBeInTheDocument();
       expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
     });
 
     it('should redirect to login when user is null', () => {
-      renderProtectedRoute(createMockAuthState({ isAuthenticated: true, user: null }));
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: null }));
 
       expect(screen.getByTestId('login-page')).toBeInTheDocument();
     });
@@ -103,7 +121,7 @@ describe('ProtectedRoute Component', () => {
     it('should preserve location state for redirect back', () => {
       // Location state is passed internally by Navigate component
       // We verify by checking the redirect happens
-      renderProtectedRoute(createMockAuthState({ isAuthenticated: false }), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: false }), {
         initialPath: '/protected?query=test',
       });
 
@@ -113,20 +131,22 @@ describe('ProtectedRoute Component', () => {
 
   describe('Authenticated Access', () => {
     it('should render children when authenticated', () => {
-      renderProtectedRoute(createAuthenticatedState(mockStudent));
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockStudent }));
 
       expect(screen.getByTestId('protected-content')).toBeInTheDocument();
       expect(screen.getByText('Protected Content')).toBeInTheDocument();
     });
 
     it('should allow access for any authenticated user without role requirements', () => {
-      renderProtectedRoute(createAuthenticatedState(mockStudent));
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockStudent }));
 
       expect(screen.getByTestId('protected-content')).toBeInTheDocument();
     });
 
     it('should not show loading or error states when authenticated', () => {
-      const { container } = renderProtectedRoute(createAuthenticatedState(mockStudent));
+      const { container } = renderProtectedRoute(
+        createAuthState({ isAuthenticated: true, user: mockStudent })
+      );
 
       expect(container.querySelector('.auth-loading')).not.toBeInTheDocument();
       expect(container.querySelector('.auth-error-page')).not.toBeInTheDocument();
@@ -135,7 +155,7 @@ describe('ProtectedRoute Component', () => {
 
   describe('Role-Based Access Control', () => {
     it('should allow access when user has required role', () => {
-      renderProtectedRoute(createAuthenticatedState(mockAdmin), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockAdmin }), {
         roles: [UserRole.ADMIN],
       });
 
@@ -143,7 +163,7 @@ describe('ProtectedRoute Component', () => {
     });
 
     it('should allow access when user has one of multiple required roles', () => {
-      renderProtectedRoute(createAuthenticatedState(mockAdmin), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockAdmin }), {
         roles: [UserRole.ADMIN, UserRole.INSTRUCTOR],
       });
 
@@ -151,7 +171,7 @@ describe('ProtectedRoute Component', () => {
     });
 
     it('should deny access when user lacks required role', () => {
-      renderProtectedRoute(createAuthenticatedState(mockStudent), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockStudent }), {
         roles: [UserRole.ADMIN],
       });
 
@@ -160,17 +180,19 @@ describe('ProtectedRoute Component', () => {
     });
 
     it('should show access denied message with role info', () => {
-      renderProtectedRoute(createAuthenticatedState(mockStudent), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockStudent }), {
         roles: [UserRole.ADMIN],
       });
 
-      expect(screen.getByText('You do not have permission to access this page.')).toBeInTheDocument();
+      expect(
+        screen.getByText('You do not have permission to access this page.')
+      ).toBeInTheDocument();
       expect(screen.getByText(/Required role:/)).toBeInTheDocument();
       expect(screen.getByText(/Your role:/)).toBeInTheDocument();
     });
 
     it('should show multiple required roles in message', () => {
-      renderProtectedRoute(createAuthenticatedState(mockStudent), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockStudent }), {
         roles: [UserRole.ADMIN, UserRole.INSTRUCTOR],
       });
 
@@ -178,7 +200,7 @@ describe('ProtectedRoute Component', () => {
     });
 
     it('should allow access with empty roles array', () => {
-      renderProtectedRoute(createAuthenticatedState(mockStudent), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockStudent }), {
         roles: [],
       });
 
@@ -188,7 +210,7 @@ describe('ProtectedRoute Component', () => {
 
   describe('Email Verification Requirement', () => {
     it('should allow access when email is verified', () => {
-      renderProtectedRoute(createAuthenticatedState(mockStudent), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockStudent }), {
         requireEmailVerified: true,
       });
 
@@ -196,7 +218,7 @@ describe('ProtectedRoute Component', () => {
     });
 
     it('should block access when email verification is required but not verified', () => {
-      renderProtectedRoute(createAuthenticatedState(mockUnverifiedUser), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockUnverifiedUser }), {
         requireEmailVerified: true,
       });
 
@@ -205,16 +227,18 @@ describe('ProtectedRoute Component', () => {
     });
 
     it('should show email verification prompt with button', () => {
-      renderProtectedRoute(createAuthenticatedState(mockUnverifiedUser), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockUnverifiedUser }), {
         requireEmailVerified: true,
       });
 
-      expect(screen.getByText('Please verify your email address to access this page.')).toBeInTheDocument();
+      expect(
+        screen.getByText('Please verify your email address to access this page.')
+      ).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /verify email/i })).toBeInTheDocument();
     });
 
     it('should not require email verification by default', () => {
-      renderProtectedRoute(createAuthenticatedState(mockUnverifiedUser));
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockUnverifiedUser }));
 
       expect(screen.getByTestId('protected-content')).toBeInTheDocument();
     });
@@ -225,7 +249,7 @@ describe('ProtectedRoute Component', () => {
       delete (window as { location?: Location }).location;
       window.location = { href: '' } as Location;
 
-      renderProtectedRoute(createAuthenticatedState(mockUnverifiedUser), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockUnverifiedUser }), {
         requireEmailVerified: true,
       });
 
@@ -242,7 +266,7 @@ describe('ProtectedRoute Component', () => {
   describe('Combined Requirements', () => {
     it('should check role before email verification', () => {
       // Student with unverified email trying to access admin-only page
-      renderProtectedRoute(createAuthenticatedState(mockUnverifiedUser), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockUnverifiedUser }), {
         roles: [UserRole.ADMIN],
         requireEmailVerified: true,
       });
@@ -252,7 +276,7 @@ describe('ProtectedRoute Component', () => {
     });
 
     it('should pass both role and email checks for verified admin', () => {
-      renderProtectedRoute(createAuthenticatedState(mockAdmin), {
+      renderProtectedRoute(createAuthState({ isAuthenticated: true, user: mockAdmin }), {
         roles: [UserRole.ADMIN],
         requireEmailVerified: true,
       });

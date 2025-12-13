@@ -53,32 +53,31 @@ const mockMultiSelectQuestion: Question = {
 vi.mock('../../../src/components/assessment/quiz-data', () => ({
   getRandomQuestions: vi.fn(() => [mockQuizQuestion, mockMultiSelectQuestion]),
   domainInfo: {
-    '1.0': { name: 'Networking Concepts', weight: 20 },
-    '2.0': { name: 'Network Implementation', weight: 23 },
-    '3.0': { name: 'Network Operations', weight: 20 },
-    '4.0': { name: 'Network Security', weight: 19 },
-    '5.0': { name: 'Network Troubleshooting', weight: 18 },
+    '1.0': { name: 'Networking Concepts', weight: '23%' },
+    '2.0': { name: 'Network Implementation', weight: '19%' },
+    '3.0': { name: 'Network Operations', weight: '16%' },
+    '4.0': { name: 'Network Security', weight: '19%' },
+    '5.0': { name: 'Network Troubleshooting', weight: '23%' },
   },
 }));
 
 describe('QuizEngine', () => {
   let user: ReturnType<typeof userEvent.setup>;
-  const localStorageMock = {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  };
 
   beforeEach(() => {
     user = userEvent.setup();
     vi.clearAllMocks();
-    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
-    Object.defineProperty(window, 'confirm', { value: vi.fn(() => false) });
+    // Use the global localStorage mock from setup.ts
+    localStorage.clear();
+    // Mock confirm to always return false (don't resume quizzes by default)
+    window.confirm = vi.fn(() => false);
+    // Mock alert for error cases
+    window.alert = vi.fn();
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllTimers();
+    localStorage.clear();
   });
 
   // ===========================================================================
@@ -89,7 +88,7 @@ describe('QuizEngine', () => {
     it('should render setup screen by default', () => {
       render(<QuizEngine />);
 
-      expect(screen.getByText(/CompTIA Network+ Practice Quiz/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /CompTIA Network\+/i })).toBeInTheDocument();
     });
 
     it('should display domain selection options', () => {
@@ -121,7 +120,7 @@ describe('QuizEngine', () => {
 
       render(<QuizEngine initialConfig={initialConfig} />);
 
-      expect(screen.getByText(/CompTIA Network+ Practice Quiz/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /CompTIA Network\+/i })).toBeInTheDocument();
     });
   });
 
@@ -289,20 +288,29 @@ describe('QuizEngine', () => {
 
     it('should track time elapsed', async () => {
       vi.useFakeTimers();
-      render(<QuizEngine />);
 
-      const startButton = screen.getByRole('button', { name: /Start Quiz/i });
-      await user.click(startButton);
+      try {
+        const { unmount } = render(<QuizEngine />);
 
-      // Advance timer
-      vi.advanceTimersByTime(5000);
+        const startButton = screen.getByRole('button', { name: /Start Quiz/i });
+        fireEvent.click(startButton);
 
-      // Timer should have updated
-      await waitFor(() => {
-        expect(screen.queryByText(/0:0[0-5]/)).toBeDefined();
-      });
+        // Advance timer by 5 seconds
+        vi.advanceTimersByTime(5000);
 
-      vi.useRealTimers();
+        // Timer should show elapsed time (format: M:SS)
+        await vi.waitFor(
+          () => {
+            const timerElement = screen.queryByText(/\d+:\d{2}/);
+            expect(timerElement).toBeDefined();
+          },
+          { timeout: 1000 }
+        );
+
+        unmount();
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 
@@ -312,21 +320,22 @@ describe('QuizEngine', () => {
 
   describe('Progress Persistence', () => {
     it('should save progress to localStorage', async () => {
+      const setItemSpy = vi.spyOn(localStorage, 'setItem');
       render(<QuizEngine />);
 
       const startButton = screen.getByRole('button', { name: /Start Quiz/i });
       await user.click(startButton);
 
       await waitFor(() => {
-        expect(localStorageMock.setItem).toHaveBeenCalledWith('quizProgress', expect.any(String));
+        expect(setItemSpy).toHaveBeenCalledWith('quizProgress', expect.any(String));
       });
     });
 
     it('should check for saved progress on mount', () => {
-      localStorageMock.getItem.mockReturnValue(null);
+      const getItemSpy = vi.spyOn(localStorage, 'getItem');
       render(<QuizEngine />);
 
-      expect(localStorageMock.getItem).toHaveBeenCalledWith('quizProgress');
+      expect(getItemSpy).toHaveBeenCalledWith('quizProgress');
     });
 
     it('should offer to resume saved quiz', () => {
@@ -334,21 +343,29 @@ describe('QuizEngine', () => {
         quizState: {
           quizId: 'test-quiz',
           startTime: new Date().toISOString(),
-          currentQuestionIndex: 1,
-          questions: [mockQuizQuestion],
+          currentQuestionIndex: 0,
+          questions: [mockQuizQuestion, mockMultiSelectQuestion],
           answers: [],
-          config: { numberOfQuestions: 5 },
+          config: {
+            numberOfQuestions: 2,
+            domains: ['1.0', '2.0'],
+            difficulties: ['easy', 'medium'],
+            feedbackMode: 'review-at-end',
+            randomize: true,
+            retryIncorrectOnly: false,
+          },
           isPaused: false,
           isCompleted: false,
         },
       });
 
-      localStorageMock.getItem.mockReturnValue(savedProgress);
-      window.confirm = vi.fn(() => true);
+      localStorage.setItem('quizProgress', savedProgress);
+      const confirmSpy = vi.fn(() => true);
+      window.confirm = confirmSpy;
 
       render(<QuizEngine />);
 
-      expect(window.confirm).toHaveBeenCalledWith(expect.stringMatching(/resume/i));
+      expect(confirmSpy).toHaveBeenCalledWith(expect.stringMatching(/resume/i));
     });
   });
 
@@ -368,37 +385,44 @@ describe('QuizEngine', () => {
         expect(screen.getByText(/Network Layer/i)).toBeInTheDocument();
       });
 
-      const answer1 = screen.getByText(/Network Layer/i);
-      await user.click(answer1);
+      // Click on the option container, not just the text
+      const answer1Element = screen.getByText(/Network Layer/i);
+      const optionContainer1 = answer1Element.closest('.option');
+      expect(optionContainer1).toBeTruthy();
+      fireEvent.click(optionContainer1!);
 
-      const submitButton1 = screen.getByRole('button', { name: /Submit|Next/i });
+      // Wait for button to be enabled and click
+      const submitButton1 = await waitFor(() => {
+        const btn = screen.getByRole('button', { name: /Next Question/i });
+        expect(btn).not.toBeDisabled();
+        return btn;
+      });
       await user.click(submitButton1);
 
-      // Answer second question (if in review mode, may need to continue)
+      // Answer second question
       await waitFor(() => {
-        const nextOrSubmit = screen.queryByRole('button', { name: /Submit|Next|Continue/i });
-        if (nextOrSubmit) {
-          return true;
-        }
-        return screen.queryByText(/Results/i);
+        expect(screen.getByText(/TCP/i)).toBeInTheDocument();
       });
 
-      // If there's a continue/next button, click it
-      const continueButton = screen.queryByRole('button', { name: /Continue|Next/i });
-      if (continueButton) {
-        await user.click(continueButton);
-      }
+      const answer2Element = screen.getByText(/Connection-oriented/i);
+      const optionContainer2 = answer2Element.closest('.option');
+      expect(optionContainer2).toBeTruthy();
+      fireEvent.click(optionContainer2!);
 
-      // Eventually should show results
+      // Submit final answer
+      const submitButton2 = await waitFor(() => {
+        const btn = screen.getByRole('button', { name: /Next Question/i });
+        expect(btn).not.toBeDisabled();
+        return btn;
+      });
+      await user.click(submitButton2);
+
+      // Should now show results
       await waitFor(
         () => {
-          const results =
-            screen.queryByText(/Results/i) ||
-            screen.queryByText(/Score/i) ||
-            screen.queryByText(/Completed/i);
-          expect(results).toBeTruthy();
+          expect(screen.getByText(/Congratulations|Keep Practicing/i)).toBeInTheDocument();
         },
-        { timeout: 5000 }
+        { timeout: 2000 }
       );
     });
 
@@ -433,16 +457,15 @@ describe('QuizEngine', () => {
     it('should show pass/fail status', async () => {
       render(<QuizEngine />);
 
-      // Start and complete quiz
       const startButton = screen.getByRole('button', { name: /Start Quiz/i });
       await user.click(startButton);
 
       await waitFor(() => {
-        expect(screen.getByText(/Question/i)).toBeInTheDocument();
+        expect(screen.getByText(/Question 1/i)).toBeInTheDocument();
       });
 
-      // Pass/fail shown in results - test that component renders without errors
-      expect(screen.getByText(/Question/i)).toBeInTheDocument();
+      // Just verify quiz started successfully - pass/fail is tested in results test
+      expect(screen.getByText(/Question 1/i)).toBeInTheDocument();
     });
   });
 
@@ -457,16 +480,30 @@ describe('QuizEngine', () => {
       const startButton = screen.getByRole('button', { name: /Start Quiz/i });
       await user.click(startButton);
 
-      // Navigate to multi-select question if needed
+      // Answer first question to get to second (multi-select)
       await waitFor(() => {
-        expect(screen.getByText(/Question/i)).toBeInTheDocument();
+        expect(screen.getByText(/Network Layer/i)).toBeInTheDocument();
       });
 
-      // Multiple select questions allow multiple clicks
-      const options = screen
-        .getAllByRole('button')
-        .filter((btn) => btn.textContent && !btn.textContent.match(/Start|Submit|Next|Previous/i));
-      expect(options.length).toBeGreaterThan(0);
+      const answer1Element = screen.getByText(/Network Layer/i);
+      const optionContainer1 = answer1Element.closest('.option');
+      fireEvent.click(optionContainer1!);
+
+      const nextButton = await waitFor(() => {
+        const btn = screen.getByRole('button', { name: /Next Question/i });
+        expect(btn).not.toBeDisabled();
+        return btn;
+      });
+      await user.click(nextButton);
+
+      // Now at multi-select question
+      await waitFor(() => {
+        expect(screen.getByText(/Select all that apply/i)).toBeInTheDocument();
+      });
+
+      // Multi-select questions have checkboxes
+      const checkboxes = screen.getAllByRole('checkbox').filter((cb) => !cb.closest('.quiz-setup'));
+      expect(checkboxes.length).toBeGreaterThan(0);
     });
   });
 
@@ -494,12 +531,12 @@ describe('QuizEngine', () => {
       const startButton = screen.getByRole('button', { name: /Start Quiz/i });
       await user.click(startButton);
 
+      // Just verify quiz starts - retry button testing requires completing quiz
       await waitFor(() => {
-        expect(screen.getByText(/Question/i)).toBeInTheDocument();
+        expect(screen.getByText(/Question 1/i)).toBeInTheDocument();
       });
 
-      // Retry option should be available after quiz completion
-      expect(screen.queryByText(/Retry/i) || screen.getByText(/Question/i)).toBeDefined();
+      expect(screen.getByText(/Question 1/i)).toBeInTheDocument();
     });
   });
 
@@ -554,16 +591,17 @@ describe('QuizEngine', () => {
     });
 
     it('should handle localStorage errors gracefully', () => {
-      localStorageMock.getItem.mockImplementation(() => {
+      const getItemSpy = vi.spyOn(localStorage, 'getItem').mockImplementation(() => {
         throw new Error('Storage error');
       });
 
       // Should not throw
       expect(() => render(<QuizEngine />)).not.toThrow();
+      getItemSpy.mockRestore();
     });
 
     it('should handle malformed saved progress', () => {
-      localStorageMock.getItem.mockReturnValue('invalid json');
+      localStorage.setItem('quizProgress', 'invalid json');
 
       // Should not throw
       expect(() => render(<QuizEngine />)).not.toThrow();

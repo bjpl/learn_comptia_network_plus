@@ -9,12 +9,37 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { ReactNode } from 'react';
 
 // Hooks under test
-import { useProgress, useSessionTime, useStreakCheck, useAchievementNotifications } from '../../../src/hooks/useProgress';
-import { useTimer, useInterval, useDebounce, useThrottle, useCountdownWithCallbacks, useTimedChallenge } from '../../../src/hooks/useTimer';
-import { useScoring, useRealtimeScore, useAnswerStreak, useDomainProgress, useTimeTracking, useScorePrediction } from '../../../src/hooks/useScoring';
+import {
+  useProgress,
+  useSessionTime,
+  useStreakCheck,
+  useAchievementNotifications,
+} from '../../../src/hooks/useProgress';
+import {
+  useTimer,
+  useInterval,
+  useDebounce,
+  useThrottle,
+  useCountdownWithCallbacks,
+  useTimedChallenge,
+} from '../../../src/hooks/useTimer';
+import {
+  useScoring,
+  useRealtimeScore,
+  useAnswerStreak,
+  useDomainProgress,
+  useTimeTracking,
+  useScorePrediction,
+} from '../../../src/hooks/useScoring';
 
 // Types
-import type { UserProgress, Achievement, Question, AssessmentResult, DifficultyLevel } from '../../../src/types';
+import type {
+  UserProgress,
+  Achievement,
+  Question,
+  AssessmentResult,
+  DifficultyLevel,
+} from '../../../src/types';
 import { StorageKey } from '../../../src/types';
 
 // ============================================================================
@@ -32,7 +57,10 @@ const createMockAchievement = (id: string = 'ach-1'): Achievement => ({
   category: 'completion',
 });
 
-const createMockQuestion = (id: string = 'q1', difficulty: DifficultyLevel = 'intermediate'): Question => ({
+const createMockQuestion = (
+  id: string = 'q1',
+  difficulty: DifficultyLevel = 'intermediate'
+): Question => ({
   id,
   type: 'multiple-choice',
   domain: 'networking-concepts',
@@ -45,7 +73,10 @@ const createMockQuestion = (id: string = 'q1', difficulty: DifficultyLevel = 'in
   points: 10,
 });
 
-const createMockResult = (questionId: string = 'q1', isCorrect: boolean = true): AssessmentResult => ({
+const createMockResult = (
+  questionId: string = 'q1',
+  isCorrect: boolean = true
+): AssessmentResult => ({
   questionId,
   userAnswer: 'A',
   isCorrect,
@@ -119,7 +150,7 @@ describe('useProgress', () => {
         ...savedProgress,
         domainProgress: Object.fromEntries(savedProgress.domainProgress),
         lastAccessed: savedProgress.lastAccessed.toISOString(),
-        achievements: savedProgress.achievements.map(a => ({
+        achievements: savedProgress.achievements.map((a) => ({
           ...a,
           earnedDate: a.earnedDate.toISOString(),
         })),
@@ -284,9 +315,7 @@ describe('useProgress', () => {
     });
 
     it('should not auto-save when disabled', () => {
-      const { result } = renderHook(() =>
-        useProgress({ userId: mockUserId, autoSave: false })
-      );
+      const { result } = renderHook(() => useProgress({ userId: mockUserId, autoSave: false }));
 
       act(() => {
         result.current.markComponentComplete('test-component');
@@ -316,9 +345,7 @@ describe('useProgress', () => {
     });
 
     it('should use custom save interval', () => {
-      renderHook(() =>
-        useProgress({ userId: mockUserId, autoSave: true, saveInterval: 5000 })
-      );
+      renderHook(() => useProgress({ userId: mockUserId, autoSave: true, saveInterval: 5000 }));
 
       // Should not save before interval
       act(() => {
@@ -369,7 +396,9 @@ describe('useProgress', () => {
 
       localStorage.setItem(`${StorageKey.USER_PROGRESS}_${mockUserId}`, JSON.stringify(serialized));
 
-      const { result } = renderHook(() => useProgress({ userId: 'different-user', autoSave: false }));
+      const { result } = renderHook(() =>
+        useProgress({ userId: 'different-user', autoSave: false })
+      );
 
       expect(result.current.progress.componentsCompleted).not.toContain('loaded-component');
 
@@ -566,10 +595,9 @@ describe('useStreakCheck', () => {
 
   it('should update when lastAccessed changes', () => {
     const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const { result, rerender } = renderHook(
-      ({ date }) => useStreakCheck(date),
-      { initialProps: { date: yesterday } }
-    );
+    const { result, rerender } = renderHook(({ date }) => useStreakCheck(date), {
+      initialProps: { date: yesterday },
+    });
 
     expect(result.current.daysSinceLastAccess).toBe(1);
 
@@ -692,6 +720,11 @@ describe('useTimer', () => {
 
       act(() => {
         result.current.pause();
+      });
+
+      expect(result.current.isPaused).toBe(true);
+
+      act(() => {
         vi.advanceTimersByTime(1000);
         result.current.resume();
       });
@@ -744,9 +777,7 @@ describe('useTimer', () => {
 
     it('should complete when time runs out', () => {
       const onComplete = vi.fn();
-      const { result } = renderHook(() =>
-        useTimer({ duration: 5, autoStart: true, onComplete })
-      );
+      const { result } = renderHook(() => useTimer({ duration: 5, autoStart: true, onComplete }));
 
       act(() => {
         vi.advanceTimersByTime(6000);
@@ -1098,9 +1129,7 @@ describe('useCountdownWithCallbacks', () => {
   it('should not trigger same callback twice', () => {
     const callback10 = vi.fn();
 
-    const { result } = renderHook(() =>
-      useCountdownWithCallbacks(60, { 10: callback10 })
-    );
+    const { result } = renderHook(() => useCountdownWithCallbacks(60, { 10: callback10 }));
 
     act(() => {
       result.current.start();
@@ -1123,20 +1152,36 @@ describe('useCountdownWithCallbacks', () => {
   it('should reset callbacks on timer reset', () => {
     const callback10 = vi.fn();
 
-    const { result } = renderHook(() =>
-      useCountdownWithCallbacks(60, { 10: callback10 })
-    );
+    const { result } = renderHook(() => useCountdownWithCallbacks(60, { 10: callback10 }));
 
+    // Start the timer
     act(() => {
       result.current.start();
+    });
+
+    // Advance time using setSystemTime to properly update Date.now()
+    const startTime = Date.now();
+    act(() => {
+      vi.setSystemTime(startTime + 51000);
       vi.advanceTimersByTime(51000);
     });
 
+    // Callback should have been called when remaining <= 10
     expect(callback10).toHaveBeenCalledTimes(1);
 
+    // Reset the timer and start again
     act(() => {
       result.current.reset();
+    });
+
+    act(() => {
       result.current.start();
+    });
+
+    // Advance time again after reset
+    const newStartTime = Date.now();
+    act(() => {
+      vi.setSystemTime(newStartTime + 51000);
       vi.advanceTimersByTime(51000);
     });
 
@@ -1219,9 +1264,7 @@ describe('useScoring', () => {
 
   describe('Initial State', () => {
     it('should initialize with empty results', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       expect(result.current.results).toEqual([]);
       expect(result.current.scoreBreakdown).toBeNull();
@@ -1239,9 +1282,7 @@ describe('useScoring', () => {
 
   describe('Adding Results', () => {
     it('should add result and update streak on correct answer', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       act(() => {
         result.current.addResult(createMockResult('q1', true));
@@ -1252,9 +1293,7 @@ describe('useScoring', () => {
     });
 
     it('should reset streak on incorrect answer', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       act(() => {
         result.current.addResult(createMockResult('q1', true));
@@ -1266,9 +1305,7 @@ describe('useScoring', () => {
     });
 
     it('should replace existing result for same question', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       act(() => {
         result.current.addResult(createMockResult('q1', false));
@@ -1315,9 +1352,7 @@ describe('useScoring', () => {
 
   describe('Removing and Clearing Results', () => {
     it('should remove specific result', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       act(() => {
         result.current.addResult(createMockResult('q1', true));
@@ -1335,9 +1370,7 @@ describe('useScoring', () => {
     });
 
     it('should clear all results', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       act(() => {
         result.current.addResult(createMockResult('q1', true));
@@ -1375,9 +1408,7 @@ describe('useScoring', () => {
     });
 
     it('should update scoreBreakdown automatically', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       expect(result.current.scoreBreakdown).toBeNull();
 
@@ -1392,9 +1423,7 @@ describe('useScoring', () => {
 
   describe('Query Methods', () => {
     it('should get question result', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       act(() => {
         result.current.addResult(createMockResult('q1', true));
@@ -1409,9 +1438,7 @@ describe('useScoring', () => {
     });
 
     it('should check if question is answered', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       expect(result.current.isQuestionAnswered('q1')).toBe(false);
 
@@ -1423,9 +1450,7 @@ describe('useScoring', () => {
     });
 
     it('should get performance metrics', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       act(() => {
         result.current.addResult(createMockResult('q1', true));
@@ -1437,9 +1462,7 @@ describe('useScoring', () => {
     });
 
     it('should get letter grade', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       expect(result.current.getLetterGrade()).toBe('N/A');
 
@@ -1455,9 +1478,7 @@ describe('useScoring', () => {
     });
 
     it('should get exam readiness', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       expect(result.current.getExamReadiness()).toBe(0);
 
@@ -1470,9 +1491,7 @@ describe('useScoring', () => {
     });
 
     it('should generate report', () => {
-      const { result } = renderHook(() =>
-        useScoring({ questions: mockQuestions })
-      );
+      const { result } = renderHook(() => useScoring({ questions: mockQuestions }));
 
       act(() => {
         result.current.addResult(createMockResult('q1', true));
@@ -1526,10 +1545,9 @@ describe('useRealtimeScore', () => {
   });
 
   it('should update when results change', () => {
-    const { result, rerender } = renderHook(
-      ({ results }) => useRealtimeScore(results),
-      { initialProps: { results: [createMockResult('q1', true)] } }
-    );
+    const { result, rerender } = renderHook(({ results }) => useRealtimeScore(results), {
+      initialProps: { results: [createMockResult('q1', true)] },
+    });
 
     expect(result.current).toBe(100);
 
@@ -1578,10 +1596,7 @@ describe('useAnswerStreak', () => {
   });
 
   it('should handle all incorrect answers', () => {
-    const results = [
-      createMockResult('q1', false),
-      createMockResult('q2', false),
-    ];
+    const results = [createMockResult('q1', false), createMockResult('q2', false)];
 
     const { result } = renderHook(() => useAnswerStreak(results));
 
@@ -1609,10 +1624,7 @@ describe('useDomainProgress', () => {
   ];
 
   it('should calculate domain-specific progress', () => {
-    const results = [
-      createMockResult('q1', true),
-      createMockResult('q2', true),
-    ];
+    const results = [createMockResult('q1', true), createMockResult('q2', true)];
 
     const { result } = renderHook(() =>
       useDomainProgress(results, questions, 'networking-concepts')
@@ -1622,17 +1634,13 @@ describe('useDomainProgress', () => {
   });
 
   it('should return 0 for domain with no questions', () => {
-    const { result } = renderHook(() =>
-      useDomainProgress([], questions, 'non-existent-domain')
-    );
+    const { result } = renderHook(() => useDomainProgress([], questions, 'non-existent-domain'));
 
     expect(result.current).toBe(0);
   });
 
   it('should return 0 for empty results', () => {
-    const { result } = renderHook(() =>
-      useDomainProgress([], questions, 'networking-concepts')
-    );
+    const { result } = renderHook(() => useDomainProgress([], questions, 'networking-concepts'));
 
     expect(result.current).toBe(0);
   });

@@ -24,8 +24,9 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ config, setConfig, sta
 
         <div className="quiz-setup">
           <div className="setup-section">
-            <label>Number of Questions</label>
+            <label htmlFor="num-questions">Number of Questions</label>
             <input
+              id="num-questions"
               type="number"
               min="5"
               max="50"

@@ -134,173 +134,169 @@ export const breadcrumbMap: Record<string, { title: string; parent?: string }> =
   '/assessment/quiz': { title: 'Practice Quiz', parent: '/' },
 };
 
-export const router = createBrowserRouter(
-  [
-    {
-      path: '/',
-      element: (
-        <ErrorBoundary>
-          <Layout />
-        </ErrorBoundary>
-      ),
-      children: [
-        {
-          index: true,
-          element: <LazyRoute component={Dashboard} />,
-        },
-        {
-          path: 'home',
-          element: <LazyRoute component={HomePage} />,
-        },
-        // OSI Model Routes
-        {
-          path: 'osi/enhanced',
-          element: <ProtectedRoute component={OSIEnhanced} componentName="OSI Master Class" />,
-        },
-        {
-          path: 'osi/layer-builder',
-          element: <LazyRoute component={LayerExplanationBuilder} />,
-        },
-        {
-          path: 'osi/packet-journey',
-          element: <LazyRoute component={PacketJourneySimulator} />,
-        },
-        {
-          path: 'osi/troubleshooting',
-          element: <LazyRoute component={TroubleshootingScenarios} />,
-        },
-        // Networking Appliances Routes
-        {
-          path: 'appliances/comparison',
-          element: <LazyRoute component={EnhancedComparisonMatrix} />,
-        },
-        {
-          path: 'appliances/decision-tree',
-          element: <LazyRoute component={DecisionTree} />,
-        },
-        {
-          path: 'appliances/simulator',
-          element: (
-            <ProtectedRoute component={NetworkSimulator} componentName="Network Simulator" />
-          ),
-        },
-        // Cloud Concepts Routes
-        {
-          path: 'cloud/summary-builder',
-          element: <LazyRoute component={CloudSummaryBuilder} />,
-        },
-        {
-          path: 'cloud/architecture',
-          element: (
-            <ProtectedRoute
-              component={CloudArchitectureDesigner}
-              componentName="Cloud Architecture Designer"
-            />
-          ),
-        },
-        {
-          path: 'cloud/migration',
-          element: <LazyRoute component={CloudMigrationSimulator} />,
-        },
-        // Ports & Protocols Routes
-        {
-          path: 'ports/trainer',
-          element: <LazyRoute component={PortProtocolTrainer} />,
-        },
-        {
-          path: 'ports/traffic-demo',
-          element: <LazyRoute component={TrafficTypeDemo} />,
-        },
-        {
-          path: 'ports/scanner',
-          element: <ProtectedRoute component={PortScanner} componentName="Port Scanner" />,
-        },
-        // Transmission Media Routes
-        {
-          path: 'transmission/media-selection',
-          element: <LazyRoute component={MediaSelectionMatrix} />,
-        },
-        {
-          path: 'transmission/connector-lab',
-          element: <ProtectedRoute component={ConnectorLab} componentName="Connector Lab" />,
-        },
-        {
-          path: 'transmission/transceiver',
-          element: <LazyRoute component={TransceiverMatch} />,
-        },
-        {
-          path: 'transmission/signal-analyzer',
-          element: <LazyRoute component={SignalAnalyzer} />,
-        },
-        // Network Topologies Routes
-        {
-          path: 'topologies/analyzer',
-          element: (
-            <ProtectedRoute component={TopologyAnalyzer} componentName="Topology Analyzer" />
-          ),
-        },
-        {
-          path: 'topologies/transformer',
-          element: <LazyRoute component={TopologyTransformer} />,
-        },
-        {
-          path: 'topologies/builder',
-          element: <LazyRoute component={TopologyBuilder} />,
-        },
-        // IPv4 Addressing Routes
-        {
-          path: 'ipv4/subnet-designer',
-          element: <ProtectedRoute component={SubnetDesigner} componentName="Subnet Designer" />,
-        },
-        {
-          path: 'ipv4/troubleshooter',
-          element: (
-            <ProtectedRoute component={IPv4Troubleshooter} componentName="IPv4 Troubleshooter" />
-          ),
-        },
-        // Modern Networking Routes
-        {
-          path: 'modern/technology',
-          element: <LazyRoute component={TechnologySummarizer} />,
-        },
-        {
-          path: 'modern/ipv6',
-          element: <LazyRoute component={IPv6Planner} />,
-        },
-        {
-          path: 'modern/iac',
-          element: <LazyRoute component={IaCBuilder} />,
-        },
-        // Assessment Routes
-        {
-          path: 'assessment/simulator',
-          element: (
-            <ProtectedRoute component={ScenarioSimulator} componentName="Scenario Simulator" />
-          ),
-        },
-        {
-          path: 'assessment/dashboard',
-          element: (
-            <ProtectedRoute component={ProgressDashboardPage} componentName="Progress Dashboard" />
-          ),
-        },
-        {
-          path: 'assessment/quiz',
-          element: <ProtectedRoute component={QuizEngine} componentName="Practice Quiz" />,
-        },
-      ],
-    },
-    // 404 Not Found
-    {
-      path: '*',
-      element: (
-        <ErrorBoundary>
-          <LazyRoute component={NotFound} />
-        </ErrorBoundary>
-      ),
-    },
-  ],
+// Route configuration - exported for testing
+export const routeConfig = [
   {
-    basename: import.meta.env.BASE_URL,
-  }
-);
+    path: '/',
+    element: (
+      <ErrorBoundary>
+        <Layout />
+      </ErrorBoundary>
+    ),
+    children: [
+      {
+        index: true,
+        element: <LazyRoute component={Dashboard} />,
+      },
+      {
+        path: 'home',
+        element: <LazyRoute component={HomePage} />,
+      },
+      // OSI Model Routes
+      {
+        path: 'osi/enhanced',
+        element: <ProtectedRoute component={OSIEnhanced} componentName="OSI Master Class" />,
+      },
+      {
+        path: 'osi/layer-builder',
+        element: <LazyRoute component={LayerExplanationBuilder} />,
+      },
+      {
+        path: 'osi/packet-journey',
+        element: <LazyRoute component={PacketJourneySimulator} />,
+      },
+      {
+        path: 'osi/troubleshooting',
+        element: <LazyRoute component={TroubleshootingScenarios} />,
+      },
+      // Networking Appliances Routes
+      {
+        path: 'appliances/comparison',
+        element: <LazyRoute component={EnhancedComparisonMatrix} />,
+      },
+      {
+        path: 'appliances/decision-tree',
+        element: <LazyRoute component={DecisionTree} />,
+      },
+      {
+        path: 'appliances/simulator',
+        element: <ProtectedRoute component={NetworkSimulator} componentName="Network Simulator" />,
+      },
+      // Cloud Concepts Routes
+      {
+        path: 'cloud/summary-builder',
+        element: <LazyRoute component={CloudSummaryBuilder} />,
+      },
+      {
+        path: 'cloud/architecture',
+        element: (
+          <ProtectedRoute
+            component={CloudArchitectureDesigner}
+            componentName="Cloud Architecture Designer"
+          />
+        ),
+      },
+      {
+        path: 'cloud/migration',
+        element: <LazyRoute component={CloudMigrationSimulator} />,
+      },
+      // Ports & Protocols Routes
+      {
+        path: 'ports/trainer',
+        element: <LazyRoute component={PortProtocolTrainer} />,
+      },
+      {
+        path: 'ports/traffic-demo',
+        element: <LazyRoute component={TrafficTypeDemo} />,
+      },
+      {
+        path: 'ports/scanner',
+        element: <ProtectedRoute component={PortScanner} componentName="Port Scanner" />,
+      },
+      // Transmission Media Routes
+      {
+        path: 'transmission/media-selection',
+        element: <LazyRoute component={MediaSelectionMatrix} />,
+      },
+      {
+        path: 'transmission/connector-lab',
+        element: <ProtectedRoute component={ConnectorLab} componentName="Connector Lab" />,
+      },
+      {
+        path: 'transmission/transceiver',
+        element: <LazyRoute component={TransceiverMatch} />,
+      },
+      {
+        path: 'transmission/signal-analyzer',
+        element: <LazyRoute component={SignalAnalyzer} />,
+      },
+      // Network Topologies Routes
+      {
+        path: 'topologies/analyzer',
+        element: <ProtectedRoute component={TopologyAnalyzer} componentName="Topology Analyzer" />,
+      },
+      {
+        path: 'topologies/transformer',
+        element: <LazyRoute component={TopologyTransformer} />,
+      },
+      {
+        path: 'topologies/builder',
+        element: <LazyRoute component={TopologyBuilder} />,
+      },
+      // IPv4 Addressing Routes
+      {
+        path: 'ipv4/subnet-designer',
+        element: <ProtectedRoute component={SubnetDesigner} componentName="Subnet Designer" />,
+      },
+      {
+        path: 'ipv4/troubleshooter',
+        element: (
+          <ProtectedRoute component={IPv4Troubleshooter} componentName="IPv4 Troubleshooter" />
+        ),
+      },
+      // Modern Networking Routes
+      {
+        path: 'modern/technology',
+        element: <LazyRoute component={TechnologySummarizer} />,
+      },
+      {
+        path: 'modern/ipv6',
+        element: <LazyRoute component={IPv6Planner} />,
+      },
+      {
+        path: 'modern/iac',
+        element: <LazyRoute component={IaCBuilder} />,
+      },
+      // Assessment Routes
+      {
+        path: 'assessment/simulator',
+        element: (
+          <ProtectedRoute component={ScenarioSimulator} componentName="Scenario Simulator" />
+        ),
+      },
+      {
+        path: 'assessment/dashboard',
+        element: (
+          <ProtectedRoute component={ProgressDashboardPage} componentName="Progress Dashboard" />
+        ),
+      },
+      {
+        path: 'assessment/quiz',
+        element: <ProtectedRoute component={QuizEngine} componentName="Practice Quiz" />,
+      },
+    ],
+  },
+  // 404 Not Found
+  {
+    path: '*',
+    element: (
+      <ErrorBoundary>
+        <LazyRoute component={NotFound} />
+      </ErrorBoundary>
+    ),
+  },
+];
+
+export const router = createBrowserRouter(routeConfig, {
+  basename: import.meta.env.BASE_URL,
+});

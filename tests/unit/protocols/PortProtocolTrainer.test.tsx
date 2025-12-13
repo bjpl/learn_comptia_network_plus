@@ -245,13 +245,19 @@ describe('PortProtocolTrainer', () => {
       expect(content).toMatch(/20|21|22|25|80|443/);
     });
 
-    it('should display security information', () => {
+    it('should display security information', async () => {
       render(<PortProtocolTrainer />);
 
-      // The component should show security status (Secure/Insecure)
-      // This may be in flashcard details or elsewhere
-      const content = document.body.textContent || '';
-      expect(content).toMatch(/Secure|Insecure|TCP|UDP/i);
+      // The security information is shown on flashcard back
+      // Need to reveal the answer first
+      const revealButton = screen.getByText(/Reveal Answer/i);
+      await user.click(revealButton);
+
+      // After revealing, security and protocol info should be visible
+      await waitFor(() => {
+        const content = document.body.textContent || '';
+        expect(content).toMatch(/Secure|Insecure|TCP|UDP/i);
+      });
     });
   });
 

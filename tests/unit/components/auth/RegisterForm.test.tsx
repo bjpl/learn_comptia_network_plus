@@ -8,14 +8,14 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { RegisterForm } from '../../../../src/components/auth/RegisterForm';
-import { useAuth } from '../../../../src/contexts/AuthContext';
+import { useAuthStore } from '../../../../src/stores/authStore';
 
 // Mock navigate
 const mockNavigate = vi.fn();
 
 // Mock the modules
-vi.mock('../../../../src/contexts/AuthContext', () => ({
-  useAuth: vi.fn(),
+vi.mock('../../../../src/stores/authStore', () => ({
+  useAuthStore: vi.fn(),
 }));
 
 vi.mock('../../../../src/utils/auth', () => ({
@@ -42,7 +42,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-const mockedUseAuth = useAuth as Mock;
+const mockedUseAuthStore = useAuthStore as unknown as Mock;
 
 // ============================================
 // Test Setup
@@ -51,9 +51,13 @@ const mockedUseAuth = useAuth as Mock;
 const mockRegister = vi.fn();
 
 const setupMocks = (authOverrides: Record<string, unknown> = {}) => {
-  mockedUseAuth.mockReturnValue({
+  mockedUseAuthStore.mockReturnValue({
     register: mockRegister,
     error: null,
+    isLoading: false,
+    isAuthenticated: false,
+    user: null,
+    token: null,
     ...authOverrides,
   });
 };
@@ -224,7 +228,9 @@ describe('RegisterForm Component', () => {
       await userEvent.type(screen.getByLabelText(/^username$/i), 'ab');
       fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-      expect(await screen.findByText(/username must be at least 3 characters/i)).toBeInTheDocument();
+      expect(
+        await screen.findByText(/username must be at least 3 characters/i)
+      ).toBeInTheDocument();
     });
 
     it('should show error when username has invalid characters', async () => {
@@ -268,7 +274,9 @@ describe('RegisterForm Component', () => {
       await userEvent.type(screen.getByLabelText(/^password$/i), 'weak');
       fireEvent.click(screen.getByRole('button', { name: /create account/i }));
 
-      expect(await screen.findByText(/password must be at least 8 characters/i)).toBeInTheDocument();
+      expect(
+        await screen.findByText(/password must be at least 8 characters/i)
+      ).toBeInTheDocument();
     });
   });
 

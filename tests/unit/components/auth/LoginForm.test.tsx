@@ -8,14 +8,14 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { LoginForm } from '../../../../src/components/auth/LoginForm';
-import { useAuth } from '../../../../src/contexts/AuthContext';
+import { useAuthStore } from '../../../../src/stores/authStore';
 
 // Mock navigate
 const mockNavigate = vi.fn();
 
 // Mock the modules
-vi.mock('../../../../src/contexts/AuthContext', () => ({
-  useAuth: vi.fn(),
+vi.mock('../../../../src/stores/authStore', () => ({
+  useAuthStore: vi.fn(),
 }));
 
 vi.mock('../../../../src/utils/auth', () => ({
@@ -31,7 +31,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-const mockedUseAuth = useAuth as Mock;
+const mockedUseAuthStore = useAuthStore as unknown as Mock;
 
 // ============================================
 // Test Setup
@@ -40,9 +40,13 @@ const mockedUseAuth = useAuth as Mock;
 const mockLogin = vi.fn();
 
 const setupMocks = (authOverrides: Record<string, unknown> = {}) => {
-  mockedUseAuth.mockReturnValue({
+  mockedUseAuthStore.mockReturnValue({
     login: mockLogin,
     error: null,
+    isLoading: false,
+    isAuthenticated: false,
+    user: null,
+    token: null,
     ...authOverrides,
   });
 };
@@ -264,9 +268,7 @@ describe('LoginForm Component', () => {
 
   describe('Submitting State', () => {
     it('should show "Signing in..." when submitting', async () => {
-      mockLogin.mockImplementation(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
-      );
+      mockLogin.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
       renderLoginForm();
 
       const emailInput = screen.getByLabelText(/email address/i);
@@ -282,9 +284,7 @@ describe('LoginForm Component', () => {
     });
 
     it('should disable inputs while submitting', async () => {
-      mockLogin.mockImplementation(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
-      );
+      mockLogin.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
       renderLoginForm();
 
       const emailInput = screen.getByLabelText(/email address/i);
@@ -304,9 +304,7 @@ describe('LoginForm Component', () => {
     });
 
     it('should disable demo buttons while submitting', async () => {
-      mockLogin.mockImplementation(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
-      );
+      mockLogin.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
       renderLoginForm();
 
       const emailInput = screen.getByLabelText(/email address/i);

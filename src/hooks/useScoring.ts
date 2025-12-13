@@ -252,17 +252,26 @@ export function useAnswerStreak(results: AssessmentResult[]): {
   max: number;
 } {
   return useMemo(() => {
-    let current = 0;
-    let max = 0;
-    let temp = 0;
+    if (results.length === 0) {
+      return { current: 0, max: 0 };
+    }
 
-    // Calculate from end (most recent)
+    // Calculate current streak from end (consecutive correct answers from the end)
+    let current = 0;
     for (let i = results.length - 1; i >= 0; i--) {
       if (results[i].isCorrect) {
+        current++;
+      } else {
+        break; // Stop at first incorrect answer from the end
+      }
+    }
+
+    // Calculate max streak (longest consecutive correct answers)
+    let max = 0;
+    let temp = 0;
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].isCorrect) {
         temp++;
-        if (i === results.length - 1) {
-          current = temp;
-        }
         max = Math.max(max, temp);
       } else {
         temp = 0;
