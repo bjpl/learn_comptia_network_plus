@@ -84,7 +84,7 @@
     "tailwindcss": "^4.1.16",
     "terser": "^5.44.0",
     "typescript": "^5.7.2",
-    "vite": "^7.1.12",
+    "vite": "^7.2.7",
     "vite-plugin-image-optimizer": "^2.0.2",
     "vitest": "^4.0.15",
     "web-vitals": "^5.1.0"
