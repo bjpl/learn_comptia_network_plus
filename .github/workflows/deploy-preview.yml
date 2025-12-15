@@ -28,7 +28,7 @@ jobs:
           NODE_ENV: production
 
       - name: Upload preview artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: preview-build
           path: dist/
